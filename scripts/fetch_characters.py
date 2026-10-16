@@ -7,6 +7,7 @@ Usage: python scripts/fetch_characters.py
 Node twin: scripts/fetch_characters.mjs (byte-identical output).
 """
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -28,9 +29,13 @@ MASTERY_FIELDS = {
 
 
 def num(value):
-    """Integral numbers as int so the JSON matches the Node output byte for byte."""
+    """Integral numbers as int so the JSON matches the Node output byte for byte.
+    Python and JS only agree on plain decimal notation, so values that either
+    side would print in exponent form (or non-finite ones) abort."""
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         raise ValueError(f"not a number: {value!r}")
+    if not math.isfinite(value) or abs(value) >= 1e15 or 0 < abs(value) < 1e-4:
+        raise ValueError(f"number out of serializable range: {value!r}")
     return int(value) if float(value).is_integer() else value
 
 

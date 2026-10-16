@@ -37,8 +37,12 @@ function field(obj, key) {
   return obj[key];
 }
 
+// Python and JS only agree on plain decimal notation, so values that either
+// side would print in exponent form (or non-finite ones) abort.
 function num(value) {
   if (typeof value !== "number" || !Number.isFinite(value)) throw new Error(`not a number: ${value}`);
+  const a = Math.abs(value);
+  if (a >= 1e15 || (a > 0 && a < 1e-4)) throw new Error(`number out of serializable range: ${value}`);
   return value;
 }
 

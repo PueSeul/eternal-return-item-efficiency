@@ -49,7 +49,9 @@ class BuildTests(unittest.TestCase):
     def test_rejects_unknown_or_inconsistent(self):
         bad_key = char(1, ["Bow"], [{"type": "Bow", "options": [{"key": "NewRatio", "value": 1}]}])
         mismatch = char(1, ["Bow", "Arcana"], [{"type": "Bow", "options": []}])
-        for raw in (bad_key, mismatch):
+        tiny = char(1, ["Bow"], [{"type": "Bow", "options": [{"key": "SkillAmpRatio", "value": 0.00001}]}])
+        huge = char(1, ["Bow"], [], ap=float("inf"))
+        for raw in (bad_key, mismatch, tiny, huge):
             with self.assertRaises(ValueError):
                 fc.build_characters([raw], WEAPONS)
 
@@ -87,6 +89,8 @@ class NodePortTests(unittest.TestCase):
         expected = fc.dumps(fc.build_characters(raw["characters"], raw["masteries"]))
         self.assertGreater(len(json.loads(expected)), 80)
         self.assertEqual(self.node_dumps(raw), expected)
+        # The committed file is the current API output (rerun the fetcher after a patch).
+        self.assertEqual((ROOT / "data" / "characters.json").read_text(encoding="utf-8"), expected)
 
     def test_same_output_on_edge_cases(self):
         raw = {"masteries": WEAPONS, "characters": [
