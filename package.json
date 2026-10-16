@@ -3,11 +3,37 @@
   "version": "1.0.0",
   "private": true,
   "description": "이터널 리턴 아이템 가격 대비 데미지 효율 계산기",
+  "main": "electron/main.js",
   "scripts": {
     "start": "node server.js",
-    "test": "node --test"
+    "test": "node --test",
+    "app": "electron .",
+    "build:exe": "node electron/build.js"
+  },
+  "build": {
+    "appId": "local.er-damage-efficiency",
+    "productName": "ER-Damage-Calculator",
+    "files": [
+      "index.html",
+      "src/**/*",
+      "data/**/*",
+      "electron/**/*",
+      "!electron/**/*.test.js",
+      "!electron/build.js",
+      "package.json"
+    ],
+    "win": {
+      "target": "portable"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable.exe"
+    }
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "electron": "^44.8.0",
+    "electron-builder": "^26.15.3"
   }
 }
