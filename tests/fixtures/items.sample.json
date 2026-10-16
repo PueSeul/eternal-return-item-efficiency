@@ -1,0 +1,7 @@
+[
+  {"id": "w1", "name": "테스트 검", "grade": "전설", "slot": "무기", "imageUrl": "https://example.invalid/w1.png", "price": 400, "priceSource": "테스트 픽스처", "stats": {"공격력": 60, "스킬 증폭": 0}},
+  {"id": "h1", "name": "테스트 모자", "grade": "영웅", "slot": "머리", "imageUrl": "https://example.invalid/h1.png", "price": 200, "priceSource": "테스트 픽스처", "stats": {"스킬 증폭": 20, "방어력": 10}},
+  {"id": "c1", "name": "테스트 옷", "grade": "전설", "slot": "옷", "imageUrl": "https://example.invalid/c1.png", "price": 300, "priceSource": "테스트 픽스처", "stats": {"스킬 증폭": 30, "스킬 증폭율": 0.25}},
+  {"id": "a1", "name": "테스트 팔찌", "grade": "희귀", "slot": "팔", "imageUrl": "https://example.invalid/a1.png", "price": 100, "priceSource": "테스트 픽스처", "stats": {"공격력": 15}},
+  {"id": "l1", "name": "테스트 신발", "grade": "신화", "slot": "다리", "imageUrl": "https://example.invalid/l1.png", "price": 0, "priceSource": "테스트 픽스처", "stats": {"최종 피해 증가율": 0.05, "이동 속도": 0.22}}
+]
