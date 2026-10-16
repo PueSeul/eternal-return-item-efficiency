@@ -6,7 +6,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 if (process.argv.includes('--er-formula=v2')) contextBridge.exposeInMainWorld('ER_FORMULA', 'v2');
 
 contextBridge.exposeInMainWorld('erDesktop', {
-  // 아이템 수치 업데이트: 성공 시 { count, savedPath }, 실패 시 오류 메시지로 reject.
+  // 아이템 수치 업데이트: 성공 시 { count, savedPath, meta }, 실패 시 오류 메시지로 reject.
   updateItems: async () => {
     try {
       return await ipcRenderer.invoke('er:update-items');

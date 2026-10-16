@@ -6,7 +6,7 @@ const { app, BrowserWindow, ipcMain, protocol, shell } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const { resolveFile, contentType } = require('./resolve');
-const { loadFetchItems, updateItems } = require('./update');
+const { loadFetchAll, updateAll } = require('./update');
 
 const SCHEME = 'app';
 const ORIGIN = `${SCHEME}://calc`;
@@ -17,14 +17,14 @@ const EXTERNAL_ROOT = !app.isPackaged ? null
 // 프로그램 안 업데이트가 저장하는 곳: exe 옆 data/ (개발 실행에서는 프로젝트 data/). resolveFile 이 이 파일을 우선 읽는다.
 const UPDATE_DATA_DIR = path.join(EXTERNAL_ROOT || APP_ROOT, 'data');
 
-// window.erDesktop.updateItems() (preload.js) → fetchItems() → data/items.json 저장. 동시 요청은 하나로 합친다.
+// window.erDesktop.updateItems() (preload.js) → fetchAll() → data/items.json·characters.json·items.meta.json 저장. 동시 요청은 하나로 합친다.
 let updating = null;
 let lastUpdate = null; // 검증(smokeClickUpdate)용: 마지막으로 시작한 업데이트 작업
 async function handleUpdateItems(event) {
   if (!event.senderFrame || !event.senderFrame.url.startsWith(ORIGIN + '/')) throw new Error('허용되지 않은 요청입니다.');
   if (!updating) {
-    updating = loadFetchItems(APP_ROOT)
-      .then((fetchItems) => updateItems(fetchItems, UPDATE_DATA_DIR))
+    updating = loadFetchAll(APP_ROOT)
+      .then((fetchAll) => updateAll(fetchAll, UPDATE_DATA_DIR))
       .finally(() => { updating = null; });
     lastUpdate = updating;
   }
@@ -144,12 +144,20 @@ function smokeTest(win, outFile) {
 
 // 검증용: 업데이트 버튼 클릭 → main 의 업데이트 작업 완료 대기 → 저장 파일 시각 기록.
 async function smokeClickUpdate(win, selector) {
-  const file = path.join(UPDATE_DATA_DIR, 'items.json');
-  const mtime = () => (fs.existsSync(file) ? fs.statSync(file).mtime.toISOString() : null);
+  const names = ['items.json', 'characters.json', 'items.meta.json'];
+  const mtime = () => Object.fromEntries(names.map((n) => {
+    const file = path.join(UPDATE_DATA_DIR, n);
+    return [n, fs.existsSync(file) ? fs.statSync(file).mtime.toISOString() : null];
+  }));
   const before = mtime();
   const prev = lastUpdate;
-  const clicked = await win.webContents.executeJavaScript(
-    `(() => { const b = document.querySelector(${JSON.stringify(selector)}); if (!b || b.hidden) return false; b.click(); return true; })()`);
+  // 버튼은 UI 최초 로딩(v2는 캐릭터 데이터 포함)이 끝난 뒤에 보이므로 최대 15초 기다린다.
+  let clicked = false;
+  for (const end = Date.now() + 15000; !clicked && Date.now() < end;) {
+    clicked = await win.webContents.executeJavaScript(
+      `(() => { const b = document.querySelector(${JSON.stringify(selector)}); if (!b || b.hidden) return false; b.click(); return true; })()`);
+    if (!clicked) await new Promise((r) => setTimeout(r, 200));
+  }
   if (!clicked) return { ok: false, error: `button not found or hidden: ${selector}` };
   const deadline = Date.now() + 5000;
   while (lastUpdate === prev && Date.now() < deadline) await new Promise((r) => setTimeout(r, 50));
@@ -158,13 +166,19 @@ async function smokeClickUpdate(win, selector) {
     const res = await lastUpdate;
     await new Promise((r) => setTimeout(r, 2000)); // UI가 새 파일을 다시 읽을 시간
     const after = mtime();
-    // 프로토콜로 다시 읽은 data/items.json 개수와 UI 상태 문구.
-    const ui = await win.webContents.executeJavaScript(`(async () => ({
-      servedCount: (await (await fetch('data/items.json', { cache: 'no-store' })).json()).length,
-      status: (document.getElementById('update-status') || {}).textContent || '',
-      bannerHidden: document.getElementById('data-banner').hidden,
-    }))()`);
-    const ok = after !== null && after !== before && ui.servedCount === res.count && ui.bannerHidden;
+    // 프로토콜로 다시 읽은 세 파일(외부 data/ 우선)과 UI 상태 문구.
+    const ui = await win.webContents.executeJavaScript(`(async () => {
+      const get = async (n) => (await fetch('data/' + n, { cache: 'no-store' })).json();
+      return {
+        servedCount: (await get('items.json')).length,
+        servedCharacters: (await get('characters.json')).length,
+        servedMeta: JSON.stringify(await get('items.meta.json')),
+        status: (document.getElementById('update-status') || {}).textContent || '',
+        bannerHidden: document.getElementById('data-banner').hidden,
+      };
+    })()`);
+    const ok = names.every((n) => after[n] !== null && after[n] !== before[n])
+      && ui.servedCount === res.count && ui.servedMeta === JSON.stringify(res.meta) && ui.bannerHidden;
     return { ok, before, after, ...res, ...ui };
   } catch (err) {
     return { ok: false, before, error: String(err && err.message || err) };
