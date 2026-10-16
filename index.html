@@ -8,7 +8,10 @@
 </head>
 <body>
   <header>
-    <h1>이터널 리턴 아이템 가격 대비 데미지 효율 계산기</h1>
+    <div>
+      <h1>이터널 리턴 아이템 가격 대비 데미지 효율 계산기</h1>
+      <button id="data-meta" class="meta-line" type="button" title="패치노트 반영 내역 보기" hidden></button>
+    </div>
     <div class="update-box">
       <span id="update-status" class="muted" role="status"></span>
       <button id="update-btn" type="button" hidden>아이템 수치 업데이트</button>
@@ -56,12 +59,25 @@
     <ul id="picker-list" class="picker-list"></ul>
   </dialog>
 
+  <dialog id="meta-panel">
+    <div class="picker-head">
+      <h2>패치노트 반영 내역</h2>
+      <button id="meta-close" type="button">닫기</button>
+    </div>
+    <p id="meta-patch" class="muted"></p>
+    <h3>덮어쓴 수치</h3>
+    <ul id="meta-overrides" class="meta-list"></ul>
+    <h3>확인 필요</h3>
+    <ul id="meta-unparsed" class="meta-list"></ul>
+  </dialog>
+
   <script src="src/formula.js"></script>
   <script src="src/formula_v2.js"></script>
   <script src="src/characters.js"></script>
   <script src="src/history.js"></script>
   <script src="src/explain.js"></script>
   <script src="src/updater.js"></script>
+  <script src="src/meta.js"></script>
   <script src="src/app.js"></script>
 </body>
 </html>

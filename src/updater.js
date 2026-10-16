@@ -1,5 +1,5 @@
 // "아이템 수치 업데이트" 버튼 로직(브라우저/Node 테스트 공용).
-// 데스크톱(Electron)에서는 preload가 window.erDesktop.updateItems()를 노출한다(성공 시 {count, savedPath}, 실패 시 reject).
+// 데스크톱(Electron)에서는 preload가 window.erDesktop.updateItems()를 노출한다(성공 시 {count, savedPath[, meta]}, 실패 시 reject).
 (function (root, factory) {
   const api = factory();
   if (typeof module === 'object' && module.exports) module.exports = api;
@@ -26,8 +26,9 @@
   }
 
   // updateItems() 실행 → 성공하면 reload()로 data/items.json을 다시 읽는다.
-  // reload는 성공 여부(boolean)를 돌려준다. 결과는 { ok, message }.
-  async function runUpdate(desktop, reload) {
+  // reload는 성공 여부(boolean)를 돌려준다. reloadMeta(선택)는 메타 파일을 다시 읽어 돌려준다.
+  // 결과는 { ok, count, meta, message }.
+  async function runUpdate(desktop, reload, reloadMeta) {
     let res;
     try {
       res = await desktop.updateItems();
@@ -42,7 +43,16 @@
       return { ok: false, message: '업데이트 후 data/items.json을 다시 읽지 못했습니다.' };
     }
     const count = res && Number.isFinite(Number(res.count)) ? Number(res.count) : null;
-    return { ok: true, count, message: count == null ? '아이템 갱신 완료' : `아이템 ${count}개 갱신 완료` };
+    // 반환에 meta(items.meta.json 내용) 객체가 있으면 그것을, 없으면 reloadMeta()로 파일을 다시 읽는다(실패 시 null).
+    let meta = res && res.meta != null && typeof res.meta === 'object' && !Array.isArray(res.meta) ? res.meta : null;
+    if (!meta && reloadMeta) {
+      try {
+        meta = (await reloadMeta()) || null;
+      } catch {
+        meta = null;
+      }
+    }
+    return { ok: true, count, meta, message: count == null ? '아이템 갱신 완료' : `아이템 ${count}개 갱신 완료` };
   }
 
   return { canUpdate, rematch, runUpdate };

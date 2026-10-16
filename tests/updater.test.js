@@ -16,7 +16,39 @@ test('runUpdate 성공: reload 후 "아이템 N개 갱신 완료"', async () => 
   const desktop = { updateItems: async () => { calls.push('update'); return { count: 312, savedPath: 'C:/x/items.json' }; } };
   const r = await U.runUpdate(desktop, async () => { calls.push('reload'); return true; });
   assert.deepEqual(calls, ['update', 'reload']);
-  assert.deepEqual(r, { ok: true, count: 312, message: '아이템 312개 갱신 완료' });
+  assert.deepEqual(r, { ok: true, count: 312, meta: null, message: '아이템 312개 갱신 완료' });
+});
+
+test('runUpdate: 반환에 meta 객체가 있으면 결과에 그대로, 아니면 null', async () => {
+  const meta = { dakggVersion: '12.6.0', overrides: [] };
+  const r = await U.runUpdate({ updateItems: async () => ({ count: 1, savedPath: 'x', meta }) }, async () => true);
+  assert.equal(r.meta, meta);
+  for (const bad of [undefined, null, 'x', [1]]) {
+    const t = await U.runUpdate({ updateItems: async () => ({ count: 1, meta: bad }) }, async () => true);
+    assert.equal(t.meta, null);
+  }
+  const u = await U.runUpdate({ updateItems: async () => undefined }, async () => true);
+  assert.equal(u.meta, null);
+});
+
+test('runUpdate: meta 반환이 있으면 파일을 다시 읽지 않고, 없으면 reloadMeta 결과를 쓴다', async () => {
+  const given = { dakggVersion: 'A' };
+  const fromFile = { dakggVersion: 'B' };
+  let reads = 0;
+  const reloadMeta = async () => { reads++; return fromFile; };
+  const a = await U.runUpdate({ updateItems: async () => ({ count: 1, meta: given }) }, async () => true, reloadMeta);
+  assert.equal(a.meta, given);
+  assert.equal(reads, 0);
+  const b = await U.runUpdate({ updateItems: async () => ({ count: 1 }) }, async () => true, reloadMeta);
+  assert.equal(b.meta, fromFile);
+  assert.equal(reads, 1);
+  // 메타 다시 읽기가 실패해도 업데이트 성공은 유지, meta는 null
+  const c = await U.runUpdate({ updateItems: async () => ({ count: 1 }) }, async () => true, async () => { throw new Error('x'); });
+  assert.equal(c.ok, true);
+  assert.equal(c.meta, null);
+  // 업데이트 실패면 메타도 읽지 않는다
+  await U.runUpdate({ updateItems: async () => { throw new Error('y'); } }, async () => true, reloadMeta);
+  assert.equal(reads, 1);
 });
 
 test('runUpdate 실패: reject면 reload하지 않고 오류 메시지', async () => {

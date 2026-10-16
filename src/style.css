@@ -51,6 +51,13 @@ dialog { width: min(720px, 95vw); max-height: 85vh; background: var(--panel); co
 dialog::backdrop { background: rgba(0, 0, 0, .6); }
 .picker-head { display: flex; justify-content: space-between; align-items: center; }
 .picker-filters { display: flex; gap: 8px; margin: 8px 0; }
+.meta-line { display: block; margin-top: 4px; padding: 0; background: none; border: none; color: var(--muted); font-size: 12px; cursor: pointer; text-decoration: underline dotted; }
+.meta-line:hover { color: var(--text); }
+.meta-line[hidden] { display: none; }
+#meta-panel h3 { font-size: 14px; margin: 12px 0 4px; }
+.meta-list { margin: 0; padding-left: 20px; font-size: 13px; overflow-y: auto; max-height: 30vh; }
+.meta-list a { color: var(--accent); }
+.patch-badge { display: inline-block; margin-left: 4px; padding: 0 4px; border: 1px solid var(--warn); border-radius: 3px; color: var(--warn); font-size: 10px; vertical-align: middle; }
 .picker-filters input { flex: 1; }
 .picker-list { list-style: none; padding: 0; margin: 0; max-height: 60vh; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
 .picker-list li { display: flex; gap: 8px; align-items: center; border: 1px solid var(--line); border-radius: 4px; padding: 6px; cursor: pointer; font-size: 13px; }

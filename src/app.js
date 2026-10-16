@@ -7,7 +7,9 @@
   const History = window.ERHistory.forVariant(VARIANT);
   const explainLines = V2 ? window.ERExplain.linesV2 : window.ERExplain.lines;
   const Updater = window.ERUpdater;
+  const Meta = window.ERMeta;
   const DATA_URL = 'data/items.json';
+  const META_URL = 'data/items.meta.json';
   const GRADES = ['일반', '고급', '희귀', '영웅', '전설', '신화'];
   const INPUT_FIELDS_V2 = [
     { key: 'level', label: '캐릭터 레벨', step: 1, min: 1 },
@@ -35,7 +37,7 @@
   ];
 
   const $ = (sel) => document.querySelector(sel);
-  const state = { items: [], byId: new Map(), equipped: {}, history: [], historySort: 'recent', pickerSlot: null, characters: [], charactersError: '' };
+  const state = { items: [], byId: new Map(), equipped: {}, history: [], historySort: 'recent', pickerSlot: null, characters: [], charactersError: '', meta: null, patched: new Map() };
 
   function el(tag, props, ...children) {
     const node = document.createElement(tag);
@@ -99,6 +101,48 @@
     return true;
   }
 
+  // ---------- 데이터 메타(출처·패치노트 반영 내역) ----------
+  // data/items.meta.json을 읽는다. 없거나 형식이 틀리면 null(헤더 줄 숨김).
+  async function fetchMeta() {
+    try {
+      const res = await fetch(META_URL, { cache: 'no-store' });
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  }
+
+  function setMeta(meta) {
+    state.meta = Meta.normalize(meta);
+    state.patched = Meta.patchedItems(state.meta);
+    const line = $('#data-meta');
+    const text = Meta.headerText(state.meta);
+    line.textContent = text || '';
+    line.hidden = !text;
+    if ($('#meta-panel').open) renderMetaPanel();
+  }
+
+  function renderMetaPanel() {
+    const m = state.meta || Meta.normalize({});
+    const patch = $('#meta-patch');
+    const title = [m.patch.title || (m.patch.version ? `패치노트 ${m.patch.version}` : ''), m.patch.date ? `(${m.patch.date})` : '']
+      .filter(Boolean).join(' ');
+    const url = Meta.safeUrl(m.patch.url);
+    patch.replaceChildren(url && title ? el('a', { href: url, target: '_blank', rel: 'noopener', textContent: title }) : (title || '패치노트 정보 없음'));
+    const fill = (sel, lines) => $(sel).replaceChildren(...(lines.length
+      ? lines.map((t) => el('li', { textContent: t }))
+      : [el('li', { className: 'muted', textContent: '없음' })]));
+    fill('#meta-overrides', Meta.overrideLines(m));
+    fill('#meta-unparsed', Meta.unparsedLines(m));
+  }
+
+  // 패치노트로 덮어쓴 스탯이 있는 아이템 표식.
+  function patchBadge(item) {
+    const stats = state.patched.get(String(item.name).trim());
+    return stats ? el('span', { className: 'patch-badge', textContent: '패치 반영', title: '패치노트 반영: ' + stats.join(', ') }) : null;
+  }
+
   // ---------- 아이템 수치 업데이트(데스크톱 전용) ----------
   function setupUpdater() {
     const btn = $('#update-btn');
@@ -111,8 +155,10 @@
       status.className = 'muted';
       status.textContent = '';
       try {
-        const r = await Updater.runUpdate(window.erDesktop, loadData);
+        const r = await Updater.runUpdate(window.erDesktop, loadData, fetchMeta);
         if (r.ok) {
+          // 반환에 meta가 있으면 그것, 없으면 다시 읽은 메타 파일(runUpdate가 결정).
+          setMeta(r.meta);
           const { equipped, removed } = Updater.rematch(state.equipped, state.byId);
           state.equipped = equipped;
           renderSlots();
@@ -157,7 +203,7 @@
       if (item) {
         card.append(
           itemImage(item),
-          el('div', { className: 'grade-' + item.grade, textContent: item.name }),
+          el('div', { className: 'grade-' + item.grade, textContent: item.name }, patchBadge(item)),
           el('div', { className: 'muted', textContent: `${item.grade} · 가격 ${fmt(item.price)}` }),
         );
       } else {
@@ -209,7 +255,7 @@
       const li = el('li', null,
         itemImage(it),
         el('div', null,
-          el('div', { className: 'grade-' + it.grade, textContent: `${it.name} (${it.grade})` }),
+          el('div', { className: 'grade-' + it.grade, textContent: `${it.name} (${it.grade})` }, patchBadge(it)),
           el('div', { className: 'muted', textContent: `가격 ${fmt(it.price)}${it.priceSource ? ' — ' + it.priceSource : ''}` }),
           el('div', { className: 'stats', textContent: statsText(it) })));
       li.onclick = () => {
@@ -457,6 +503,8 @@
     $('#picker-search').oninput = renderPicker;
     gradeSel.onchange = renderPicker;
     $('#picker-close').onclick = () => $('#picker').close();
+    $('#data-meta').onclick = () => { renderMetaPanel(); $('#meta-panel').showModal(); };
+    $('#meta-close').onclick = () => $('#meta-panel').close();
     $('#calc-btn').onclick = calculate;
     for (const btn of document.querySelectorAll('#history-tabs button')) {
       btn.onclick = () => { state.historySort = btn.dataset.sort; renderHistory(); };
@@ -480,7 +528,8 @@
       renderAutoNotes();
     });
     renderSlots();
-    await Promise.all([loadData(), V2 ? loadCharacters() : null]);
+    const [, , meta] = await Promise.all([loadData(), V2 ? loadCharacters() : null, fetchMeta()]);
+    setMeta(meta);
     // 최초 로딩이 끝난 뒤에 버튼을 연다(늦게 끝난 최초 로딩이 갱신 데이터를 덮어쓰지 않도록).
     setupUpdater();
     // 데이터 로딩 뒤에 히스토리를 보여 줘야 클릭 복원 시 아이템을 찾을 수 있다.
