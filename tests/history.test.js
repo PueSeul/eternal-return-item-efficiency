@@ -13,6 +13,31 @@ function memoryStorage() {
 
 const equipped = Object.fromEntries(items.map((it) => [it.slot, it]));
 
+test('가격 합 0: D는 정상 저장, 효율은 null이고 100% 기준·효율순 정렬에서 제외', () => {
+  const free = items.map((it) => ({ ...it, price: 0 }));
+  const inputs = { ...F.DEFAULT_INPUTS, skillDamage: 200, atkCoefPct: 0, defense: 80 };
+  const result = F.calculate(free, inputs);
+  assert.equal(result.price, 0);
+  assert.equal(result.ratio, null);
+  assert.ok(result.D >= 1 && Number.isFinite(result.D));
+  assert.equal(F.efficiencyPercent(result.ratio, 0.5), null);
+
+  const storage = memoryStorage();
+  const zero = H.makeEntry({ equipped, inputs, result, now: new Date('2026-10-16T02:00:00Z') });
+  const paid = H.makeEntry({ equipped, inputs, result: F.calculate(items, inputs), now: new Date('2026-10-16T01:00:00Z') });
+  H.save(storage, H.add(H.add([], paid), zero));
+  const list = H.load(storage);
+  const loadedZero = list.find((e) => e.result.price === 0);
+  assert.equal(loadedZero.result.D, result.D);
+  assert.equal(loadedZero.result.ratio, null);
+  assert.equal(H.bestRatio(list), paid.result.ratio); // 0 가격 기록은 기준에서 제외
+  assert.equal(H.bestRatio([zero]), null);
+  const byEff = H.sorted(list, 'efficiency');
+  assert.equal(byEff[0].result.price, 1000); // 0 가격 기록은 순위 없이 맨 뒤
+  assert.equal(byEff[byEff.length - 1].result.price, 0);
+  assert.equal(H.sorted(list, 'recent')[0].result.price, 0); // 최근순에는 그대로 보임
+});
+
 test('기록 저장 후 다시 읽으면 구성·입력값·결과가 그대로', () => {
   const storage = memoryStorage();
   const inputs = { ...F.DEFAULT_INPUTS, skillDamage: 200, atkCoefPct: 0, defense: 80 };

@@ -215,7 +215,7 @@
     // 화면에는 D와 효율 %만 표시한다(항목별 분해 값은 result 객체에만 남김).
     box.replaceChildren(
       el('div', { className: 'big', textContent: `데미지 총량 D = ${fmt(r.D)}` }),
-      el('div', { className: 'big', textContent: `데미지 효율 = ${pct == null ? '계산 불가(가격 합 0)' : fmt(pct, 1) + '%'}` }));
+      el('div', { className: 'big', textContent: `데미지 효율 = ${pct == null ? '—' : fmt(pct, 1) + '%'}` }));
     box.hidden = false;
   }
 
@@ -259,7 +259,7 @@
       const li = el('li', { title: '클릭하면 이 구성을 불러옵니다' },
         el('div', { className: 'muted', textContent: new Date(e.time).toLocaleString('ko-KR') }),
         historyIcons(e),
-        el('div', { textContent: `D ${fmt(e.result.D)} · 가격 ${fmt(e.result.price)} · 효율 ${current ? (pct == null ? '-' : fmt(pct, 1) + '%') : '— (이전 계산식 기록, 효율 비교 제외)'}` }),
+        el('div', { textContent: `D ${fmt(e.result.D)} · 가격 ${fmt(e.result.price)} · 효율 ${current ? (pct == null ? '—' : fmt(pct, 1) + '%') : '— (이전 계산식 기록, 효율 비교 제외)'}` }),
         del);
       li.onclick = () => restore(e);
       list.append(li);
