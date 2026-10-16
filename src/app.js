@@ -8,6 +8,7 @@
   const explainLines = V2 ? window.ERExplain.linesV2 : window.ERExplain.lines;
   const Updater = window.ERUpdater;
   const Meta = window.ERMeta;
+  const Baseline = window.ERBaseline;
   const DATA_URL = 'data/items.json';
   const META_URL = 'data/items.meta.json';
   const GRADES = ['일반', '고급', '희귀', '영웅', '전설', '신화'];
@@ -37,7 +38,7 @@
   ];
 
   const $ = (sel) => document.querySelector(sel);
-  const state = { items: [], byId: new Map(), equipped: {}, history: [], historySort: 'recent', pickerSlot: null, characters: [], charactersError: '', meta: null, patched: new Map() };
+  const state = { items: [], byId: new Map(), equipped: {}, history: [], historySort: 'recent', pickerSlot: null, pickerTarget: 'equipped', baseline: {}, characters: [], charactersError: '', meta: null, patched: new Map() };
 
   function el(tag, props, ...children) {
     const node = document.createElement(tag);
@@ -161,6 +162,8 @@
           setMeta(r.meta);
           const { equipped, removed } = Updater.rematch(state.equipped, state.byId);
           state.equipped = equipped;
+          // 기준 세트는 저장값에서 다시 찾는다(최초 로딩 실패로 비어 있던 기준도 갱신 데이터로 복원).
+          loadBaseline();
           renderSlots();
           renderHistory();
           if ($('#picker').open) renderPicker();
@@ -193,37 +196,39 @@
     }
   }
 
+  // 슬롯 카드 한 장(장비 슬롯·기준 세트 공용). onClear는 아이템이 있을 때만 "비우기" 버튼으로.
+  function slotCard(slot, item, onPick, onClear) {
+    const card = el('div', { className: 'slot' + (item ? ' filled' : '') }, el('div', { className: 'label', textContent: slot }));
+    if (item) {
+      card.append(
+        itemImage(item),
+        el('div', { className: 'grade-' + item.grade, textContent: item.name }, patchBadge(item)),
+        el('div', { className: 'muted', textContent: `${item.grade} · 가격 ${fmt(item.price)}` }),
+      );
+    } else {
+      card.append(el('div', { className: 'muted', textContent: '비어 있음' }));
+    }
+    const pick = el('button', { type: 'button', textContent: item ? '변경' : '선택', disabled: !state.items.length });
+    pick.onclick = onPick;
+    const actions = el('div', { className: 'actions' }, pick);
+    if (item) {
+      const clear = el('button', { type: 'button', textContent: '비우기' });
+      clear.onclick = onClear;
+      actions.append(clear);
+    }
+    card.append(actions);
+    return card;
+  }
+
   function renderSlots() {
     hideResult();
     const box = $('#slots');
-    box.replaceChildren();
-    for (const slot of Formula.SLOTS) {
-      const item = state.equipped[slot];
-      const card = el('div', { className: 'slot' + (item ? ' filled' : '') }, el('div', { className: 'label', textContent: slot }));
-      if (item) {
-        card.append(
-          itemImage(item),
-          el('div', { className: 'grade-' + item.grade, textContent: item.name }, patchBadge(item)),
-          el('div', { className: 'muted', textContent: `${item.grade} · 가격 ${fmt(item.price)}` }),
-        );
-      } else {
-        card.append(el('div', { className: 'muted', textContent: '비어 있음' }));
-      }
-      const pick = el('button', { type: 'button', textContent: item ? '변경' : '선택', disabled: !state.items.length });
-      pick.onclick = () => openPicker(slot);
-      const actions = el('div', { className: 'actions' }, pick);
-      if (item) {
-        const clear = el('button', { type: 'button', textContent: '비우기' });
-        clear.onclick = () => {
-          delete state.equipped[slot];
-          renderSlots();
-          if (slot === '무기') applyAuto('amp');
-        };
-        actions.append(clear);
-      }
-      card.append(actions);
-      box.append(card);
-    }
+    box.replaceChildren(...Formula.SLOTS.map((slot) => slotCard(slot, state.equipped[slot], () => openPicker(slot, 'equipped'), () => {
+      delete state.equipped[slot];
+      renderSlots();
+      if (slot === '무기') applyAuto('amp');
+    })));
+    renderBaseline();
     const filled = Formula.SLOTS.filter((s) => state.equipped[s]).length;
     const all = filled === Formula.SLOTS.length;
     $('#slot-status').textContent = all ? '모든 슬롯이 채워졌습니다.' : `${filled}/${Formula.SLOTS.length} 슬롯 채워짐 — 모든 슬롯을 채워야 계산할 수 있습니다.`;
@@ -232,10 +237,52 @@
     renderAutoNotes();
   }
 
+  // ---------- 데미지 효율 계산 기준(기준 세트) ----------
+  // 기준 세트가 바뀌면 이전 결과와 맞지 않으므로 숨기고 localStorage에 저장한다.
+  function saveBaseline() {
+    state.baselineMissing = []; // 사용자가 기준을 바꾸면 화면의 기준이 저장값이 된다.
+    try {
+      Baseline.save(localStorage, VARIANT, state.baseline, Formula.SLOTS);
+    } catch (err) {
+      alert('기준 세트를 저장하지 못했습니다: ' + err.message);
+    }
+  }
+
+  // 저장된 기준 세트를 현재 데이터로 찾는다. 데이터에 없는 아이템은 비워 두고 표시하되,
+  // 저장값은 사용자가 기준을 바꿀 때까지 유지한다(데이터가 다시 그 아이템을 갖게 되면 복원).
+  function loadBaseline() {
+    let saved = {};
+    try {
+      saved = Baseline.load(localStorage, VARIANT, Formula.SLOTS);
+    } catch { /* 저장소 접근 불가: 빈 기준 */ }
+    const { set, missing } = Baseline.resolve(saved, state.byId, Formula.SLOTS);
+    state.baseline = set;
+    state.baselineMissing = missing;
+  }
+
+  function renderBaseline() {
+    hideResult();
+    $('#baseline-slots').replaceChildren(...Formula.SLOTS.map((slot) => slotCard(slot, state.baseline[slot], () => openPicker(slot, 'baseline'), () => {
+      delete state.baseline[slot];
+      saveBaseline();
+      renderBaseline();
+    })));
+    const filled = Formula.SLOTS.filter((s) => state.baseline[s]).length;
+    const missing = state.baselineMissing || [];
+    // 데이터에 없어 비워 둔 저장 기준도 지울 수 있어야 한다.
+    $('#baseline-clear').disabled = !filled && !missing.length;
+    $('#baseline-status').textContent = (filled === Formula.SLOTS.length
+      ? '효율 % = 현재 세트 가격당 데미지 ÷ 기준 세트 가격당 데미지 × 100'
+      : `기준 ${filled}/${Formula.SLOTS.length} 슬롯 — 5칸을 모두 채우기 전에는 히스토리 최고 대비로 계산합니다.`) +
+      (missing.length ? ` (현재 데이터에 없는 저장 기준: ${missing.join(', ')})` : '');
+  }
+
   // ---------- 아이템 선택 창 ----------
-  function openPicker(slot) {
+  // target: 'equipped'(장비 슬롯) 또는 'baseline'(기준 세트).
+  function openPicker(slot, target) {
     state.pickerSlot = slot;
-    $('#picker-title').textContent = `${slot} 아이템 선택`;
+    state.pickerTarget = target;
+    $('#picker-title').textContent = `${target === 'baseline' ? '기준 세트 · ' : ''}${slot} 아이템 선택`;
     $('#picker-search').value = '';
     $('#picker-grade').value = '';
     renderPicker();
@@ -259,8 +306,14 @@
           el('div', { className: 'muted', textContent: `가격 ${fmt(it.price)}${it.priceSource ? ' — ' + it.priceSource : ''}` }),
           el('div', { className: 'stats', textContent: statsText(it) })));
       li.onclick = () => {
-        state.equipped[state.pickerSlot] = it;
         $('#picker').close();
+        if (state.pickerTarget === 'baseline') {
+          state.baseline[state.pickerSlot] = it;
+          saveBaseline();
+          renderBaseline();
+          return;
+        }
+        state.equipped[state.pickerSlot] = it;
         renderSlots();
         if (state.pickerSlot === '무기') applyAuto('amp');
       };
@@ -410,30 +463,61 @@
     const items = Formula.SLOTS.map((s) => state.equipped[s]);
     if (items.some((it) => !it)) return;
     const result = Formula.calculate(items, inputs);
-    const entry = History.makeEntry({ equipped: state.equipped, inputs, result });
+    // 기준 세트가 5칸 다 차 있으면 같은 입력값으로 기준 세트도 계산해 그 대비로 효율 %를 낸다.
+    const baseItems = Baseline.isComplete(state.baseline, Formula.SLOTS) ? Formula.SLOTS.map((s) => state.baseline[s]) : null;
+    const baseResult = baseItems ? Formula.calculate(baseItems, inputs) : null;
+    // 히스토리 최고 대비(폴백)는 이번 기록까지 포함한 최고치 기준.
+    const best = History.bestRatio(History.add(state.history, { formulaVersion: History.FORMULA_VERSION, result }));
+    const eff = Baseline.efficiency(result, baseResult, best);
+    const entry = History.makeEntry({ equipped: state.equipped, inputs, result, efficiency: eff,
+      baseline: Baseline.snapshot(state.baseline, Formula.SLOTS) });
     state.history = History.add(state.history, entry);
     saveHistory();
-    renderResult(result, items, inputs);
+    renderResult(result, items, inputs, eff, baseItems, baseResult);
     renderHistory();
   }
 
-  function renderResult(r, items, inputs) {
-    const best = History.bestRatio(state.history);
-    const pct = Formula.efficiencyPercent(r.ratio, best);
+  const pctText = (p) => (p == null ? '—' : fmt(p, 1) + '%');
+
+  function renderResult(r, items, inputs, eff, baseItems, baseResult) {
     const box = $('#result');
-    // D·효율 % 아래에 실제 숫자를 대입한 계산 과정을 식 한 줄씩 표시한다.
-    box.replaceChildren(
+    const nodes = [
       el('div', { className: 'big', textContent: `데미지 총량 = ${fmt(r.D)}` }),
-      el('div', { className: 'big', textContent: `데미지 효율 = ${pct == null ? '—' : fmt(pct, 1) + '%'}` }),
-      el('pre', { className: 'steps', textContent: explainLines(items, inputs, r, best).join('\n') }));
+      el('div', { className: 'big', textContent: `데미지 효율 = ${pctText(eff.pct)}` }),
+    ];
+    if (baseResult) {
+      // 비교 표: 행 = 기준 / 현재 / 차이, 열 = 가격 합 · 데미지 총량 · 가격당 데미지.
+      const signed = (v, d) => (v == null ? '—' : (v > 0 ? '+' : '') + fmt(v, d));
+      const rows = Baseline.compareRows(r, baseResult).map((row) => {
+        const diff = row.label === '차이';
+        const f = diff ? signed : (v, d) => (v == null ? '—' : fmt(v, d));
+        return el('tr', null, el('th', { textContent: row.label }),
+          el('td', { textContent: f(row.price) }), el('td', { textContent: f(row.D) }), el('td', { textContent: f(row.ratio, 4) }));
+      });
+      nodes.push(el('table', { className: 'compare' },
+        el('thead', null, el('tr', null, ...['', '가격 합', '데미지 총량', '가격당 데미지'].map((t) => el('th', { textContent: t })))),
+        el('tbody', null, ...rows)));
+      if (!(baseResult.price > 0)) nodes.push(el('div', { className: 'muted', textContent: '기준 세트 가격 합이 0이라 효율을 계산하지 않습니다.' }));
+    } else {
+      nodes.push(el('div', { className: 'muted', textContent: '기준 세트가 5칸 다 차 있지 않아 히스토리 최고 대비로 계산했습니다.' }));
+    }
+    // 실제 숫자를 대입한 계산 과정을 식 한 줄씩 표시한다.
+    const refLabel = eff.mode === 'baseline' ? '기준 세트' : '최고';
+    nodes.push(el('pre', { className: 'steps', textContent: explainLines(items, inputs, r, eff.refRatio, refLabel).join('\n') }));
+    if (baseResult) {
+      nodes.push(el('details', { className: 'base-steps' },
+        el('summary', { textContent: `기준 세트 계산 과정 (D = ${fmt(baseResult.D)})` }),
+        el('pre', { className: 'steps', textContent: explainLines(baseItems, inputs, baseResult, null).join('\n') })));
+    }
+    box.replaceChildren(...nodes);
     box.hidden = false;
   }
 
   // ---------- 히스토리 ----------
   // 슬롯 순서대로 아이콘 5개. 아이콘은 기록의 id로 현재 데이터에서 찾고,
   // 데이터에 없거나 이미지 로드가 실패하면 빈 자리 + 이름을 보인다.
-  function historyIcons(entry) {
-    const row = el('div', { className: 'hist-icons' });
+  function historyIcons(entry, extraClass = '') {
+    const row = el('div', { className: 'hist-icons' + extraClass });
     for (const s of History.slotItems(entry, Formula.SLOTS, state.byId)) {
       const box = el('div', { className: 'hist-icon' });
       if (s.imageUrl) {
@@ -457,7 +541,14 @@
     }
     for (const e of History.sorted(state.history, state.historySort)) {
       const current = History.isCurrent(e);
-      const pct = current ? Formula.efficiencyPercent(e.result.ratio, best) : null;
+      const pct = History.entryPercent(e, best);
+      const refText = e.efficiencyMode === 'baseline' ? ' (기준 세트 대비)' : e.efficiencyMode === 'history' ? ' (당시 최고 대비)' : '';
+      const hasBase = e.baselineIds && Object.keys(e.baselineIds).length;
+      // 기준 세트 아이콘(작게): 이 기록이 어떤 기준 세트 대비였는지.
+      const baseRow = hasBase
+        ? el('div', { className: 'hist-base' }, el('span', { className: 'muted small', textContent: '기준' }),
+          historyIcons({ itemIds: e.baselineIds, itemNames: e.baselineNames }, ' small'))
+        : null;
       const del = el('button', { type: 'button', className: 'del', textContent: '×', title: '이 기록 삭제' });
       del.onclick = (ev) => {
         ev.stopPropagation();
@@ -469,7 +560,8 @@
       const li = el('li', { title: '클릭하면 이 구성을 불러옵니다' },
         el('div', { className: 'muted', textContent: new Date(e.time).toLocaleString('ko-KR') }),
         historyIcons(e),
-        el('div', { textContent: `데미지 ${fmt(e.result.D)} · 가격 ${fmt(e.result.price)} · 효율 ${current ? (pct == null ? '—' : fmt(pct, 1) + '%') : '— (이전 계산식 기록, 효율 비교 제외)'}` }),
+        baseRow,
+        el('div', { textContent: `데미지 ${fmt(e.result.D)} · 가격 ${fmt(e.result.price)} · 효율 ${current ? pctText(pct) + refText : '— (이전 계산식 기록, 효율 비교 제외)'}` }),
         del);
       li.onclick = () => restore(e);
       list.append(li);
@@ -485,6 +577,15 @@
       const item = id != null ? state.byId.get(String(id)) : null;
       if (item) state.equipped[slot] = item;
       else missing.push(`${slot}(${(entry.itemNames && entry.itemNames[slot]) || id})`);
+    }
+    // 기준 세트를 저장한 기록이면 그 기준 세트도 복원(저장 전 기록은 현재 기준 유지).
+    if (entry.baselineIds && typeof entry.baselineIds === 'object') {
+      const saved = {};
+      for (const [slot, id] of Object.entries(entry.baselineIds)) saved[slot] = { id, name: (entry.baselineNames || {})[slot] };
+      const { set, missing: baseMissing } = Baseline.resolve(saved, state.byId, Formula.SLOTS);
+      state.baseline = set;
+      saveBaseline();
+      missing.push(...baseMissing.map((s) => '기준 ' + s));
     }
     writeInputs(entry.inputs);
     renderSlots();
@@ -516,6 +617,11 @@
       hideResult();
       renderHistory();
     };
+    $('#baseline-clear').onclick = () => {
+      state.baseline = {};
+      saveBaseline();
+      renderBaseline();
+    };
     renderInputs();
     $('#inputs').addEventListener('input', (ev) => {
       const which = V2 && { 'in-character': 'both', 'in-level': 'atk', 'in-masteryLevel': 'amp' }[ev.target.id];
@@ -532,6 +638,7 @@
     setMeta(meta);
     // 최초 로딩이 끝난 뒤에 버튼을 연다(늦게 끝난 최초 로딩이 갱신 데이터를 덮어쓰지 않도록).
     setupUpdater();
+    loadBaseline();
     // 데이터 로딩 뒤에 히스토리를 보여 줘야 클릭 복원 시 아이템을 찾을 수 있다.
     state.history = History.load(localStorage);
     renderHistory();

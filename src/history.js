@@ -55,7 +55,18 @@
     return best;
   }
 
-  // 보기 정렬: 'recent' = 시각 내림차순, 'efficiency' = D÷가격 내림차순(비율 없음은 뒤, 같으면 최근 먼저).
+  // 기록의 효율 %: 계산 때 저장한 값(기준 세트 대비 또는 당시 히스토리 최고 대비).
+  // 효율 %를 저장하지 않던 예전 기록은 현재 기록 중 최고 비율(best) 대비로 계산. 이전 계산식 기록은 null.
+  function entryPercent(e, best) {
+    if (!e || !isCurrent(e)) return null;
+    if (Object.prototype.hasOwnProperty.call(e, 'efficiencyPct')) {
+      return typeof e.efficiencyPct === 'number' && Number.isFinite(e.efficiencyPct) ? e.efficiencyPct : null;
+    }
+    const r = comparableRatio(e);
+    return r == null || !best ? null : (r / best) * 100;
+  }
+
+  // 보기 정렬: 'recent' = 시각 내림차순, 'efficiency' = 효율 % 내림차순(없음은 뒤, 같으면 최근 먼저).
   const SORT_MODES = ['recent', 'efficiency'];
 
   function sorted(list, mode) {
@@ -63,23 +74,26 @@
       const t = Date.parse(e.time);
       return Number.isFinite(t) ? t : -Infinity;
     };
-    const ratio = (e) => {
-      const r = comparableRatio(e);
-      return r == null ? -Infinity : r;
+    const best = bestRatio(list);
+    const pct = (e) => {
+      const p = entryPercent(e, best);
+      return p == null ? -Infinity : p;
     };
     const byTime = (a, b) => time(b) - time(a);
-    const cmp = mode === 'efficiency' ? (a, b) => (ratio(b) - ratio(a)) || byTime(a, b) : byTime;
+    const cmp = mode === 'efficiency' ? (a, b) => (pct(b) - pct(a)) || byTime(a, b) : byTime;
     return [...list].sort((a, b) => cmp(a, b) || 0);
   }
 
-  function makeEntry({ equipped, inputs, result, now = new Date() }) {
+  // baseline: 계산 때의 기준 세트 { ids, names }(채워진 슬롯만, 없으면 생략),
+  // efficiency: { pct, mode: 'baseline' | 'history' } — 저장된 효율 %가 표시·정렬에 쓰인다.
+  function makeEntry({ equipped, inputs, result, baseline, efficiency, now = new Date() }) {
     const itemIds = {};
     const itemNames = {};
     for (const [slot, item] of Object.entries(equipped)) {
       itemIds[slot] = item.id;
       itemNames[slot] = item.name;
     }
-    return {
+    const entry = {
       id: `${now.getTime()}-${Math.random().toString(36).slice(2, 8)}`,
       time: now.toISOString(),
       formulaVersion: FORMULA_VERSION,
@@ -88,6 +102,15 @@
       inputs: { ...inputs },
       result: resultFields(result),
     };
+    if (baseline) {
+      entry.baselineIds = { ...baseline.ids };
+      entry.baselineNames = { ...baseline.names };
+    }
+    if (efficiency) {
+      entry.efficiencyPct = typeof efficiency.pct === 'number' && Number.isFinite(efficiency.pct) ? efficiency.pct : null;
+      entry.efficiencyMode = efficiency.mode;
+    }
+    return entry;
   }
 
   // 결과의 숫자 항(D·price·각 항)과 null 비율만 저장한다(stats·choice 제외).
@@ -114,7 +137,7 @@
     });
   }
 
-  return { STORAGE_KEY, MAX_ENTRIES, FORMULA_VERSION, SORT_MODES, load, save, add, remove, isCurrent, bestRatio, sorted, makeEntry, slotItems };
+  return { STORAGE_KEY, MAX_ENTRIES, FORMULA_VERSION, SORT_MODES, load, save, add, remove, isCurrent, bestRatio, entryPercent, sorted, makeEntry, slotItems };
   }
 
   // v1 계산식 버전. 3 = S·R·공격력 계수 직접 입력, 고정 스킬 증폭은 I 항. 4 = '(택1)' 스탯 자동 결정.

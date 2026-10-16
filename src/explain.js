@@ -63,19 +63,20 @@
     ];
   }
 
-  function efficiencyLine(items, r, bestRatio) {
+  // refLabel: 비교 기준 이름(히스토리 최고 = '최고', 기준 세트 = '기준 세트').
+  function efficiencyLine(items, r, bestRatio, refLabel = '최고') {
     if (!(r.price > 0)) return '가격 합 0 — 효율 계산 제외';
     const priceText = withParts(r.price, contrib(items.map((it) => ({ name: it.name, stats: { p: it.price } })), ['p']));
     const p = Formula.efficiencyPercent(r.ratio, bestRatio);
     return `효율 = D ${num(r.D)} ÷ 가격 합 ${priceText} = ${num(r.ratio, 4)}` +
-      (p == null ? '' : ` → 최고 ${num(bestRatio, 4)} 대비 ${num(p, 1)}%`);
+      (p == null ? '' : ` → ${refLabel} ${num(bestRatio, 4)} 대비 ${num(p, 1)}%`);
   }
 
   const minNote = (raw, value, min, f) =>
     (raw < min ? `${f(raw)} → 최솟값 ${min} 적용 = ${f(value)}` : `${f(value)} (최솟값 ${min})`);
 
   // v2(formula_v2.js) 계산 과정. r: FormulaV2.calculate 결과.
-  function linesV2(items, inputs, r, bestRatio) {
+  function linesV2(items, inputs, r, bestRatio, refLabel) {
     const out = [];
     if (inputs.characterName) {
       out.push(`실험체: ${inputs.characterName} · 캐릭터 레벨 ${num(inputs.level)} · 숙련도 레벨 ${num(inputs.masteryLevel)}`);
@@ -100,12 +101,12 @@
     const rawD = r.B * r.M * r.K;
     out.push(`D = ${num(r.B)} × ${rate(r.M)} × ${rate(r.K)} = ` +
       (rawD < Formula.MIN_DAMAGE ? `${num(rawD)} → 최솟값 ${Formula.MIN_DAMAGE} 적용 = ${num(r.D)}` : num(r.D)));
-    out.push(efficiencyLine(items, r, bestRatio));
+    out.push(efficiencyLine(items, r, bestRatio, refLabel));
     return out;
   }
 
   // items: 장착 아이템 5개, inputs: 입력값, r: Formula.calculate 결과, bestRatio: 효율 100% 기준(D/가격).
-  function lines(items, inputs, r, bestRatio) {
+  function lines(items, inputs, r, bestRatio, refLabel) {
     const out = choiceLine(items, r);
     out.push(sumLine('공격력', items, inputs.level, K.atk, K.atkPerLevel, K.choiceAtk, r.choice === 'atk', r.stats.atk));
     out.push(`S = ${num(inputs.skillDamage)} + ${num(r.stats.atk)} × ${num(inputs.atkCoefPct)}% = ${num(r.S)}`);
@@ -122,7 +123,7 @@
     const rawD = (r.B * r.A + r.I) * r.F;
     out.push(`D = (${num(r.B)} × ${rate(r.A)} + ${num(r.I)}) × ${rate(r.F)} = ` +
       (rawD < Formula.MIN_DAMAGE ? `${num(rawD)} → 최솟값 ${Formula.MIN_DAMAGE} 적용 = ${num(r.D)}` : num(r.D)));
-    out.push(efficiencyLine(items, r, bestRatio));
+    out.push(efficiencyLine(items, r, bestRatio, refLabel));
     return out;
   }
 

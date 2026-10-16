@@ -30,6 +30,20 @@ button.primary { background: var(--accent); border-color: var(--accent); font-si
 input, select { background: #12151a; color: var(--text); border: 1px solid var(--line); border-radius: 4px; padding: 4px 6px; }
 .result { margin-top: 12px; padding: 12px; border: 1px solid var(--accent); border-radius: 6px; }
 .result .big { font-size: 22px; font-weight: bold; }
+.slots.compact .slot { min-height: 84px; font-size: 12px; padding: 4px 2px; }
+.slots.compact .slot img { width: 44px; height: 28px; }
+#baseline-status { margin: 4px 0 10px; }
+.compare { margin-top: 8px; border-collapse: collapse; font-size: 13px; }
+.compare th, .compare td { border: 1px solid var(--line); padding: 3px 10px; text-align: right; }
+.compare th:first-child { text-align: left; }
+.base-steps { margin-top: 8px; font-size: 13px; }
+.base-steps summary { cursor: pointer; }
+.hist-base { display: flex; align-items: center; gap: 6px; }
+.hist-icons.small { margin: 2px 0; }
+.hist-icons.small .hist-item { width: 40px; }
+.hist-icons.small .hist-icon { width: 26px; height: 26px; }
+.hist-icons.small .hist-name { display: none; }
+.small { font-size: 11px; }
 .result .steps { margin: 10px 0 0; font-family: inherit; font-size: 13px; line-height: 1.6; white-space: pre-wrap; color: var(--text); }
 .history-head { display: flex; justify-content: space-between; align-items: center; }
 .tabs { display: flex; gap: 6px; }

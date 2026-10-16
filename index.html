@@ -29,6 +29,13 @@
       <h2>입력값</h2>
       <form id="inputs" class="inputs" onsubmit="return false"></form>
 
+      <div class="history-head">
+        <h2>데미지 효율 계산 기준</h2>
+        <button id="baseline-clear" type="button" disabled>기준 비우기</button>
+      </div>
+      <div id="baseline-slots" class="slots compact"></div>
+      <p id="baseline-status" class="muted"></p>
+
       <button id="calc-btn" class="primary" type="button" disabled>계산</button>
       <div id="result" class="result" hidden></div>
     </section>
@@ -42,7 +49,7 @@
         <button type="button" data-sort="recent" aria-pressed="true">최근순</button>
         <button type="button" data-sort="efficiency" aria-pressed="false">최고 효율순</button>
       </div>
-      <p class="muted">기록을 클릭하면 그 아이템 구성과 입력값을 다시 불러옵니다. 효율 %는 현재 기록 중 최고치 대비입니다.</p>
+      <p class="muted">기록을 클릭하면 그 아이템 구성과 입력값을 다시 불러옵니다. 효율 %는 계산 당시 기준 세트 대비입니다(기준 세트가 비어 있었으면 당시 기록 중 최고치 대비).</p>
       <ol id="history" class="history"></ol>
     </section>
   </main>
@@ -75,6 +82,7 @@
   <script src="src/formula_v2.js"></script>
   <script src="src/characters.js"></script>
   <script src="src/history.js"></script>
+  <script src="src/baseline.js"></script>
   <script src="src/explain.js"></script>
   <script src="src/updater.js"></script>
   <script src="src/meta.js"></script>
