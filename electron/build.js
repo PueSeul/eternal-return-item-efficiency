@@ -9,14 +9,23 @@ const builder = require('electron-builder');
 
 const ROOT = path.join(__dirname, '..');
 const DIST = path.join(ROOT, 'dist');
+// npm run build:exe:v2 (= --v2) 또는 환경변수 ER_FORMULA=v2 → v2 계산식용 별도 exe.
+const V2 = process.argv.includes('--v2') || process.env.ER_FORMULA === 'v2';
 
 async function main() {
   const out = fs.mkdtempSync(path.join(os.tmpdir(), 'er-build-'));
+  const config = { directories: { output: out } };
+  if (V2) {
+    // 이름·appId 분리, 패키지 package.json 에 erFormula 를 넣어 main.js 가 v2 로 동작하게 한다.
+    config.appId = 'local.er-damage-efficiency-v2';
+    config.productName = 'ER-Damage-Calculator-v2';
+    config.extraMetadata = { erFormula: 'v2' };
+  }
   try {
     const artifacts = await builder.build({
       projectDir: ROOT,
       targets: builder.Platform.WINDOWS.createTarget('portable'),
-      config: { directories: { output: out } },
+      config,
     });
     const exes = artifacts.filter((f) => f.toLowerCase().endsWith('.exe'));
     if (exes.length !== 1) throw new Error('portable exe를 찾지 못했습니다: ' + artifacts.join(', '));

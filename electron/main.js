@@ -31,8 +31,12 @@ async function handleUpdateItems(event) {
   return updating;
 }
 
-// 개발 실행(npm run app)과 exe가 같은 히스토리를 쓰도록 저장 위치 고정.
-app.setPath('userData', path.join(app.getPath('appData'), 'er-damage-efficiency'));
+// 계산식 버전: v2 exe는 빌드 때 패키지 package.json 에 erFormula:"v2" 가 들어간다(electron/build.js --v2).
+// 개발 실행은 환경변수 ER_FORMULA=v2 로 고를 수 있다. 'v2' 외의 값은 기본(v1, 주입 없음).
+const FORMULA = (app.isPackaged ? require('../package.json').erFormula : process.env.ER_FORMULA) === 'v2' ? 'v2' : null;
+
+// 개발 실행(npm run app)과 exe가 같은 히스토리를 쓰도록 저장 위치 고정. v2는 별도 폴더(히스토리 분리).
+app.setPath('userData', path.join(app.getPath('appData'), FORMULA ? 'er-damage-efficiency-v2' : 'er-damage-efficiency'));
 
 protocol.registerSchemesAsPrivileged([
   { scheme: SCHEME, privileges: { standard: true, secure: true, supportFetchAPI: true } },
@@ -62,8 +66,18 @@ function createWindow() {
       nodeIntegration: false,
       sandbox: true,
       preload: path.join(__dirname, 'preload.js'),
+      // preload.js 가 이 인자를 보고 window.ER_FORMULA 를 주입한다.
+      additionalArguments: FORMULA ? [`--er-formula=${FORMULA}`] : [],
     },
   });
+  // v2 창 제목에는 v2 를 붙인다(페이지 <title> 이 창 제목을 덮어쓰므로 여기서 가로챈다).
+  if (FORMULA) {
+    win.webContents.on('page-title-updated', (event, title) => {
+      if (/\bv2\b/i.test(title)) return;
+      event.preventDefault();
+      win.setTitle(`${title} v2`);
+    });
+  }
   // 외부 링크는 기본 브라우저로, 앱 창은 app:// 밖으로 이동하지 않는다.
   win.webContents.setWindowOpenHandler(({ url }) => {
     if (/^https?:\/\//.test(url)) shell.openExternal(url);
@@ -103,10 +117,17 @@ function smokeTest(win, outFile) {
           itemCount: document.querySelectorAll('#slots select option, #slots button').length,
           slotButtons: document.querySelectorAll('#slots button').length,
           localStorageKeys: Object.keys(localStorage),
+          formula: window.ER_FORMULA === undefined ? null : window.ER_FORMULA,
+          hasSkillAmpInput: document.body.innerText.includes('스킬 증폭 계수'),
         })`);
+        result.windowTitle = win.getTitle();
         result.externalRoot = EXTERNAL_ROOT;
         result.userData = app.getPath('userData');
-        result.ok = result.bannerHidden && result.slotButtons > 0;
+        // 빌드 버전 확인: v2는 주입·창 제목·v2 입력란(스킬 증폭 계수), v1은 주입 없음.
+        const formulaOk = FORMULA
+          ? result.formula === 'v2' && /\bv2\b/.test(result.windowTitle) && result.hasSkillAmpInput
+          : result.formula === null;
+        result.ok = result.bannerHidden && result.slotButtons > 0 && formulaOk;
         if (updateSelector) {
           result.update = await smokeClickUpdate(win, updateSelector);
           result.ok = result.ok && result.update.ok;

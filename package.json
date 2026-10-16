@@ -8,7 +8,8 @@
     "start": "node server.js",
     "test": "node --test",
     "app": "electron .",
-    "build:exe": "node electron/build.js"
+    "build:exe": "node electron/build.js",
+    "build:exe:v2": "node electron/build.js --v2"
   },
   "build": {
     "appId": "local.er-damage-efficiency",

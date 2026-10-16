@@ -25,6 +25,15 @@ Node.js 없이 더블클릭으로 쓰려면 exe를 만듭니다. 빌드하는 PC
 npm run build:exe
 ```
 
+v2 계산식용 별도 exe(`dist/ER-Damage-Calculator-v2-1.0.0-portable.exe`, 창 제목에 v2):
+
+```
+npm run build:exe:v2
+```
+
+v2 exe는 히스토리를 따로 저장하고(`%APPDATA%\er-damage-efficiency-v2`), exe 옆 `data/items.json` 우선 읽기와
+"아이템 수치 업데이트" 버튼은 v1과 같습니다. 개발 창에서 v2를 보려면 환경변수 `ER_FORMULA=v2`를 주고 `npm run app`.
+
 - 결과물: `dist/ER-Damage-Calculator-1.0.0-portable.exe` (설치 없이 더블클릭으로 실행되는 단일 파일, 약 100MB)
 - 개발 중 창으로 바로 띄워 보기: `npm run app`
 - 첫 실행은 압축을 푸느라 몇 초 걸릴 수 있습니다. 서명되지 않은 exe라 Windows SmartScreen 경고가 뜨면 "추가 정보 → 실행"을 누르세요.
