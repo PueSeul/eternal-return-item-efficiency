@@ -39,5 +39,15 @@
     return out;
   }
 
-  return { autoValues };
+  // 데이터를 다시 읽은 뒤 선택 중이던 실험체를 id로 다시 찾는다(id가 없으면 이름으로).
+  // 결과: { character: 찾은 실험체 또는 null, lost: 선택이 있었는데 새 데이터에 없음 }.
+  function rematch(list, id, name) {
+    const hadSelection = id != null || !!name;
+    const character = id != null
+      ? list.find((c) => String(c.id) === String(id)) || null
+      : (name ? list.find((c) => c.name === name) || null : null);
+    return { character, lost: hadSelection && !character };
+  }
+
+  return { autoValues, rematch };
 });

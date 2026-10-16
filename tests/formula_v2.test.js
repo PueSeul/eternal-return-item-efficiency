@@ -74,6 +74,15 @@ test('실험체 자동값: 공격력 성장식, 숙련도 없음 경고, 무기 
   assert.deepEqual(C.autoValues(null, '활', 20, 20), { extraAtk: null, extraSkillAmpPct: null, atkSource: '', ampSource: '', warning: '' });
 });
 
+test('실험체 재매칭: 데이터 갱신 뒤 id로 다시 찾고(이름 바뀌어도), 없어지면 lost', () => {
+  const list = [{ id: 1, name: '아르다(새 이름)' }, { id: 2, name: '쇼우' }];
+  assert.deepEqual(C.rematch(list, '1', '아르다'), { character: list[0], lost: false });
+  assert.deepEqual(C.rematch(list, '9', '아르다'), { character: null, lost: true });
+  assert.deepEqual(C.rematch(list, null, '쇼우'), { character: list[1], lost: false }); // id 모름 → 이름
+  assert.deepEqual(C.rematch(list, null, '없음'), { character: null, lost: true });
+  assert.deepEqual(C.rematch(list, null, ''), { character: null, lost: false }); // 선택 없음
+});
+
 test('v2: 공격력·방어 관통·피해 배수·스킬 피해 감소', () => {
   const items = [
     item('w', '무기', '검', 100, { '공격력': 50, '레벨 당 공격력': 2, '방어 관통율': 0.1 }),

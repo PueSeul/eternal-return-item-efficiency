@@ -164,10 +164,13 @@
           state.equipped = equipped;
           // 기준 세트는 저장값에서 다시 찾는다(최초 로딩 실패로 비어 있던 기준도 갱신 데이터로 복원).
           loadBaseline();
+          // v2: 실험체 데이터도 다시 읽고 선택 중인 실험체를 id로 다시 찾는다.
+          const lostCharacter = V2 ? await loadCharacters(true) : null;
           renderSlots();
           renderHistory();
           if ($('#picker').open) renderPicker();
-          status.textContent = r.message + (removed.length ? ` — 데이터에서 사라져 비운 슬롯: ${removed.join(', ')}` : '');
+          status.textContent = r.message + (removed.length ? ` — 데이터에서 사라져 비운 슬롯: ${removed.join(', ')}` : '') +
+            (lostCharacter ? ` — 데이터에서 사라져 비운 실험체: ${lostCharacter}` : '');
         } else {
           status.className = 'muted error';
           status.textContent = r.message;
@@ -385,7 +388,11 @@
     renderAutoNotes();
   }
 
-  async function loadCharacters() {
+  // reselect: 데이터 갱신 뒤 다시 읽을 때 true — 선택 중이던 실험체를 id로 다시 찾고, 없어졌으면 비운 뒤 그 이름을 돌려준다.
+  async function loadCharacters(reselect) {
+    const prevName = $('#in-character').value.trim();
+    const prev = selectedCharacter();
+    const prevId = prev ? String(prev.id) : (state.restoredCharacter && state.restoredCharacter.name === prevName ? state.restoredCharacter.id : null);
     try {
       const res = await fetch('data/characters.json', { cache: 'no-store' });
       if (!res.ok) throw new Error();
@@ -398,9 +405,17 @@
       state.charactersError = 'data/characters.json 없음 — 실험체 자동 입력 불가(아이템 외 입력란에 직접 입력)';
     }
     $('#character-list').replaceChildren(...state.characters.map((c) => el('option', { value: c.name })));
+    let lostName = null;
+    if (reselect) {
+      const { character, lost } = window.ERCharacters.rematch(state.characters, prevId, prevName);
+      $('#in-character').value = character ? character.name : '';
+      state.restoredCharacter = null;
+      if (lost) lostName = prevName;
+    }
     // 로딩 중에 이미 실험체 이름을 입력했으면 이제 자동값을 채운다(히스토리는 로딩 뒤에 표시되므로 복원값과 겹치지 않음).
     if (selectedCharacter()) applyAuto('both');
     else renderAutoNotes();
+    return lostName;
   }
 
   function updateSkillAmpTotal() {
