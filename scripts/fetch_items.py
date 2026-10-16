@@ -25,6 +25,7 @@ GRADES = {
 }
 GRADE_PRICE = {"일반": 1, "고급": 2, "희귀": 3, "영웅": 4, "전설": 5, "신화": 6}
 PRICE_SOURCE = "등급 기반 대체값"
+PAGE_GRADES = {"Epic", "Legend", "Mythic"}
 ARMOR_SLOTS = {"Head": "머리", "Chest": "옷", "Arm": "팔", "Leg": "다리"}
 
 UNIQUE_PREFIX = "(고유) "
@@ -83,7 +84,19 @@ def parse_stats(tooltip):
     return [s for p in parsed for s in p]
 
 
+def listed_on_page(item):
+    """Same filter the dak.gg items page applies (pages/items chunk, patch 12.6):
+    type Armor/Weapon, grade Epic/Legend/Mythic and a non-empty makeMaterials list."""
+    return (
+        item["type"] in ("Armor", "Weapon")
+        and item["grade"] in PAGE_GRADES
+        and bool(item.get("makeMaterials"))
+    )
+
+
 def slot_of(item):
+    if not listed_on_page(item):
+        return None
     if item["type"] == "Weapon":
         return "무기"
     if item["type"] == "Armor":
