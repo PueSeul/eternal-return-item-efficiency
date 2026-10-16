@@ -114,6 +114,10 @@ test("calculate: 방어 관통율·방어 관통은 적용 방어력 R'을 낮�
   const r = F.calculate([pen], { ...IN, defense: 100 });
   close(r.R, 70); // 100 × (1 − 0.2) − 10
   close(r.B, 100 * 100 / 170);
+  // 공식 피해 공식에 하한이 없으므로 관통이 방어력보다 크면 R'은 음수 그대로(B가 S보다 커짐)
+  const neg = F.calculate([pen], { ...IN, defense: 1 });
+  close(neg.R, -9.2); // 1 × 0.8 − 10
+  close(neg.B, 100 * 100 / 90.8);
 });
 
 test('calculate: 공격력은 계수(%)로 S에, 고정 스킬 증폭은 I에 들어감', () => {

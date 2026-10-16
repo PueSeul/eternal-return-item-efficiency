@@ -68,3 +68,19 @@ test('sorted: 최근순은 시각 내림차순, 최고 효율순은 비율 내�
   assert.deepEqual(H.sorted(list, 'efficiency').map((x) => x.id), ['c', 'd', 'a', 'old', 'b']);
   assert.deepEqual(list.map((x) => x.id), ['a', 'b', 'c', 'd', 'old']); // 원본은 그대로
 });
+
+test('slotItems: 기록의 id로 현재 데이터에서 아이템을 찾고, 없으면 저장된 이름으로 대체', () => {
+  const byId = new Map(items.map((it) => [String(it.id), it]));
+  const itemIds = {}; const itemNames = {};
+  for (const it of items) { itemIds[it.slot] = it.id; itemNames[it.slot] = '옛이름'; }
+  itemIds['다리'] = 'gone';
+  delete itemIds['팔']; delete itemNames['팔'];
+  const r = H.slotItems({ itemIds, itemNames }, F.SLOTS, byId);
+  assert.deepEqual(r.map((x) => x.slot), F.SLOTS);
+  const weapon = items.find((it) => it.slot === '무기');
+  assert.deepEqual(r[0], { slot: '무기', id: String(weapon.id), found: true, name: weapon.name, imageUrl: weapon.imageUrl || null });
+  const legs = r[F.SLOTS.indexOf('다리')];
+  assert.deepEqual([legs.found, legs.name, legs.imageUrl], [false, '옛이름', null]);
+  const arm = r[F.SLOTS.indexOf('팔')];
+  assert.deepEqual([arm.found, arm.name, arm.id], [false, '?', null]);
+});

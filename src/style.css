@@ -21,12 +21,9 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 button.primary { background: var(--accent); border-color: var(--accent); font-size: 16px; padding: 8px 24px; margin-top: 12px; }
 .inputs { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
 .inputs label { display: flex; flex-direction: column; font-size: 13px; gap: 2px; }
-.inputs .hint { color: var(--muted); font-size: 11px; }
 input, select { background: #12151a; color: var(--text); border: 1px solid var(--line); border-radius: 4px; padding: 4px 6px; }
 .result { margin-top: 12px; padding: 12px; border: 1px solid var(--accent); border-radius: 6px; }
 .result .big { font-size: 22px; font-weight: bold; }
-.result table { border-collapse: collapse; margin-top: 8px; font-size: 13px; }
-.result td { padding: 2px 8px; border-bottom: 1px solid var(--line); }
 .help { margin-top: 16px; font-size: 13px; }
 .history-head { display: flex; justify-content: space-between; align-items: center; }
 .tabs { display: flex; gap: 6px; }
@@ -35,6 +32,12 @@ input, select { background: #12151a; color: var(--text); border: 1px solid var(-
 .history li { border: 1px solid var(--line); border-radius: 6px; padding: 8px; cursor: pointer; font-size: 13px; position: relative; }
 .history li:hover { border-color: var(--accent); }
 .history .del { position: absolute; top: 6px; right: 6px; padding: 0 6px; }
+.hist-icons { display: flex; gap: 6px; margin: 4px 0; }
+.hist-item { width: 64px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.hist-icon { width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+.hist-icon img { max-width: 100%; max-height: 100%; }
+.hist-item.missing .hist-icon { border-style: dashed; }
+.hist-name { font-size: 11px; text-align: center; line-height: 1.2; max-width: 64px; overflow-wrap: anywhere; }
 .grade-일반 { color: #c9c9c9; } .grade-고급 { color: #6fd36f; } .grade-희귀 { color: #59a5ff; }
 .grade-영웅 { color: #c47cff; } .grade-전설 { color: #ffcc4d; } .grade-신화 { color: #ff6b6b; }
 .est { color: var(--warn); font-size: 11px; }

@@ -90,5 +90,22 @@
     };
   }
 
-  return { STORAGE_KEY, MAX_ENTRIES, FORMULA_VERSION, SORT_MODES, load, save, add, remove, isCurrent, bestRatio, sorted, makeEntry };
+  // 기록의 슬롯별 아이템을 현재 데이터(byId: Map<id 문자열, item>)에서 찾는다(표시용).
+  // 데이터에 없으면 found=false, imageUrl=null이고 이름은 기록에 저장된 이름(없으면 id)으로 대체한다.
+  function slotItems(entry, slots, byId) {
+    return slots.map((slot) => {
+      const id = entry.itemIds ? entry.itemIds[slot] : undefined;
+      const item = id != null ? byId.get(String(id)) : undefined;
+      const savedName = entry.itemNames && entry.itemNames[slot];
+      return {
+        slot,
+        id: id == null ? null : String(id),
+        found: !!item,
+        name: item ? item.name : (savedName || (id != null ? String(id) : '?')),
+        imageUrl: item && item.imageUrl ? item.imageUrl : null,
+      };
+    });
+  }
+
+  return { STORAGE_KEY, MAX_ENTRIES, FORMULA_VERSION, SORT_MODES, load, save, add, remove, isCurrent, bestRatio, sorted, makeEntry, slotItems };
 });

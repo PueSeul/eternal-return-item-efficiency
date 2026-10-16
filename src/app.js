@@ -168,13 +168,16 @@
       const input = el('input', { type: 'number', id: 'in-' + f.key, step: f.step, value: Formula.DEFAULT_INPUTS[f.key] ?? '' });
       if (f.min != null) input.min = f.min;
       if (Formula.DEFAULT_INPUTS[f.key] == null) input.placeholder = '직접 입력';
-      form.append(el('label', null, f.label, input, el('span', { className: 'hint', textContent: `${f.hint} (${defaultText(f.key)})` })));
+      form.append(el('label', null, f.label, input));
     }
     const choice = el('select', { id: 'in-choiceStat' });
     for (const o of Formula.CHOICE_OPTIONS) choice.append(el('option', { value: o.value, textContent: o.label }));
     choice.value = Formula.DEFAULT_INPUTS.choiceStat;
-    form.append(el('label', null, "'(택1)' 스탯 처리", choice,
-      el('span', { className: 'hint', textContent: '둘 중 하나를 고르는 아이템 스탯을 어느 쪽으로 계산할지' })));
+    form.append(el('label', null, "'(택1)' 스탯 처리", choice));
+    // 입력란 설명은 접힌 도움말(#input-help)에만 둔다.
+    const help = $('#input-help');
+    for (const f of INPUT_FIELDS) help.append(el('li', null, el('b', { textContent: f.label }), ` — ${f.hint} (${defaultText(f.key)})`));
+    help.append(el('li', null, el('b', { textContent: "'(택1)' 스탯 처리" }), ' — 둘 중 하나를 고르는 아이템 스탯을 어느 쪽으로 계산할지'));
   }
 
   function readInputs() {
@@ -224,27 +227,32 @@
     const best = History.bestRatio(state.history);
     const pct = Formula.efficiencyPercent(r.ratio, best);
     const box = $('#result');
-    const row = (k, v) => el('tr', null, el('td', { textContent: k }), el('td', { textContent: v }));
+    // 화면에는 D와 효율 %만 표시한다(항목별 분해 값은 result 객체에만 남김).
     box.replaceChildren(
       el('div', { className: 'big', textContent: `데미지 총량 D = ${fmt(r.D)}` }),
-      el('div', { className: 'big', textContent: `데미지 효율 = ${pct == null ? '계산 불가(가격 합 0)' : fmt(pct, 1) + '%'}` }),
-      el('div', { className: 'muted', textContent: `기준: 히스토리 전체 중 최고 (D ÷ 가격 합) = 100%. 이번 D ÷ 가격 합 = ${fmt(r.ratio, 4)} (가격 합 ${fmt(r.price)})` }),
-      el('table', null,
-        row('공격력 합 → S', fmt(r.stats.atk)),
-        row('스킬 증폭 합 → I', fmt(r.stats.skillAmp)),
-        row('스킬 증폭율 합 → A', fmt(r.stats.skillAmpRate, 4)),
-        row('최종 피해 증가율 합(아이템) → F', fmt(r.stats.itemFinalRate, 4)),
-        row('방어 관통율 / 방어 관통 합 → R\'', `${fmt(r.stats.penRate, 4)} / ${fmt(r.stats.pen)}`),
-        row('S (스킬 정의 피해량)', fmt(r.S)),
-        row("R' (적용 방어력)", fmt(r.R)),
-        row('B (기본 피해)', fmt(r.B)),
-        row('A (피해 증폭, 최소 0.1)', fmt(r.A, 4)),
-        row('I (피해 증가)', fmt(r.I)),
-        row('F (최종 피해 증폭)', fmt(r.F, 4))));
+      el('div', { className: 'big', textContent: `데미지 효율 = ${pct == null ? '계산 불가(가격 합 0)' : fmt(pct, 1) + '%'}` }));
     box.hidden = false;
   }
 
   // ---------- 히스토리 ----------
+  // 슬롯 순서대로 아이콘 5개. 아이콘은 기록의 id로 현재 데이터에서 찾고,
+  // 데이터에 없거나 이미지 로드가 실패하면 빈 자리 + 이름을 보인다.
+  function historyIcons(entry) {
+    const row = el('div', { className: 'hist-icons' });
+    for (const s of History.slotItems(entry, Formula.SLOTS, state.byId)) {
+      const box = el('div', { className: 'hist-icon' });
+      if (s.imageUrl) {
+        const img = el('img', { src: s.imageUrl, alt: '', loading: 'lazy' });
+        img.onerror = () => { img.style.visibility = 'hidden'; };
+        box.append(img);
+      }
+      const cell = el('div', { className: 'hist-item' + (s.found ? '' : ' missing'), title: `${s.slot}: ${s.name}` },
+        box, el('span', { className: 'hist-name', textContent: s.name }));
+      row.append(cell);
+    }
+    return row;
+  }
+
   function renderHistory() {
     const list = $('#history');
     list.replaceChildren();
@@ -255,7 +263,6 @@
     for (const e of History.sorted(state.history, state.historySort)) {
       const current = History.isCurrent(e);
       const pct = current ? Formula.efficiencyPercent(e.result.ratio, best) : null;
-      const names = Formula.SLOTS.map((s) => `${s}: ${(e.itemNames && e.itemNames[s]) || '?'}`).join(' / ');
       const del = el('button', { type: 'button', className: 'del', textContent: '×', title: '이 기록 삭제' });
       del.onclick = (ev) => {
         ev.stopPropagation();
@@ -266,7 +273,7 @@
       };
       const li = el('li', { title: '클릭하면 이 구성을 불러옵니다' },
         el('div', { className: 'muted', textContent: new Date(e.time).toLocaleString('ko-KR') }),
-        el('div', { textContent: names }),
+        historyIcons(e),
         el('div', { textContent: `D ${fmt(e.result.D)} · 가격 ${fmt(e.result.price)} · 효율 ${current ? (pct == null ? '-' : fmt(pct, 1) + '%') : '— (이전 계산식 기록, 효율 비교 제외)'}` }),
         del);
       li.onclick = () => restore(e);
