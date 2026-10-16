@@ -1,0 +1,12 @@
+[
+  {
+    "id": "arda",
+    "name": "아르다",
+    "imageUrl": "",
+    "attackPower": 30,
+    "attackPowerPerLevel": 3,
+    "masteries": {
+      "아르카나": { "skillAmpRatio": 0.047, "attackPowerRatio": 0, "attackSpeedRatio": 0.025 }
+    }
+  }
+]

@@ -6,11 +6,10 @@
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
 
-  const STORAGE_KEY = 'er-damage-calc-history-v1';
   const MAX_ENTRIES = 500;
-  // 계산식 버전. 3 = S·R·공격력 계수 직접 입력, 고정 스킬 증폭은 I 항. 4 = '(택1)' 스탯 자동 결정.
-  // 다른 버전 기록은 효율 비교(최고치·효율순)에서 제외한다.
-  const FORMULA_VERSION = 4;
+
+  // 계산식 변형(variant)마다 저장 키와 계산식 버전이 다른 같은 API를 만든다.
+  function build(STORAGE_KEY, FORMULA_VERSION) {
 
   function isCurrent(e) {
     return e.formulaVersion === FORMULA_VERSION;
@@ -87,8 +86,15 @@
       itemIds,
       itemNames,
       inputs: { ...inputs },
-      result: { D: result.D, price: result.price, ratio: result.ratio, S: result.S, R: result.R, B: result.B, A: result.A, I: result.I, F: result.F },
+      result: resultFields(result),
     };
+  }
+
+  // 결과의 숫자 항(D·price·각 항)과 null 비율만 저장한다(stats·choice 제외).
+  function resultFields(result) {
+    const out = {};
+    for (const [k, v] of Object.entries(result)) if (typeof v === 'number' || v === null) out[k] = v;
+    return out;
   }
 
   // 기록의 슬롯별 아이템을 현재 데이터(byId: Map<id 문자열, item>)에서 찾는다(표시용).
@@ -109,4 +115,14 @@
   }
 
   return { STORAGE_KEY, MAX_ENTRIES, FORMULA_VERSION, SORT_MODES, load, save, add, remove, isCurrent, bestRatio, sorted, makeEntry, slotItems };
+  }
+
+  // v1 계산식 버전. 3 = S·R·공격력 계수 직접 입력, 고정 스킬 증폭은 I 항. 4 = '(택1)' 스탯 자동 결정.
+  // 다른 버전 기록은 효율 비교(최고치·효율순)에서 제외한다.
+  const v1 = build('er-damage-calc-history-v1', 4);
+  // v2 계산식(formula_v2.js)은 기록을 따로 저장한다.
+  const v2 = build('er-damage-calc-history-formula-v2', 'v2-1');
+  v1.forVariant = (variant) => (variant === 'v2' ? v2 : v1);
+  v2.forVariant = v1.forVariant;
+  return v1;
 });

@@ -37,33 +37,84 @@
   }
   const sumOf = (parts) => parts.reduce((s, p) => s + p.value, 0);
 
-  // 고정 + 레벨 당 × 성장형 스탯 + 택1(적용된 쪽일 때만) 합계 줄.
-  function sumLine(label, items, level, fixedKeys, perLevelKeys, choiceKeys, applied, total) {
+  // 고정 + 레벨 당 × 성장형 스탯 + 택1(적용된 쪽일 때만) [+ 아이템 외(v2)] 합계 줄.
+  function sumLine(label, items, level, fixedKeys, perLevelKeys, choiceKeys, applied, total, extra) {
     const fixed = contrib(items, fixedKeys);
     const per = contrib(items, perLevelKeys);
     const terms = [`아이템 ${label} ${withParts(sumOf(fixed), fixed)}`];
     if (per.length) terms.push(`레벨 당 ${withParts(sumOf(per), per)}×${num(level)}`);
     const ch = contrib(items, choiceKeys);
     if (applied && ch.length) terms.push(`${label}(택1) ${withParts(sumOf(ch), ch)}`);
+    if (extra != null) terms.push(`아이템 외 ${num(extra)}`);
     return `${label} 합 = ${terms.join(' + ')} = ${num(total)}`;
+  }
+
+  function choiceLine(items, r) {
+    const anyChoice = contrib(items, [...K.choiceAtk, ...K.choiceSkillAmp]).length > 0;
+    return anyChoice
+      ? [`택1 적용: ${r.choice === 'atk' ? '공격력(택1)' : '스킬 증폭(택1)'} (무기 제외 부위의 공격력/스킬 증폭 보유 수 비교)`]
+      : [];
+  }
+
+  function penLines(items, inputs, r) {
+    return [
+      `R' = ${num(inputs.defense)} × (1 − ${withParts(r.stats.penRate, contrib(items, K.penRate), pct)}) − ` +
+        `${withParts(r.stats.pen, contrib(items, K.pen))} = ${num(r.R)}`,
+    ];
+  }
+
+  function efficiencyLine(items, r, bestRatio) {
+    if (!(r.price > 0)) return '가격 합 0 — 효율 계산 제외';
+    const priceText = withParts(r.price, contrib(items.map((it) => ({ name: it.name, stats: { p: it.price } })), ['p']));
+    const p = Formula.efficiencyPercent(r.ratio, bestRatio);
+    return `효율 = D ${num(r.D)} ÷ 가격 합 ${priceText} = ${num(r.ratio, 4)}` +
+      (p == null ? '' : ` → 최고 ${num(bestRatio, 4)} 대비 ${num(p, 1)}%`);
+  }
+
+  const minNote = (raw, value, min, f) =>
+    (raw < min ? `${f(raw)} → 최솟값 ${min} 적용 = ${f(value)}` : `${f(value)} (최솟값 ${min})`);
+
+  // v2(formula_v2.js) 계산 과정. r: FormulaV2.calculate 결과.
+  function linesV2(items, inputs, r, bestRatio) {
+    const out = [];
+    if (inputs.characterName) {
+      out.push(`실험체: ${inputs.characterName} · 캐릭터 레벨 ${num(inputs.level)} · 숙련도 레벨 ${num(inputs.masteryLevel)}`);
+    }
+    out.push(...choiceLine(items, r));
+    out.push(sumLine('공격력', items, inputs.level, K.atk, K.atkPerLevel, K.choiceAtk, r.choice === 'atk', r.stats.atk, inputs.extraAtk));
+    out.push(sumLine('스킬 증폭', items, inputs.level, K.skillAmp, K.skillAmpPerLevel, K.choiceSkillAmp, r.choice === 'skillAmp',
+      r.stats.skillAmpFlat, inputs.extraSkillAmp));
+    const extraPct = inputs.extraSkillAmpPct / 100;
+    out.push(`SA = ${num(r.stats.skillAmpFlat)} × (1 + ${withParts(r.stats.itemSkillAmpRate, contrib(items, K.skillAmpRate), rate)} + ` +
+      `아이템 외 ${rate(extraPct)}) = ${num(r.stats.skillAmpFlat)} × ` +
+      `${minNote(1 + r.stats.skillAmpRate, r.stats.skillAmpMult, Formula.MIN_AMP, rate)} = ${num(r.SA)}`);
+    out.push(`S = ${num(inputs.skillDamage)} + ${num(r.stats.atk)} × ${num(inputs.atkCoefPct)}% + ` +
+      `SA ${num(r.SA)} × ${num(inputs.skillAmpCoefPct)}% = ${num(r.S)}`);
+    out.push(...penLines(items, inputs, r));
+    out.push(`B = ${num(r.S)} × 100 / (100 + ${num(r.R)}) = ${num(r.B)}`);
+    const rawM = 1 + r.stats.itemFinalRate + inputs.extraDamageIncreasePct / 100 - inputs.enemyDamageReductionPct / 100;
+    out.push(`피해 배수 = 1 + ${withParts(r.stats.itemFinalRate, contrib(items, K.finalRate), rate)} + ` +
+      `${rate(inputs.extraDamageIncreasePct / 100)} − ${rate(inputs.enemyDamageReductionPct / 100)} = ` +
+      minNote(rawM, r.M, Formula.MIN_AMP, rate));
+    out.push(`스킬 피해 감소 배수 = 1 − ${rate(inputs.enemySkillReductionPct / 100)} = ${rate(r.K)}`);
+    const rawD = r.B * r.M * r.K;
+    out.push(`D = ${num(r.B)} × ${rate(r.M)} × ${rate(r.K)} = ` +
+      (rawD < Formula.MIN_DAMAGE ? `${num(rawD)} → 최솟값 ${Formula.MIN_DAMAGE} 적용 = ${num(r.D)}` : num(r.D)));
+    out.push(efficiencyLine(items, r, bestRatio));
+    return out;
   }
 
   // items: 장착 아이템 5개, inputs: 입력값, r: Formula.calculate 결과, bestRatio: 효율 100% 기준(D/가격).
   function lines(items, inputs, r, bestRatio) {
-    const out = [];
-    const anyChoice = contrib(items, [...K.choiceAtk, ...K.choiceSkillAmp]).length > 0;
-    if (anyChoice) {
-      out.push(`택1 적용: ${r.choice === 'atk' ? '공격력(택1)' : '스킬 증폭(택1)'} (무기 제외 부위의 공격력/스킬 증폭 보유 수 비교)`);
-    }
+    const out = choiceLine(items, r);
     out.push(sumLine('공격력', items, inputs.level, K.atk, K.atkPerLevel, K.choiceAtk, r.choice === 'atk', r.stats.atk));
     out.push(`S = ${num(inputs.skillDamage)} + ${num(r.stats.atk)} × ${num(inputs.atkCoefPct)}% = ${num(r.S)}`);
-    out.push(`R' = ${num(inputs.defense)} × (1 − ${withParts(r.stats.penRate, contrib(items, K.penRate), pct)}) − ` +
-      `${withParts(r.stats.pen, contrib(items, K.pen))} = ${num(r.R)}`);
+    out.push(...penLines(items, inputs, r));
     out.push(`B = ${num(r.S)} × 100 / (${num(r.R)} + 100) = ${num(r.B)}`);
     const enemyRate = inputs.enemySkillReductionPct / 100;
     const rawA = 1 + r.stats.skillAmpRate - enemyRate;
     out.push(`A = 1 + ${withParts(r.stats.skillAmpRate, contrib(items, K.skillAmpRate), rate)} − ${rate(enemyRate)} = ` +
-      (rawA < Formula.MIN_AMP ? `${rate(rawA)} → 최솟값 ${Formula.MIN_AMP} 적용 = ${rate(r.A)}` : `${rate(r.A)} (최솟값 ${Formula.MIN_AMP})`));
+      minNote(rawA, r.A, Formula.MIN_AMP, rate));
     out.push(sumLine('스킬 증폭', items, inputs.level, K.skillAmp, K.skillAmpPerLevel, K.choiceSkillAmp, r.choice === 'skillAmp', r.stats.skillAmp));
     out.push(`I = 스킬 증폭 합 ${num(r.stats.skillAmp)} − ${num(inputs.enemySkillReduction)} = ${num(r.I)}`);
     out.push(`F = 1 + ${withParts(r.stats.itemFinalRate, contrib(items, K.finalRate), rate)} + ${rate(inputs.extraFinalIncreasePct / 100)} − ` +
@@ -71,16 +122,9 @@
     const rawD = (r.B * r.A + r.I) * r.F;
     out.push(`D = (${num(r.B)} × ${rate(r.A)} + ${num(r.I)}) × ${rate(r.F)} = ` +
       (rawD < Formula.MIN_DAMAGE ? `${num(rawD)} → 최솟값 ${Formula.MIN_DAMAGE} 적용 = ${num(r.D)}` : num(r.D)));
-    if (!(r.price > 0)) {
-      out.push('가격 합 0 — 효율 계산 제외');
-    } else {
-      const priceText = withParts(r.price, contrib(items.map((it) => ({ name: it.name, stats: { p: it.price } })), ['p']));
-      const p = Formula.efficiencyPercent(r.ratio, bestRatio);
-      out.push(`효율 = D ${num(r.D)} ÷ 가격 합 ${priceText} = ${num(r.ratio, 4)}` +
-        (p == null ? '' : ` → 최고 ${num(bestRatio, 4)} 대비 ${num(p, 1)}%`));
-    }
+    out.push(efficiencyLine(items, r, bestRatio));
     return out;
   }
 
-  return { lines, num };
+  return { lines, linesV2, num };
 });

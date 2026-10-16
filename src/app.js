@@ -1,11 +1,29 @@
 (function () {
   'use strict';
-  const Formula = window.ERFormula;
-  const History = window.ERHistory;
+  // 계산식 변형: 데스크톱 v2 빌드는 preload가 window.ER_FORMULA = 'v2'를 주입, 웹은 ?formula=v2.
+  const VARIANT = window.ER_FORMULA === 'v2' || new URLSearchParams(location.search).get('formula') === 'v2' ? 'v2' : 'v1';
+  const V2 = VARIANT === 'v2';
+  const Formula = V2 ? window.ERFormulaV2 : window.ERFormula;
+  const History = window.ERHistory.forVariant(VARIANT);
+  const explainLines = V2 ? window.ERExplain.linesV2 : window.ERExplain.lines;
   const Updater = window.ERUpdater;
   const DATA_URL = 'data/items.json';
   const GRADES = ['일반', '고급', '희귀', '영웅', '전설', '신화'];
-  const INPUT_FIELDS = [
+  const INPUT_FIELDS_V2 = [
+    { key: 'level', label: '캐릭터 레벨', step: 1, min: 1 },
+    { key: 'masteryLevel', label: '숙련도 레벨', step: 1, min: 0 },
+    { key: 'skillDamage', label: '스킬 기본 피해량', step: 'any', min: 0 },
+    { key: 'atkCoefPct', label: '공격력 계수 (%)', step: 'any', min: 0 },
+    { key: 'skillAmpCoefPct', label: '스킬 증폭 계수 (%)', step: 'any', min: 0 },
+    { key: 'defense', label: '피격 대상 방어력 (R)', step: 'any', min: 0 },
+    { key: 'extraAtk', label: '아이템 외 공격력', step: 'any' },
+    { key: 'extraSkillAmp', label: '아이템 외 스킬 증폭', step: 'any' },
+    { key: 'extraSkillAmpPct', label: '아이템 외 % 스킬 증폭 (%)', step: 'any' },
+    { key: 'extraDamageIncreasePct', label: '추가 피해 증가 (%)', step: 'any' },
+    { key: 'enemyDamageReductionPct', label: '대상 피해 감소 (%)', step: 'any' },
+    { key: 'enemySkillReductionPct', label: '대상 스킬 피해 감소 (%)', step: 'any' },
+  ];
+  const INPUT_FIELDS = V2 ? INPUT_FIELDS_V2 : [
     { key: 'level', label: '성장형 스탯', step: 1, min: 1 },
     { key: 'skillDamage', label: '스킬 기본 피해량 (S)', step: 'any', min: 0 },
     { key: 'atkCoefPct', label: '공격력 계수 (%)', step: 'any', min: 0 },
@@ -17,7 +35,7 @@
   ];
 
   const $ = (sel) => document.querySelector(sel);
-  const state = { items: [], byId: new Map(), equipped: {}, history: [], historySort: 'recent', pickerSlot: null };
+  const state = { items: [], byId: new Map(), equipped: {}, history: [], historySort: 'recent', pickerSlot: null, characters: [], charactersError: '' };
 
   function el(tag, props, ...children) {
     const node = document.createElement(tag);
@@ -150,7 +168,11 @@
       const actions = el('div', { className: 'actions' }, pick);
       if (item) {
         const clear = el('button', { type: 'button', textContent: '비우기' });
-        clear.onclick = () => { delete state.equipped[slot]; renderSlots(); };
+        clear.onclick = () => {
+          delete state.equipped[slot];
+          renderSlots();
+          if (slot === '무기') applyAuto('amp');
+        };
         actions.append(clear);
       }
       card.append(actions);
@@ -160,6 +182,8 @@
     const all = filled === Formula.SLOTS.length;
     $('#slot-status').textContent = all ? '모든 슬롯이 채워졌습니다.' : `${filled}/${Formula.SLOTS.length} 슬롯 채워짐 — 모든 슬롯을 채워야 계산할 수 있습니다.`;
     $('#calc-btn').disabled = !all;
+    updateSkillAmpTotal();
+    renderAutoNotes();
   }
 
   // ---------- 아이템 선택 창 ----------
@@ -192,6 +216,7 @@
         state.equipped[state.pickerSlot] = it;
         $('#picker').close();
         renderSlots();
+        if (state.pickerSlot === '무기') applyAuto('amp');
       };
       list.append(li);
     }
@@ -201,12 +226,94 @@
   // ---------- 입력 ----------
   function renderInputs() {
     const form = $('#inputs');
+    if (V2) {
+      // 실험체 선택(이름 검색: datalist). 무기 종류는 무기 슬롯 아이템의 weaponType으로 자동 결정.
+      const input = el('input', { type: 'search', id: 'in-character', placeholder: '실험체 이름 검색' });
+      input.setAttribute('list', 'character-list');
+      input.setAttribute('aria-label', '실험체');
+      form.append(el('label', null, '실험체', input, el('datalist', { id: 'character-list' }),
+        el('span', { id: 'character-note', className: 'muted' })));
+    }
     for (const f of INPUT_FIELDS) {
       const input = el('input', { type: 'number', id: 'in-' + f.key, step: f.step, value: Formula.DEFAULT_INPUTS[f.key] ?? '' });
       if (f.min != null) input.min = f.min;
       if (Formula.DEFAULT_INPUTS[f.key] == null) input.placeholder = '직접 입력';
-      form.append(el('label', null, f.label, input));
+      // v2: 스탯창 스킬 증폭과 맞춰 볼 수 있도록 현재 합계를 아이템 외 스킬 증폭 옆에 표시,
+      // 자동 입력되는 칸에는 자동값 출처를 작게 표시.
+      const noteId = { extraSkillAmp: 'sa-total', extraAtk: 'auto-atk', extraSkillAmpPct: 'auto-amp' }[f.key];
+      const extra = V2 && noteId ? el('span', { id: noteId, className: 'muted small' }) : null;
+      if (extra) input.setAttribute('aria-label', f.label);
+      form.append(el('label', null, f.label, input, extra));
     }
+  }
+
+  // ---------- v2 실험체 자동 입력 ----------
+  function selectedCharacter() {
+    const name = $('#in-character').value.trim();
+    return state.characters.find((c) => c.name === name) || null;
+  }
+
+  function currentAuto() {
+    const weapon = state.equipped['무기'];
+    const n = (key) => Number($('#in-' + key).value);
+    return window.ERCharacters.autoValues(selectedCharacter(), weapon ? weapon.weaponType || null : null, n('level'), n('masteryLevel'));
+  }
+
+  // 자동값 출처와 경고 표시. 입력란 값이 자동값과 다르면 "수동 수정"으로 표시한다.
+  function renderAutoNotes() {
+    if (!V2) return;
+    const auto = currentAuto();
+    const note = (id, key, value, source) => {
+      const cur = Number($('#in-' + key).value);
+      $('#' + id).textContent = value == null ? '' : `자동: ${source} = ${fmt(value)}${cur === value ? '' : ' · 수동 수정됨'}`;
+    };
+    note('auto-atk', 'extraAtk', auto.extraAtk, auto.atkSource);
+    note('auto-amp', 'extraSkillAmpPct', auto.extraSkillAmpPct, auto.ampSource);
+    const charNote = $('#character-note');
+    charNote.className = auto.warning ? 'muted small error' : 'muted small';
+    charNote.textContent = state.charactersError || auto.warning;
+  }
+
+  // 실험체·레벨·숙련도·무기가 바뀌면 그 변경에 영향받는 자동값만 입력란에 채운다(이후 수동 수정 가능).
+  // which: 'atk'(캐릭터 레벨), 'amp'(숙련도 레벨·무기), 'both'(실험체).
+  function applyAuto(which) {
+    if (!V2) return;
+    const auto = currentAuto();
+    if (which !== 'amp' && auto.extraAtk != null && Number.isFinite(auto.extraAtk)) $('#in-extraAtk').value = auto.extraAtk;
+    if (which !== 'atk' && auto.extraSkillAmpPct != null && Number.isFinite(auto.extraSkillAmpPct)) $('#in-extraSkillAmpPct').value = auto.extraSkillAmpPct;
+    hideResult();
+    updateSkillAmpTotal();
+    renderAutoNotes();
+  }
+
+  async function loadCharacters() {
+    try {
+      const res = await fetch('data/characters.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error();
+      const list = await res.json();
+      if (!Array.isArray(list)) throw new Error();
+      state.characters = list.filter((c) => c && typeof c.name === 'string');
+      state.charactersError = '';
+    } catch {
+      state.characters = [];
+      state.charactersError = 'data/characters.json 없음 — 실험체 자동 입력 불가(아이템 외 입력란에 직접 입력)';
+    }
+    $('#character-list').replaceChildren(...state.characters.map((c) => el('option', { value: c.name })));
+    // 로딩 중에 이미 실험체 이름을 입력했으면 이제 자동값을 채운다(히스토리는 로딩 뒤에 표시되므로 복원값과 겹치지 않음).
+    if (selectedCharacter()) applyAuto('both');
+    else renderAutoNotes();
+  }
+
+  function updateSkillAmpTotal() {
+    const box = $('#sa-total');
+    if (!box) return;
+    const value = (key) => {
+      const raw = $('#in-' + key).value.trim();
+      return raw === '' ? NaN : Number(raw);
+    };
+    const sa = Formula.skillAmpTotal(Formula.SLOTS.map((s) => state.equipped[s]),
+      { level: value('level'), extraSkillAmp: value('extraSkillAmp'), extraSkillAmpPct: value('extraSkillAmpPct') });
+    box.textContent = `현재 스킬 증폭 합계 = ${sa == null ? '—' : fmt(sa)}`;
   }
 
   function readInputs() {
@@ -219,6 +326,15 @@
       if (f.min != null && n < f.min) throw new Error(`"${f.label}" 값은 ${f.min} 이상이어야 합니다.`);
       out[f.key] = n;
     }
+    if (V2) {
+      // 실험체도 기록에 저장(복원용). 선택하지 않았으면 null.
+      // 데이터에 없는(로딩 실패 등) 복원 실험체도 이름·id를 잃지 않도록 복원값을 이어받는다.
+      const c = selectedCharacter();
+      const name = $('#in-character').value.trim();
+      const restored = state.restoredCharacter;
+      out.characterId = c ? String(c.id) : (restored && restored.name === name ? restored.id : null);
+      out.characterName = c ? c.name : (name || null);
+    }
     return out;
   }
 
@@ -226,6 +342,13 @@
     for (const f of INPUT_FIELDS) {
       const v = inputs && inputs[f.key] != null ? inputs[f.key] : Formula.DEFAULT_INPUTS[f.key];
       $('#in-' + f.key).value = v ?? '';
+    }
+    if (V2) {
+      const c = inputs && inputs.characterId != null ? state.characters.find((x) => String(x.id) === String(inputs.characterId)) : null;
+      $('#in-character').value = c ? c.name : (inputs && inputs.characterName) || '';
+      state.restoredCharacter = inputs && inputs.characterName
+        ? { id: inputs.characterId == null ? null : String(inputs.characterId), name: $('#in-character').value } : null;
+      renderAutoNotes();
     }
   }
 
@@ -256,7 +379,7 @@
     box.replaceChildren(
       el('div', { className: 'big', textContent: `데미지 총량 = ${fmt(r.D)}` }),
       el('div', { className: 'big', textContent: `데미지 효율 = ${pct == null ? '—' : fmt(pct, 1) + '%'}` }),
-      el('pre', { className: 'steps', textContent: window.ERExplain.lines(items, inputs, r, best).join('\n') }));
+      el('pre', { className: 'steps', textContent: explainLines(items, inputs, r, best).join('\n') }));
     box.hidden = false;
   }
 
@@ -324,6 +447,10 @@
 
   // ---------- 시작 ----------
   async function init() {
+    if (V2) {
+      $('h1').textContent += ' v2';
+      document.title += ' v2';
+    }
     const gradeSel = $('#picker-grade');
     gradeSel.append(el('option', { value: '', textContent: '모든 등급' }));
     for (const g of GRADES) gradeSel.append(el('option', { value: g, textContent: g }));
@@ -342,9 +469,18 @@
       renderHistory();
     };
     renderInputs();
-    $('#inputs').addEventListener('input', hideResult);
+    $('#inputs').addEventListener('input', (ev) => {
+      const which = V2 && { 'in-character': 'both', 'in-level': 'atk', 'in-masteryLevel': 'amp' }[ev.target.id];
+      if (which) {
+        applyAuto(which);
+        return;
+      }
+      hideResult();
+      updateSkillAmpTotal();
+      renderAutoNotes();
+    });
     renderSlots();
-    await loadData();
+    await Promise.all([loadData(), V2 ? loadCharacters() : null]);
     // 최초 로딩이 끝난 뒤에 버튼을 연다(늦게 끝난 최초 로딩이 갱신 데이터를 덮어쓰지 않도록).
     setupUpdater();
     // 데이터 로딩 뒤에 히스토리를 보여 줘야 클릭 복원 시 아이템을 찾을 수 있다.
