@@ -43,8 +43,11 @@ UNIQUE_PREFIX = "(고유) "
 # "<color=..>(고유)</color> 이름 +a", "레벨 당 이름 +a~b%" (a per level, b at max level)
 STAT_RE = re.compile(
     r"^(?P<unique><color=[^>]*>\(고유\)</color> )?(?P<name>[^+<>]+?) \+"
-    + r"(?P<value>\d+(?:\.\d+)?)(?:~\d+(?:\.\d+)?)?(?P<pct>%)?$"
+    + r"(?P<value>\d+(?:\.\d+)?)(?:~\d+(?:\.\d+)?)?(?P<pct>%)?$",
+    re.ASCII,
 )
+# Explicit whitespace set: str.strip() and JS trim() disagree on exotic characters.
+WS = " \t\n\r\v\f"
 CHOICE_SEP = " 또는 "
 CHOICE_SUFFIX = "(택1)"
 PCT_SUFFIX = "율"
@@ -67,15 +70,14 @@ def parse_stat_line(line):
         m = STAT_RE.match(part)
         if not m:
             return None
-        name = m.group("name").strip()
+        name = m.group("name").strip(WS)
         if m.group("unique"):
             name = UNIQUE_PREFIX + name
         if len(parts) > 1:
             name += CHOICE_SUFFIX
-        value = float(m.group("value"))
         pct = m.group("pct") is not None
-        if pct:
-            value = round(value / 100, 6)
+        # Percent: parse the decimal text shifted by 100 (correctly rounded, same in JS).
+        value = float(m.group("value") + ("e-2" if pct else ""))
         parsed.append((name, value, pct))
     return parsed
 
@@ -85,7 +87,7 @@ def parse_stats(tooltip):
     blocks = tooltip.split("\n\n")
     if len(blocks) < 2:
         return []
-    lines = [l.strip() for l in blocks[1].split("\n") if l.strip()]
+    lines = [l.strip(WS) for l in blocks[1].split("\n") if l.strip(WS)]
     parsed = [parse_stat_line(l) for l in lines]
     if all(p is None for p in parsed):
         return []
@@ -101,7 +103,8 @@ def listed_on_page(item):
     return (
         item["type"] in ("Armor", "Weapon")
         and item["grade"] in PAGE_GRADES
-        and bool(item.get("makeMaterials"))
+        and isinstance(item.get("makeMaterials"), list)
+        and len(item["makeMaterials"]) > 0
     )
 
 
@@ -125,7 +128,7 @@ def build_items(raw_items, masteries):
     flat_names = {n for stats in raw_stats.values() for n, _, pct in stats if not pct}
 
     out = []
-    for it, slot in sorted(equip, key=lambda p: p[0]["id"]):
+    for it, slot in sorted(equip, key=lambda p: int(p[0]["id"])):
         stats = {}
         for name, value, pct in raw_stats[it["id"]]:
             # dak.gg uses one name for flat and % variants (e.g. 이동 속도);

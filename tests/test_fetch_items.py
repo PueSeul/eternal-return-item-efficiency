@@ -90,9 +90,12 @@ NODE_BUILD = """
 import { readFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 const { FI_MODULE: mod, FI_INPUT: input } = process.env;
-const { buildItems, dumps } = await import(pathToFileURL(mod).href);
+const { fetchItems, dumps, ITEMS_URL, MASTERIES_URL } = await import(pathToFileURL(mod).href);
 const raw = JSON.parse(readFileSync(input, "utf8"));
-process.stdout.write(Buffer.from(dumps(buildItems(raw.items, raw.masteries)), "utf8"));
+// Serve the same API responses the Python side got, through fetchItems() itself.
+const bodies = { [ITEMS_URL]: { items: raw.items }, [MASTERIES_URL]: { masteries: raw.masteries } };
+globalThis.fetch = async (url) => ({ ok: true, status: 200, json: async () => bodies[url] });
+process.stdout.write(Buffer.from(dumps(await fetchItems()), "utf8"));
 """
 
 
@@ -130,9 +133,20 @@ class NodePortTests(unittest.TestCase):
              "tooltip": "영웅 / 권총\n\n공격력 +57 또는 스킬 증폭 +114\n레벨 당 공격력 +1.5~30"},
             {"id": 4, "name": "재료", "type": "Armor", "armorType": "Head", "grade": "Rare",
              "makeMaterials": [1], "imageUrl": "https://x/4.png", "tooltip": "희귀 / 머리"},
+            {"id": "10", "name": "반올림", "type": "Armor", "armorType": "Leg", "grade": "Mythic",
+             "makeMaterials": [1], "imageUrl": "https://x/10.png",
+             "tooltip": "초월 / 다리\n\n이동 속도 +0.78125%\n__proto__ +1\n쿨다운 감소 +７"},
+            {"id": 5, "name": "이상한 부위", "type": "Armor", "armorType": "toString", "grade": "Epic",
+             "makeMaterials": [1], "imageUrl": "https://x/5.png", "tooltip": "영웅 / 머리"},
+            {"id": 6, "name": "문자열 재료", "type": "Armor", "armorType": "Arm", "grade": "Epic",
+             "makeMaterials": "1", "imageUrl": "https://x/6.png", "tooltip": "영웅 / 팔"},
         ]}
+        with self.assertRaises(ValueError):  # non-ASCII digit "７" must not parse
+            fi.build_items(raw["items"], raw["masteries"])
+        raw["items"][-3]["tooltip"] = "초월 / 다리\n\n이동 속도 +0.78125%\n__proto__ +1"
         expected = fi.dumps(fi.build_items(raw["items"], raw["masteries"]))
-        self.assertEqual([r["id"] for r in json.loads(expected)], ["1", "2"])
+        self.assertEqual([r["id"] for r in json.loads(expected)], ["1", "2", "10"])
+        self.assertIn('"__proto__": 1', expected)
         self.assertEqual(self.node_dumps(raw), expected)
 
 

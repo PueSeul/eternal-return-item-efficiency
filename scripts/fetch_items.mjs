@@ -1,7 +1,7 @@
 // Node port of scripts/fetch_items.py (no dependencies; Node 22 built-in fetch).
 // Fetches Eternal Return equipment from the dak.gg API and builds the same
 // item list as the Python script. Usage: node scripts/fetch_items.mjs
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, realpathSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 
@@ -42,8 +42,13 @@ async function fetchJson(url) {
   return resp.json();
 }
 
-// Python round(x, 6) equivalent for the percent fractions.
-const round6 = (x) => Number(x.toFixed(6));
+// Explicit whitespace set: JS trim() and Python str.strip() disagree on exotic characters.
+const strip = (s) => s.replace(/^[ \t\n\r\v\f]+|[ \t\n\r\v\f]+$/g, "");
+
+function field(item, key) {
+  if (!Object.hasOwn(item, key)) throw new Error(`item ${item.id} has no ${key}`);
+  return item[key];
+}
 
 /** [[name, value, isPercent]] for one tooltip stat line, or null. */
 export function parseStatLine(line) {
@@ -52,12 +57,12 @@ export function parseStatLine(line) {
   for (const part of parts) {
     const m = STAT_RE.exec(part);
     if (!m) return null;
-    let name = m[2].trim();
+    let name = strip(m[2]);
     if (m[1]) name = UNIQUE_PREFIX + name;
     if (parts.length > 1) name += CHOICE_SUFFIX;
-    let value = Number(m[3]);
     const pct = m[4] !== undefined;
-    if (pct) value = round6(value / 100);
+    // Percent: parse the decimal text shifted by 100 (correctly rounded, same in Python).
+    const value = Number(m[3] + (pct ? "e-2" : ""));
     parsed.push([name, value, pct]);
   }
   return parsed;
@@ -67,7 +72,7 @@ export function parseStatLine(line) {
 export function parseStats(tooltip) {
   const blocks = tooltip.split("\n\n");
   if (blocks.length < 2) return [];
-  const lines = blocks[1].split("\n").map((l) => l.trim()).filter(Boolean);
+  const lines = blocks[1].split("\n").map(strip).filter(Boolean);
   const parsed = lines.map(parseStatLine);
   if (parsed.every((p) => p === null)) return [];
   const bad = lines.filter((_, i) => parsed[i] === null);
@@ -77,16 +82,17 @@ export function parseStats(tooltip) {
 
 /** Same filter the dak.gg items page applies (type Armor/Weapon, Epic+ grade, has makeMaterials). */
 export function listedOnPage(item) {
-  return (item.type === "Armor" || item.type === "Weapon")
-    && PAGE_GRADES.has(item.grade)
+  const type = field(item, "type");
+  return (type === "Armor" || type === "Weapon")
+    && PAGE_GRADES.has(field(item, "grade"))
     && Array.isArray(item.makeMaterials) && item.makeMaterials.length > 0;
 }
 
 function slotOf(item) {
   if (!listedOnPage(item)) return null;
-  if (item.armorType === "Head" && EXCLUDED_NAMES.has(item.name)) return null;
+  if (item.armorType === "Head" && EXCLUDED_NAMES.has(field(item, "name"))) return null;
   if (item.type === "Weapon") return "무기";
-  return ARMOR_SLOTS[item.armorType] ?? null;
+  return Object.hasOwn(ARMOR_SLOTS, item.armorType) ? ARMOR_SLOTS[item.armorType] : null;
 }
 
 function required(map, key, what) {
@@ -97,13 +103,18 @@ function required(map, key, what) {
 export function buildItems(rawItems, masteries) {
   const weaponNames = Object.fromEntries(masteries.map((m) => [m.key, m.name]));
   const equip = rawItems.map((it) => [it, slotOf(it)]).filter(([, slot]) => slot);
-  const rawStats = new Map(equip.map(([it]) => [it.id, parseStats(it.tooltip)]));
+  const rawStats = new Map(equip.map(([it]) => [it.id, parseStats(field(it, "tooltip"))]));
   const flatNames = new Set();
   for (const stats of rawStats.values()) for (const [n, , pct] of stats) if (!pct) flatNames.add(n);
 
-  equip.sort((a, b) => a[0].id - b[0].id);
+  const intId = (it) => {
+    const n = Number(field(it, "id"));
+    if (!Number.isInteger(n)) throw new Error(`non-integer item id ${it.id}`);
+    return n;
+  };
+  equip.sort((a, b) => intId(a[0]) - intId(b[0]));
   return equip.map(([it, slot]) => {
-    const stats = {};
+    const stats = Object.create(null); // "__proto__" stays an ordinary key
     for (const [name, value, pct] of rawStats.get(it.id)) {
       // One dak.gg name for flat and % variants: % gets "율" only when both exist.
       const key = pct && flatNames.has(name) ? name + PCT_SUFFIX : name;
@@ -114,10 +125,10 @@ export function buildItems(rawItems, masteries) {
     const hostPrice = ITEM_PRICE.get(it.name);
     const row = {
       id: String(it.id),
-      name: it.name,
+      name: field(it, "name"),
       grade,
       slot,
-      imageUrl: it.imageUrl,
+      imageUrl: field(it, "imageUrl"),
       price: hostPrice ?? required(GRADE_PRICE, grade, "grade price"),
       priceSource: hostPrice === undefined ? PRICE_SOURCE : ITEM_PRICE_SOURCE,
       stats,
@@ -137,7 +148,7 @@ export async function fetchItems() {
   return buildItems(items.items, masteries.masteries);
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {
   const items = await fetchItems();
   mkdirSync(DATA_DIR, { recursive: true });
   writeFileSync(OUT_PATH, dumps(items), "utf8");
