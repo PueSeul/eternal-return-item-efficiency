@@ -1,9 +1,11 @@
 // Node twin of scripts/fetch_characters.py (no dependencies; built-in fetch).
 // Builds data/characters.json byte-identical to the Python script.
+// Values that differ from the latest patch note are replaced by the patch-note value.
 // Usage: node scripts/fetch_characters.mjs
 import { writeFileSync, mkdirSync, realpathSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
+import { fetchPatch, parsePatch, applyCharacterChanges } from "./fetch_patchnote.mjs";
 
 export const CHARACTERS_URL = "https://er.dakgg.io/api/v1/data/characters?hl=ko";
 export const MASTERIES_URL = "https://er.dakgg.io/api/v1/data/masteries?hl=ko";
@@ -102,8 +104,13 @@ export function dumps(chars) {
 }
 
 export async function fetchCharacters() {
-  const [chars, masteries] = await Promise.all([fetchJson(CHARACTERS_URL), fetchJson(MASTERIES_URL)]);
-  return buildCharacters(chars.characters, masteries.masteries);
+  const [chars, masteries, patch] = await Promise.all([
+    fetchJson(CHARACTERS_URL), fetchJson(MASTERIES_URL), fetchPatch(),
+  ]);
+  const out = buildCharacters(chars.characters, masteries.masteries);
+  // Item stat names are not needed for character rows.
+  applyCharacterChanges(out, parsePatch(patch.bodies, []).changes);
+  return out;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {

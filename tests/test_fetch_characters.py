@@ -1,16 +1,15 @@
 import json
-import os
-import subprocess
 import sys
-import tempfile
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "tests"))
 
 import fetch_characters as fc  # noqa: E402
 import fetch_items as fi  # noqa: E402
+import node_harness as nh  # noqa: E402
 
 MASTERY_FIELDS = {"skillAmpRatio", "attackPowerRatio", "attackSpeedRatio",
                   "increaseBasicAttackDamageRatio", "attackPower"}
@@ -56,40 +55,30 @@ class BuildTests(unittest.TestCase):
                 fc.build_characters([raw], WEAPONS)
 
 
-NODE_BUILD = """
-import { readFileSync } from "node:fs";
-import { pathToFileURL } from "node:url";
-const { FC_MODULE: mod, FC_INPUT: input } = process.env;
-const { fetchCharacters, dumps, CHARACTERS_URL, MASTERIES_URL } = await import(pathToFileURL(mod).href);
-const raw = JSON.parse(readFileSync(input, "utf8"));
-const bodies = { [CHARACTERS_URL]: { characters: raw.characters }, [MASTERIES_URL]: { masteries: raw.masteries } };
-globalThis.fetch = async (url) => ({ ok: true, status: 200, json: async () => bodies[url] });
-process.stdout.write(Buffer.from(dumps(await fetchCharacters()), "utf8"));
-"""
+NODE_FETCH_CHARS = 'const m = await imp("fetch_characters.mjs"); return m.dumps(await m.fetchCharacters());'
 
 
 class NodePortTests(unittest.TestCase):
     """scripts/fetch_characters.mjs must produce byte-identical output to the Python script."""
 
     def node_dumps(self, raw):
-        with tempfile.TemporaryDirectory() as tmp:
-            src = Path(tmp) / "input.json"
-            src.write_text(json.dumps(raw, ensure_ascii=False), encoding="utf-8")
-            proc = subprocess.run(
-                ["node", "--input-type=module", "-e", NODE_BUILD],
-                capture_output=True, check=True,
-                env={**os.environ, "FC_MODULE": str(ROOT / "scripts" / "fetch_characters.mjs"),
-                     "FC_INPUT": str(src)},
-            )
-        return proc.stdout.decode("utf-8")
+        """fetchCharacters() in Node vs fetch_characters() in Python on the same responses
+        (dak.gg raw + a patch note without changes); returns the Node output."""
+        bodies = {fc.CHARACTERS_URL: json.dumps({"characters": raw["characters"]}, ensure_ascii=False),
+                  fi.MASTERIES_URL: json.dumps({"masteries": raw["masteries"]}, ensure_ascii=False),
+                  **nh.EMPTY_PATCH}
+        with nh.replay(bodies):
+            self.assertEqual(fc.dumps(fc.fetch_characters()),
+                             fc.dumps(fc.build_characters(raw["characters"], raw["masteries"])))
+        return nh.run_node(bodies, NODE_FETCH_CHARS)
 
     def test_same_output_on_live_api(self):
-        raw = {"characters": fi.fetch_json(fc.CHARACTERS_URL)["characters"],
-               "masteries": fi.fetch_json(fi.MASTERIES_URL)["masteries"]}
-        expected = fc.dumps(fc.build_characters(raw["characters"], raw["masteries"]))
+        bodies = {}
+        with nh.record(bodies):
+            expected = fc.dumps(fc.fetch_characters())  # dak.gg + latest patch note
         self.assertGreater(len(json.loads(expected)), 80)
-        self.assertEqual(self.node_dumps(raw), expected)
-        # The committed file is the current API output (rerun the fetcher after a patch).
+        self.assertEqual(nh.run_node(bodies, NODE_FETCH_CHARS), expected)
+        # The committed file is the current output (rerun the fetcher after a patch).
         self.assertEqual((ROOT / "data" / "characters.json").read_text(encoding="utf-8"), expected)
 
     def test_same_output_on_edge_cases(self):

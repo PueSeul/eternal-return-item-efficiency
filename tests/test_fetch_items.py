@@ -1,15 +1,14 @@
 import json
-import os
-import subprocess
 import sys
-import tempfile
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "tests"))
 
 import fetch_items as fi  # noqa: E402
+import node_harness as nh  # noqa: E402
 
 SLOTS = {"무기", "머리", "옷", "팔", "다리"}
 GRADES = {"일반", "고급", "희귀", "영웅", "전설", "신화"}
@@ -86,39 +85,28 @@ class ParseTests(unittest.TestCase):
         self.assertEqual([r["id"] for r in out], ["4", "5"])
 
 
-NODE_BUILD = """
-import { readFileSync } from "node:fs";
-import { pathToFileURL } from "node:url";
-const { FI_MODULE: mod, FI_INPUT: input } = process.env;
-const { fetchItems, dumps, ITEMS_URL, MASTERIES_URL } = await import(pathToFileURL(mod).href);
-const raw = JSON.parse(readFileSync(input, "utf8"));
-// Serve the same API responses the Python side got, through fetchItems() itself.
-const bodies = { [ITEMS_URL]: { items: raw.items }, [MASTERIES_URL]: { masteries: raw.masteries } };
-globalThis.fetch = async (url) => ({ ok: true, status: 200, json: async () => bodies[url] });
-process.stdout.write(Buffer.from(dumps(await fetchItems()), "utf8"));
-"""
+NODE_FETCH_ITEMS = 'const m = await imp("fetch_items.mjs"); return m.dumps(await m.fetchItems());'
 
 
 class NodePortTests(unittest.TestCase):
     """scripts/fetch_items.mjs must produce byte-identical output to the Python script."""
 
     def node_dumps(self, raw):
-        with tempfile.TemporaryDirectory() as tmp:
-            src = Path(tmp) / "input.json"
-            src.write_text(json.dumps(raw, ensure_ascii=False), encoding="utf-8")
-            proc = subprocess.run(
-                ["node", "--input-type=module", "-e", NODE_BUILD],
-                capture_output=True, check=True,
-                env={**os.environ, "FI_MODULE": str(ROOT / "scripts" / "fetch_items.mjs"), "FI_INPUT": str(src)},
-            )
-        return proc.stdout.decode("utf-8")
+        """fetchItems() in Node vs fetch_items() in Python on the same responses
+        (dak.gg raw + a patch note without changes); returns the Node output."""
+        bodies = {fi.ITEMS_URL: json.dumps({"items": raw["items"]}, ensure_ascii=False),
+                  fi.MASTERIES_URL: json.dumps({"masteries": raw["masteries"]}, ensure_ascii=False),
+                  **nh.EMPTY_PATCH}
+        with nh.replay(bodies):
+            self.assertEqual(fi.dumps(fi.fetch_items()), fi.dumps(fi.build_items(raw["items"], raw["masteries"])))
+        return nh.run_node(bodies, NODE_FETCH_ITEMS)
 
     def test_same_output_on_live_api(self):
-        raw = {"items": fi.fetch_json(fi.ITEMS_URL)["items"],
-               "masteries": fi.fetch_json(fi.MASTERIES_URL)["masteries"]}
-        expected = fi.dumps(fi.build_items(raw["items"], raw["masteries"]))
+        bodies = {}
+        with nh.record(bodies):
+            expected = fi.dumps(fi.fetch_items())  # dak.gg + latest patch note
         self.assertGreater(len(json.loads(expected)), 400)
-        self.assertEqual(self.node_dumps(raw), expected)
+        self.assertEqual(nh.run_node(bodies, NODE_FETCH_ITEMS), expected)
 
     def test_same_output_on_edge_cases(self):
         tip = "전설 / 옷\n\n방어력 +30\n이동 속도 +0.04\n이동 속도 +2.5%\n{}\n\n설명"

@@ -3,6 +3,8 @@ ratios) from the dak.gg API and write data/characters.json.
 
 Source: https://er.dakgg.io/api/v1/data/characters?hl=ko (+ data/masteries for
 Korean weapon names, the same names items.json uses for weaponType).
+Base attack power / mastery ratios that differ from the latest patch note are
+replaced by the patch-note value (host decision; see fetch_patchnote.py).
 Usage: python scripts/fetch_characters.py
 Node twin: scripts/fetch_characters.mjs (byte-identical output).
 """
@@ -11,7 +13,8 @@ import math
 import sys
 from pathlib import Path
 
-from fetch_items import MASTERIES_URL, fetch_json
+import fetch_items as fi
+import fetch_patchnote as pn
 
 CHARACTERS_URL = "https://er.dakgg.io/api/v1/data/characters?hl=ko"
 OUT_PATH = Path(__file__).resolve().parent.parent / "data" / "characters.json"
@@ -78,10 +81,19 @@ def dumps(chars):
     return json.dumps(chars, ensure_ascii=False, indent=2) + "\n"
 
 
-def main():
+def fetch_characters():
+    """Characters from dak.gg with patch-note overrides applied."""
     chars = build_characters(
-        fetch_json(CHARACTERS_URL)["characters"], fetch_json(MASTERIES_URL)["masteries"]
+        fi.fetch_json(CHARACTERS_URL)["characters"], fi.fetch_json(fi.MASTERIES_URL)["masteries"]
     )
+    # Item stat names are not needed for character rows.
+    parsed = pn.parse_patch(pn.fetch_patch()["bodies"], set())
+    pn.apply_character_changes(chars, parsed["changes"])
+    return chars
+
+
+def main():
+    chars = fetch_characters()
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(OUT_PATH, "w", encoding="utf-8", newline="\n") as f:
         f.write(dumps(chars))

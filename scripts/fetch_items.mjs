@@ -1,9 +1,13 @@
 // Node port of scripts/fetch_items.py (no dependencies; Node 22 built-in fetch).
 // Fetches Eternal Return equipment from the dak.gg API and builds the same
-// item list as the Python script. Usage: node scripts/fetch_items.mjs
-import { readFileSync, writeFileSync, mkdirSync, realpathSync } from "node:fs";
+// item list as the Python script; values that differ from the latest patch note
+// are replaced by the patch-note value (host decision).
+// Usage: node scripts/fetch_items.mjs  (writes items.json, characters.json, items.meta.json)
+import { readFileSync, writeFileSync, mkdirSync, realpathSync, renameSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
+import { fetchPatch, parsePatch, applyItemChanges, applyCharacterChanges } from "./fetch_patchnote.mjs";
+import { buildCharacters, CHARACTERS_URL, dumps as dumpsCharacters } from "./fetch_characters.mjs";
 
 export const ITEMS_URL = "https://er.dakgg.io/api/v1/data/items?hl=ko";
 export const MASTERIES_URL = "https://er.dakgg.io/api/v1/data/masteries?hl=ko";
@@ -100,12 +104,22 @@ function required(map, key, what) {
   return map[key];
 }
 
+/** [flat names, percent names] of the listed equipment's tooltip stats. */
+export function statKinds(rawItems) {
+  const flat = new Set();
+  const pct = new Set();
+  for (const it of rawItems) {
+    if (!slotOf(it)) continue;
+    for (const [name, , isPct] of parseStats(field(it, "tooltip"))) (isPct ? pct : flat).add(name);
+  }
+  return [flat, pct];
+}
+
 export function buildItems(rawItems, masteries) {
   const weaponNames = Object.fromEntries(masteries.map((m) => [m.key, m.name]));
   const equip = rawItems.map((it) => [it, slotOf(it)]).filter(([, slot]) => slot);
   const rawStats = new Map(equip.map(([it]) => [it.id, parseStats(field(it, "tooltip"))]));
-  const flatNames = new Set();
-  for (const stats of rawStats.values()) for (const [n, , pct] of stats) if (!pct) flatNames.add(n);
+  const flatNames = statKinds(rawItems)[0];
 
   const intId = (it) => {
     const n = Number(field(it, "id"));
@@ -143,14 +157,83 @@ export function dumps(items) {
   return JSON.stringify(items, null, 2) + "\n";
 }
 
+/** Apply the patch note to built items; returns [parsed, overrides, unparsed]. */
+function patchItems(items, rawItems, patch) {
+  const [flat, pct] = statKinds(rawItems);
+  const parsed = parsePatch(patch.bodies, [...flat, ...pct]);
+  const [overrides, unparsed] = applyItemChanges(items, parsed.changes, flat, pct);
+  return [parsed, overrides, unparsed];
+}
+
+/** Items from dak.gg with patch-note overrides applied (data/items.json content). */
 export async function fetchItems() {
-  const [items, masteries] = await Promise.all([fetchJson(ITEMS_URL), fetchJson(MASTERIES_URL)]);
-  return buildItems(items.items, masteries.masteries);
+  const [items, masteries, patch] = await Promise.all([
+    fetchJson(ITEMS_URL), fetchJson(MASTERIES_URL), fetchPatch(),
+  ]);
+  const out = buildItems(items.items, masteries.masteries);
+  patchItems(out, items.items, patch);
+  return out;
+}
+
+const ASSET_VERSION_RE = /\/game-assets\/([0-9]+(?:\.[0-9]+)*)\//;
+
+/** Highest game-asset version in the item image paths, or null. */
+export function dakggVersion(rawItems) {
+  const found = new Set();
+  for (const it of rawItems) {
+    const m = ASSET_VERSION_RE.exec(it.imageUrl || "");
+    if (m) found.add(m[1]);
+  }
+  const cmp = (a, b) => {
+    const x = a.split(".").map(Number);
+    const y = b.split(".").map(Number);
+    for (let i = 0; i < Math.min(x.length, y.length); i++) if (x[i] !== y[i]) return x[i] - y[i];
+    return x.length - y.length;
+  };
+  let best = null;
+  for (const v of found) if (best === null || cmp(v, best) > 0) best = v;
+  return best;
+}
+
+/** {items, characters, meta} with patch-note overrides applied (see fetch_items.py build_all). */
+export function buildAll(rawItems, masteries, rawChars, patch, fetchedAt) {
+  const items = buildItems(rawItems, masteries);
+  const characters = buildCharacters(rawChars, masteries);
+  const [parsed, itemOverrides, itemUnparsed] = patchItems(items, rawItems, patch);
+  const [charOverrides, charUnparsed] = applyCharacterChanges(characters, parsed.changes);
+  const { id, version, title, url, date, articles } = patch.info;
+  const meta = {
+    fetchedAt,
+    dakggVersion: dakggVersion(rawItems),
+    patch: { id, version, title, url, date, articles },
+    overrides: [...itemOverrides, ...charOverrides],
+    unparsed: [...parsed.unparsed, ...itemUnparsed, ...charUnparsed],
+  };
+  return { items, characters, meta };
+}
+
+/**
+ * Fetch dak.gg + the latest patch note and write items.json, characters.json and
+ * items.meta.json to outDir (default: this repo's data/; an app should pass a
+ * writable directory). Returns {items, characters, meta}.
+ */
+export async function fetchAll({ outDir = DATA_DIR, fetchedAt } = {}) {
+  const [items, masteries, chars, patch] = await Promise.all([
+    fetchJson(ITEMS_URL), fetchJson(MASTERIES_URL), fetchJson(CHARACTERS_URL), fetchPatch(),
+  ]);
+  const result = buildAll(items.items, masteries.masteries, chars.characters, patch,
+    fetchedAt ?? new Date().toISOString());
+  mkdirSync(outDir, { recursive: true });
+  // Write all three to temp files first so a failed write leaves the old set intact.
+  const files = [["items.json", dumps(result.items)], ["characters.json", dumpsCharacters(result.characters)],
+    ["items.meta.json", dumps(result.meta)]];
+  for (const [name, text] of files) writeFileSync(path.join(outDir, name + ".tmp"), text, "utf8");
+  for (const [name] of files) renameSync(path.join(outDir, name + ".tmp"), path.join(outDir, name));
+  return result;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {
-  const items = await fetchItems();
-  mkdirSync(DATA_DIR, { recursive: true });
-  writeFileSync(OUT_PATH, dumps(items), "utf8");
-  console.log(`wrote ${items.length} items to ${OUT_PATH}`);
+  const { items, characters, meta } = await fetchAll();
+  console.log(`wrote ${items.length} items, ${characters.length} characters to ${DATA_DIR} `
+    + `(patch ${meta.patch.version}: ${meta.overrides.length} overrides, ${meta.unparsed.length} unparsed)`);
 }

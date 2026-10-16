@@ -1,18 +1,28 @@
 """Fetch Eternal Return equipment items from dak.gg and write data/items.json.
 
 Source: the JSON API that https://dak.gg/er/items?hl=ko calls in the browser.
+Values that differ from the latest official patch note (+ later hotfixes) are
+replaced by the patch-note value (host decision; see fetch_patchnote.py).
 Usage: python scripts/fetch_items.py
+  writes data/items.json, data/characters.json and data/items.meta.json
 """
 import json
+import os
 import re
 import sys
 import urllib.request
+from datetime import datetime, timezone
 from pathlib import Path
+
+import fetch_patchnote as pn
 
 ITEMS_URL = "https://er.dakgg.io/api/v1/data/items?hl=ko"
 MASTERIES_URL = "https://er.dakgg.io/api/v1/data/masteries?hl=ko"
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 OUT_PATH = DATA_DIR / "items.json"
+ITEMS_FILE, CHARACTERS_FILE, META_FILE = "items.json", "characters.json", "items.meta.json"
+# dak.gg game-asset version in image paths: .../er/game-assets/12.6.0/...
+ASSET_VERSION_RE = re.compile(r"/game-assets/([0-9]+(?:\.[0-9]+)*)/")
 # Shared with scripts/fetch_items.mjs: edit these JSON files, not the code.
 PRICE_TABLE_PATH = DATA_DIR / "price_table.json"
 EXCLUSIONS_PATH = DATA_DIR / "exclusions.json"
@@ -120,12 +130,22 @@ def slot_of(item):
     return None
 
 
+def stat_kinds(raw_items):
+    """(flat names, percent names) of the listed equipment's tooltip stats."""
+    flat, pct = set(), set()
+    for it in raw_items:
+        if slot_of(it):
+            for name, _, is_pct in parse_stats(it["tooltip"]):
+                (pct if is_pct else flat).add(name)
+    return flat, pct
+
+
 def build_items(raw_items, masteries):
     weapon_names = {m["key"]: m["name"] for m in masteries}
     equip = [(it, slot_of(it)) for it in raw_items]
     equip = [(it, slot) for it, slot in equip if slot]
     raw_stats = {it["id"]: parse_stats(it["tooltip"]) for it, _ in equip}
-    flat_names = {n for stats in raw_stats.values() for n, _, pct in stats if not pct}
+    flat_names = stat_kinds(raw_items)[0]
 
     out = []
     for it, slot in sorted(equip, key=lambda p: int(p[0]["id"])):
@@ -161,12 +181,84 @@ def dumps(items):
     return json.dumps(items, ensure_ascii=False, indent=2) + "\n"
 
 
+def patch_items(items, raw_items, patch):
+    """Apply the patch note to built items. Returns (parsed, overrides, unparsed)."""
+    flat, pct = stat_kinds(raw_items)
+    parsed = pn.parse_patch(patch["bodies"], flat | pct)
+    overrides, unparsed = pn.apply_item_changes(items, parsed["changes"], flat, pct)
+    return parsed, overrides, unparsed
+
+
+def fetch_items():
+    """Items from dak.gg with patch-note overrides applied (data/items.json content)."""
+    raw = fetch_json(ITEMS_URL)["items"]
+    items = build_items(raw, fetch_json(MASTERIES_URL)["masteries"])
+    patch_items(items, raw, pn.fetch_patch())
+    return items
+
+
+def dakgg_version(raw_items):
+    """Highest game-asset version in the item image paths, or None."""
+    found = {m.group(1) for it in raw_items if (m := ASSET_VERSION_RE.search(it.get("imageUrl") or ""))}
+    return max(found, key=lambda v: [int(x) for x in v.split(".")]) if found else None
+
+
+def utc_now():
+    """ISO time like JS Date.toISOString(): 2026-10-17T02:30:00.123Z."""
+    t = datetime.now(timezone.utc)
+    return t.strftime("%Y-%m-%dT%H:%M:%S.") + f"{t.microsecond // 1000:03d}Z"
+
+
+def build_all(raw_items, masteries, raw_chars, patch, fetched_at):
+    """{"items", "characters", "meta"} with patch-note overrides applied."""
+    import fetch_characters as fc  # fetch_characters imports this module
+
+    items = build_items(raw_items, masteries)
+    chars = fc.build_characters(raw_chars, masteries)
+    parsed, item_overrides, item_unparsed = patch_items(items, raw_items, patch)
+    char_overrides, char_unparsed = pn.apply_character_changes(chars, parsed["changes"])
+    info = patch["info"]
+    meta = {
+        "fetchedAt": fetched_at,
+        "dakggVersion": dakgg_version(raw_items),
+        "patch": {k: info[k] for k in ("id", "version", "title", "url", "date", "articles")},
+        "overrides": item_overrides + char_overrides,
+        "unparsed": parsed["unparsed"] + item_unparsed + char_unparsed,
+    }
+    return {"items": items, "characters": chars, "meta": meta}
+
+
+def fetch_all(out_dir=DATA_DIR, fetched_at=None):
+    """Fetch everything, write items.json, characters.json, items.meta.json to out_dir."""
+    import fetch_characters as fc
+
+    result = build_all(
+        fetch_json(ITEMS_URL)["items"],
+        fetch_json(MASTERIES_URL)["masteries"],
+        fetch_json(fc.CHARACTERS_URL)["characters"],
+        pn.fetch_patch(),
+        fetched_at or utc_now(),
+    )
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    # Write all three to temp files first so a failed write leaves the old set intact.
+    files = ((ITEMS_FILE, dumps(result["items"])),
+             (CHARACTERS_FILE, fc.dumps(result["characters"])),
+             (META_FILE, dumps(result["meta"])))
+    for name, text in files:
+        with open(out_dir / (name + ".tmp"), "w", encoding="utf-8", newline="\n") as f:
+            f.write(text)
+    for name, _ in files:
+        os.replace(out_dir / (name + ".tmp"), out_dir / name)
+    return result
+
+
 def main():
-    items = build_items(fetch_json(ITEMS_URL)["items"], fetch_json(MASTERIES_URL)["masteries"])
-    OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(OUT_PATH, "w", encoding="utf-8", newline="\n") as f:
-        f.write(dumps(items))
-    print(f"wrote {len(items)} items to {OUT_PATH}")
+    result = fetch_all()
+    meta = result["meta"]
+    print(f"wrote {len(result['items'])} items, {len(result['characters'])} characters to {DATA_DIR} "
+          f"(patch {meta['patch']['version']}: {len(meta['overrides'])} overrides, "
+          f"{len(meta['unparsed'])} unparsed)")
 
 
 if __name__ == "__main__":
