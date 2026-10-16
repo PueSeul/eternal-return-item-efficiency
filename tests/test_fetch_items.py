@@ -100,9 +100,13 @@ class DataFileTests(unittest.TestCase):
                 self.assertIn(it["slot"], SLOTS)
                 self.assertIn(it["grade"], GRADES)
                 self.assertTrue(it["imageUrl"].startswith("https://"))
-                self.assertEqual(it["price"], {"영웅": 0, "전설": 5, "신화": 6}[it["grade"]])
+                if it["name"] in fi.ITEM_PRICE:
+                    self.assertEqual(it["price"], fi.ITEM_PRICE[it["name"]])
+                    self.assertEqual(it["priceSource"], "호스트 지정 가격(재료 기준)")
+                else:
+                    self.assertEqual(it["price"], {"영웅": 0, "전설": 5, "신화": 6}[it["grade"]])
+                    self.assertEqual(it["priceSource"], fi.PRICE_SOURCE)
                 self.assertNotIsInstance(it["price"], bool)
-                self.assertEqual(it["priceSource"], fi.PRICE_SOURCE)
                 if it["slot"] == "무기":
                     self.assertIsInstance(it["weaponType"], str)
                     self.assertTrue(it["weaponType"])
@@ -143,6 +147,18 @@ class DataFileTests(unittest.TestCase):
         # Crafting intermediates / base items are not listed on the page.
         for hidden in ("101104", "201101", "201111", "201202", "201301"):
             self.assertNotIn(hidden, by_id)
+
+    def test_host_price_table(self):
+        by_name = {}
+        for it in self.items:
+            by_name.setdefault(it["name"], []).append(it)
+        missing = sorted(n for n in fi.ITEM_PRICE if n not in by_name)
+        if missing:  # reported, not a failure (host table spelling may differ)
+            print("\nITEM_PRICE names not in data: " + ", ".join(missing))
+        for name, price in fi.ITEM_PRICE.items():
+            for it in by_name.get(name, []):
+                self.assertEqual(it["price"], price)
+        self.assertTrue(any(n in by_name for n in fi.ITEM_PRICE))
 
     def test_epic_price_zero(self):
         epic = [i for i in self.items if i["grade"] == "영웅"]

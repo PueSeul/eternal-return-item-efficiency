@@ -4328,8 +4328,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201403.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 15,
       "레벨 당 최대 체력": 20,
@@ -4398,8 +4398,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201408.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 35,
       "쿨다운 감소": 20,
@@ -4497,8 +4497,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201415.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 15,
       "레벨 당 최대 체력": 22,
@@ -4594,8 +4594,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201423.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 65,
       "최대 체력": 200,
@@ -4609,8 +4609,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201501.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 36,
       "방어력": 15
@@ -4622,8 +4622,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201502.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 20,
       "공격 속도": 0.25,
@@ -4637,8 +4637,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201503.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 80,
       "이동 속도율": 0.035,
@@ -4651,8 +4651,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201504.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 82,
       "쿨다운 감소": 15
@@ -4664,8 +4664,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201505.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 80,
       "공격 속도": 0.35,
@@ -4678,8 +4678,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201506.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 35,
       "공격 속도": 0.42
@@ -4691,8 +4691,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201507.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 50,
       "최대 체력": 200,
@@ -4705,8 +4705,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201508.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 13,
       "레벨 당 최대 체력": 16,
@@ -4719,8 +4719,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201509.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 38,
       "이동 속도율": 0.03,
@@ -4733,8 +4733,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201518.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 25,
       "공격 속도": 0.22,
@@ -4747,8 +4747,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201519.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 82,
       "이동 속도율": 0.02,
@@ -4761,8 +4761,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201520.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 85,
       "이동 속도율": 0.02,
@@ -4775,8 +4775,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201521.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 30,
       "공격 속도": 0.35
@@ -4788,8 +4788,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201522.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 10,
       "레벨 당 최대 체력": 15,
@@ -4802,8 +4802,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201523.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 30,
       "방어력": 10,
@@ -4817,8 +4817,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201524.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 15,
       "레벨 당 최대 체력": 24,
@@ -4831,8 +4831,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201525.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 30,
       "공격 속도": 0.33,
@@ -4845,8 +4845,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201526.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 8,
       "스킬 증폭": 75,
@@ -4859,8 +4859,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201527.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 25,
       "최대 체력": 150,
@@ -4904,8 +4904,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201530.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 25,
       "방어력": 10,
@@ -4933,8 +4933,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201532.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 15,
       "레벨 당 최대 체력": 17,
@@ -4947,8 +4947,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201533.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 80,
       "이동 속도율": 0.025,
@@ -4977,8 +4977,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201535.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 30,
       "최대 체력": 250,
@@ -4991,8 +4991,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201536.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 75,
       "쿨다운 감소": 15,
@@ -5005,8 +5005,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201537.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 12,
       "레벨 당 최대 체력": 25
@@ -5134,8 +5134,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202407.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 35,
       "레벨 당 최대 체력": 24,
@@ -5221,8 +5221,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202415.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 35,
       "레벨 당 최대 체력": 20,
@@ -5235,8 +5235,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202416.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 37,
       "레벨 당 최대 체력": 23,
@@ -5308,8 +5308,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202421.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 40,
       "레벨 당 최대 체력": 24,
@@ -5352,8 +5352,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202501.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 28,
       "스킬 증폭": 40,
@@ -5383,8 +5383,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202503.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 30,
       "스킬 증폭": 30,
@@ -5414,8 +5414,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202505.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 20,
       "레벨 당 공격력": 3,
@@ -5429,8 +5429,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202506.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 38,
       "레벨 당 최대 체력": 20,
@@ -5443,8 +5443,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202507.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 42,
       "레벨 당 최대 체력": 26
@@ -5456,8 +5456,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202508.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 25,
       "스킬 증폭": 20,
@@ -5471,8 +5471,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202509.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 10,
       "레벨 당 공격력": 3,
@@ -5486,8 +5486,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202510.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 14,
       "레벨 당 공격력": 3,
@@ -5501,8 +5501,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202511.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 25,
       "스킬 증폭": 14,
@@ -5515,8 +5515,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202512.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 22,
       "레벨 당 공격력": 3,
@@ -5530,8 +5530,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202513.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 12,
       "레벨 당 공격력": 3,
@@ -5546,8 +5546,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202514.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 25,
       "스킬 증폭": 25,
@@ -5561,8 +5561,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202515.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 18,
       "레벨 당 공격력": 3,
@@ -5576,8 +5576,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202516.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 28,
       "레벨 당 스킬 증폭": 5,
@@ -5590,8 +5590,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202517.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 30,
       "레벨 당 최대 체력": 20,
@@ -5605,8 +5605,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202518.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 30,
       "레벨 당 스킬 증폭": 5,
@@ -5619,8 +5619,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202521.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "레벨 당 공격력": 3,
       "방어력": 25,
@@ -5634,8 +5634,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202522.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 45,
       "레벨 당 최대 체력": 24
@@ -5647,8 +5647,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202523.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "레벨 당 공격력": 3,
       "방어력": 18,
@@ -5662,8 +5662,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202524.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "레벨 당 공격력": 3,
       "방어력": 30,
@@ -5676,8 +5676,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202525.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 15,
       "레벨 당 공격력": 3,
@@ -5692,8 +5692,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202526.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 30,
       "스킬 증폭": 30,
@@ -5735,8 +5735,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202529.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "레벨 당 공격력": 3,
       "방어력": 20,
@@ -5750,8 +5750,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202530.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "레벨 당 공격력": 3,
       "방어력": 25,
@@ -5765,8 +5765,8 @@
     "grade": "전설",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202531.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 40,
       "레벨 당 최대 체력": 24,
@@ -5818,8 +5818,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203404.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 12,
       "레벨 당 최대 체력": 18,
@@ -5873,8 +5873,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203408.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 10,
       "공격 속도": 0.35,
@@ -5943,8 +5943,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203413.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 64,
       "공격 속도": 0.42
@@ -5984,8 +5984,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203501.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 82,
       "쿨다운 감소": 10
@@ -5997,8 +5997,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203502.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 10,
       "공격 속도": 0.38,
@@ -6011,8 +6011,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203503.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 45,
       "방어력": 25,
@@ -6039,8 +6039,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203505.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 15,
       "레벨 당 최대 체력": 20,
@@ -6066,8 +6066,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203507.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 84,
       "쿨다운 감소": 25
@@ -6079,8 +6079,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203508.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 22,
       "최대 체력": 200,
@@ -6107,8 +6107,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203510.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 85,
       "방어 관통율": 0.15
@@ -6120,8 +6120,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203511.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 35,
       "쿨다운 감소": 20,
@@ -6134,8 +6134,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203512.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 75,
       "쿨다운 감소": 20
@@ -6147,8 +6147,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203513.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 25,
       "방어력": 22,
@@ -6161,8 +6161,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203514.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 33,
       "방어력": 10,
@@ -6272,8 +6272,8 @@
     "grade": "전설",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204405.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 60,
       "스킬 증폭율": 0.05,
@@ -6300,8 +6300,8 @@
     "grade": "전설",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204407.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 10,
       "공격 속도": 0.38,
@@ -6328,8 +6328,8 @@
     "grade": "전설",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204409.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 10,
       "최대 체력": 100,
@@ -6343,8 +6343,8 @@
     "grade": "전설",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204410.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 33,
       "이동 속도": 0.25,
@@ -6401,8 +6401,8 @@
     "grade": "전설",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204414.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "이동 속도": 0.25,
       "방어 관통": 18
@@ -6484,8 +6484,8 @@
     "grade": "전설",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204501.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 18,
       "최대 체력": 150,
@@ -6514,8 +6514,8 @@
     "grade": "전설",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204503.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력(택1)": 12,
       "스킬 증폭(택1)": 24,
@@ -6530,8 +6530,8 @@
     "grade": "전설",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204504.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 14,
       "이동 속도": 0.25,
@@ -6544,8 +6544,8 @@
     "grade": "전설",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204505.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 42,
       "이동 속도": 0.25,
@@ -6558,8 +6558,8 @@
     "grade": "전설",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204506.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 10,
       "이동 속도": 0.25,
@@ -6572,8 +6572,8 @@
     "grade": "전설",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204507.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 23,
       "공격 속도": 0.2,
@@ -6587,8 +6587,8 @@
     "grade": "전설",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204508.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 23,
       "공격 속도": 0.1,
@@ -6602,8 +6602,8 @@
     "grade": "전설",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204509.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격 속도": 0.28,
       "이동 속도": 0.25,
@@ -6645,8 +6645,8 @@
     "grade": "전설",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204512.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 15,
       "최대 체력": 120,
@@ -6674,8 +6674,8 @@
     "grade": "전설",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204514.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 20,
       "최대 체력": 150,
@@ -6716,8 +6716,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205305.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 27,
       "공격 속도": 0.3,
@@ -6730,8 +6730,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205306.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 28,
       "최대 체력": 220,
@@ -6772,8 +6772,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205401.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 33,
       "방어력": 10,
@@ -6815,8 +6815,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205406.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 8,
       "스킬 증폭": 55,
@@ -6830,8 +6830,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205407.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 33,
       "공격 속도": 0.3,
@@ -6844,8 +6844,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205408.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 30,
       "공격 속도": 0.3,
@@ -6858,8 +6858,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205501.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 25,
       "공격 속도": 0.35,
@@ -6873,8 +6873,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205502.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 82,
       "쿨다운 감소": 10
@@ -6886,8 +6886,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205503.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 82,
       "이동 속도율": 0.03,
@@ -6900,8 +6900,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205504.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 84
     }
@@ -6912,8 +6912,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205505.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 75,
       "쿨다운 감소": 10
@@ -6938,8 +6938,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205508.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 88,
       "쿨다운 감소": 20
@@ -6951,8 +6951,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205601.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 14,
       "레벨 당 최대 체력": 22,
@@ -7107,8 +7107,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_701451.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "최대 체력": 250,
       "공격 속도": 0.38,
@@ -7121,8 +7121,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_705601.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 15,
       "레벨 당 최대 체력": 20
@@ -7134,8 +7134,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_705603.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 15,
       "레벨 당 최대 체력": 16,
@@ -7148,8 +7148,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_705604.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 60,
       "최대 체력": 100,
@@ -7163,8 +7163,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_705607.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 200,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 11,
       "레벨 당 최대 체력": 17,
@@ -7177,8 +7177,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_705608.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 92,
       "(고유) 스킬 증폭": 0.15
@@ -7190,8 +7190,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_705614.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "공격력": 40,
       "쿨다운 감소": 15,
@@ -7204,8 +7204,8 @@
     "grade": "전설",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_705619.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 350,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "방어력": 10,
       "스킬 증폭": 77,
@@ -7219,8 +7219,8 @@
     "grade": "전설",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_705620.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
+    "price": 250,
+    "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
       "스킬 증폭": 60,
       "쿨다운 감소": 10

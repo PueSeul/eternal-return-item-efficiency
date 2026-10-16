@@ -27,6 +27,38 @@ GRADES = {
 # placeholder values until the host supplies real prices.
 GRADE_PRICE = {"영웅": 0, "전설": 5, "신화": 6}
 PRICE_SOURCE = "등급 기반 대체값"
+# 호스트 지정 가격(재료 기준), by exact item name; overrides GRADE_PRICE.
+# Same-name variants all get the same price. Weapons not priced yet.
+ITEM_PRICE_SOURCE = "호스트 지정 가격(재료 기준)"
+_HOST_PRICE_GROUPS = {
+    200: [  # 생명의 나무
+        "길리 슈트", "불꽃 드레스", "타이탄 아머", "팬텀 자켓", "핏빛 망토",
+        "드워프의 투구", "블래스터 헬멧", "스파크 실드", "예언자의 터번", "월계관", "전술 고글", "택티컬 바이저",
+        "살라딘의 화살통", "서슬가시 체인", "스카디의 팔찌", "월왕구천", "클라다 반지", "토템", "하트 온 파이어", "호루스의 눈",
+        "글레이셜 슈즈", "알렉산드로스", "와일드 워커",
+        # 운석
+        "고스트", "반역의 의지", "배틀 슈트", "선녀강림", "슈팅스타 자켓", "카바나",
+        "빛의 증표", "우주 비행사의 헬멧", "인사이트", "커맨더 헤드셋", "쿤달라", "캡틴 햇", "황야의 별",
+        "가시지네 견갑", "달빛 펜던트", "샤를마뉴의 방패", "아흐라만의 손길", "요명월", "큐브 워치", "해적의 증표",
+        "갤럭시 스텝", "레이싱 부츠", "미라지 워커", "블레이드 부츠", "아이언 메이든", "EOD 부츠",
+    ],
+    250: [  # 미스릴
+        "레이싱 슈트", "미스릴 갑옷", "미스릴 크롭", "진은 드레스", "현자의 로브",
+        "검은 죽음", "다비드 헤드폰", "레이싱 헬멧", "미스릴 투구", "백야의 관", "사이버 스토커", "성기사의 투구",
+        "천룡잠", "쿼드 아이", "트와일라잇",
+        "미스릴 방패", "미스릴 완장", "미스릴 퀴버", "오르비스", "요술램프", "임세티", "틴달로스의 군주",
+        "미스릴 부츠", "스페이스 부츠", "칼날 다리",
+    ],
+    350: [  # 포스 코어
+        "가디언 슈트", "레버넌트", "서리바람 흉갑", "성법의", "스펙터", "아오자이", "엘프 드레스", "오메르타",
+        "유령 신부의 드레스", "이단심판관", "쿠튀리에", "택티컬 아머", "화령장",
+        "검은 베일", "레가투스", "바니햇", "앙 가르드", "야생의 허기", "오니 가면", "천사의 고리", "페르소나",
+        "레이더", "미니어쳐 솔라 시스템", "별 조각", "에메랄드 타블렛", "오토-암즈", "용의 비늘", "운명의 주사위",
+        "텔루리안 타임피스", "파초선", "프시케의 칼날", "헬릭스",
+        "킬힐", "택티컬 슈즈", "헤르메스의 부츠",
+    ],
+}
+ITEM_PRICE = {name: price for price, names in _HOST_PRICE_GROUPS.items() for name in names}
 PAGE_GRADES = {"Epic", "Legend", "Mythic"}
 ARMOR_SLOTS = {"Head": "머리", "Chest": "옷", "Arm": "팔", "Leg": "다리"}
 # 호스트 요청: head items excluded by exact name. "천상의 메아리" has two ids (201516, 201517).
@@ -134,8 +166,8 @@ def build_items(raw_items, masteries):
             "grade": grade,
             "slot": slot,
             "imageUrl": it["imageUrl"],
-            "price": GRADE_PRICE[grade],
-            "priceSource": PRICE_SOURCE,
+            "price": ITEM_PRICE.get(it["name"], GRADE_PRICE[grade]),
+            "priceSource": ITEM_PRICE_SOURCE if it["name"] in ITEM_PRICE else PRICE_SOURCE,
             "stats": stats,
         }
         if slot == "무기":
