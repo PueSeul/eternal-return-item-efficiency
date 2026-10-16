@@ -72,6 +72,17 @@ class ParseTests(unittest.TestCase):
         self.assertNotIn("weaponType", out[1])
 
 
+    def test_host_excluded_head_names(self):
+        def head(i, name, armor="Head"):
+            return {"id": i, "name": name, "type": "Armor", "armorType": armor, "grade": "Legend",
+                    "makeMaterials": [1], "imageUrl": "https://x/%d.png" % i,
+                    "tooltip": "전설 / 머리\n\n방어력 +1"}
+        raw = [head(1, "만개하는 선율"), head(2, "천상의 메아리"), head(3, "천상의 메아리"),
+               head(4, "천상의 메아리 "), head(5, "천상의 메아리", armor="Chest")]
+        out = fi.build_items(raw, [])
+        self.assertEqual([r["id"] for r in out], ["4", "5"])
+
+
 class DataFileTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -133,6 +144,13 @@ class DataFileTests(unittest.TestCase):
         for hidden in ("101104", "201101", "201111", "201202", "201301"):
             self.assertNotIn(hidden, by_id)
 
+    def test_host_excluded_names(self):
+        names = {i["name"] for i in self.items}
+        for name in ("만개하는 선율", "천상의 메아리"):
+            self.assertNotIn(name, names)
+        for hidden in ("201416", "201516", "201517"):
+            self.assertNotIn(hidden, {i["id"] for i in self.items})
+
     def test_stat_keys_known_and_percent_fractions(self):
         for it in self.items:
             for k, v in it["stats"].items():
@@ -145,7 +163,8 @@ class DataFileTests(unittest.TestCase):
 # Rows counted on https://dak.gg/er/items?hl=ko per filter after scrolling the
 # table to the end (patch 12.6, 2026-10-16). The page has no single "무기"
 # filter; 무기 = sum of the weapon-type filters (291 = "모든 아이템" 490 - armor).
-PAGE_SLOT_COUNTS = {"무기": 291, "머리": 57, "옷": 51, "팔": 57, "다리": 34}
+# 머리: page 57 minus host-excluded names (만개하는 선율 1 + 천상의 메아리 2 ids) = 54.
+PAGE_SLOT_COUNTS = {"무기": 291, "머리": 54, "옷": 51, "팔": 57, "다리": 34}
 PAGE_WEAPON_TYPE_COUNTS = {
     "글러브": 14, "단검": 13, "도끼": 12, "레이피어": 15, "망치": 12, "방망이": 13, "쌍검": 13,
     "쌍절곤": 11, "양손검": 15, "창": 11, "채찍": 10, "톤파": 11, "VF의수": 21, "권총": 12,

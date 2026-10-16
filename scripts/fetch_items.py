@@ -27,6 +27,8 @@ GRADE_PRICE = {"일반": 1, "고급": 2, "희귀": 3, "영웅": 4, "전설": 5, 
 PRICE_SOURCE = "등급 기반 대체값"
 PAGE_GRADES = {"Epic", "Legend", "Mythic"}
 ARMOR_SLOTS = {"Head": "머리", "Chest": "옷", "Arm": "팔", "Leg": "다리"}
+# 호스트 요청: head items excluded by exact name. "천상의 메아리" has two ids (201516, 201517).
+EXCLUDED_NAMES = {"만개하는 선율", "천상의 메아리"}
 
 UNIQUE_PREFIX = "(고유) "
 # "<color=..>(고유)</color> 이름 +a", "레벨 당 이름 +a~b%" (a per level, b at max level)
@@ -96,6 +98,8 @@ def listed_on_page(item):
 
 def slot_of(item):
     if not listed_on_page(item):
+        return None
+    if item.get("armorType") == "Head" and item["name"] in EXCLUDED_NAMES:
         return None
     if item["type"] == "Weapon":
         return "무기"

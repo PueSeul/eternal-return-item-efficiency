@@ -4506,19 +4506,6 @@
     }
   },
   {
-    "id": "201416",
-    "name": "만개하는 선율",
-    "grade": "영웅",
-    "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201416.png",
-    "price": 4,
-    "priceSource": "등급 기반 대체값",
-    "stats": {
-      "스킬 증폭": 73,
-      "쿨다운 감소": 15
-    }
-  },
-  {
     "id": "201417",
     "name": "카우보이 모자",
     "grade": "영웅",
@@ -4738,36 +4725,6 @@
       "공격력": 38,
       "이동 속도율": 0.03,
       "방어 관통": 10
-    }
-  },
-  {
-    "id": "201516",
-    "name": "천상의 메아리",
-    "grade": "전설",
-    "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201516.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
-    "stats": {
-      "스킬 증폭": 80,
-      "레벨 당 스킬 증폭": 1,
-      "이동 속도율": 0.025,
-      "쿨다운 감소": 20
-    }
-  },
-  {
-    "id": "201517",
-    "name": "천상의 메아리",
-    "grade": "전설",
-    "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201517.png",
-    "price": 5,
-    "priceSource": "등급 기반 대체값",
-    "stats": {
-      "스킬 증폭": 80,
-      "레벨 당 스킬 증폭": 1,
-      "이동 속도율": 0.02,
-      "쿨다운 감소": 20
     }
   },
   {
