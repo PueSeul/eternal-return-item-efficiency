@@ -8,12 +8,16 @@
 
   const K = Formula.STAT_KEYS;
 
-  // 소수 2자리 반올림, 불필요한 0 제거. -0은 0으로.
+  // 소수 digits자리 반올림, 불필요한 0 제거. 화면(app.js fmt의 toLocaleString)과 같은 반올림을 쓰도록 Intl을 사용.
+  const formatters = {};
   function num(n, digits = 2) {
-    const r = Number(n.toFixed(digits));
-    return String(r === 0 ? 0 : r);
+    const f = formatters[digits] || (formatters[digits] = new Intl.NumberFormat('en-US', { maximumFractionDigits: digits, useGrouping: false }));
+    const s = f.format(n);
+    return s === '-0' ? '0' : s;
   }
-  const pct = (rate) => num(rate * 100) + '%';
+  // 비율 스탯(A·F 항, 0~1 소수)은 0.4% 같은 값이 사라지지 않도록 소수 4자리.
+  const rate = (n) => num(n, 4);
+  const pct = (r) => num(r * 100) + '%';
 
   // keys에 해당하는 스탯의 아이템별 기여(0이 아닌 것만).
   function contrib(items, keys) {
@@ -58,14 +62,14 @@
     out.push(`B = ${num(r.S)} × 100 / (${num(r.R)} + 100) = ${num(r.B)}`);
     const enemyRate = inputs.enemySkillReductionPct / 100;
     const rawA = 1 + r.stats.skillAmpRate - enemyRate;
-    out.push(`A = 1 + ${withParts(r.stats.skillAmpRate, contrib(items, K.skillAmpRate))} − ${num(enemyRate)} = ` +
-      (rawA < Formula.MIN_AMP ? `${num(rawA)} → 최솟값 ${Formula.MIN_AMP} 적용 = ${num(r.A)}` : `${num(r.A)} (최솟값 ${Formula.MIN_AMP})`));
+    out.push(`A = 1 + ${withParts(r.stats.skillAmpRate, contrib(items, K.skillAmpRate), rate)} − ${rate(enemyRate)} = ` +
+      (rawA < Formula.MIN_AMP ? `${rate(rawA)} → 최솟값 ${Formula.MIN_AMP} 적용 = ${rate(r.A)}` : `${rate(r.A)} (최솟값 ${Formula.MIN_AMP})`));
     out.push(sumLine('스킬 증폭', items, inputs.level, K.skillAmp, K.skillAmpPerLevel, K.choiceSkillAmp, r.choice === 'skillAmp', r.stats.skillAmp));
     out.push(`I = 스킬 증폭 합 ${num(r.stats.skillAmp)} − ${num(inputs.enemySkillReduction)} = ${num(r.I)}`);
-    out.push(`F = 1 + ${withParts(r.stats.itemFinalRate, contrib(items, K.finalRate))} + ${num(inputs.extraFinalIncreasePct / 100)} − ` +
-      `${num(inputs.enemyFinalReductionPct / 100)} = ${num(r.F)}`);
+    out.push(`F = 1 + ${withParts(r.stats.itemFinalRate, contrib(items, K.finalRate), rate)} + ${rate(inputs.extraFinalIncreasePct / 100)} − ` +
+      `${rate(inputs.enemyFinalReductionPct / 100)} = ${rate(r.F)}`);
     const rawD = (r.B * r.A + r.I) * r.F;
-    out.push(`D = (${num(r.B)} × ${num(r.A)} + ${num(r.I)}) × ${num(r.F)} = ` +
+    out.push(`D = (${num(r.B)} × ${rate(r.A)} + ${num(r.I)}) × ${rate(r.F)} = ` +
       (rawD < Formula.MIN_DAMAGE ? `${num(rawD)} → 최솟값 ${Formula.MIN_DAMAGE} 적용 = ${num(r.D)}` : num(r.D)));
     if (!(r.price > 0)) {
       out.push('가격 합 0 — 효율 계산 제외');

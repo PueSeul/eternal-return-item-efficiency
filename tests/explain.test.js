@@ -47,3 +47,17 @@ test('계산 과정: A·D 최솟값 적용 표시, 가격 합 0, 택1 없으면 
   assert.equal(out.find((l) => l.startsWith('D =')), 'D = (0 × 0.1 + -938) × 1.05 = -984.9 → 최솟값 1 적용 = 1');
   assert.equal(out[out.length - 1], '가격 합 0 — 효율 계산 제외');
 });
+
+test('계산 과정: 효율 %는 화면(toLocaleString)과 같은 반올림, 작은 비율도 표시', () => {
+  // 0.8985 × 100 = 89.85: toFixed(1)은 이진 오차로 89.8, toLocaleString은 89.9
+  assert.equal(E.num(0.8985 * 100, 1), (0.8985 * 100).toLocaleString('ko-KR', { maximumFractionDigits: 1 }));
+  assert.equal(E.num(-0.001), '0');
+  const inputs = { ...INPUTS, extraFinalIncreasePct: 0.4 };
+  const out = E.lines(ITEMS, inputs, F.calculate(ITEMS, inputs), 0.3);
+  assert.equal(out.find((l) => l.startsWith('F =')), 'F = 1 + 0.05 (다리A 0.05) + 0.004 − 0 = 1.054');
+  const items = ITEMS.map((it) => ({ ...it, stats: { ...it.stats } }));
+  items[2].stats['스킬 증폭율'] = 0.125;
+  items[4].stats['(고유) 스킬 증폭'] = 0.125;
+  const a = E.lines(items, INPUTS, F.calculate(items, INPUTS), 0.3).find((l) => l.startsWith('A ='));
+  assert.equal(a, 'A = 1 + 0.25 (옷A 0.125, 다리A 0.125) − 0 = 1.25 (최솟값 0.1)');
+});
