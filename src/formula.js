@@ -34,22 +34,32 @@
     finalRate: ['최종 피해 증가율'],                  // F
     penRate: ['방어 관통율'],                        // R' = R × (1 − 방어 관통율) − 방어 관통
     pen: ['방어 관통'],
-    choiceAtk: ['공격력(택1)'],                      // 택1 스탯: inputs.choiceStat === 'atk'일 때만 공격력에 합산
-    choiceSkillAmp: ['스킬 증폭(택1)'],              // inputs.choiceStat === 'skillAmp'일 때만 스킬 증폭에 합산
+    choiceAtk: ['공격력(택1)'],                      // 택1 스탯: choiceStat(items) === 'atk'일 때만 공격력에 합산
+    choiceSkillAmp: ['스킬 증폭(택1)'],              // choiceStat(items) === 'skillAmp'일 때만 스킬 증폭에 합산
   };
 
-  // '(택1)' 스탯 처리 방식. 게임에서 둘 중 하나를 고르는 스탯이라 전체 계산에 한 방식을 적용한다.
-  const CHOICE_OPTIONS = [
-    { value: 'skillAmp', label: '스킬 증폭(택1) 적용' },
-    { value: 'atk', label: '공격력(택1) 적용' },
-    { value: 'none', label: '택1 스탯 적용 안 함' },
-  ];
+  // '(택1)' 스탯 자동 결정. 무기를 제외한 부위 중 공격력 계열 스탯을 가진 부위 수(a)와
+  // 스킬 증폭 계열 스탯을 가진 부위 수(s)를 세어(한 아이템이 둘 다 가지면 둘 다 셈)
+  // a > s 이면 'atk', 그 외(동률 포함)는 'skillAmp'.
+  function choiceStat(items) {
+    const has = (it, keys) => keys.some((k) => {
+      const n = Number(it.stats && it.stats[k]);
+      return Number.isFinite(n) && n !== 0;
+    });
+    let a = 0;
+    let s = 0;
+    for (const it of items) {
+      if (!it || it.slot === '무기') continue;
+      if (has(it, [...STAT_KEYS.atk, ...STAT_KEYS.atkPerLevel])) a++;
+      if (has(it, ['스킬 증폭', '레벨 당 스킬 증폭', '(고유) 스킬 증폭'])) s++;
+    }
+    return a > s ? 'atk' : 'skillAmp';
+  }
 
   // 사용자 입력 필드와 기본값. 비율(%) 항목은 퍼센트 단위(예: 5 = 5%)로 입력한다.
   // null = 기본값 없음(스킬 툴팁·대상에 따라 다르므로 사용자가 반드시 입력).
   const DEFAULT_INPUTS = {
     level: 20,                  // '레벨 당' 스탯에 곱하는 레벨
-    choiceStat: 'skillAmp',     // '(택1)' 스탯 처리: CHOICE_OPTIONS의 value
     skillDamage: null,          // S의 툴팁 기본 피해량
     atkCoefPct: null,           // S의 공격력 계수(%) — 툴팁 "(+공격력의 X%)"
     defense: null,              // R: 피격 대상 방어력
@@ -87,13 +97,13 @@
   function calculate(items, inputs) {
     // null·빈 값이 Number 연산에서 0으로 바뀌어 조용히 계산되는 것을 막는다.
     for (const key of Object.keys(DEFAULT_INPUTS)) {
-      if (key !== 'choiceStat' && (typeof inputs[key] !== 'number' || !Number.isFinite(inputs[key]))) {
+      if (typeof inputs[key] !== 'number' || !Number.isFinite(inputs[key])) {
         throw new Error(`입력값 ${key}가 숫자가 아닙니다.`);
       }
     }
     const totals = aggregateStats(items);
     const sum = (keys) => keys.reduce((s, k) => s + (totals[k] || 0), 0);
-    const choice = inputs.choiceStat;
+    const choice = choiceStat(items);
     const atk = sum(STAT_KEYS.atk) + sum(STAT_KEYS.atkPerLevel) * inputs.level +
       (choice === 'atk' ? sum(STAT_KEYS.choiceAtk) : 0);
     const skillAmp = sum(STAT_KEYS.skillAmp) + sum(STAT_KEYS.skillAmpPerLevel) * inputs.level +
@@ -117,6 +127,7 @@
     const price = totalPrice(items);
     return {
       stats: { atk, skillAmp, skillAmpRate, itemFinalRate, penRate, pen },
+      choice,
       S,
       R,
       ...terms,
@@ -131,5 +142,5 @@
     return (ratio / bestRatio) * 100;
   }
 
-  return { MIN_AMP, MIN_DAMAGE, SLOTS, STAT_KEYS, CHOICE_OPTIONS, DEFAULT_INPUTS, damage, aggregateStats, totalPrice, calculate, efficiencyPercent };
+  return { MIN_AMP, MIN_DAMAGE, SLOTS, STAT_KEYS, DEFAULT_INPUTS, choiceStat, damage, aggregateStats, totalPrice, calculate, efficiencyPercent };
 });

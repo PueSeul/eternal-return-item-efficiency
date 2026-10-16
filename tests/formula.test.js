@@ -82,14 +82,51 @@ test("calculate: '레벨 당' 스탯은 레벨을 곱하고 '(고유) 스킬 증
   close(r.I, 50);
 });
 
-test("calculate: '(택1)' 스탯은 choiceStat에 따라 한쪽만 반영", () => {
-  const crown = { slot: '머리', price: 1, stats: { '공격력(택1)': 25, '스킬 증폭(택1)': 100 } };
-  const amp = F.calculate([crown], { ...IN, choiceStat: 'skillAmp' });
-  assert.deepEqual([amp.stats.atk, amp.stats.skillAmp], [0, 100]);
-  const atk = F.calculate([crown], { ...IN, choiceStat: 'atk' });
-  assert.deepEqual([atk.stats.atk, atk.stats.skillAmp], [25, 0]);
-  const none = F.calculate([crown], { ...IN, choiceStat: 'none' });
-  assert.deepEqual([none.stats.atk, none.stats.skillAmp], [0, 0]);
+const gear = (slot, stats) => ({ slot, price: 1, stats });
+const ATK = { 공격력: 10 };
+const AMP = { '스킬 증폭': 20 };
+
+test("choiceStat: a > s면 'atk'", () => {
+  const set = [gear('무기', AMP), gear('머리', ATK), gear('옷', { '레벨 당 공격력': 1 }), gear('팔', AMP), gear('다리', { 방어력: 5 })];
+  assert.equal(F.choiceStat(set), 'atk'); // a=2, s=1 (무기 제외)
+});
+
+test("choiceStat: s > a면 'skillAmp'", () => {
+  const set = [gear('무기', ATK), gear('머리', AMP), gear('옷', { '레벨 당 스킬 증폭': 1 }), gear('팔', { '(고유) 스킬 증폭': 0.2 }), gear('다리', ATK)];
+  assert.equal(F.choiceStat(set), 'skillAmp'); // a=1, s=3
+});
+
+test("choiceStat: 2:2 동률이면 'skillAmp', 무기는 세지 않음", () => {
+  const set = [gear('무기', ATK), gear('머리', ATK), gear('옷', ATK), gear('팔', AMP), gear('다리', AMP)];
+  assert.equal(F.choiceStat(set), 'skillAmp');
+});
+
+test('choiceStat: 둘 다 가진 아이템은 양쪽 모두 셈, 택1 키는 세지 않음', () => {
+  const both = { ...ATK, ...AMP };
+  // a=3(머리·옷·팔), s=1(머리) → atk. '스킬 증폭(택1)'은 s에 세지 않는다.
+  const set = [gear('무기', AMP), gear('머리', both), gear('옷', ATK), gear('팔', ATK), gear('다리', { '스킬 증폭(택1)': 50 })];
+  assert.equal(F.choiceStat(set), 'atk');
+  // a=2(머리·옷), s=2(머리·팔) → 동률이라 skillAmp. '공격력(택1)'은 a에 세지 않는다.
+  const set2 = [gear('무기', ATK), gear('머리', both), gear('옷', ATK), gear('팔', AMP), gear('다리', { '공격력(택1)': 50 })];
+  assert.equal(F.choiceStat(set2), 'skillAmp');
+  // 둘 다 가진 아이템이 한쪽에만 세어지면 결과가 뒤집히는 경우
+  const none = gear('다리', { 방어력: 5 });
+  assert.equal(F.choiceStat([gear('머리', both), gear('옷', ATK), gear('팔', {}), none]), 'atk'); // a=2, s=1
+  assert.equal(F.choiceStat([gear('머리', both), gear('옷', AMP), gear('팔', ATK), none]), 'skillAmp'); // a=2, s=2
+  // 값이 0인 스탯은 가진 것으로 보지 않는다
+  assert.equal(F.choiceStat([gear('머리', ATK), gear('옷', { '스킬 증폭': 0 })]), 'atk'); // a=1, s=0
+});
+
+test("calculate: '(택1)' 스탯은 자동 결정된 한쪽만 반영", () => {
+  const crown = gear('머리', { '공격력(택1)': 25, '스킬 증폭(택1)': 100 });
+  const amp = F.calculate([crown, gear('옷', AMP)], IN); // a=0, s=1
+  assert.equal(amp.choice, 'skillAmp');
+  assert.deepEqual([amp.stats.atk, amp.stats.skillAmp], [0, 120]);
+  const atk = F.calculate([crown, gear('옷', ATK)], IN); // a=1, s=0
+  assert.equal(atk.choice, 'atk');
+  assert.deepEqual([atk.stats.atk, atk.stats.skillAmp], [35, 0]);
+  // 저장된 옛 입력의 choiceStat은 무시된다(복원 후 재계산도 같은 규칙).
+  assert.equal(F.calculate([crown, gear('옷', ATK)], { ...IN, choiceStat: 'skillAmp' }).choice, 'atk');
 });
 
 test('가격 합이 0이면 ratio/효율은 null', () => {

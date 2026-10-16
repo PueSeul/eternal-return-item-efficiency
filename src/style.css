@@ -24,7 +24,6 @@ button.primary { background: var(--accent); border-color: var(--accent); font-si
 input, select { background: #12151a; color: var(--text); border: 1px solid var(--line); border-radius: 4px; padding: 4px 6px; }
 .result { margin-top: 12px; padding: 12px; border: 1px solid var(--accent); border-radius: 6px; }
 .result .big { font-size: 22px; font-weight: bold; }
-.help { margin-top: 16px; font-size: 13px; }
 .history-head { display: flex; justify-content: space-between; align-items: center; }
 .tabs { display: flex; gap: 6px; }
 .tabs button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); }

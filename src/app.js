@@ -5,19 +5,18 @@
   const DATA_URL = 'data/items.json';
   const GRADES = ['일반', '고급', '희귀', '영웅', '전설', '신화'];
   const INPUT_FIELDS = [
-    { key: 'level', label: '레벨', hint: "'레벨 당' 스탯 × 레벨", step: 1, min: 1 },
-    { key: 'skillDamage', label: '스킬 기본 피해량 (S)', hint: '스킬 툴팁의 피해량 고정 수치(예: 200)', step: 'any', min: 0 },
-    { key: 'atkCoefPct', label: '공격력 계수 (%)', hint: '툴팁 "(+공격력의 X%)"의 X, 없으면 0', step: 'any', min: 0 },
-    { key: 'defense', label: '피격 대상 방어력 (R)', hint: '대상의 방어력, 0 이상', step: 'any', min: 0 },
-    { key: 'enemySkillReductionPct', label: '적의 스킬 피해 감소율 (%)', hint: 'A 항에서 뺌', step: 'any' },
-    { key: 'enemySkillReduction', label: '적의 스킬 피해 감소 (고정)', hint: 'I 항에서 뺌', step: 'any' },
-    { key: 'extraFinalIncreasePct', label: '추가 최종 피해 증가율 (%)', hint: '아이템 외 F 항 가산', step: 'any' },
-    { key: 'enemyFinalReductionPct', label: '적의 최종 피해 감소율 (%)', hint: 'F 항에서 뺌', step: 'any' },
+    { key: 'level', label: '레벨', step: 1, min: 1 },
+    { key: 'skillDamage', label: '스킬 기본 피해량 (S)', step: 'any', min: 0 },
+    { key: 'atkCoefPct', label: '공격력 계수 (%)', step: 'any', min: 0 },
+    { key: 'defense', label: '피격 대상 방어력 (R)', step: 'any', min: 0 },
+    { key: 'enemySkillReductionPct', label: '적의 스킬 피해 감소율 (%)', step: 'any' },
+    { key: 'enemySkillReduction', label: '적의 스킬 피해 감소 (고정)', step: 'any' },
+    { key: 'extraFinalIncreasePct', label: '추가 최종 피해 증가율 (%)', step: 'any' },
+    { key: 'enemyFinalReductionPct', label: '적의 최종 피해 감소율 (%)', step: 'any' },
   ];
 
   const $ = (sel) => document.querySelector(sel);
   const state = { items: [], byId: new Map(), equipped: {}, history: [], historySort: 'recent', pickerSlot: null };
-  const defaultText = (key) => (Formula.DEFAULT_INPUTS[key] == null ? '기본값 없음, 직접 입력' : `기본값 ${Formula.DEFAULT_INPUTS[key]}`);
 
   function el(tag, props, ...children) {
     const node = document.createElement(tag);
@@ -74,8 +73,6 @@
     const missing = Formula.SLOTS.filter((s) => !state.items.some((it) => it.slot === s));
     if (!state.items.length) showBanner('data/items.json에 장비 아이템이 없습니다. `scripts/fetch_items.py`를 다시 실행하세요.');
     else if (missing.length) showBanner(`다음 부위의 아이템이 데이터에 없습니다: ${missing.join(', ')}`);
-    const sources = [...new Set(state.items.map((it) => it.priceSource).filter(Boolean))];
-    $('#price-note').textContent = '가격 출처(데이터 파일의 priceSource): ' + (sources.length ? sources.join(' / ') : '표기 없음');
   }
 
   // ---------- 슬롯 ----------
@@ -170,14 +167,6 @@
       if (Formula.DEFAULT_INPUTS[f.key] == null) input.placeholder = '직접 입력';
       form.append(el('label', null, f.label, input));
     }
-    const choice = el('select', { id: 'in-choiceStat' });
-    for (const o of Formula.CHOICE_OPTIONS) choice.append(el('option', { value: o.value, textContent: o.label }));
-    choice.value = Formula.DEFAULT_INPUTS.choiceStat;
-    form.append(el('label', null, "'(택1)' 스탯 처리", choice));
-    // 입력란 설명은 접힌 도움말(#input-help)에만 둔다.
-    const help = $('#input-help');
-    for (const f of INPUT_FIELDS) help.append(el('li', null, el('b', { textContent: f.label }), ` — ${f.hint} (${defaultText(f.key)})`));
-    help.append(el('li', null, el('b', { textContent: "'(택1)' 스탯 처리" }), ' — 둘 중 하나를 고르는 아이템 스탯을 어느 쪽으로 계산할지'));
   }
 
   function readInputs() {
@@ -190,7 +179,6 @@
       if (f.min != null && n < f.min) throw new Error(`"${f.label}" 값은 ${f.min} 이상이어야 합니다.`);
       out[f.key] = n;
     }
-    out.choiceStat = $('#in-choiceStat').value;
     return out;
   }
 
@@ -199,9 +187,6 @@
       const v = inputs && inputs[f.key] != null ? inputs[f.key] : Formula.DEFAULT_INPUTS[f.key];
       $('#in-' + f.key).value = v ?? '';
     }
-    const choice = inputs && Formula.CHOICE_OPTIONS.some((o) => o.value === inputs.choiceStat)
-      ? inputs.choiceStat : Formula.DEFAULT_INPUTS.choiceStat;
-    $('#in-choiceStat').value = choice;
   }
 
   // ---------- 계산 ----------
