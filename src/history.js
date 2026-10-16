@@ -8,8 +8,8 @@
 
   const STORAGE_KEY = 'er-damage-calc-history-v1';
   const MAX_ENTRIES = 500;
-  // 계산식 버전. 2 = S·R 직접 입력 + 스킬 계수 매핑. 다른 버전 기록은 효율 비교(최고치·효율순)에서 제외한다.
-  const FORMULA_VERSION = 2;
+  // 계산식 버전. 3 = S·R·공격력 계수 직접 입력, 고정 스킬 증폭은 I 항. 다른 버전 기록은 효율 비교(최고치·효율순)에서 제외한다.
+  const FORMULA_VERSION = 3;
 
   function isCurrent(e) {
     return e.formulaVersion === FORMULA_VERSION;

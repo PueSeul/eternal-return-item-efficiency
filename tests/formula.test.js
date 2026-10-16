@@ -5,10 +5,10 @@ const path = require('path');
 const F = require('../src/formula');
 const items = require(path.join(__dirname, 'fixtures', 'items.sample.json'));
 
-const base = { S: 100, R: 100, ampRate: 0, enemySkillReductionRate: 0, enemySkillReduction: 0, finalRate: 0, enemyFinalReductionRate: 0 };
+const base = { S: 100, R: 100, skillAmp: 0, ampRate: 0, enemySkillReductionRate: 0, enemySkillReduction: 0, finalRate: 0, enemyFinalReductionRate: 0 };
 const close = (a, b) => assert.ok(Math.abs(a - b) < 1e-9, `${a} != ${b}`);
 // S·R·계수는 기본값이 없으므로 테스트용 입력을 채운다.
-const IN = { ...F.DEFAULT_INPUTS, skillDamage: 100, atkCoefPct: 50, skillAmpCoefPct: 80, defense: 100 };
+const IN = { ...F.DEFAULT_INPUTS, skillDamage: 100, atkCoefPct: 50, defense: 100 };
 
 test('B = S × 100 / (R + 100)', () => {
   close(F.damage({ ...base, S: 200, R: 100 }).B, 100);
@@ -22,6 +22,10 @@ test('D = (B × A + I) × F 기본 예시', () => {
   close(r.I, -10);
   close(r.F, 1.05);
   close(r.D, 115.5);
+  // I = 스킬 증폭 − 적의 스킬 피해 감소: (120 + 30 − 10) × 1.05 = 147
+  const r2 = F.damage({ ...base, S: 200, R: 100, skillAmp: 30, ampRate: 0.25, enemySkillReductionRate: 0.05, enemySkillReduction: 10, finalRate: 0.1, enemyFinalReductionRate: 0.05 });
+  close(r2.I, 20);
+  close(r2.D, 147);
 });
 
 test('피해 증폭 A 최솟값은 0.1', () => {
@@ -49,15 +53,15 @@ test('aggregateStats는 같은 키를 합산하고 숫자가 아닌 값은 무�
 
 test('calculate: 픽스처 5부위 장착 시 스탯이 각 항에 대입됨', () => {
   const r = F.calculate(items, IN);
-  // 공격력 75, 스킬 증폭 50 → S = 100 + 0.5×75 + 0.8×50 = 177.5, R' = 100, B = 88.75
-  // A = 1.25, I = 0(고정 스킬 증폭은 S에만), F = 1.05 → D = 88.75 × 1.25 × 1.05
-  close(r.S, 177.5);
+  // 공격력 75 → S = 100 + 0.5×75 = 137.5, R' = 100, B = 68.75
+  // A = 1.25, I = 스킬 증폭 50 − 0 = 50, F = 1.05 → D = (68.75×1.25 + 50) × 1.05 = 142.734375
+  close(r.S, 137.5);
   close(r.R, 100);
-  close(r.B, 88.75);
+  close(r.B, 68.75);
   close(r.A, 1.25);
-  close(r.I, 0);
+  close(r.I, 50);
   close(r.F, 1.05);
-  close(r.D, 88.75 * 1.25 * 1.05);
+  close(r.D, 142.734375);
   assert.equal(r.price, 1000);
   close(r.ratio, r.D / 1000);
 });
@@ -74,7 +78,8 @@ test("calculate: '레벨 당' 스탯은 레벨을 곱하고 '(고유) 스킬 증
   assert.equal(r.stats.skillAmp, 50);
   assert.equal(r.stats.atk, 20);
   close(r.A, 1.25);
-  close(r.S, 100 + 0.5 * 20 + 0.8 * 50);
+  close(r.S, 100 + 0.5 * 20);
+  close(r.I, 50);
 });
 
 test("calculate: '(택1)' 스탯은 choiceStat에 따라 한쪽만 반영", () => {
@@ -111,17 +116,21 @@ test("calculate: 방어 관통율·방어 관통은 적용 방어력 R'을 낮�
   close(r.B, 100 * 100 / 170);
 });
 
-test('calculate: 공격력/스킬 증폭은 입력한 계수(%)로만 S에 들어가고 I에는 안 들어감', () => {
-  const r0 = F.calculate(items, { ...IN, atkCoefPct: 0, skillAmpCoefPct: 0 });
+test('calculate: 공격력은 계수(%)로 S에, 고정 스킬 증폭은 I에 들어감', () => {
+  const r0 = F.calculate(items, { ...IN, atkCoefPct: 0 });
   close(r0.S, 100);
-  close(r0.I, 0);
-  const r1 = F.calculate(items, { ...IN, atkCoefPct: 100, skillAmpCoefPct: 0, enemySkillReduction: 7 });
+  close(r0.I, 50);
+  const r1 = F.calculate(items, { ...IN, atkCoefPct: 100, enemySkillReduction: 7 });
   close(r1.S, 175);
-  close(r1.I, -7);
+  close(r1.I, 43);
+  const r2 = F.calculate(items, { ...IN, enemySkillReduction: 200 }); // I 음수 허용, D는 하한 1 규칙만
+  close(r2.I, -150);
 });
 
-test('S·R·계수는 기본값 없음(사용자 입력 필수)', () => {
-  for (const k of ['skillDamage', 'atkCoefPct', 'skillAmpCoefPct', 'defense']) assert.equal(F.DEFAULT_INPUTS[k], null);
+test('S·R·공격력 계수는 기본값 없음(사용자 입력 필수), 적의 스킬 피해 감소(고정)는 기본값 0', () => {
+  for (const k of ['skillDamage', 'atkCoefPct', 'defense']) assert.equal(F.DEFAULT_INPUTS[k], null);
+  assert.equal(F.DEFAULT_INPUTS.enemySkillReduction, 0);
+  assert.ok(!('skillAmpCoefPct' in F.DEFAULT_INPUTS));
   assert.throws(() => F.calculate(items, F.DEFAULT_INPUTS), /skillDamage/);
   assert.throws(() => F.calculate(items, { ...IN, defense: null }), /defense/);
 });

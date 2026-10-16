@@ -15,7 +15,7 @@ const equipped = Object.fromEntries(items.map((it) => [it.slot, it]));
 
 test('기록 저장 후 다시 읽으면 구성·입력값·결과가 그대로', () => {
   const storage = memoryStorage();
-  const inputs = { ...F.DEFAULT_INPUTS, skillDamage: 200, atkCoefPct: 0, skillAmpCoefPct: 80, defense: 80 };
+  const inputs = { ...F.DEFAULT_INPUTS, skillDamage: 200, atkCoefPct: 0, defense: 80 };
   const result = F.calculate(items, inputs);
   const entry = H.makeEntry({ equipped, inputs, result, now: new Date('2026-10-16T00:00:00Z') });
   H.save(storage, H.add([], entry));

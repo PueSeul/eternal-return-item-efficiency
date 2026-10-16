@@ -2,14 +2,13 @@
 // D = (B × A + I) × F
 //   B = S × 100 / (R' + 100)
 //   A = 1 + 스킬 증폭율 − 적의 스킬 피해 감소율   (최솟값 0.1)
-//   I = −적의 스킬 피해 감소(고정)
+//   I = 고정 스킬 증폭 합 − 적의 스킬 피해 감소(고정)   (호스트 결정: 이미지 식 그대로)
 //   F = 1 + 최종 피해 증가율 − 적의 최종 피해 감소율
 //   최종 피해량 최솟값 1, 모드 증폭 제외(루미아섬 기준)
-// 아이템 스탯 매핑 근거(공식 라운지 피해 공식, 나무위키 "이터널 리턴/가이드" 피해 공식):
-//   스킬에 정의된 피해(S) = 툴팁 기본 피해 + 공격력 계수 × 공격력 + 스킬 증폭 계수 × 스킬 증폭
+// 아이템 스탯 매핑:
+//   스킬에 정의된 피해(S) = 툴팁 기본 피해 + 공격력 계수 × 공격력
 //   적용 방어력(R') = R × (1 − 방어 관통율) − 방어 관통
-//   스킬 증폭(%)은 증폭율로 0.1 미만으로 내려가지 않음 → A
-//   고정 스킬 증폭은 계수로 S에 들어가므로 I에는 넣지 않는다(이중 반영 방지).
+//   스킬 증폭율 → A, 고정 스킬 증폭 → I, 최종 피해 증가율 → F
 (function (root, factory) {
   const api = factory();
   if (typeof module === 'object' && module.exports) module.exports = api;
@@ -29,7 +28,7 @@
   const STAT_KEYS = {
     atk: ['공격력'],                                // S: 공격력 계수 × 공격력 합
     atkPerLevel: ['레벨 당 공격력'],
-    skillAmp: ['스킬 증폭'],                         // S: 스킬 증폭 계수 × 스킬 증폭 합
+    skillAmp: ['스킬 증폭'],                         // I: 고정 스킬 증폭 합
     skillAmpPerLevel: ['레벨 당 스킬 증폭'],
     skillAmpRate: ['스킬 증폭율', '(고유) 스킬 증폭'], // A
     finalRate: ['최종 피해 증가율'],                  // F
@@ -53,7 +52,6 @@
     choiceStat: 'skillAmp',     // '(택1)' 스탯 처리: CHOICE_OPTIONS의 value
     skillDamage: null,          // S의 툴팁 기본 피해량
     atkCoefPct: null,           // S의 공격력 계수(%) — 툴팁 "(+공격력의 X%)"
-    skillAmpCoefPct: null,      // S의 스킬 증폭 계수(%) — 툴팁 "(+스킬 증폭의 X%)"
     defense: null,              // R: 피격 대상 방어력
     enemySkillReductionPct: 0,  // 적의 스킬 피해 감소율(%)
     enemySkillReduction: 0,     // 적의 스킬 피해 감소(고정값)
@@ -64,7 +62,7 @@
   function damage(p) {
     const B = (p.S * 100) / (p.R + 100);
     const A = Math.max(MIN_AMP, 1 + p.ampRate - p.enemySkillReductionRate);
-    const I = 0 - p.enemySkillReduction; // 0 − x: 입력 0일 때 −0 표시 방지
+    const I = p.skillAmp - p.enemySkillReduction;
     const F = 1 + p.finalRate - p.enemyFinalReductionRate;
     const D = Math.max(MIN_DAMAGE, (B * A + I) * F);
     return { B, A, I, F, D };
@@ -104,11 +102,12 @@
     const itemFinalRate = sum(STAT_KEYS.finalRate);
     const penRate = sum(STAT_KEYS.penRate);
     const pen = sum(STAT_KEYS.pen);
-    const S = inputs.skillDamage + (inputs.atkCoefPct / 100) * atk + (inputs.skillAmpCoefPct / 100) * skillAmp;
+    const S = inputs.skillDamage + (inputs.atkCoefPct / 100) * atk;
     const R = inputs.defense * (1 - penRate) - pen;
     const terms = damage({
       S,
       R,
+      skillAmp,
       ampRate: skillAmpRate,
       enemySkillReductionRate: inputs.enemySkillReductionPct / 100,
       enemySkillReduction: inputs.enemySkillReduction,
