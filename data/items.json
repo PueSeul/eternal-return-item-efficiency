@@ -5,7 +5,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101401.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 58,
@@ -21,7 +21,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101402.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 25,
@@ -37,7 +37,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101404.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 54,
@@ -66,7 +66,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101406.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 63,
@@ -81,7 +81,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101407.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 60,
@@ -95,7 +95,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101408.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 30,
@@ -207,7 +207,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102405.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 64,
@@ -222,7 +222,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102406.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 60,
@@ -236,7 +236,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102407.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 55,
@@ -252,7 +252,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102408.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 36,
@@ -280,7 +280,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102410.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 65,
@@ -295,7 +295,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102411.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 58,
@@ -325,7 +325,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102413.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 38,
@@ -432,7 +432,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_103401.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 48,
@@ -462,7 +462,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_103403.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 31,
@@ -478,7 +478,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_103404.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 30,
@@ -492,7 +492,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_103501.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 51,
@@ -568,7 +568,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_103506.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 52,
@@ -628,7 +628,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104401.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 34,
@@ -643,7 +643,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104402.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 80,
@@ -658,7 +658,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104403.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 95,
@@ -703,7 +703,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104406.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 82,
@@ -717,7 +717,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104407.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 74,
@@ -733,7 +733,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104408.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 26,
@@ -747,7 +747,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104409.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 34,
@@ -854,7 +854,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_105402.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 44,
@@ -869,7 +869,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_105403.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 80,
@@ -884,7 +884,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_105404.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 50,
@@ -898,7 +898,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_105405.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 80,
@@ -913,7 +913,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_105406.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 78,
@@ -1049,7 +1049,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_107403.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 70,
@@ -1080,7 +1080,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_107405.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 35,
@@ -1110,7 +1110,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_107407.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 35,
@@ -1125,7 +1125,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_107408.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 82,
@@ -1205,7 +1205,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_108403.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 75,
@@ -1220,7 +1220,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_108404.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 72,
@@ -1234,7 +1234,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_108501.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 30,
@@ -1356,7 +1356,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_109401.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 40,
@@ -1371,7 +1371,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_109403.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 40,
@@ -1386,7 +1386,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_109404.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 40,
@@ -1401,7 +1401,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_109405.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 28,
@@ -1512,7 +1512,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110405.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 64,
@@ -1527,7 +1527,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110406.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 41,
@@ -1542,7 +1542,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110407.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 63,
@@ -1557,7 +1557,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110408.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 32,
@@ -1572,7 +1572,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110409.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 32,
@@ -1587,7 +1587,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110410.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 60,
@@ -1602,7 +1602,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110411.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 60,
@@ -1724,7 +1724,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_111402.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 40,
@@ -1739,7 +1739,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_111403.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 40,
@@ -1754,7 +1754,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_111404.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 50,
@@ -1785,7 +1785,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_111406.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 53,
@@ -1898,7 +1898,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_112302.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 33,
@@ -1914,7 +1914,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_112401.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 76,
@@ -1928,7 +1928,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_112402.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 65,
@@ -2000,7 +2000,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_112408.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 33,
@@ -2015,7 +2015,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_112501.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 33,
@@ -2094,7 +2094,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_113401.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 62,
@@ -2108,7 +2108,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_113405.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 31,
@@ -2122,7 +2122,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_113406.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 31,
@@ -2152,7 +2152,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_113409.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 30,
@@ -2167,7 +2167,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_113410.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 56,
@@ -2287,7 +2287,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_114401.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 57,
@@ -2301,7 +2301,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_114403.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 43,
@@ -2317,7 +2317,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_114405.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 65,
@@ -2332,7 +2332,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_114406.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 72,
@@ -2362,7 +2362,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_114501.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 43,
@@ -2471,7 +2471,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_115402.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 67,
@@ -2485,7 +2485,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_115403.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 42,
@@ -2500,7 +2500,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_115404.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 76,
@@ -2529,7 +2529,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_115406.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 42,
@@ -2647,7 +2647,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_116404.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 35,
@@ -2662,7 +2662,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_116405.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 75,
@@ -2677,7 +2677,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_116406.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 40,
@@ -2693,7 +2693,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_116407.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 66,
@@ -2707,7 +2707,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_116409.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 23,
@@ -2815,7 +2815,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_117403.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 75,
@@ -2830,7 +2830,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_117404.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 63,
@@ -2844,7 +2844,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_117405.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 35,
@@ -2873,7 +2873,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_117407.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 35,
@@ -2888,7 +2888,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_117501.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 71,
@@ -2995,7 +2995,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_118403.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 70,
@@ -3026,7 +3026,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_118405.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 40,
@@ -3043,7 +3043,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_118406.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 73,
@@ -3058,7 +3058,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_118407.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 40,
@@ -3188,7 +3188,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_119301.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 38,
@@ -3202,7 +3202,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_119401.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 35,
@@ -3217,7 +3217,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_119402.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 63,
@@ -3246,7 +3246,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_119404.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 56,
@@ -3352,7 +3352,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120302.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 25,
@@ -3367,7 +3367,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120401.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 57,
@@ -3399,7 +3399,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120403.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 50,
@@ -3446,7 +3446,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120406.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 28,
@@ -3461,7 +3461,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120407.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 25,
@@ -3475,7 +3475,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120408.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 57,
@@ -3586,7 +3586,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121401.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 42,
@@ -3601,7 +3601,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121402.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 42,
@@ -3616,7 +3616,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121403.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 42,
@@ -3630,7 +3630,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121404.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 62,
@@ -3659,7 +3659,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121406.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 58,
@@ -3673,7 +3673,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121407.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 64,
@@ -3779,7 +3779,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_122401.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 25,
@@ -3794,7 +3794,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_122402.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 58,
@@ -3826,7 +3826,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_122404.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 55,
@@ -3842,7 +3842,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_122405.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 22,
@@ -3957,7 +3957,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_130401.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 30,
@@ -3971,7 +3971,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_130402.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 25,
@@ -3987,7 +3987,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_130403.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 30,
@@ -4003,7 +4003,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_130404.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 38,
@@ -4126,7 +4126,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_131401.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 60,
@@ -4142,7 +4142,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_131402.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 50,
@@ -4157,7 +4157,7 @@
     "grade": "영웅",
     "slot": "무기",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_131403.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 68,
@@ -4314,7 +4314,7 @@
     "grade": "영웅",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201304.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 20,
@@ -4342,7 +4342,7 @@
     "grade": "영웅",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201404.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 17,
@@ -4356,7 +4356,7 @@
     "grade": "영웅",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201405.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "스킬 증폭": 55,
@@ -4370,7 +4370,7 @@
     "grade": "영웅",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201406.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "최대 체력": 120,
@@ -4384,7 +4384,7 @@
     "grade": "영웅",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201407.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 12,
@@ -4412,7 +4412,7 @@
     "grade": "영웅",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201409.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "스킬 증폭": 63,
@@ -4425,7 +4425,7 @@
     "grade": "영웅",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201410.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "스킬 증폭": 80,
@@ -4455,7 +4455,7 @@
     "grade": "영웅",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201412.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 12,
@@ -4469,7 +4469,7 @@
     "grade": "영웅",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201413.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "스킬 증폭": 50,
@@ -4483,7 +4483,7 @@
     "grade": "영웅",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201414.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 25,
@@ -4511,7 +4511,7 @@
     "grade": "영웅",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201417.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 28,
@@ -4524,7 +4524,7 @@
     "grade": "영웅",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201418.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 35,
@@ -4538,7 +4538,7 @@
     "grade": "영웅",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201419.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 26,
@@ -4552,7 +4552,7 @@
     "grade": "영웅",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201420.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "스킬 증폭": 68,
@@ -4565,7 +4565,7 @@
     "grade": "영웅",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201421.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 10,
@@ -4579,7 +4579,7 @@
     "grade": "영웅",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201422.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "스킬 증폭": 53,
@@ -4919,7 +4919,7 @@
     "grade": "영웅",
     "slot": "머리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201531.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 15,
@@ -5033,7 +5033,7 @@
     "grade": "영웅",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202104.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 25,
@@ -5063,7 +5063,7 @@
     "grade": "영웅",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202307.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 24,
@@ -5077,7 +5077,7 @@
     "grade": "영웅",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202402.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 28,
@@ -5090,7 +5090,7 @@
     "grade": "영웅",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202404.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 25,
@@ -5105,7 +5105,7 @@
     "grade": "영웅",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202405.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 9,
@@ -5120,7 +5120,7 @@
     "grade": "영웅",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202406.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "레벨 당 공격력": 3,
@@ -5148,7 +5148,7 @@
     "grade": "영웅",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202408.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 35,
@@ -5162,7 +5162,7 @@
     "grade": "영웅",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202410.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 28,
@@ -5176,7 +5176,7 @@
     "grade": "영웅",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202411.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "레벨 당 공격력": 3,
@@ -5191,7 +5191,7 @@
     "grade": "영웅",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202412.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 25,
@@ -5205,7 +5205,7 @@
     "grade": "영웅",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202413.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 10,
@@ -5249,7 +5249,7 @@
     "grade": "영웅",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202417.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 25,
@@ -5264,7 +5264,7 @@
     "grade": "영웅",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202418.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "레벨 당 공격력": 3,
@@ -5279,7 +5279,7 @@
     "grade": "영웅",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202419.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 22,
@@ -5293,7 +5293,7 @@
     "grade": "영웅",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202420.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 3,
@@ -5322,7 +5322,7 @@
     "grade": "영웅",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202422.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 25,
@@ -5337,7 +5337,7 @@
     "grade": "영웅",
     "slot": "옷",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202423.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "레벨 당 공격력": 3,
@@ -5779,7 +5779,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203306.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "스킬 증폭": 62,
@@ -5792,7 +5792,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203402.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 13,
@@ -5806,7 +5806,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203403.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "스킬 증폭": 75
@@ -5833,7 +5833,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203405.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격 속도": 0.33,
@@ -5846,7 +5846,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203406.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 22,
@@ -5860,7 +5860,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203407.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 38,
@@ -5888,7 +5888,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203409.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 16,
@@ -5901,7 +5901,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203410.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "스킬 증폭": 50,
@@ -5914,7 +5914,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203411.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "스킬 증폭": 40,
@@ -5929,7 +5929,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203412.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 22,
@@ -5956,7 +5956,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203414.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 28,
@@ -5970,7 +5970,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203415.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 25,
@@ -6053,7 +6053,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203506.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "스킬 증폭": 32,
@@ -6202,7 +6202,7 @@
     "grade": "영웅",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204303.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 8,
@@ -6217,7 +6217,7 @@
     "grade": "영웅",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204304.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "이동 속도": 0.22,
@@ -6230,7 +6230,7 @@
     "grade": "영웅",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204401.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 8,
@@ -6244,7 +6244,7 @@
     "grade": "영웅",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204402.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "체력 재생": 0.25,
@@ -6258,7 +6258,7 @@
     "grade": "영웅",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204403.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 20,
@@ -6286,7 +6286,7 @@
     "grade": "영웅",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204406.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "스킬 증폭": 25,
@@ -6314,7 +6314,7 @@
     "grade": "영웅",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204408.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 8,
@@ -6357,7 +6357,7 @@
     "grade": "영웅",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204411.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "체력 재생": 0.25,
@@ -6371,7 +6371,7 @@
     "grade": "영웅",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204412.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 8,
@@ -6414,7 +6414,7 @@
     "grade": "영웅",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204415.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "스킬 증폭": 28,
@@ -6427,7 +6427,7 @@
     "grade": "영웅",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204416.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 15,
@@ -6442,7 +6442,7 @@
     "grade": "영웅",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204417.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 18,
@@ -6456,7 +6456,7 @@
     "grade": "영웅",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204418.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격 속도": 0.16,
@@ -6470,7 +6470,7 @@
     "grade": "영웅",
     "slot": "다리",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204419.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "스킬 증폭": 18,
@@ -6689,7 +6689,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205201.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "스킬 증폭": 52,
@@ -6702,7 +6702,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205304.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 25,
@@ -6744,7 +6744,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205308.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "공격력": 25,
@@ -6758,7 +6758,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205309.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 10,
@@ -6786,7 +6786,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205404.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 10,
@@ -6800,7 +6800,7 @@
     "grade": "영웅",
     "slot": "팔",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205405.png",
-    "price": 4,
+    "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
       "방어력": 8,

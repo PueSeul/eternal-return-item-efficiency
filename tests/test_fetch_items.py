@@ -100,7 +100,7 @@ class DataFileTests(unittest.TestCase):
                 self.assertIn(it["slot"], SLOTS)
                 self.assertIn(it["grade"], GRADES)
                 self.assertTrue(it["imageUrl"].startswith("https://"))
-                self.assertEqual(it["price"], fi.GRADE_PRICE[it["grade"]])
+                self.assertEqual(it["price"], {"영웅": 0, "전설": 5, "신화": 6}[it["grade"]])
                 self.assertNotIsInstance(it["price"], bool)
                 self.assertEqual(it["priceSource"], fi.PRICE_SOURCE)
                 if it["slot"] == "무기":
@@ -143,6 +143,11 @@ class DataFileTests(unittest.TestCase):
         # Crafting intermediates / base items are not listed on the page.
         for hidden in ("101104", "201101", "201111", "201202", "201301"):
             self.assertNotIn(hidden, by_id)
+
+    def test_epic_price_zero(self):
+        epic = [i for i in self.items if i["grade"] == "영웅"]
+        self.assertTrue(epic)
+        self.assertTrue(all(i["price"] == 0 for i in epic))
 
     def test_host_excluded_names(self):
         names = {i["name"] for i in self.items}

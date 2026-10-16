@@ -23,7 +23,9 @@ GRADES = {
     "Legend": "전설",
     "Mythic": "신화",
 }
-GRADE_PRICE = {"일반": 1, "고급": 2, "희귀": 3, "영웅": 4, "전설": 5, "신화": 6}
+# Price table (single place to edit). 호스트 요청: 영웅 = 0; 전설/신화 keep the
+# placeholder values until the host supplies real prices.
+GRADE_PRICE = {"영웅": 0, "전설": 5, "신화": 6}
 PRICE_SOURCE = "등급 기반 대체값"
 PAGE_GRADES = {"Epic", "Legend", "Mythic"}
 ARMOR_SLOTS = {"Head": "머리", "Chest": "옷", "Arm": "팔", "Leg": "다리"}
