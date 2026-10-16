@@ -66,11 +66,27 @@
 
   const percent = (ratio, ref) => (ratio == null || !ref ? null : (ratio / ref) * 100);
 
-  // 효율 %: 기준 세트 결과(base)가 있으면 현재 가격당 데미지 ÷ 기준 가격당 데미지 × 100,
-  // 없으면(기준 미완성) 히스토리 최고 비율(bestRatio) 대비. 어느 쪽이든 가격 합 0이면 null("—").
+  // 효율: kind 'percent' = 효율 %, 'perPrice' = 가격당 추가 데미지. value가 그 값(없으면 null "—").
+  // 기준 세트 결과(base)가 있으면 현재 가격당 데미지 ÷ 기준 가격당 데미지 × 100,
+  // 기준 가격 합이 0이면 (현재 D − 기준 D) ÷ 현재 가격 합(현재 가격 합도 0이면 null),
+  // 기준이 없으면(미완성) 히스토리 최고 비율(bestRatio) 대비 %.
   function efficiency(cur, base, bestRatio) {
-    if (base) return { mode: 'baseline', refRatio: base.ratio, pct: percent(cur.ratio, base.ratio) };
-    return { mode: 'history', refRatio: bestRatio, pct: percent(cur.ratio, bestRatio) };
+    if (base && !(base.price > 0)) {
+      const value = cur.price > 0 ? (cur.D - base.D) / cur.price : null;
+      return { mode: 'baseline', kind: 'perPrice', refRatio: null, pct: null, value };
+    }
+    const refRatio = base ? base.ratio : bestRatio;
+    const pct = percent(cur.ratio, refRatio);
+    return { mode: base ? 'baseline' : 'history', kind: 'percent', refRatio, pct, value: pct };
+  }
+
+  const LABELS = { percent: '데미지 효율', perPrice: '가격당 추가 데미지' };
+
+  // 효율 값 표시: % 는 소수 1자리 + '%', 가격당 추가 데미지는 소수 4자리. 없으면 '—'.
+  function valueText(kind, value) {
+    if (typeof value !== 'number' || !Number.isFinite(value)) return '—';
+    if (kind === 'perPrice') return value.toLocaleString('ko-KR', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+    return value.toLocaleString('ko-KR', { maximumFractionDigits: 1 }) + '%';
   }
 
   // 비교 표: 기준 / 현재 / 차이(현재 − 기준) × 가격 합 · 데미지 총량 · 가격당 데미지.
@@ -84,5 +100,5 @@
     ];
   }
 
-  return { STORAGE_KEYS, storageKey, load, save, resolve, isComplete, snapshot, efficiency, compareRows };
+  return { STORAGE_KEYS, storageKey, load, save, resolve, isComplete, snapshot, efficiency, LABELS, valueText, compareRows };
 });
