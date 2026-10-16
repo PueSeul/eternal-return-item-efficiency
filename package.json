@@ -17,6 +17,8 @@
       "index.html",
       "src/**/*",
       "data/**/*",
+      "scripts/**/*.mjs",
+      "!scripts/**/*.test.mjs",
       "electron/**/*",
       "!electron/**/*.test.js",
       "!electron/build.js",

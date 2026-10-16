@@ -31,8 +31,11 @@ npm run build:exe
 - 히스토리는 `%APPDATA%\er-damage-efficiency`에 저장되어 exe를 옮기거나 새로 빌드해도 유지됩니다.
   (브라우저용 `npm start`의 히스토리와는 따로 저장됩니다.)
 - **데이터 갱신**: exe에는 빌드 당시의 `data/items.json`이 들어 있습니다. exe와 같은 폴더에
-  `data/items.json`이 있으면 그 파일을 우선 읽으므로, 재빌드 없이 `python scripts/fetch_items.py`로 받은
-  `data/items.json`을 exe 옆 `data` 폴더에 복사하면 됩니다. 재빌드해도 새 데이터가 들어갑니다.
+  `data/items.json`이 있으면 그 파일을 우선 읽습니다.
+  - 가장 쉬운 방법: 프로그램 위쪽 **"아이템 수치 업데이트"** 버튼을 누르면 최신 수치를 인터넷에서 받아
+    exe 옆 `data/items.json`에 저장하고 화면에 바로 반영합니다(재빌드 불필요, 인터넷 연결 필요).
+    실패하면 기존 데이터는 그대로 두고 오류 메시지를 보여 줍니다. `npm run app`(개발 창)에서 누르면 프로젝트 `data/items.json`을 갱신합니다.
+  - 직접 받은 `data/items.json`을 exe 옆 `data` 폴더에 복사해도 됩니다. 재빌드해도 새 데이터가 들어갑니다.
 
 ## 아이템 데이터 갱신
 
