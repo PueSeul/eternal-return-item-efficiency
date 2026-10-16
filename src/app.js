@@ -6,7 +6,7 @@
   const DATA_URL = 'data/items.json';
   const GRADES = ['일반', '고급', '희귀', '영웅', '전설', '신화'];
   const INPUT_FIELDS = [
-    { key: 'level', label: '레벨', step: 1, min: 1 },
+    { key: 'level', label: '성장형 스탯', step: 1, min: 1 },
     { key: 'skillDamage', label: '스킬 기본 피해량 (S)', step: 'any', min: 0 },
     { key: 'atkCoefPct', label: '공격력 계수 (%)', step: 'any', min: 0 },
     { key: 'defense', label: '피격 대상 방어력 (R)', step: 'any', min: 0 },
