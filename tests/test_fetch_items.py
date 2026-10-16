@@ -1,5 +1,8 @@
 import json
+import os
+import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -81,6 +84,56 @@ class ParseTests(unittest.TestCase):
                head(4, "천상의 메아리 "), head(5, "천상의 메아리", armor="Chest")]
         out = fi.build_items(raw, [])
         self.assertEqual([r["id"] for r in out], ["4", "5"])
+
+
+NODE_BUILD = """
+import { readFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
+const { FI_MODULE: mod, FI_INPUT: input } = process.env;
+const { buildItems, dumps } = await import(pathToFileURL(mod).href);
+const raw = JSON.parse(readFileSync(input, "utf8"));
+process.stdout.write(Buffer.from(dumps(buildItems(raw.items, raw.masteries)), "utf8"));
+"""
+
+
+class NodePortTests(unittest.TestCase):
+    """scripts/fetch_items.mjs must produce byte-identical output to the Python script."""
+
+    def node_dumps(self, raw):
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp) / "input.json"
+            src.write_text(json.dumps(raw, ensure_ascii=False), encoding="utf-8")
+            proc = subprocess.run(
+                ["node", "--input-type=module", "-e", NODE_BUILD],
+                capture_output=True, check=True,
+                env={**os.environ, "FI_MODULE": str(ROOT / "scripts" / "fetch_items.mjs"), "FI_INPUT": str(src)},
+            )
+        return proc.stdout.decode("utf-8")
+
+    def test_same_output_on_live_api(self):
+        raw = {"items": fi.fetch_json(fi.ITEMS_URL)["items"],
+               "masteries": fi.fetch_json(fi.MASTERIES_URL)["masteries"]}
+        expected = fi.dumps(fi.build_items(raw["items"], raw["masteries"]))
+        self.assertGreater(len(json.loads(expected)), 400)
+        self.assertEqual(self.node_dumps(raw), expected)
+
+    def test_same_output_on_edge_cases(self):
+        tip = "전설 / 옷\n\n방어력 +30\n이동 속도 +0.04\n이동 속도 +2.5%\n{}\n\n설명"
+        raw = {"masteries": [{"key": "Pistol", "name": "권총"}], "items": [
+            {"id": 3, "name": "천상의 메아리", "type": "Armor", "armorType": "Head", "grade": "Legend",
+             "makeMaterials": [1], "imageUrl": "https://x/3.png", "tooltip": tip.format("공격력 +1")},
+            {"id": 2, "name": "길리 슈트", "type": "Armor", "armorType": "Chest", "grade": "Legend",
+             "makeMaterials": [1], "imageUrl": "https://x/2.png",
+             "tooltip": tip.format("<color=#FF0>(고유)</color> 스킬 증폭 +100%")},
+            {"id": 1, "name": "총", "type": "Weapon", "weaponType": "Pistol", "grade": "Epic",
+             "makeMaterials": [1], "imageUrl": "https://x/1.png",
+             "tooltip": "영웅 / 권총\n\n공격력 +57 또는 스킬 증폭 +114\n레벨 당 공격력 +1.5~30"},
+            {"id": 4, "name": "재료", "type": "Armor", "armorType": "Head", "grade": "Rare",
+             "makeMaterials": [1], "imageUrl": "https://x/4.png", "tooltip": "희귀 / 머리"},
+        ]}
+        expected = fi.dumps(fi.build_items(raw["items"], raw["masteries"]))
+        self.assertEqual([r["id"] for r in json.loads(expected)], ["1", "2"])
+        self.assertEqual(self.node_dumps(raw), expected)
 
 
 class DataFileTests(unittest.TestCase):
