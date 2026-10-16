@@ -9,7 +9,10 @@
 <body>
   <header>
     <h1>이터널 리턴 아이템 가격 대비 데미지 효율 계산기</h1>
-    <p class="sub">루미아섬 기준 · 모드 증폭 제외 · 데이터 출처: dak.gg</p>
+    <div class="update-box">
+      <span id="update-status" class="muted" role="status"></span>
+      <button id="update-btn" type="button" hidden>아이템 수치 업데이트</button>
+    </div>
   </header>
 
   <div id="data-banner" class="banner" hidden></div>
@@ -55,6 +58,7 @@
 
   <script src="src/formula.js"></script>
   <script src="src/history.js"></script>
+  <script src="src/updater.js"></script>
   <script src="src/app.js"></script>
 </body>
 </html>

@@ -1,10 +1,12 @@
 :root { --bg: #15171c; --panel: #1f232b; --line: #343a46; --text: #e6e8ec; --muted: #9aa3b2; --accent: #4f8cff; --warn: #e0a43a; }
 * { box-sizing: border-box; }
 body { margin: 0; font-family: "Malgun Gothic", system-ui, sans-serif; background: var(--bg); color: var(--text); }
-header { padding: 16px 24px; border-bottom: 1px solid var(--line); }
+header { padding: 16px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.update-box { display: flex; align-items: center; gap: 10px; }
+#update-status.error { color: var(--warn); }
 h1 { font-size: 20px; margin: 0; }
 h2 { font-size: 16px; margin: 16px 0 8px; }
-.sub, .muted { color: var(--muted); font-size: 13px; }
+.muted { color: var(--muted); font-size: 13px; }
 .banner { margin: 12px 24px; padding: 12px; border: 1px solid var(--warn); color: var(--warn); border-radius: 6px; white-space: pre-line; }
 main { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 16px; padding: 16px 24px; align-items: start; }
 @media (max-width: 900px) { main { grid-template-columns: minmax(0, 1fr); } }

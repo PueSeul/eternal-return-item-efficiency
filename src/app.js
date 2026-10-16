@@ -2,6 +2,7 @@
   'use strict';
   const Formula = window.ERFormula;
   const History = window.ERHistory;
+  const Updater = window.ERUpdater;
   const DATA_URL = 'data/items.json';
   const GRADES = ['일반', '고급', '희귀', '영웅', '전설', '신화'];
   const INPUT_FIELDS = [
@@ -44,7 +45,9 @@
   }
 
   // ---------- 데이터 ----------
+  // data/items.json을 읽어 state.items를 채운다. 읽기에 성공하면 true.
   async function loadData() {
+    $('#data-banner').hidden = true;
     let res;
     try {
       res = await fetch(DATA_URL, { cache: 'no-store' });
@@ -68,11 +71,48 @@
       showBanner('data/items.json 형식이 올바르지 않습니다(배열이 아님). `scripts/fetch_items.py`를 다시 실행하세요.');
       return;
     }
-    state.items = list.filter((it) => it && Formula.SLOTS.includes(it.slot));
-    state.byId = new Map(state.items.map((it) => [String(it.id), it]));
+    const items = list.filter((it) => it && Formula.SLOTS.includes(it.slot));
+    const byId = new Map(items.map((it) => [String(it.id), it]));
+    state.items = items; // 둘 다 만든 뒤 함께 교체(중간 예외 시 이전 데이터 유지)
+    state.byId = byId;
     const missing = Formula.SLOTS.filter((s) => !state.items.some((it) => it.slot === s));
     if (!state.items.length) showBanner('data/items.json에 장비 아이템이 없습니다. `scripts/fetch_items.py`를 다시 실행하세요.');
     else if (missing.length) showBanner(`다음 부위의 아이템이 데이터에 없습니다: ${missing.join(', ')}`);
+    return true;
+  }
+
+  // ---------- 아이템 수치 업데이트(데스크톱 전용) ----------
+  function setupUpdater() {
+    const btn = $('#update-btn');
+    const status = $('#update-status');
+    if (!Updater.canUpdate(window)) return; // 웹 실행: 버튼 숨김 유지
+    btn.hidden = false;
+    btn.onclick = async () => {
+      btn.disabled = true;
+      btn.textContent = '업데이트 중…';
+      status.className = 'muted';
+      status.textContent = '';
+      try {
+        const r = await Updater.runUpdate(window.erDesktop, loadData);
+        if (r.ok) {
+          const { equipped, removed } = Updater.rematch(state.equipped, state.byId);
+          state.equipped = equipped;
+          renderSlots();
+          renderHistory();
+          if ($('#picker').open) renderPicker();
+          status.textContent = r.message + (removed.length ? ` — 데이터에서 사라져 비운 슬롯: ${removed.join(', ')}` : '');
+        } else {
+          status.className = 'muted error';
+          status.textContent = r.message;
+        }
+      } catch (err) {
+        status.className = 'muted error';
+        status.textContent = '업데이트 처리 중 오류: ' + err.message;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '아이템 수치 업데이트';
+      }
+    };
   }
 
   // ---------- 슬롯 ----------
@@ -304,6 +344,8 @@
     $('#inputs').addEventListener('input', hideResult);
     renderSlots();
     await loadData();
+    // 최초 로딩이 끝난 뒤에 버튼을 연다(늦게 끝난 최초 로딩이 갱신 데이터를 덮어쓰지 않도록).
+    setupUpdater();
     // 데이터 로딩 뒤에 히스토리를 보여 줘야 클릭 복원 시 아이템을 찾을 수 있다.
     state.history = History.load(localStorage);
     renderHistory();
