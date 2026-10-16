@@ -29,6 +29,8 @@ input, select { background: #12151a; color: var(--text); border: 1px solid var(-
 .result td { padding: 2px 8px; border-bottom: 1px solid var(--line); }
 .help { margin-top: 16px; font-size: 13px; }
 .history-head { display: flex; justify-content: space-between; align-items: center; }
+.tabs { display: flex; gap: 6px; }
+.tabs button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); }
 .history { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
 .history li { border: 1px solid var(--line); border-radius: 6px; padding: 8px; cursor: pointer; font-size: 13px; position: relative; }
 .history li:hover { border-color: var(--accent); }

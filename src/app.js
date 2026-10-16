@@ -6,9 +6,10 @@
   const GRADES = ['일반', '고급', '희귀', '영웅', '전설', '신화'];
   const INPUT_FIELDS = [
     { key: 'level', label: '레벨', hint: "'레벨 당' 스탯 × 레벨", step: 1, min: 1 },
-    { key: 'skillBase', label: '스킬 기본 피해량', hint: 'S의 고정 부분', step: 'any' },
-    { key: 'atkCoef', label: '공격력 계수', hint: 'S = 기본 피해량 + 계수 × 공격력 합', step: 'any' },
-    { key: 'defense', label: '대상 방어력 (R)', hint: '0 이상', step: 'any', min: 0 },
+    { key: 'skillDamage', label: '스킬 기본 피해량 (S)', hint: '스킬 툴팁의 피해량 고정 수치(예: 200)', step: 'any', min: 0 },
+    { key: 'atkCoefPct', label: '공격력 계수 (%)', hint: '툴팁 "(+공격력의 X%)"의 X, 없으면 0', step: 'any', min: 0 },
+    { key: 'skillAmpCoefPct', label: '스킬 증폭 계수 (%)', hint: '툴팁 "(+스킬 증폭의 X%)"의 X, 없으면 0', step: 'any', min: 0 },
+    { key: 'defense', label: '피격 대상 방어력 (R)', hint: '대상의 방어력, 0 이상', step: 'any', min: 0 },
     { key: 'enemySkillReductionPct', label: '적의 스킬 피해 감소율 (%)', hint: 'A 항에서 뺌', step: 'any' },
     { key: 'enemySkillReduction', label: '적의 스킬 피해 감소 (고정)', hint: 'I 항에서 뺌', step: 'any' },
     { key: 'extraFinalIncreasePct', label: '추가 최종 피해 증가율 (%)', hint: '아이템 외 F 항 가산', step: 'any' },
@@ -16,7 +17,8 @@
   ];
 
   const $ = (sel) => document.querySelector(sel);
-  const state = { items: [], byId: new Map(), equipped: {}, history: [], pickerSlot: null };
+  const state = { items: [], byId: new Map(), equipped: {}, history: [], historySort: 'recent', pickerSlot: null };
+  const defaultText = (key) => (Formula.DEFAULT_INPUTS[key] == null ? '기본값 없음, 직접 입력' : `기본값 ${Formula.DEFAULT_INPUTS[key]}`);
 
   function el(tag, props, ...children) {
     const node = document.createElement(tag);
@@ -164,9 +166,10 @@
   function renderInputs() {
     const form = $('#inputs');
     for (const f of INPUT_FIELDS) {
-      const input = el('input', { type: 'number', id: 'in-' + f.key, step: f.step, value: Formula.DEFAULT_INPUTS[f.key] });
+      const input = el('input', { type: 'number', id: 'in-' + f.key, step: f.step, value: Formula.DEFAULT_INPUTS[f.key] ?? '' });
       if (f.min != null) input.min = f.min;
-      form.append(el('label', null, f.label, input, el('span', { className: 'hint', textContent: `${f.hint} (기본값 ${Formula.DEFAULT_INPUTS[f.key]})` })));
+      if (Formula.DEFAULT_INPUTS[f.key] == null) input.placeholder = '직접 입력';
+      form.append(el('label', null, f.label, input, el('span', { className: 'hint', textContent: `${f.hint} (${defaultText(f.key)})` })));
     }
     const choice = el('select', { id: 'in-choiceStat' });
     for (const o of Formula.CHOICE_OPTIONS) choice.append(el('option', { value: o.value, textContent: o.label }));
@@ -180,7 +183,8 @@
     for (const f of INPUT_FIELDS) {
       const raw = $('#in-' + f.key).value.trim();
       const n = Number(raw);
-      if (raw === '' || !Number.isFinite(n)) throw new Error(`"${f.label}" 값이 숫자가 아닙니다.`);
+      if (raw === '') throw new Error(`"${f.label}" 값을 입력하세요.`);
+      if (!Number.isFinite(n)) throw new Error(`"${f.label}" 값이 숫자가 아닙니다.`);
       if (f.min != null && n < f.min) throw new Error(`"${f.label}" 값은 ${f.min} 이상이어야 합니다.`);
       out[f.key] = n;
     }
@@ -191,7 +195,7 @@
   function writeInputs(inputs) {
     for (const f of INPUT_FIELDS) {
       const v = inputs && inputs[f.key] != null ? inputs[f.key] : Formula.DEFAULT_INPUTS[f.key];
-      $('#in-' + f.key).value = v;
+      $('#in-' + f.key).value = v ?? '';
     }
     const choice = inputs && Formula.CHOICE_OPTIONS.some((o) => o.value === inputs.choiceStat)
       ? inputs.choiceStat : Formula.DEFAULT_INPUTS.choiceStat;
@@ -227,11 +231,13 @@
       el('div', { className: 'big', textContent: `데미지 효율 = ${pct == null ? '계산 불가(가격 합 0)' : fmt(pct, 1) + '%'}` }),
       el('div', { className: 'muted', textContent: `기준: 히스토리 전체 중 최고 (D ÷ 가격 합) = 100%. 이번 D ÷ 가격 합 = ${fmt(r.ratio, 4)} (가격 합 ${fmt(r.price)})` }),
       el('table', null,
-        row('공격력 합', fmt(r.stats.atk)),
-        row('스킬 증폭 합', fmt(r.stats.skillAmp)),
-        row('스킬 증폭율 합', fmt(r.stats.skillAmpRate, 4)),
-        row('최종 피해 증가율 합(아이템)', fmt(r.stats.itemFinalRate, 4)),
+        row('공격력 합 → S', fmt(r.stats.atk)),
+        row('스킬 증폭 합 → S', fmt(r.stats.skillAmp)),
+        row('스킬 증폭율 합 → A', fmt(r.stats.skillAmpRate, 4)),
+        row('최종 피해 증가율 합(아이템) → F', fmt(r.stats.itemFinalRate, 4)),
+        row('방어 관통율 / 방어 관통 합 → R\'', `${fmt(r.stats.penRate, 4)} / ${fmt(r.stats.pen)}`),
         row('S (스킬 정의 피해량)', fmt(r.S)),
+        row("R' (적용 방어력)", fmt(r.R)),
         row('B (기본 피해)', fmt(r.B)),
         row('A (피해 증폭, 최소 0.1)', fmt(r.A, 4)),
         row('I (피해 증가)', fmt(r.I)),
@@ -244,8 +250,12 @@
     const list = $('#history');
     list.replaceChildren();
     const best = History.bestRatio(state.history);
-    for (const e of state.history) {
-      const pct = Formula.efficiencyPercent(e.result && e.result.ratio, best);
+    for (const btn of document.querySelectorAll('#history-tabs button')) {
+      btn.setAttribute('aria-pressed', String(btn.dataset.sort === state.historySort));
+    }
+    for (const e of History.sorted(state.history, state.historySort)) {
+      const current = History.isCurrent(e);
+      const pct = current ? Formula.efficiencyPercent(e.result.ratio, best) : null;
       const names = Formula.SLOTS.map((s) => `${s}: ${(e.itemNames && e.itemNames[s]) || '?'}`).join(' / ');
       const del = el('button', { type: 'button', className: 'del', textContent: '×', title: '이 기록 삭제' });
       del.onclick = (ev) => {
@@ -258,7 +268,7 @@
       const li = el('li', { title: '클릭하면 이 구성을 불러옵니다' },
         el('div', { className: 'muted', textContent: new Date(e.time).toLocaleString('ko-KR') }),
         el('div', { textContent: names }),
-        el('div', { textContent: `D ${fmt(e.result.D)} · 가격 ${fmt(e.result.price)} · 효율 ${pct == null ? '-' : fmt(pct, 1) + '%'}` }),
+        el('div', { textContent: `D ${fmt(e.result.D)} · 가격 ${fmt(e.result.price)} · 효율 ${current ? (pct == null ? '-' : fmt(pct, 1) + '%') : '— (이전 계산식 기록, 효율 비교 제외)'}` }),
         del);
       li.onclick = () => restore(e);
       list.append(li);
@@ -289,6 +299,9 @@
     gradeSel.onchange = renderPicker;
     $('#picker-close').onclick = () => $('#picker').close();
     $('#calc-btn').onclick = calculate;
+    for (const btn of document.querySelectorAll('#history-tabs button')) {
+      btn.onclick = () => { state.historySort = btn.dataset.sort; renderHistory(); };
+    }
     $('#clear-history').onclick = () => {
       if (!state.history.length || !confirm('히스토리를 모두 삭제할까요?')) return;
       state.history = [];

@@ -8,6 +8,17 @@
 
   const STORAGE_KEY = 'er-damage-calc-history-v1';
   const MAX_ENTRIES = 500;
+  // 계산식 버전. 2 = S·R 직접 입력 + 스킬 계수 매핑. 다른 버전 기록은 효율 비교(최고치·효율순)에서 제외한다.
+  const FORMULA_VERSION = 2;
+
+  function isCurrent(e) {
+    return e.formulaVersion === FORMULA_VERSION;
+  }
+
+  function comparableRatio(e) {
+    const r = e && e.result && isCurrent(e) ? e.result.ratio : null;
+    return typeof r === 'number' && Number.isFinite(r) ? r : null;
+  }
 
   function load(storage) {
     try {
@@ -38,10 +49,27 @@
   function bestRatio(list) {
     let best = null;
     for (const e of list) {
-      const r = e && e.result ? e.result.ratio : null;
-      if (typeof r === 'number' && Number.isFinite(r) && (best == null || r > best)) best = r;
+      const r = comparableRatio(e);
+      if (r != null && (best == null || r > best)) best = r;
     }
     return best;
+  }
+
+  // 보기 정렬: 'recent' = 시각 내림차순, 'efficiency' = D÷가격 내림차순(비율 없음은 뒤, 같으면 최근 먼저).
+  const SORT_MODES = ['recent', 'efficiency'];
+
+  function sorted(list, mode) {
+    const time = (e) => {
+      const t = Date.parse(e.time);
+      return Number.isFinite(t) ? t : -Infinity;
+    };
+    const ratio = (e) => {
+      const r = comparableRatio(e);
+      return r == null ? -Infinity : r;
+    };
+    const byTime = (a, b) => time(b) - time(a);
+    const cmp = mode === 'efficiency' ? (a, b) => (ratio(b) - ratio(a)) || byTime(a, b) : byTime;
+    return [...list].sort((a, b) => cmp(a, b) || 0);
   }
 
   function makeEntry({ equipped, inputs, result, now = new Date() }) {
@@ -54,12 +82,13 @@
     return {
       id: `${now.getTime()}-${Math.random().toString(36).slice(2, 8)}`,
       time: now.toISOString(),
+      formulaVersion: FORMULA_VERSION,
       itemIds,
       itemNames,
       inputs: { ...inputs },
-      result: { D: result.D, price: result.price, ratio: result.ratio, S: result.S, B: result.B, A: result.A, I: result.I, F: result.F },
+      result: { D: result.D, price: result.price, ratio: result.ratio, S: result.S, R: result.R, B: result.B, A: result.A, I: result.I, F: result.F },
     };
   }
 
-  return { STORAGE_KEY, MAX_ENTRIES, load, save, add, remove, bestRatio, makeEntry };
+  return { STORAGE_KEY, MAX_ENTRIES, FORMULA_VERSION, SORT_MODES, load, save, add, remove, isCurrent, bestRatio, sorted, makeEntry };
 });
