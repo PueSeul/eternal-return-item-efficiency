@@ -175,6 +175,49 @@ class RowTests(unittest.TestCase):
         line = "2.0 패치에서 하나(Q)의 스킬 증폭 계수가 25%로 감소했다."
         self.assertEqual(mark(rows, [line]), {"text": "skillAmpRatio 설명란 [0.3], 역사 마지막 0.25: " + line})
 
+    def test_jackie_q(self):
+        # 호스트 지적: 재키 Q "연참" showed "수동 입력". The row parses; the stale value came from
+        # an older parser's entry kept in "patched" mode (see PlanPagesTests).
+        row = "피해량 [30 / 50 / 70 / 90 / 110] (+공격력의 50%) (+대상 현재 체력의 5%)"
+        html = wiki_page("2026-10-16T01:55:50.000Z", [("Q - 연참", [("Jackie Q", [row, "쿨다운 [8 / 7 / 6 / 5 / 4]"])])])
+        entry = fs.parse_page("1", "재키", html)
+        q = by_key(entry)["Q"]
+        self.assertEqual((q["name"], [e["label"] for e in q["entries"]], q["raw"]), ("연참", ["피해량"], row))
+        self.assertEqual(q["levels"], [{"level": n, "baseDamage": b, "attackPowerRatio": 0.5, "skillAmpRatio": 0,
+                                        "extraRatios": [{"stat": "대상 현재 체력", "ratio": 0.05}]}
+                                       for n, b in enumerate([30, 50, 70, 90, 110], 1)])
+        self.assertEqual((entry["needsReview"], entry["parser"]), ([], fs.PARSER_VERSION))
+        self.assertEqual(run_node({}, NODE_PARSE, ID="1", NAME="재키", HTML=html), entry)
+
+    def test_rows_without_body_and_prose(self):
+        html = wiki_page("2026-01-01T00:00:00Z", [
+            ("패시브 - 취기", [("P", ["맹호청권 2타 피해량 (+공격력의 30% / 40% / 50%) * (기본 공격 증폭)",
+                                     "받는 피해량 감소 (+공격력의 1%)", "체력 회복량 (+공격력의 1%) 증가"])]),
+            ("Q - 음파", [("Q", ["음파 공격력 계수 [3% / 6% / 9%] * (기본 공격 증폭)", "공격력 계수 [3 / 6]"])]),
+            ("W - 산탄", [("W", ["단궁: 첫 탄환은 공격력의 100% * (기본 공격 증폭)의 기본 공격 피해를 입히고, 이후 "
+                                 "탄환은 각각 공격력의 10%의 피해를 입힙니다.", "피해를 입히면 이동 속도가 증가합니다."])]),
+            ("E - 윌슨", [("E", ["다음 기본 공격은 30(+스킬 증폭의 45%)(+시셀라 레벨*9)의 추가 스킬 피해를 입히고",
+                                 "피해량 [10] (+공격력의 10%)"])]),
+            ("R - 하나", [("R", ["다음 기본 공격은 30(+스킬 증폭의 45%)의 피해를 입힙니다."])]),
+        ])
+        entry = fs.parse_page("1", "t", html)
+        s = by_key(entry)
+        p = s["P"]["entries"]
+        self.assertEqual([(e["label"], e.get("multiplier")) for e in p], [("맹호청권 2타 피해량", "기본 공격 증폭")])
+        self.assertEqual([l["attackPowerRatio"] for l in p[0]["levels"]], [0.3, 0.4, 0.5])
+        self.assertEqual([(e["label"], [l["attackPowerRatio"] for l in e["levels"]]) for e in s["Q"]["entries"]],
+                         [("음파 공격력 계수", [0.03, 0.06, 0.09])])  # "[3 / 6]" without % is no coefficient
+        self.assertEqual([(e["label"], e["levels"], e.get("multiplier")) for e in s["W"]["entries"]], [
+            ("단궁: 공격력의 100% * (기본 공격 증폭)의 기본 공격 피해",
+             [{"level": 1, "baseDamage": 0, "attackPowerRatio": 1, "skillAmpRatio": 0}], "기본 공격 증폭"),
+            ("단궁: 공격력의 10%의 피해", [{"level": 1, "baseDamage": 0, "attackPowerRatio": 0.1, "skillAmpRatio": 0}],
+             None)])
+        self.assertEqual([e["label"] for e in s["E"]["entries"]], ["피해량"])  # sentences only without damage rows
+        self.assertEqual(s["R"]["entries"][0]["levels"], [{"level": 1, "baseDamage": 30, "attackPowerRatio": 0,
+                                                           "skillAmpRatio": 0.45}])
+        self.assertEqual(entry["needsReview"], [])
+        self.assertEqual(run_node({}, NODE_PARSE, ID="1", NAME="t", HTML=html), entry)
+
     def test_missing_document_and_section(self):
         self.assertEqual(fs.parse_page("1", "없음", None)["needsReview"][0]["reason"], "문서 없음")
         entry = fs.parse_page("1", "빈 문서", "<html><h2>1. 개요</h2></html>")
@@ -446,7 +489,8 @@ class DataFileTests(unittest.TestCase):
         self.assertEqual([(c["characterId"], c["name"]) for c in self.skills],
                          [(c["id"], c["name"]) for c in self.chars])
         for c in self.skills:
-            self.assertEqual(list(c), ["characterId", "name", "skills", "wikiRevisedAt", "needsReview"])
+            self.assertEqual(list(c), ["characterId", "name", "skills", "wikiRevisedAt", "needsReview", "parser"])
+            self.assertEqual(c["parser"], fs.PARSER_VERSION)
             for s in c["skills"]:
                 self.assertEqual(list(s), ["key", "name", "levels", "raw", "sourceLabel", "entries"])
                 first = s["entries"][0] if s["entries"] else {"label": None, "levels": [], "raw": None}
@@ -470,6 +514,12 @@ class DataFileTests(unittest.TestCase):
                                                  "skillAmpRatio": 0.8})
         self.assertEqual({l["skillAmpRatio"] for l in arda["E"]["levels"]}, {0.65})
         self.assertEqual(arda["RQ"]["entries"][0]["label"], "[샤마쉬의 법전] 주문 피해량")
+
+    def test_jackie_q(self):
+        q = by_key(next(c for c in self.skills if c["name"] == "재키"))["Q"]
+        self.assertEqual((q["name"], q["raw"]), ("연참", "피해량 [30 / 50 / 70 / 90 / 110] (+공격력의 50%) (+대상 현재 체력의 5%)"))
+        self.assertEqual([(l["baseDamage"], l["attackPowerRatio"]) for l in q["entries"][0]["levels"]],
+                         [(30, 0.5), (50, 0.5), (70, 0.5), (90, 0.5), (110, 0.5)])
 
 
 if __name__ == "__main__":

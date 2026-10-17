@@ -371,18 +371,26 @@ class SkillsModeTests(unittest.TestCase):
                          ("all", 91))
         # Section names count even when no row is read (cooldown only); no character -> "all".
         names = ["아디나", "루치아"]
-        prev = {n: {} for n in names}
+        prev = {n: {"parser": fs.PARSER_VERSION} for n in names}
         none = {"changes": [{"type": "item", "name": "x"}], "unparsed": [], "characters": []}
         self.assertEqual(fs.plan_pages("patched", none, names, prev), ("all", names, None))
         self.assertEqual(fs.plan_pages("patched", none | {"characters": ["루치아", "없는실험체"]},
                                        names + ["신규"], prev), ("patched", ["루치아", "신규"], prev))
         self.assertEqual(fs.plan_pages("patched", none | {"characters": ["아디나"]}, names, None),
                          ("all", names, None))
-        node = run_node({}, 'const m = await imp("fetch_skills.mjs"); const prev = new Map([["아디나", {}], ["루치아", {}]]);'
+        # An entry kept from an older parser (no or another "parser") is read again: the 재키 Q
+        # "수동 입력" bug was such an entry carried over in the exe's data/skills.json.
+        old = {"아디나": {"parser": fs.PARSER_VERSION}, "루치아": {"parser": fs.PARSER_VERSION - 1}, "재키": {}}
+        self.assertEqual(fs.plan_pages("patched", none | {"characters": ["아디나"]}, ["아디나", "루치아", "재키"], old),
+                         ("patched", ["아디나", "루치아", "재키"], old))
+        node = run_node({}, 'const m = await imp("fetch_skills.mjs"); const v = {parser: m.PARSER_VERSION};'
+                        ' const prev = new Map([["아디나", v], ["루치아", v]]);'
+                        ' const old = new Map([["아디나", v], ["루치아", {parser: m.PARSER_VERSION - 1}], ["재키", {}]]);'
                         ' const none = {changes: [], unparsed: [], characters: []};'
                         ' return [m.planPages("patched", none, ["아디나", "루치아"], prev),'
-                        ' m.planPages("patched", {...none, characters: ["루치아", "없는실험체"]}, ["아디나", "루치아", "신규"], prev)];')
-        self.assertEqual(node, [["all", names, None], ["patched", ["루치아", "신규"], {}]])
+                        ' m.planPages("patched", {...none, characters: ["루치아", "없는실험체"]}, ["아디나", "루치아", "신규"], prev),'
+                        ' m.planPages("patched", {...none, characters: ["아디나"]}, ["아디나", "루치아", "재키"], old)[1]];')
+        self.assertEqual(node, [["all", names, None], ["patched", ["루치아", "신규"], {}], ["아디나", "루치아", "재키"]])
         cooldown = ('<div class="er-article-detail__content"><h5>실험체</h5><p>루치아</p>'
                     '<ul><li><p>얼음 송곳(Q)</p><ul><li><p>쿨다운 8초 → 7초</p></li></ul></li></ul></div>')
         parsed = pn.parse_patch([cooldown], [])

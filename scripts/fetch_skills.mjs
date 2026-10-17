@@ -39,6 +39,12 @@ const SKILL_HEADING_RE = /^(패시브|Q|W|E|R|무기 스킬) - (.+)$/;
 const GROUP_KEYS = { "패시브": "P", Q: "Q", W: "W", E: "E", R: "R", "무기 스킬": "D" };
 const NUM = "[0-9]+(?:\\.[0-9]+)?";
 const ROW_RE = /^(?:\[([^[\]]+)\] )?([^[\]]+?) \[([^[\]]+)\](.*)$/;
+const NOBODY_ROW_RE = /^(?:\[([^[\]]+)\] )?([^[\]()]+?) (\(\+.*)$/;
+const COEF_LABEL_RE = /^(?:.+? )?((?:추가 )?공격력|스킬 증폭) 계수$/;
+const PROSE_DAMAGE_RE = new RegExp(`(?:(${NUM})((?:\\(\\+[^()]*\\))+)|(공격력|스킬 증폭)의 (${NUM}%)`
+  + "( ?\\* ?\\(([^()]*)\\))?)의 (?:[가-힣]+ ){0,3}피해를 입", "g");
+const PROSE_TAG_RE = /^([^:]{1,10}): /;
+export const PARSER_VERSION = 2; // see fetch_skills.py
 const NUM_BODY_RE = new RegExp(`^${NUM}%?(?: / ${NUM}%?)*$`);
 const STAT_BODY_RE = new RegExp(`^(.+?)의 (${NUM}%(?: / ${NUM}%)*)$`);
 const MULT_RE = /^ ?\* ?\(([^()]*)\)$/;
@@ -285,15 +291,27 @@ function groups(rest) {
 }
 
 function valueLine(text) {
-  const m = ROW_RE.exec(text.replace(FOOTNOTE_RE, ""));
-  if (!m) return null;
+  text = text.replace(FOOTNOTE_RE, "");
+  const m = ROW_RE.exec(text);
+  if (!m) {
+    const n = NOBODY_ROW_RE.exec(text);
+    if (!n || !n[2].includes("피해량") || NOT_DAMAGE_RE.test(n[2])) return null;
+    const g = groups(n[3]);
+    if (!g || !g[0].length) return null;
+    return { tag: n[1] ?? null, label: n[2], values: [], coefs: g[0], multiplier: g[1] };
+  }
   const g = groups(m[4]);
   const body = m[3];
   const row = { tag: m[1] ?? null, label: m[2], values: null, coefs: null, multiplier: null };
   if (g !== null) {
     [row.coefs, row.multiplier] = g;
     const s = STAT_BODY_RE.exec(body);
-    if (NUM_BODY_RE.test(body)) row.values = body.split(" / ");
+    const c = COEF_LABEL_RE.exec(m[2]);
+    const count = (ch) => body.split(ch).length - 1;
+    if (NUM_BODY_RE.test(body) && c && body.endsWith("%") && count("%") === count("/") + 1) {
+      row.values = [];
+      row.coefs = [`+${c[1]}의 ${body}`, ...row.coefs];
+    } else if (NUM_BODY_RE.test(body)) row.values = body.split(" / ");
     else if (s) {
       row.values = [];
       row.coefs = [`+${s[1]}의 ${s[2]}`, ...row.coefs];
@@ -351,6 +369,26 @@ function subSkills(groupLines, letter) {
   return [subs, keys];
 }
 
+/** Entries for damage in description sentences (see fetch_skills.py _prose_entries). */
+function proseEntries(key, lines, review) {
+  const entries = [];
+  for (const text of lines) {
+    const tag = PROSE_TAG_RE.exec(text);
+    for (const p of text.replace(FOOTNOTE_RE, "").matchAll(PROSE_DAMAGE_RE)) {
+      const [values, coefs] = p[1] !== undefined
+        ? [[p[1]], [...p[2].matchAll(PAREN_RE)].map((x) => x[1])]
+        : [[], [`+${p[3]}의 ${p[4]}`]];
+      const label = (tag ? tag[1] + ": " : "") + p[0].slice(0, -"를 입".length);
+      const [levels, reason] = levelsFrom(values, coefs, label);
+      if (levels === null) review.push({ skill: key, text, reason });
+      const e = { label, levels: levels ?? [], raw: text };
+      if (p[6]) e.multiplier = p[6];
+      entries.push(e);
+    }
+  }
+  return entries;
+}
+
 /** [skill, needsReview rows, [[entry, value row]]] for one sub-skill (see fetch_skills.py _parse_skill). */
 function parseSkill(key, name, lines) {
   const review = [];
@@ -373,6 +411,7 @@ function parseSkill(key, name, lines) {
     entries.push(e);
     if (levels !== null) rows.push([e, row]);
   }
+  if (!entries.length) entries.push(...proseEntries(key, lines, review));
   const first = entries[0] ?? { label: null, levels: [], raw: null };
   const skill = { key, name, levels: first.levels, raw: first.raw, sourceLabel: first.label, entries };
   return [skill, review, rows];
@@ -434,7 +473,7 @@ function historyMismatches(rowsByKey, lines) {
 
 /** skills.json entry for one character (html null: document not found). */
 export function parsePage(characterId, name, html) {
-  const entry = { characterId, name, skills: [], wikiRevisedAt: null, needsReview: [] };
+  const entry = { characterId, name, skills: [], wikiRevisedAt: null, needsReview: [], parser: PARSER_VERSION };
   if (html === null || html === undefined) {
     entry.needsReview.push({ skill: null, text: docUrl(name + DOC_SUFFIX), reason: "문서 없음" });
     return entry;
@@ -665,7 +704,8 @@ export function patchedNames(parsed, names) {
 export function planPages(mode, parsed, names, previous) {
   const patched = mode === "patched" && previous !== null ? patchedNames(parsed, names) : [];
   if (!patched.length) return ["all", [...names], null];
-  return ["patched", names.filter((n) => patched.includes(n) || !previous.has(n)), previous];
+  return ["patched", names.filter((n) => patched.includes(n) || !previous.has(n)
+    || previous.get(n)?.parser !== PARSER_VERSION), previous];
 }
 
 // --- patch-note overrides --------------------------------------------------------

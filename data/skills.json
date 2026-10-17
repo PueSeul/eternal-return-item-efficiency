@@ -493,7 +493,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T01:55:50.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "2",
@@ -765,7 +766,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-11T13:39:52.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "3",
@@ -1189,7 +1191,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-17T11:29:08.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "4",
@@ -1890,8 +1893,9 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-16T01:33:47.000Z",
-    "needsReview": []
+    "wikiRevisedAt": "2026-10-17T14:13:30.000Z",
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "5",
@@ -2294,7 +2298,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-12T16:02:01.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "6",
@@ -2956,7 +2961,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T13:48:46.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "7",
@@ -3292,68 +3298,174 @@
         "levels": [
           {
             "level": 1,
-            "baseDamage": 80,
+            "baseDamage": 0,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.9,
+            "skillAmpRatio": 0.55,
             "extraRatios": [
               {
                 "stat": "추가 공격력",
-                "ratio": 0.75
+                "ratio": 0.7
+              },
+              {
+                "stat": "대상 현재 체력",
+                "ratio": 0.05
               }
             ]
           },
           {
             "level": 2,
-            "baseDamage": 115,
+            "baseDamage": 0,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.9,
+            "skillAmpRatio": 0.55,
             "extraRatios": [
               {
                 "stat": "추가 공격력",
-                "ratio": 0.75
+                "ratio": 0.7
+              },
+              {
+                "stat": "대상 현재 체력",
+                "ratio": 0.08
               }
             ]
           },
           {
             "level": 3,
-            "baseDamage": 150,
+            "baseDamage": 0,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.9,
+            "skillAmpRatio": 0.55,
             "extraRatios": [
               {
                 "stat": "추가 공격력",
-                "ratio": 0.75
+                "ratio": 0.7
+              },
+              {
+                "stat": "대상 현재 체력",
+                "ratio": 0.11
               }
             ]
           },
           {
             "level": 4,
-            "baseDamage": 185,
+            "baseDamage": 0,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.9,
+            "skillAmpRatio": 0.55,
             "extraRatios": [
               {
                 "stat": "추가 공격력",
-                "ratio": 0.75
+                "ratio": 0.7
+              },
+              {
+                "stat": "대상 현재 체력",
+                "ratio": 0.14
               }
             ]
           },
           {
             "level": 5,
-            "baseDamage": 220,
+            "baseDamage": 0,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.9,
+            "skillAmpRatio": 0.55,
             "extraRatios": [
               {
                 "stat": "추가 공격력",
-                "ratio": 0.75
+                "ratio": 0.7
+              },
+              {
+                "stat": "대상 현재 체력",
+                "ratio": 0.17
               }
             ]
           }
         ],
-        "raw": "추가 피해량 [80 / 115 / 150 / 185 / 220] (+추가 공격력의 75%) (+스킬 증폭의 90%)",
-        "sourceLabel": "추가 피해량",
+        "raw": "피해량 (+추가 공격력의 70%) (+스킬 증폭의 55%) (+대상 현재 체력의 5% / 8% / 11% / 14% / 17%)",
+        "sourceLabel": "피해량",
         "entries": [
+          {
+            "label": "피해량",
+            "levels": [
+              {
+                "level": 1,
+                "baseDamage": 0,
+                "attackPowerRatio": 0,
+                "skillAmpRatio": 0.55,
+                "extraRatios": [
+                  {
+                    "stat": "추가 공격력",
+                    "ratio": 0.7
+                  },
+                  {
+                    "stat": "대상 현재 체력",
+                    "ratio": 0.05
+                  }
+                ]
+              },
+              {
+                "level": 2,
+                "baseDamage": 0,
+                "attackPowerRatio": 0,
+                "skillAmpRatio": 0.55,
+                "extraRatios": [
+                  {
+                    "stat": "추가 공격력",
+                    "ratio": 0.7
+                  },
+                  {
+                    "stat": "대상 현재 체력",
+                    "ratio": 0.08
+                  }
+                ]
+              },
+              {
+                "level": 3,
+                "baseDamage": 0,
+                "attackPowerRatio": 0,
+                "skillAmpRatio": 0.55,
+                "extraRatios": [
+                  {
+                    "stat": "추가 공격력",
+                    "ratio": 0.7
+                  },
+                  {
+                    "stat": "대상 현재 체력",
+                    "ratio": 0.11
+                  }
+                ]
+              },
+              {
+                "level": 4,
+                "baseDamage": 0,
+                "attackPowerRatio": 0,
+                "skillAmpRatio": 0.55,
+                "extraRatios": [
+                  {
+                    "stat": "추가 공격력",
+                    "ratio": 0.7
+                  },
+                  {
+                    "stat": "대상 현재 체력",
+                    "ratio": 0.14
+                  }
+                ]
+              },
+              {
+                "level": 5,
+                "baseDamage": 0,
+                "attackPowerRatio": 0,
+                "skillAmpRatio": 0.55,
+                "extraRatios": [
+                  {
+                    "stat": "추가 공격력",
+                    "ratio": 0.7
+                  },
+                  {
+                    "stat": "대상 현재 체력",
+                    "ratio": 0.17
+                  }
+                ]
+              }
+            ],
+            "raw": "피해량 (+추가 공격력의 70%) (+스킬 증폭의 55%) (+대상 현재 체력의 5% / 8% / 11% / 14% / 17%)"
+          },
           {
             "label": "추가 피해량",
             "levels": [
@@ -3554,7 +3666,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-14T12:22:54.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "8",
@@ -3563,10 +3676,55 @@
       {
         "key": "P",
         "name": "Feedback",
-        "levels": [],
-        "raw": null,
-        "sourceLabel": null,
-        "entries": []
+        "levels": [
+          {
+            "level": 1,
+            "baseDamage": 0,
+            "attackPowerRatio": 0.03,
+            "skillAmpRatio": 0
+          },
+          {
+            "level": 2,
+            "baseDamage": 0,
+            "attackPowerRatio": 0.06,
+            "skillAmpRatio": 0
+          },
+          {
+            "level": 3,
+            "baseDamage": 0,
+            "attackPowerRatio": 0.09,
+            "skillAmpRatio": 0
+          }
+        ],
+        "raw": "음파 공격력 계수 [3% / 6% / 9%] * (기본 공격 증폭)",
+        "sourceLabel": "음파 공격력 계수",
+        "entries": [
+          {
+            "label": "음파 공격력 계수",
+            "levels": [
+              {
+                "level": 1,
+                "baseDamage": 0,
+                "attackPowerRatio": 0.03,
+                "skillAmpRatio": 0
+              },
+              {
+                "level": 2,
+                "baseDamage": 0,
+                "attackPowerRatio": 0.06,
+                "skillAmpRatio": 0
+              },
+              {
+                "level": 3,
+                "baseDamage": 0,
+                "attackPowerRatio": 0.09,
+                "skillAmpRatio": 0
+              }
+            ],
+            "raw": "음파 공격력 계수 [3% / 6% / 9%] * (기본 공격 증폭)",
+            "multiplier": "기본 공격 증폭"
+          }
+        ]
       },
       {
         "key": "Q",
@@ -3774,7 +3932,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-11T01:16:55.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "9",
@@ -4142,7 +4301,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T14:03:07.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "10",
@@ -4151,10 +4311,55 @@
       {
         "key": "P",
         "name": "취기",
-        "levels": [],
-        "raw": null,
-        "sourceLabel": null,
-        "entries": []
+        "levels": [
+          {
+            "level": 1,
+            "baseDamage": 0,
+            "attackPowerRatio": 0.3,
+            "skillAmpRatio": 0
+          },
+          {
+            "level": 2,
+            "baseDamage": 0,
+            "attackPowerRatio": 0.4,
+            "skillAmpRatio": 0
+          },
+          {
+            "level": 3,
+            "baseDamage": 0,
+            "attackPowerRatio": 0.5,
+            "skillAmpRatio": 0
+          }
+        ],
+        "raw": "맹호청권 2타 피해량 (+공격력의 30% / 40% / 50%) * (기본 공격 증폭)",
+        "sourceLabel": "맹호청권 2타 피해량",
+        "entries": [
+          {
+            "label": "맹호청권 2타 피해량",
+            "levels": [
+              {
+                "level": 1,
+                "baseDamage": 0,
+                "attackPowerRatio": 0.3,
+                "skillAmpRatio": 0
+              },
+              {
+                "level": 2,
+                "baseDamage": 0,
+                "attackPowerRatio": 0.4,
+                "skillAmpRatio": 0
+              },
+              {
+                "level": 3,
+                "baseDamage": 0,
+                "attackPowerRatio": 0.5,
+                "skillAmpRatio": 0
+              }
+            ],
+            "raw": "맹호청권 2타 피해량 (+공격력의 30% / 40% / 50%) * (기본 공격 증폭)",
+            "multiplier": "기본 공격 증폭"
+          }
+        ]
       },
       {
         "key": "Q",
@@ -4484,7 +4689,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T13:55:16.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "11",
@@ -4805,7 +5011,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-04T21:05:09.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "12",
@@ -5205,7 +5412,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-10T13:27:44.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "13",
@@ -5823,7 +6031,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T14:00:31.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "14",
@@ -6340,8 +6549,9 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-15T22:55:35.000Z",
-    "needsReview": []
+    "wikiRevisedAt": "2026-10-17T14:00:27.000Z",
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "15",
@@ -6350,10 +6560,42 @@
       {
         "key": "P",
         "name": "삶은 고통이에요.",
-        "levels": [],
-        "raw": null,
-        "sourceLabel": null,
-        "entries": []
+        "levels": [
+          {
+            "level": 1,
+            "baseDamage": 30,
+            "attackPowerRatio": 0,
+            "skillAmpRatio": 0.45,
+            "extraRatios": [
+              {
+                "stat": "시셀라 레벨",
+                "ratio": 9
+              }
+            ]
+          }
+        ],
+        "raw": "윌슨과 하나가 될 때마다 다음 기본 공격은 30(+스킬 증폭의 45%)(+시셀라 레벨*9)의 추가 스킬 피해를 입히고, 2초 동안 이동 속도를 느려지게 합니다.",
+        "sourceLabel": "30(+스킬 증폭의 45%)(+시셀라 레벨*9)의 추가 스킬 피해",
+        "entries": [
+          {
+            "label": "30(+스킬 증폭의 45%)(+시셀라 레벨*9)의 추가 스킬 피해",
+            "levels": [
+              {
+                "level": 1,
+                "baseDamage": 30,
+                "attackPowerRatio": 0,
+                "skillAmpRatio": 0.45,
+                "extraRatios": [
+                  {
+                    "stat": "시셀라 레벨",
+                    "ratio": 9
+                  }
+                ]
+              }
+            ],
+            "raw": "윌슨과 하나가 될 때마다 다음 기본 공격은 30(+스킬 증폭의 45%)(+시셀라 레벨*9)의 추가 스킬 피해를 입히고, 2초 동안 이동 속도를 느려지게 합니다."
+          }
+        ]
       },
       {
         "key": "Q",
@@ -6739,7 +6981,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-05T10:03:41.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "16",
@@ -7379,7 +7622,8 @@
       }
     ],
     "wikiRevisedAt": "2026-09-26T21:31:22.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "17",
@@ -7651,7 +7895,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-02T01:17:53.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "18",
@@ -8081,7 +8326,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-04T19:33:20.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "19",
@@ -8493,7 +8739,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-14T12:40:27.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "20",
@@ -9088,7 +9335,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-11T12:14:16.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "21",
@@ -9471,7 +9719,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T13:52:17.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "22",
@@ -9971,7 +10220,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-08T09:22:51.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "23",
@@ -10410,7 +10660,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-14T09:55:48.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "24",
@@ -10742,7 +10993,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-17T05:57:03.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "25",
@@ -10751,10 +11003,44 @@
       {
         "key": "P",
         "name": "산탄",
-        "levels": [],
-        "raw": null,
-        "sourceLabel": null,
-        "entries": []
+        "levels": [
+          {
+            "level": 1,
+            "baseDamage": 0,
+            "attackPowerRatio": 1,
+            "skillAmpRatio": 0
+          }
+        ],
+        "raw": "버니스는 2초마다 장탄을 장전하고, 기본 공격을 할 때 4개의 탄환을 발사합니다. 대상에 적중한 첫 번째 탄환은 공격력의 100% * (기본 공격 증폭)의 기본 공격 피해를 입히고, 이후의 탄환은 각각 공격력의 10% * (기본 공격 증폭)의 기본 공격 피해를 입힙니다. 치명타 공격 시 일반 치명타 효과 대신 기본 공격 피해량의 75%에 해당하는 탄환을 추가로 발사합니다.",
+        "sourceLabel": "공격력의 100% * (기본 공격 증폭)의 기본 공격 피해",
+        "entries": [
+          {
+            "label": "공격력의 100% * (기본 공격 증폭)의 기본 공격 피해",
+            "levels": [
+              {
+                "level": 1,
+                "baseDamage": 0,
+                "attackPowerRatio": 1,
+                "skillAmpRatio": 0
+              }
+            ],
+            "raw": "버니스는 2초마다 장탄을 장전하고, 기본 공격을 할 때 4개의 탄환을 발사합니다. 대상에 적중한 첫 번째 탄환은 공격력의 100% * (기본 공격 증폭)의 기본 공격 피해를 입히고, 이후의 탄환은 각각 공격력의 10% * (기본 공격 증폭)의 기본 공격 피해를 입힙니다. 치명타 공격 시 일반 치명타 효과 대신 기본 공격 피해량의 75%에 해당하는 탄환을 추가로 발사합니다.",
+            "multiplier": "기본 공격 증폭"
+          },
+          {
+            "label": "공격력의 10% * (기본 공격 증폭)의 기본 공격 피해",
+            "levels": [
+              {
+                "level": 1,
+                "baseDamage": 0,
+                "attackPowerRatio": 0.1,
+                "skillAmpRatio": 0
+              }
+            ],
+            "raw": "버니스는 2초마다 장탄을 장전하고, 기본 공격을 할 때 4개의 탄환을 발사합니다. 대상에 적중한 첫 번째 탄환은 공격력의 100% * (기본 공격 증폭)의 기본 공격 피해를 입히고, 이후의 탄환은 각각 공격력의 10% * (기본 공격 증폭)의 기본 공격 피해를 입힙니다. 치명타 공격 시 일반 치명타 효과 대신 기본 공격 피해량의 75%에 해당하는 탄환을 추가로 발사합니다.",
+            "multiplier": "기본 공격 증폭"
+          }
+        ]
       },
       {
         "key": "Q",
@@ -11030,7 +11316,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T02:36:07.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "26",
@@ -11626,7 +11913,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T13:57:35.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "27",
@@ -12154,7 +12442,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-17T07:40:38.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "28",
@@ -12930,7 +13219,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-17T02:48:24.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "29",
@@ -13336,7 +13626,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T13:52:53.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "30",
@@ -14168,7 +14459,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-09T11:08:59.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "31",
@@ -14289,10 +14581,57 @@
       {
         "key": "Q",
         "name": "카에유미",
-        "levels": [],
-        "raw": null,
-        "sourceLabel": null,
-        "entries": []
+        "levels": [
+          {
+            "level": 1,
+            "baseDamage": 0,
+            "attackPowerRatio": 0.36,
+            "skillAmpRatio": 0
+          }
+        ],
+        "raw": "단궁: 기본 공격이 공격력의 36% * (기본 공격 증폭)의 피해를 입히고, 2개의 화살을 추가로 발사해 각각 공격력의 35% * (기본 공격 증폭)의 피해를 입힙니다.",
+        "sourceLabel": "단궁: 공격력의 36% * (기본 공격 증폭)의 피해",
+        "entries": [
+          {
+            "label": "단궁: 공격력의 36% * (기본 공격 증폭)의 피해",
+            "levels": [
+              {
+                "level": 1,
+                "baseDamage": 0,
+                "attackPowerRatio": 0.36,
+                "skillAmpRatio": 0
+              }
+            ],
+            "raw": "단궁: 기본 공격이 공격력의 36% * (기본 공격 증폭)의 피해를 입히고, 2개의 화살을 추가로 발사해 각각 공격력의 35% * (기본 공격 증폭)의 피해를 입힙니다.",
+            "multiplier": "기본 공격 증폭"
+          },
+          {
+            "label": "단궁: 공격력의 35% * (기본 공격 증폭)의 피해",
+            "levels": [
+              {
+                "level": 1,
+                "baseDamage": 0,
+                "attackPowerRatio": 0.35,
+                "skillAmpRatio": 0
+              }
+            ],
+            "raw": "단궁: 기본 공격이 공격력의 36% * (기본 공격 증폭)의 피해를 입히고, 2개의 화살을 추가로 발사해 각각 공격력의 35% * (기본 공격 증폭)의 피해를 입힙니다.",
+            "multiplier": "기본 공격 증폭"
+          },
+          {
+            "label": "화궁: 공격력의 102% * (기본 공격 증폭)의 피해",
+            "levels": [
+              {
+                "level": 1,
+                "baseDamage": 0,
+                "attackPowerRatio": 1.02,
+                "skillAmpRatio": 0
+              }
+            ],
+            "raw": "화궁: 기본 공격이 공격력의 102% * (기본 공격 증폭)의 피해를 입힙니다.",
+            "multiplier": "기본 공격 증폭"
+          }
+        ]
       },
       {
         "key": "W",
@@ -14716,7 +15055,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-13T12:28:48.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "32",
@@ -14988,7 +15328,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-14T02:16:29.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "33",
@@ -15460,7 +15801,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-07T12:06:55.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "34",
@@ -15870,7 +16212,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T08:59:31.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "35",
@@ -16692,7 +17035,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-17T12:31:33.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "36",
@@ -17128,7 +17472,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T11:03:15.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "37",
@@ -17680,7 +18025,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-13T13:10:03.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "38",
@@ -18092,7 +18438,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-11T00:54:17.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "39",
@@ -18646,7 +18993,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-17T10:30:38.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "40",
@@ -19274,7 +19622,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T16:53:58.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "41",
@@ -19880,7 +20229,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-17T08:44:59.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "42",
@@ -20494,7 +20844,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T03:14:44.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "43",
@@ -20779,7 +21130,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-15T10:35:05.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "44",
@@ -21503,7 +21855,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-17T07:46:48.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "45",
@@ -22164,7 +22517,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T13:56:35.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "46",
@@ -22734,7 +23088,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-12T11:34:06.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "47",
@@ -23188,7 +23543,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T13:51:45.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "48",
@@ -23592,7 +23948,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-12T06:46:46.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "49",
@@ -24191,7 +24548,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-17T04:08:58.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "50",
@@ -24891,7 +25249,8 @@
       }
     ],
     "wikiRevisedAt": "2026-09-28T01:49:48.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "51",
@@ -25325,7 +25684,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T14:06:20.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "52",
@@ -25819,7 +26179,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-15T01:56:25.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "53",
@@ -26339,7 +26700,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-13T09:16:25.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "54",
@@ -26843,7 +27205,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-04T16:12:27.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "55",
@@ -27735,7 +28098,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T03:20:08.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "56",
@@ -28357,7 +28721,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-11T11:09:20.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "57",
@@ -28873,7 +29238,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-07T09:03:26.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "58",
@@ -29515,7 +29881,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T00:59:27.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "59",
@@ -29939,7 +30306,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T14:03:35.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "60",
@@ -30411,7 +30779,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T14:04:34.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "61",
@@ -30979,7 +31348,8 @@
       }
     ],
     "wikiRevisedAt": "2026-09-17T12:52:17.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "62",
@@ -31505,7 +31875,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T14:08:08.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "63",
@@ -32151,7 +32522,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-03T21:58:42.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "64",
@@ -32659,7 +33031,8 @@
       }
     ],
     "wikiRevisedAt": "2026-09-30T01:57:51.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "65",
@@ -33900,7 +34273,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T13:50:41.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "66",
@@ -34350,7 +34724,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T14:01:59.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "67",
@@ -34885,7 +35260,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-12T03:55:41.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "68",
@@ -35704,7 +36080,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T19:55:06.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "69",
@@ -36542,7 +36919,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-07T22:03:59.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "70",
@@ -36878,7 +37256,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-03T21:39:53.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "71",
@@ -37425,7 +37804,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T14:24:57.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "72",
@@ -37781,7 +38161,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-13T21:59:14.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "73",
@@ -38033,7 +38414,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-15T14:23:46.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "74",
@@ -38425,7 +38807,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T07:15:43.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "75",
@@ -38861,7 +39244,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-11T11:04:29.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "76",
@@ -39671,7 +40055,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-14T01:14:04.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "77",
@@ -40125,7 +40510,8 @@
       }
     ],
     "wikiRevisedAt": "2026-09-26T16:09:35.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "78",
@@ -41215,7 +41601,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-15T15:00:05.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "79",
@@ -41593,8 +41980,9 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-11T04:14:53.000Z",
-    "needsReview": []
+    "wikiRevisedAt": "2026-10-17T14:11:53.000Z",
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "80",
@@ -42175,7 +42563,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-14T02:07:36.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "81",
@@ -42603,7 +42992,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-06T09:52:04.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "82",
@@ -43183,7 +43573,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T14:01:20.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "83",
@@ -43751,7 +44142,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T14:06:35.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "84",
@@ -45125,7 +45517,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T13:57:59.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "85",
@@ -45849,7 +46242,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-06T20:39:39.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "86",
@@ -46459,7 +46853,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-17T09:27:20.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "87",
@@ -46995,7 +47390,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-14T09:33:01.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "88",
@@ -47620,7 +48016,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-17T01:32:50.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "89",
@@ -48143,7 +48540,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-16T07:44:17.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "90",
@@ -48451,7 +48849,8 @@
       }
     ],
     "wikiRevisedAt": "2026-10-17T05:14:05.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   },
   {
     "characterId": "91",
@@ -49301,6 +49700,7 @@
       }
     ],
     "wikiRevisedAt": "2026-10-17T11:20:26.000Z",
-    "needsReview": []
+    "needsReview": [],
+    "parser": 2
   }
 ]

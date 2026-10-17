@@ -50,6 +50,18 @@ NUM = "[0-9]+(?:\\.[0-9]+)?"
 # Value row: "[샤마쉬의 법전] 주문 피해량 [160 / 240 / 320] (+스킬 증폭의 80%)",
 # "2타 피해량 [공격력의 55% / 60% / 65%] * (기본 공격 증폭)". Groups: tag, label, body, rest.
 ROW_RE = re.compile(r"^(?:\[([^\[\]]+)\] )?([^\[\]]+?) \[([^\[\]]+)\](.*)$")
+# Damage row without a body: "맹호청권 2타 피해량 (+공격력의 30% / 40% / 50%) * (기본 공격 증폭)".
+NOBODY_ROW_RE = re.compile(r"^(?:\[([^\[\]]+)\] )?([^\[\]()]+?) (\(\+.*)$")
+# Coefficient row: "음파 공격력 계수 [3% / 6% / 9%] * (기본 공격 증폭)" = "[공격력의 3% / 6% / 9%]".
+COEF_LABEL_RE = re.compile("^(?:.+? )?((?:추가 )?공격력|스킬 증폭) 계수$")
+# Damage in a description sentence (read only for a sub-skill without damage rows):
+# "30(+스킬 증폭의 45%)(+시셀라 레벨*9)의 추가 스킬 피해를 입히고",
+# "공격력의 36% * (기본 공격 증폭)의 피해를 입히고". Groups: base, coefs, stat, ratio, -, multiplier.
+PROSE_DAMAGE_RE = re.compile("(?:(" + NUM + r")((?:\(\+[^()]*\))+)|(공격력|스킬 증폭)의 (" + NUM + "%)"
+                             r"( ?\* ?\(([^()]*)\))?)의 (?:[가-힣]+ ){0,3}피해를 입")
+PROSE_TAG_RE = re.compile(r"^([^:]{1,10}): ")  # "단궁: …"
+# Stamped on every entry; "patched" mode re-reads characters whose kept entry has another value.
+PARSER_VERSION = 2
 NUM_BODY_RE = re.compile("^" + NUM + "%?(?: / " + NUM + "%?)*$")
 STAT_BODY_RE = re.compile("^(.+?)의 (" + NUM + "%(?: / " + NUM + "%)*)$")
 MULT_RE = re.compile(r"^ ?\* ?\(([^()]*)\)$")
@@ -326,16 +338,26 @@ def _value_line(text):
     """Value row as {tag, label, body, values, coefs, multiplier} (values [] and the body as
     the first coefficient for "[공격력의 55% / 60%]"), or None (no row / unreadable rest:
     then "unreadable" is True when it still looks like a damage row)."""
-    m = ROW_RE.match(FOOTNOTE_RE.sub("", text))
+    text = FOOTNOTE_RE.sub("", text)
+    m = ROW_RE.match(text)
     if not m:
-        return None
+        n = NOBODY_ROW_RE.match(text)
+        if not n or "피해량" not in n.group(2) or NOT_DAMAGE_RE.search(n.group(2)):
+            return None
+        g = _groups(n.group(3))
+        if not g or not g[0]:
+            return None
+        return {"tag": n.group(1), "label": n.group(2), "values": [], "coefs": g[0], "multiplier": g[1]}
     g = _groups(m.group(4))
     body = m.group(3)
     row = {"tag": m.group(1), "label": m.group(2), "values": None, "coefs": None, "multiplier": None}
     if g is not None:
         row["coefs"], row["multiplier"] = g
         s = STAT_BODY_RE.match(body)
-        if NUM_BODY_RE.match(body):
+        c = COEF_LABEL_RE.match(m.group(2))
+        if NUM_BODY_RE.match(body) and c and body.endswith("%") and body.count("%") == body.count("/") + 1:
+            row["values"], row["coefs"] = [], ["+" + c.group(1) + "의 " + body] + row["coefs"]
+        elif NUM_BODY_RE.match(body):
             row["values"] = body.split(" / ")
         elif s:
             row["values"], row["coefs"] = [], ["+" + s.group(1) + "의 " + s.group(2)] + row["coefs"]
@@ -392,6 +414,28 @@ def _sub_skills(group_lines, letter):
     return subs, keys
 
 
+def _prose_entries(key, lines, review):
+    """Entries for the damage written in description sentences (PROSE_DAMAGE_RE); label =
+    "태그: " + the matched text up to "피해". Unreadable ones go to review (levels [])."""
+    entries = []
+    for text in lines:
+        tag = PROSE_TAG_RE.match(text)
+        for p in PROSE_DAMAGE_RE.finditer(FOOTNOTE_RE.sub("", text)):
+            if p.group(1):
+                values, coefs = [p.group(1)], PAREN_RE.findall(p.group(2))
+            else:
+                values, coefs = [], ["+" + p.group(3) + "의 " + p.group(4)]
+            label = (tag.group(1) + ": " if tag else "") + p.group(0)[: -len("를 입")]
+            levels, reason = levels_from(values, coefs, label)
+            if levels is None:
+                review.append({"skill": key, "text": text, "reason": reason})
+            e = {"label": label, "levels": levels or [], "raw": text}
+            if p.group(6):
+                e["multiplier"] = p.group(6)
+            entries.append(e)
+    return entries
+
+
 def _parse_skill(key, name, lines):
     """(skill, needsReview rows, [(entry, value row)]) for one sub-skill. Every damage row
     becomes an entry {label ("[태그] 라벨" as written), levels, raw, multiplier?}; an
@@ -417,6 +461,8 @@ def _parse_skill(key, name, lines):
         entries.append(e)
         if levels is not None:
             rows.append((e, row))
+    if not entries:
+        entries = _prose_entries(key, lines, review)
     first = entries[0] if entries else {"label": None, "levels": [], "raw": None}
     skill = {"key": key, "name": name, "levels": first["levels"], "raw": first["raw"],
              "sourceLabel": first["label"], "entries": entries}
@@ -481,7 +527,8 @@ def history_mismatches(rows_by_key, lines):
 
 def parse_page(character_id, name, html):
     """skills.json entry for one character (html None: document not found)."""
-    entry = {"characterId": character_id, "name": name, "skills": [], "wikiRevisedAt": None, "needsReview": []}
+    entry = {"characterId": character_id, "name": name, "skills": [], "wikiRevisedAt": None, "needsReview": [],
+             "parser": PARSER_VERSION}
     if html is None:
         entry["needsReview"].append({"skill": None, "text": doc_url(name + DOC_SUFFIX), "reason": "문서 없음"})
         return entry
@@ -713,12 +760,14 @@ def patched_names(parsed, names):
 
 def plan_pages(mode, parsed, names, previous):
     """(mode, names to read, previous or None). "patched" reads only characters the patch
-    note mentions plus ones missing from previous; it falls back to "all" without previous
+    note mentions plus ones missing from previous or kept from another PARSER_VERSION (an
+    older parser's entry is never carried over); it falls back to "all" without previous
     skills.json or without any character in the patch note."""
     patched = patched_names(parsed, names) if mode == "patched" and previous is not None else []
     if not patched:
         return "all", list(names), None
-    return "patched", [n for n in names if n in patched or n not in previous], previous
+    return "patched", [n for n in names if n in patched or n not in previous
+                       or previous[n].get("parser") != PARSER_VERSION], previous
 
 
 # --- patch-note overrides ---------------------------------------------------
