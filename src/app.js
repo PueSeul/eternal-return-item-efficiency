@@ -546,6 +546,7 @@
     renderBaseline();
     const filled = Formula.SLOTS.filter((s) => state.equipped[s]).length;
     const all = filled === Formula.SLOTS.length;
+    $('#slots-clear').disabled = !filled;
     $('#slot-status').textContent = all ? '' : `${filled}/${Formula.SLOTS.length} — 모두 채워야 계산`;
     $('#calc-btn').disabled = !all;
     $('#calc-btn').title = all ? '' : '장비 슬롯 5칸을 모두 채워야 계산할 수 있습니다.';
@@ -1074,6 +1075,14 @@
       state.baseline = {};
       saveBaseline();
       renderBaseline();
+    };
+    // 장비 슬롯 5칸만 비운다(히스토리·기준 세트는 그대로).
+    $('#slots-clear').onclick = () => {
+      const hadWeapon = !!state.equipped['무기'];
+      state.equipped = {};
+      renderSlots();
+      if (hadWeapon) applyAuto('amp');
+      focusSlotButton('#slots', `${Formula.SLOTS[0]} 선택`);
     };
     renderInputs();
     $('#inputs').addEventListener('input', (ev) => {
