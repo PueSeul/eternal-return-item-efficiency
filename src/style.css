@@ -38,7 +38,8 @@ body {
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
 /* 머리말 */
-header { flex: none; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 8px 24px; border-bottom: 1px solid var(--line); }
+/* 두 행: 1행 제목 + 데이터 메타, 2행 오른쪽 정렬 업데이트 그룹(데이터 · 프로그램). */
+header { flex: none; display: flex; flex-direction: column; align-items: stretch; gap: 6px; padding: 8px 24px; border-bottom: 1px solid var(--line); }
 .title-row { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; min-width: 0; }
 h1 { font-size: 16px; font-weight: 600; margin: 0; }
 .meta-line { padding: 0; background: none; border: none; color: var(--muted); font-size: 12px; cursor: pointer; }
@@ -48,11 +49,14 @@ h1 { font-size: 16px; font-weight: 600; margin: 0; }
 .meta-list a, #meta-patch a { text-decoration: none; }
 .meta-list a:hover, #meta-patch a:hover, .meta-list a:focus-visible, #meta-patch a:focus-visible { text-decoration: underline; }
 .meta-line[hidden] { display: none; }
-.update-box { display: flex; align-items: center; gap: 8px; font-size: 13px; min-width: 0; flex: 0 1 auto; }
-/* 버튼·링크는 접히지 않게 한 줄 고정, 상태 문구(앱·데스크톱 #app-update-status)만 줄여 말줄임(전체 문장은 title). */
-.update-box > * { white-space: nowrap; flex-shrink: 0; }
-#update-status, #app-update-status { min-width: 0; flex-shrink: 1; overflow: hidden; text-overflow: ellipsis; }
-#update-status:empty, #app-update-status:empty { display: none; }
+.update-box { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 6px 12px; font-size: 13px; }
+.update-box:not(:has(.update-group:not([hidden]))) { display: none; }
+/* 그룹: [게이지+상태 문구] [버튼…]. 넘치면 버튼이 아래 행으로 줄바꿈되고 상태 문구는 자르지 않는다(전체 문장은 title). */
+.update-group { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 6px 8px; max-width: 100%; }
+.update-group[hidden] { display: none; }
+.update-group + .update-group::before { content: '·'; color: var(--muted); }
+.update-group > button { white-space: nowrap; flex-shrink: 0; }
+#update-status, #app-update-status { min-width: 220px; max-width: 100%; text-align: right; overflow-wrap: anywhere; }
 header h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .title-row { flex: 1 1 auto; }
 .title-row .meta-line { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }

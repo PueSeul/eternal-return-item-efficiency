@@ -341,7 +341,17 @@
     const btn = $('#update-btn');
     const status = $('#update-status');
     if (!Updater.canUpdate(window)) return; // 웹 실행: 버튼 숨김 유지
+    $('#data-update-group').hidden = false;
     btn.hidden = false;
+    // 상태 문구: 짧은 문구 + 툴팁에 전체 문장. 완료 문구(fade)는 5초 뒤 지운다(오류는 남김).
+    let clearTimer = null;
+    const setStatus = (text, full, error, fade) => {
+      clearTimeout(clearTimer);
+      status.className = error ? 'muted error' : 'muted';
+      status.textContent = text;
+      status.title = full || text;
+      if (fade) clearTimer = setTimeout(() => { status.textContent = ''; status.title = ''; }, 5000);
+    };
     // 기본 버튼은 패치된 실험체만 스킬 재수집(skillsMode "patched"), 작은 버튼은 전체(skillsMode "all").
     const allBtn = el('button', { id: 'update-all-btn', type: 'button', className: 'link-btn',
       textContent: '스킬 전체 다시 수집', title: '모든 실험체의 스킬 수치를 나무위키에서 다시 수집합니다(오래 걸림)' });
@@ -375,8 +385,7 @@
       btn.disabled = true;
       allBtn.disabled = true;
       (mode === 'all' ? allBtn : btn).textContent = '업데이트 중…';
-      status.className = 'muted';
-      status.textContent = '';
+      setStatus('', '', false, false);
       updating = true;
       const startedAt = Date.now();
       if (progress) {
@@ -417,16 +426,15 @@
           renderSlots();
           renderHistory();
           if ($('#picker').open) renderPicker();
-          status.textContent = r.message + (removed.length ? ` — 데이터에서 사라져 비운 슬롯: ${removed.join(', ')}` : '') +
+          const full = r.message + (removed.length ? ` — 데이터에서 사라져 비운 슬롯: ${removed.join(', ')}` : '') +
             (lostCharacter ? ` — 데이터에서 사라져 비운 실험체: ${lostCharacter}` : '');
+          setStatus(`${r.short} · ${Updater.durationText(Date.now() - startedAt)}`, full, false, true);
         } else {
-          status.className = 'muted error';
-          status.textContent = r.message;
+          setStatus(r.message, r.message, true, false);
         }
       } catch (err) {
         if (gauge) gauge.fail('');
-        status.className = 'muted error';
-        status.textContent = '업데이트 처리 중 오류: ' + err.message;
+        setStatus('업데이트 처리 중 오류: ' + err.message, '', true, false);
       } finally {
         updating = false;
         clearInterval(timer);

@@ -16,7 +16,13 @@ test('runUpdate 성공: reload 후 "아이템 N개 갱신 완료"', async () => 
   const desktop = { updateItems: async () => { calls.push('update'); return { count: 312, savedPath: 'C:/x/items.json' }; } };
   const r = await U.runUpdate(desktop, async () => { calls.push('reload'); return true; });
   assert.deepEqual(calls, ['update', 'reload']);
-  assert.deepEqual(r, { ok: true, count: 312, meta: null, skills: null, message: '아이템 312개 갱신 완료' });
+  assert.deepEqual(r, { ok: true, count: 312, meta: null, skills: null, message: '아이템 312개 갱신 완료', short: '아이템 312개 갱신됨' });
+});
+
+test('runUpdate: count가 없으면 짧은 문구 "아이템 갱신됨"', async () => {
+  const r = await U.runUpdate({ updateItems: async () => ({ note: 'x' }) }, async () => true);
+  assert.equal(r.short, '아이템 갱신됨');
+  assert.equal(r.message, '아이템 갱신 완료 — x');
 });
 
 test('runUpdate: 반환의 note(직접 수집 폴백 등)를 완료 문구 뒤에 붙인다', async () => {

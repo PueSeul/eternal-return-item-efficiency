@@ -47,6 +47,18 @@ test('입력 컨트롤: 네이티브 select·datalist 팝업 대신 앱 드롭�
   assert.match(css, /\.search-box input:placeholder-shown \+ \.search-clear \{ display: none; \}/);
 });
 
+test('머리글 두 행: 2행 오른쪽 정렬 업데이트 그룹, 넘치면 줄바꿈, 상태 문구 최소 220px·말줄임 없음', () => {
+  assert.match(css, /\nheader \{[^}]*flex-direction: column/);
+  assert.match(css, /\.update-box \{[^}]*flex-wrap: wrap; justify-content: flex-end/);
+  assert.match(css, /\.update-group \{[^}]*flex-wrap: wrap/);
+  const rule = css.match(/#update-status, #app-update-status \{([^}]*)\}/);
+  assert.ok(rule && /min-width: 220px/.test(rule[1]) && !/ellipsis|overflow: hidden/.test(rule[1]));
+  assert.match(html, /<div class="update-box">\s*<div id="data-update-group" class="update-group" hidden>\s*<span id="update-status"/);
+  const preload = fs.readFileSync(path.join(root, 'electron', 'preload.js'), 'utf8');
+  assert.match(preload, /id: 'app-update-group', className: 'update-group'/);
+  assert.match(preload, /`최신 버전 v\$\{res\.current\}`/);
+});
+
 test('슬롯 두 열 헤더: 32px 한 줄 고정, 제목·버튼 nowrap, 상태 말줄임', () => {
   assert.match(css, /\.slot-col > \.block-head \{ height: 32px;[^}]*flex-wrap: nowrap/);
   assert.match(css, /\.slot-col > \.block-head h2 \{ white-space: nowrap; flex-shrink: 0/);

@@ -49,8 +49,20 @@ function mountAppUpdateUi() {
   const status = el('span', { id: 'app-update-status', className: 'muted' });
   status.setAttribute('role', 'status');
   const check = el('button', { id: 'app-update-check', type: 'button', textContent: '업데이트 확인' });
+  // 머리글 2행의 .update-box 안에 데이터 그룹과 같은 .update-group 으로 넣는다(구분점·줄바꿈은 src/style.css).
+  const group = el('div', { id: 'app-update-group', className: 'update-group' });
+  group.append(status, check);
   const box = document.querySelector('header .update-box') || document.querySelector('header') || document.body;
-  box.append(status, check);
+  box.append(group);
+  // 상태 문구: 짧은 문구 + 툴팁에 전체 문장. fade(완료 문구)는 5초 뒤 지운다.
+  let clearTimer = null;
+  const setStatus = (text, full, color, fade) => {
+    clearTimeout(clearTimer);
+    status.style.color = color || '';
+    status.textContent = text;
+    status.title = full || text;
+    if (fade) clearTimer = setTimeout(() => { status.textContent = ''; status.title = ''; }, 5000);
+  };
 
   const banner = el('div', { id: 'app-update-banner', className: 'banner', hidden: true });
   // display 를 인라인으로 주면 hidden 이 무시되므로 간격은 margin 으로 준다.
@@ -121,23 +133,21 @@ function mountAppUpdateUi() {
   check.addEventListener('click', async () => {
     if (installing) return;
     check.disabled = true;
-    status.style.color = '';
-    status.textContent = '업데이트 확인 중…';
+    setStatus('업데이트 확인 중…');
     try {
       const res = await appUpdate.check();
       if (res.status === 'available') {
-        status.textContent = `새 버전 v${res.version}이 있습니다`;
+        setStatus(`새 버전 v${res.version}`, `새 버전 v${res.version}이 있습니다`);
         show(res);
       } else {
-        status.textContent = `최신 버전입니다(v${res.current})`;
+        setStatus(`최신 버전 v${res.current}`, `최신 버전입니다(v${res.current})`, '', true);
         if (!installing && shown) { // 이전에 알린 버전이 철회된 경우 배너도 내린다
           shown = null;
           banner.hidden = true;
         }
       }
     } catch (err) {
-      status.textContent = err.message;
-      status.style.color = 'var(--warn)';
+      setStatus(err.message, err.message, 'var(--warn)');
     } finally {
       check.disabled = installing;
     }

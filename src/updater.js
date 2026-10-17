@@ -74,7 +74,9 @@
     // note: 데스크톱이 알리는 부가 사실(GitHub 데이터 대신 직접 수집, 이미 최신 등).
     const done = count == null ? '아이템 갱신 완료' : `아이템 ${count}개 갱신 완료`;
     const note = res ? str(res.note) : '';
-    return { ok: true, count, meta, skills, message: note ? `${done} — ${note}` : done };
+    // short: 머리글 상태 칸용 짧은 문구(전체 문장 message는 툴팁).
+    const short = count == null ? '아이템 갱신됨' : `아이템 ${count}개 갱신됨`;
+    return { ok: true, count, meta, skills, message: note ? `${done} — ${note}` : done, short };
   }
 
   // 진행 이벤트 {stage, done, total, message} → 상태 문구.
