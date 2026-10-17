@@ -67,10 +67,10 @@ test('실험체 자동값: 공격력 성장식, 숙련도 없음 경고, 무기 
   const noMastery = C.autoValues(c, '아르카나', 1, 20);
   assert.equal(noMastery.extraAtk, 30);
   assert.equal(noMastery.extraSkillAmpPct, 0);
-  assert.match(noMastery.warning, /아르카나 숙련도가 없습니다/);
+  assert.match(noMastery.warning, /^아르카나 숙련 없음$/);
   const noWeapon = C.autoValues(c, null, 20, 20);
   assert.equal(noWeapon.extraSkillAmpPct, null);
-  assert.match(noWeapon.warning, /무기를 장착/);
+  assert.match(noWeapon.warning, /무기 장착 시/);
   assert.deepEqual(C.autoValues(null, '활', 20, 20), { extraAtk: null, extraSkillAmpPct: null, atkSource: '', ampSource: '', warning: '' });
 });
 

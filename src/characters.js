@@ -22,14 +22,14 @@
     out.extraAtk = base + growth * (level - 1);
     out.atkSource = `${character.name} 기본 공격력 ${base} + 성장 ${growth}×(${level}−1)`;
     if (!weaponType) {
-      out.warning = '무기를 장착하면 숙련도 % 스킬 증폭이 자동 반영됩니다.';
+      out.warning = '무기 장착 시 숙련 증폭 자동';
       return out;
     }
     const m = character.masteries && character.masteries[weaponType];
     if (!m) {
       out.extraSkillAmpPct = 0;
       out.ampSource = `${weaponType} 숙련도 없음`;
-      out.warning = `${character.name}은(는) ${weaponType} 숙련도가 없습니다.`;
+      out.warning = `${weaponType} 숙련 없음`;
       return out;
     }
     const ratio = num(m.skillAmpRatio);
