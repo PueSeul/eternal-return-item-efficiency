@@ -129,6 +129,30 @@ test('runUpdate: 반환 skills 배열 우선, 없으면 reloadSkills, 실패는 
 });
 
 const realSkills = path.join(__dirname, '..', 'data', 'skills.json');
+test('실제 data/skills.json(있을 때): 아비게일 W·츠바메 P·블레어 Q 기본 피해량과 중첩 계수 표시', { skip: !fs.existsSync(realSkills) && 'data/skills.json 없음' }, () => {
+  const list = S.normalize(JSON.parse(fs.readFileSync(realSkills, 'utf8')));
+  const pickFirst = (name, key) => {
+    const entry = S.forCharacter(list, null, name);
+    assert.ok(entry, name + ' 없음');
+    const c = S.choices(entry).find((x) => x.skill.key === key);
+    assert.ok(c, `${name} ${key} 없음`);
+    const e = S.findChoice(entry, c.value).entry;
+    const lv = S.levelsOf(e)[0].level;
+    return { auto: S.autoValues(e, lv), extras: S.extraRatioTexts(e, lv) };
+  };
+  const ab = pickFirst('아비게일', 'W');
+  assert.equal(ab.auto.skillDamage, 80);
+  assert.ok(ab.extras.includes('대상 현재 체력의 8% (+스킬 증폭의 2%)'), ab.extras.join(' / '));
+  const tz = pickFirst('츠바메', 'P');
+  assert.equal(tz.auto.skillDamage, 30);
+  assert.ok(tz.extras.includes('대상 최대 체력의 4% (+추가 공격력의 4%)'), tz.extras.join(' / '));
+  const bl = pickFirst('블레어', 'Q');
+  assert.equal(bl.auto.skillDamage, 20);
+  assert.ok(bl.extras.includes('추가 공격력의 90%'));
+  // 레벨별 ratio 배열은 선택한 레벨의 값으로 표시
+  const arr = { label: 'x', levels: [1, 2, 3].map((level) => ({ level, baseDamage: 1, extraRatios: [{ stat: '대상 최대 체력', ratio: [0.01, 0.02, 0.03], nested: [{ stat: '추가 공격력', ratio: [0.1, 0.2, 0.3] }] }] })) };
+  assert.deepEqual(S.extraRatioTexts(arr, 2), ['대상 최대 체력의 2% (+추가 공격력의 20%)']);
+});
 test('실제 data/skills.json(있을 때): 아르다 Q 5레벨 230 / 0 / 80%', { skip: !fs.existsSync(realSkills) && 'data/skills.json 없음' }, () => {
   const list = S.normalize(JSON.parse(fs.readFileSync(realSkills, 'utf8')));
   const entry = S.forCharacter(list, null, '아르다');

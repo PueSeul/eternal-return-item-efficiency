@@ -95,16 +95,27 @@
 
   // 그 레벨의 미반영 계수 문구 목록(예: "최대 체력의 3%"). 계산에는 넣지 않는다.
   function extraRatioTexts(entry, level) {
-    const l = levelsOf(entry).find((x) => x.level === Number(level));
+    const levels = levelsOf(entry);
+    const idx = levels.findIndex((x) => x.level === Number(level));
+    const l = idx >= 0 ? levels[idx] : null;
     const ex = l ? l.extraRatios : null;
+    // ratio가 레벨별 배열이면 선택한 레벨의 값(levels 안 순서, 같은 번째 값).
+    const pick = (ratio) => (Array.isArray(ratio) ? ratio[idx] : ratio);
     // 비율 숫자가 없는 서술형 계수(예: {stat:"야성 중첩", ratio:null})는 라벨 그대로.
     const one = (name, ratio) => {
-      const pct = toPct(ratio);
+      const pct = toPct(pick(ratio));
       if (!str(name)) return '';
       return pct != null ? `${str(name)}의 ${pct}%` : str(name);
     };
+    // 중첩 계수 nested:[{stat, ratio}] → "대상 현재 체력의 8% (+스킬 증폭의 2%)".
+    const withNested = (x) => {
+      const base = one(x.stat || x.label || x.name, x.ratio);
+      const nested = Array.isArray(x.nested)
+        ? x.nested.map((n) => (isObj(n) ? one(n.stat || n.label || n.name, n.ratio) : str(n))).filter(Boolean) : [];
+      return base && nested.length ? `${base} ${nested.map((t) => `(+${t})`).join(' ')}` : base;
+    };
     let list = [];
-    if (Array.isArray(ex)) list = ex.map((x) => (isObj(x) ? one(x.stat || x.label || x.name, x.ratio) : str(x)));
+    if (Array.isArray(ex)) list = ex.map((x) => (isObj(x) ? withNested(x) : str(x)));
     else if (isObj(ex)) list = Object.entries(ex).map(([k, v]) => one(k, v));
     return list.filter(Boolean);
   }
