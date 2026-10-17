@@ -117,16 +117,18 @@ select:disabled { opacity: .5; }
 
 /* 장비 슬롯: 한 슬롯 = 한 줄(슬롯명 · 아이콘 · 등급 점 + 이름 · 가격 · 동작) */
 .slots { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 4px; }
-.slot { display: grid; grid-template-columns: 28px 40px minmax(0, 1fr) 40px auto; align-items: center; gap: 8px; height: 32px; padding: 0 4px 0 8px; border-top: 1px solid var(--line); font-size: 13px; }
-.slot:first-child { border-top: none; }
+.slot { display: grid; grid-template-columns: 28px 40px minmax(0, 1fr) 40px 24px; align-items: center; gap: 8px; height: 50px; padding: 0 4px 0 8px; border: 1px solid transparent; border-top-color: var(--line); font-size: 13px; cursor: pointer; transition: background-color 120ms, border-color 120ms; }
+.slot:first-child { border-top-color: transparent; }
+.slot:hover, .slot:focus-visible { background: var(--hover); border-color: var(--accent); outline: none; }
+.slot[aria-disabled="true"] { cursor: default; }
+.slot[aria-disabled="true"]:hover { background: none; border-color: transparent; border-top-color: var(--line); }
 .slot .label { color: var(--muted); font-size: 12px; }
-.slot img { width: 40px; height: 26px; object-fit: contain; }
+.slot img { width: 40px; height: 40px; object-fit: contain; }
+.slot-icon-empty { width: 40px; height: 40px; }
 .slot-name { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .slot-name .name-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .slot .price { text-align: right; color: var(--muted); }
-.slot-empty { grid-column: 2 / 5; color: var(--muted); }
-.slot .actions { display: flex; align-items: center; gap: 0; justify-content: flex-end; }
-.slot .actions .text-btn { padding: 2px 6px; }
+.slot-empty { grid-column: 3 / 5; color: var(--muted); }
 .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; background: var(--g-common); }
 .dot[data-grade="고급"] { background: var(--g-uncommon); } .dot[data-grade="희귀"] { background: var(--g-rare); }
 .dot[data-grade="영웅"] { background: var(--g-epic); } .dot[data-grade="전설"] { background: var(--g-legend); }

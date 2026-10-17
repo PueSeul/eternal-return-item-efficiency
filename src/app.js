@@ -503,9 +503,14 @@
   }
 
   // 슬롯 카드 한 장(장비 슬롯·기준 세트 공용). onClear는 아이템이 있을 때만 "비우기" 버튼으로.
-  // 한 줄: 슬롯명 · 아이콘 · 등급 점 + 이름 · 가격 · 변경/비우기. 스탯은 이름의 툴팁으로.
+  // 한 줄: 슬롯명 · 아이콘 · 등급 점 + 이름 · 가격 · 비우기. 행 전체가 선택/변경 버튼(클릭·Enter·Space). 스탯은 이름의 툴팁으로.
   function slotCard(slot, item, onPick, onClear) {
     const card = el('div', { className: 'slot' + (item ? ' filled' : '') }, el('span', { className: 'label', textContent: slot }));
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', `${slot} ${item ? '변경' : '선택'}`);
+    const enabled = state.items.length > 0;
+    card.tabIndex = enabled ? 0 : -1;
+    if (!enabled) card.setAttribute('aria-disabled', 'true');
     if (item) {
       card.append(
         itemImage(item),
@@ -513,19 +518,19 @@
           gradeDot(item.grade), el('span', { className: 'name-text', textContent: item.name }), patchBadge(item)),
         el('span', { className: 'price', textContent: fmt(item.price), title: `가격 ${fmt(item.price)}` }),
       );
-    } else {
-      card.append(el('span', { className: 'slot-empty', textContent: '비어 있음' }));
-    }
-    const pick = el('button', { type: 'button', className: 'text-btn', textContent: item ? '변경' : '선택', disabled: !state.items.length });
-    pick.setAttribute('aria-label', `${slot} ${item ? '변경' : '선택'}`);
-    pick.onclick = onPick;
-    const actions = el('div', { className: 'actions' }, pick);
-    if (item) {
       const clear = closeButton(`${slot} 비우기`);
-      clear.onclick = onClear;
-      actions.append(clear);
+      clear.onclick = (ev) => { ev.stopPropagation(); onClear(); };
+      clear.onkeydown = (ev) => ev.stopPropagation();
+      card.append(clear);
+    } else {
+      card.append(el('span', { className: 'slot-icon-empty' }), el('span', { className: 'slot-empty', textContent: '비어 있음' }));
     }
-    card.append(actions);
+    card.onclick = () => { if (enabled) onPick(); };
+    card.onkeydown = (ev) => {
+      if (ev.target !== card || (ev.key !== 'Enter' && ev.key !== ' ')) return;
+      ev.preventDefault();
+      if (enabled) onPick();
+    };
     return card;
   }
 
@@ -618,9 +623,9 @@
     focusSlotButton(state.pickerTarget === 'baseline' ? '#baseline-slots' : '#slots', `${slot} 변경`);
   }
 
-  // 다시 그린 슬롯 행의 버튼(aria-label로 찾음)으로 포커스를 돌려 키보드 흐름이 끊기지 않게.
+  // 다시 그린 슬롯 행(role=button, aria-label로 찾음)으로 포커스를 돌려 키보드 흐름이 끊기지 않게.
   function focusSlotButton(boxSel, label) {
-    const b = [...$(boxSel).querySelectorAll('button')].find((x) => x.getAttribute('aria-label') === label);
+    const b = [...$(boxSel).querySelectorAll('.slot[role="button"]')].find((x) => x.getAttribute('aria-label') === label);
     if (b) b.focus();
   }
 
