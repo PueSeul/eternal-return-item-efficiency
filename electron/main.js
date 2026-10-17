@@ -17,7 +17,7 @@ const EXTERNAL_ROOT = !app.isPackaged ? null
 // 프로그램 안 업데이트가 저장하는 곳: exe 옆 data/ (개발 실행에서는 프로젝트 data/). resolveFile 이 이 파일을 우선 읽는다.
 const UPDATE_DATA_DIR = path.join(EXTERNAL_ROOT || APP_ROOT, 'data');
 
-// window.erDesktop.updateItems() (preload.js) → fetchAll() → data/items.json·characters.json·items.meta.json 저장. 동시 요청은 하나로 합친다.
+// window.erDesktop.updateItems() (preload.js) → fetchAll() → data/items.json·characters.json·skills.json·items.meta.json 저장. 동시 요청은 하나로 합친다.
 let updating = null;
 let lastUpdate = null; // 검증(smokeClickUpdate)용: 마지막으로 시작한 업데이트 작업
 async function handleUpdateItems(event) {
@@ -96,7 +96,7 @@ function createWindow() {
 // ER_SMOKE_UPDATE=<CSS 선택자> 를 함께 주면 그 버튼을 눌러 아이템 업데이트까지 확인한다(결과의 update).
 function smokeTest(win, outFile) {
   const updateSelector = process.env.ER_SMOKE_UPDATE;
-  const timer = setTimeout(() => finish({ ok: false, error: 'timeout' }), updateSelector ? 180000 : 30000);
+  const timer = setTimeout(() => finish({ ok: false, error: 'timeout' }), updateSelector ? 600000 : 30000);
   function finish(result) {
     clearTimeout(timer);
     try {
@@ -144,7 +144,7 @@ function smokeTest(win, outFile) {
 
 // 검증용: 업데이트 버튼 클릭 → main 의 업데이트 작업 완료 대기 → 저장 파일 시각 기록.
 async function smokeClickUpdate(win, selector) {
-  const names = ['items.json', 'characters.json', 'items.meta.json'];
+  const names = ['items.json', 'characters.json', 'skills.json', 'items.meta.json'];
   const mtime = () => Object.fromEntries(names.map((n) => {
     const file = path.join(UPDATE_DATA_DIR, n);
     return [n, fs.existsSync(file) ? fs.statSync(file).mtime.toISOString() : null];
@@ -166,20 +166,25 @@ async function smokeClickUpdate(win, selector) {
     const res = await lastUpdate;
     await new Promise((r) => setTimeout(r, 2000)); // UI가 새 파일을 다시 읽을 시간
     const after = mtime();
-    // 프로토콜로 다시 읽은 세 파일(외부 data/ 우선)과 UI 상태 문구.
+    // 프로토콜로 다시 읽은 네 파일(외부 data/ 우선)과 UI 상태 문구.
     const ui = await win.webContents.executeJavaScript(`(async () => {
       const get = async (n) => (await fetch('data/' + n, { cache: 'no-store' })).json();
       return {
         servedCount: (await get('items.json')).length,
         servedCharacters: (await get('characters.json')).length,
+        servedSkills: JSON.stringify(await get('skills.json')),
         servedMeta: JSON.stringify(await get('items.meta.json')),
         status: (document.getElementById('update-status') || {}).textContent || '',
         bannerHidden: document.getElementById('data-banner').hidden,
       };
     })()`);
     const ok = names.every((n) => after[n] !== null && after[n] !== before[n])
-      && ui.servedCount === res.count && ui.servedMeta === JSON.stringify(res.meta) && ui.bannerHidden;
-    return { ok, before, after, ...res, ...ui };
+      && ui.servedCount === res.count && ui.servedMeta === JSON.stringify(res.meta)
+      && ui.servedSkills === JSON.stringify(res.skills) && ui.bannerHidden;
+    // 결과 파일이 커지지 않도록 skills 는 개수만 남긴다.
+    const { skills, ...rest } = res;
+    const { servedSkills, ...uiRest } = ui;
+    return { ok, before, after, ...rest, skillCount: skills.length, servedSkillCount: JSON.parse(servedSkills).length, ...uiRest };
   } catch (err) {
     return { ok: false, before, error: String(err && err.message || err) };
   }

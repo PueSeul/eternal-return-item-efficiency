@@ -33,6 +33,10 @@ test('external data/ next to exe takes priority', () => {
   fs.mkdirSync(path.join(extRoot, 'data'));
   fs.writeFileSync(path.join(extRoot, 'data', 'items.json'), '[2]');
   assert.strictEqual(resolveFile('/data/items.json', appRoot, extRoot), path.join(extRoot, 'data', 'items.json'));
+  // 업데이트가 저장하는 skills.json 도 외부 우선, 외부에 없으면 번들.
+  assert.strictEqual(resolveFile('/data/skills.json', appRoot, extRoot), path.join(appRoot, 'data', 'skills.json'));
+  fs.writeFileSync(path.join(extRoot, 'data', 'skills.json'), '[]');
+  assert.strictEqual(resolveFile('/data/skills.json', appRoot, extRoot), path.join(extRoot, 'data', 'skills.json'));
   // data/ 밖의 파일은 외부 폴더에서 읽지 않는다.
   fs.writeFileSync(path.join(extRoot, 'index.html'), 'evil');
   assert.strictEqual(resolveFile('/index.html', appRoot, extRoot), path.join(appRoot, 'index.html'));
