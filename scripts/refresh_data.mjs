@@ -1,8 +1,9 @@
-// Daily data refresh (.github/workflows/data-refresh.yml): fetch all four data files (every
-// character's skills from namu.wiki, 1 s between requests), update data/ only when something other
-// than meta.fetchedAt changed, and write the release assets (the four files + data-manifest.json)
-// to <releaseDir> for the fixed release "data-latest" (electron/update.js downloadLatest).
-// Usage: node scripts/refresh_data.mjs <releaseDir>
+// Daily data refresh (scripts/refresh_local.ps1 on the host PC; .github/workflows/data-refresh.yml
+// with --no-skills): fetch all four data files (every character's skills from namu.wiki, 1 s between
+// requests, unless --no-skills), update data/ only when something other than meta.fetchedAt changed,
+// and write the release assets (the four files + data-manifest.json) to <releaseDir> for the fixed
+// release "data-latest" (electron/update.js downloadLatest).
+// Usage: node scripts/refresh_data.mjs <releaseDir> [--no-skills]
 import { createHash } from "node:crypto";
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -63,11 +64,15 @@ export function publish(newDir, dataDir, releaseDir) {
 }
 
 if (isMain(import.meta.url)) {
-  const releaseDir = process.argv[2];
-  if (!releaseDir) throw new Error("usage: node scripts/refresh_data.mjs <releaseDir>");
+  const [releaseDir, ...flags] = process.argv.slice(2);
+  if (!releaseDir || flags.some((f) => f !== "--no-skills")) {
+    throw new Error("usage: node scripts/refresh_data.mjs <releaseDir> [--no-skills]");
+  }
   const work = mkdtempSync(path.join(tmpdir(), "er-refresh-"));
   try {
-    const { items, characters, skills, meta } = await fetchAll({ outDir: work, skillsMode: "all" });
+    // --no-skills (GitHub Actions; namu.wiki blocks datacenter IPs): keep data/skills.json.
+    const skillsMode = flags.includes("--no-skills") ? "none" : "all";
+    const { items, characters, skills, meta } = await fetchAll({ outDir: work, skillsMode });
     const { changed, manifest } = publish(work, DATA_DIR, releaseDir);
     console.log(`${items.length} items, ${characters.length} characters, ${skills.length} skill entries `
       + `(patch ${meta.patch.version}); data/ ${changed ? "updated" : "unchanged"}; manifest generatedAt ${manifest.generatedAt}`);

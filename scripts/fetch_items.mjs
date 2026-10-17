@@ -206,25 +206,64 @@ export function dakggVersion(rawItems) {
 
 /** {items, characters, skills, meta} with patch-note overrides applied (see fetch_items.py build_all).
  * pages: Map character name -> namu.wiki HTML or null (fetch_skills.mjs fetchPages); previous:
- * Map name -> skills.json entry kept for characters not in pages (skills mode "patched"). */
-export function buildAll(rawItems, masteries, rawChars, patch, pages, fetchedAt, previous = null) {
+ * Map name -> skills.json entry kept for characters not in pages (skills mode "patched").
+ * previousMeta (skills mode "none", no namu.wiki): the items.meta.json that came with previous. For the
+ * same patch note its skill rows and skillsFetched are kept as they are (previous already has the
+ * patch-note values, so re-applying would find nothing to override); for a new patch note the changes
+ * are applied to previous as usual. */
+export function buildAll(rawItems, masteries, rawChars, patch, pages, fetchedAt, previous = null, previousMeta = null) {
   const items = buildItems(rawItems, masteries);
   const characters = buildCharacters(rawChars, masteries);
   const [parsed, itemOverrides, itemUnparsed] = patchItems(items, rawItems, patch);
   const [charOverrides, charUnparsed] = applyCharacterChanges(characters, parsed.changes);
   const { id, version, title, url, date, articles } = patch.info;
+  const patchInfo = { id, version, title, url, date, articles };
   const skills = buildSkills(characters, pages, previous);
-  const [skillOverrides, skillSkipped, skillUnparsed] = applySkillChanges(skills, parsed.changes, articles);
+  const samePatch = previousMeta !== null && JSON.stringify(previousMeta.patch) === JSON.stringify(patchInfo);
+  const [skillOverrides, skillSkipped, skillUnparsed] = samePatch
+    ? [previousMeta.overrides.filter((r) => r.type === "skill"), previousMeta.skipped,
+      skillRowsOf(previousMeta.unparsed, parsed.unparsed)]
+    : applySkillChanges(skills, parsed.changes, articles);
   const meta = {
     fetchedAt,
     dakggVersion: dakggVersion(rawItems),
-    patch: { id, version, title, url, date, articles },
+    patch: patchInfo,
     overrides: [...itemOverrides, ...charOverrides, ...skillOverrides],
     skipped: skillSkipped,
     unparsed: [...parsed.unparsed, ...itemUnparsed, ...charUnparsed, ...skillUnparsed],
-    skillsFetched: { mode: previous === null ? "all" : "patched", characters: [...pages.keys()], count: pages.size },
+    skillsFetched: previousMeta !== null && previousMeta.skillsFetched ? previousMeta.skillsFetched
+      : { mode: previous === null ? "all" : "patched", characters: [...pages.keys()], count: pages.size },
   };
   return { items, characters, skills, meta };
+}
+
+/** The skill rows applySkillChanges added to a previous meta.unparsed: its "skill" rows minus those the
+ * patch-note parser itself reports (parserRows; each removed once). */
+export function skillRowsOf(unparsed, parserRows) {
+  const left = new Map();
+  for (const r of parserRows) {
+    const k = JSON.stringify(r);
+    left.set(k, (left.get(k) ?? 0) + 1);
+  }
+  return unparsed.filter((r) => {
+    if (r.type !== "skill") return false;
+    const k = JSON.stringify(r);
+    if (!left.get(k)) return true;
+    left.set(k, left.get(k) - 1);
+    return false;
+  });
+}
+
+/** Skills mode "none": [skills.json Map, items.meta.json] from outDir if it has skills.json, else
+ * this repo's data/; both files must be there. */
+export function keptSkills(outDir) {
+  const dir = existsSync(path.join(outDir, "skills.json")) ? outDir : DATA_DIR;
+  const read = (name) => {
+    const file = path.join(dir, name);
+    if (!existsSync(file)) throw new Error(`skills mode "none" needs ${file}`);
+    return JSON.parse(readFileSync(file, "utf8"));
+  };
+  return [new Map(read("skills.json").map((e) => [e.name, e])), read("items.meta.json")];
 }
 
 /** Map name -> entry from outDir/skills.json, else this repo's data/skills.json, else null. */
@@ -243,6 +282,8 @@ export function previousSkills(outDir) {
  * skillsMode "patched" (default): re-read only the characters the latest patch note (+ hotfixes)
  * mentions and keep the others from the existing skills.json (outDir's, else this repo's); falls
  * back to "all" without one or without any character in the patch note. "all": every character.
+ * "none": no namu.wiki request; keep skills.json and its items.meta.json skill rows (outDir's, else
+ * this repo's; see buildAll previousMeta) — for runners whose IP namu.wiki blocks (GitHub Actions).
  * meta.skillsFetched = {mode, characters, count} of the documents actually read.
  * onProgress({stage: "items"|"characters"|"patchnotes"|"skills", done, total, message}) at each stage
  * (stage names as src/updater.js progressText reads them; "characters" falls back to message)
@@ -287,18 +328,24 @@ export async function fetchAll({
     step("characters", "실험체 수집(dak.gg)", () => fetchJson(CHARACTERS_URL, stopped)),
     step("patchnotes", "패치노트 확인", () => fetchPatch(stopped)),
   ]);
-  const [, read, previous] = local("데이터 처리", () => {
+  const [, read, previous, kept] = local("데이터 처리", () => {
     const names = [...chars.characters].sort((a, b) => Number(a.id) - Number(b.id)).map((c) => c.name);
+    if (skillsMode === "none") {
+      const [prev, meta] = keptSkills(outDir);
+      return ["none", names.filter((n) => !prev.has(n)), prev, meta];
+    }
     const [flat, pct] = statKinds(items.items);
     return planPages(skillsMode, parsePatch(patch.bodies, [...flat, ...pct]), names,
       skillsMode === "patched" ? previousSkills(outDir) : null);
   });
   const label = "스킬 수집(나무위키)";
-  const pages = await step("skills", label, () => fetchPages(read, intervalMs, {
-    signal: stopped, onPage: (done, total, name) => progress("skills", done, total, `${label} 중: ${name}`),
-  }), read.length);
+  // "none": no namu.wiki request; a character missing from skills.json gets an empty entry.
+  const pages = skillsMode === "none" ? new Map(read.map((n) => [n, null]))
+    : await step("skills", label, () => fetchPages(read, intervalMs, {
+      signal: stopped, onPage: (done, total, name) => progress("skills", done, total, `${label} 중: ${name}`),
+    }), read.length);
   const result = local("데이터 처리", () => buildAll(items.items, masteries.masteries, chars.characters,
-    patch, pages, fetchedAt ?? new Date().toISOString(), previous));
+    patch, pages, fetchedAt ?? new Date().toISOString(), previous, kept ?? null));
   local("파일 저장", () => {
     mkdirSync(outDir, { recursive: true });
     // Write all four to temp files first so a failed write leaves the old set intact.

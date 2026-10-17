@@ -1,12 +1,14 @@
-# 매일 12:00 KST(03:00 UTC) + 수동 실행: dak.gg·패치노트·나무위키(전체 실험체, 요청 간격 1초)에서 데이터를 받아
-# data/ 가 바뀌었으면 커밋하고, 고정 릴리스 data-latest 에 네 파일 + data-manifest.json 을 올린다.
+# 매일 06:00 KST(21:00 UTC) + 수동 실행: dak.gg·패치노트에서 아이템·실험체 데이터를 받아(나무위키는 데이터센터 IP를
+# 403으로 막으므로 스킬은 기존 data/skills.json 유지, --no-skills) data/ 가 바뀌었으면 커밋하고,
+# 고정 릴리스 data-latest 에 네 파일 + data-manifest.json 을 올린다.
+# 스킬 전체 수집은 호스트 PC 의 작업 스케줄러가 매일 12:00 KST 에 한다(scripts/refresh_local.ps1). 시각을 달리해 푸시가 겹치지 않게 한다.
 # 프로그램의 "아이템 수치 업데이트"(electron/update.js downloadLatest)가 이 자산을 받는다.
 # data-latest 는 사전 릴리스라 releases/latest(프로그램 자동 업데이트)에 잡히지 않고, release.yml 은 v* 태그에만 돈다.
 name: data-refresh
 
 on:
   schedule:
-    - cron: '0 3 * * *'
+    - cron: '0 21 * * *'
   workflow_dispatch:
 
 permissions:
@@ -35,7 +37,7 @@ jobs:
       - run: npm ci
 
       - name: Fetch data
-        run: node scripts/refresh_data.mjs "$RUNNER_TEMP/data-release"
+        run: node scripts/refresh_data.mjs "$RUNNER_TEMP/data-release" --no-skills
 
       - name: Commit data/
         run: |
