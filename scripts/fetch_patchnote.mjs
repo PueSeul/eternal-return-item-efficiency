@@ -217,6 +217,7 @@ class Parser {
     this.names = [...this.nameSet].sort((a, b) => b.length - a.length || (a < b ? -1 : a > b ? 1 : 0));
     this.changes = [];
     this.unparsed = [];
+    this.characters = [];
   }
 
   skip(type, name, text) {
@@ -342,6 +343,7 @@ class Parser {
       if (!SENTENCE_RE.test(text)) {
         this.owner = text;
         this.ownerDepth = 0;
+        if (!this.characters.includes(text)) this.characters.push(text);
       }
       return;
     }
@@ -379,11 +381,11 @@ class Parser {
   }
 }
 
-/** {changes, unparsed} over the article bodies in order. */
+/** {changes, unparsed, characters} over the article bodies in order (see fetch_patchnote.py parse_patch). */
 export function parsePatch(bodies, statNames) {
   const p = new Parser(statNames);
   bodies.forEach((html, part) => p.parse(html, part));
-  return { changes: p.changes, unparsed: p.unparsed };
+  return { changes: p.changes, unparsed: p.unparsed, characters: p.characters };
 }
 
 function groupByName(rows) {

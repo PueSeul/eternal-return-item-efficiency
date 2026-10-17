@@ -650,8 +650,22 @@ export async function fetchPages(names, intervalMs = REQUEST_INTERVAL_MS,
 }
 
 /** skills.json content (wiki values only) for the built characters. */
-export function buildSkills(chars, pages) {
-  return chars.map((c) => parsePage(c.id, c.name, pages.get(c.name) ?? null));
+export function buildSkills(chars, pages, previous = null) {
+  return chars.map((c) => (previous === null || pages.has(c.name)
+    ? parsePage(c.id, c.name, pages.get(c.name) ?? null) : previous.get(c.name)));
+}
+
+/** Characters the parsed patch note mentions (see fetch_skills.py patched_names). */
+export function patchedNames(parsed, names) {
+  const mentioned = new Set(parsed.characters);
+  return names.filter((n) => mentioned.has(n));
+}
+
+/** [mode, names to read, previous or null] (see fetch_skills.py plan_pages). */
+export function planPages(mode, parsed, names, previous) {
+  const patched = mode === "patched" && previous !== null ? patchedNames(parsed, names) : [];
+  if (!patched.length) return ["all", [...names], null];
+  return ["patched", names.filter((n) => patched.includes(n) || !previous.has(n)), previous];
 }
 
 // --- patch-note overrides --------------------------------------------------------

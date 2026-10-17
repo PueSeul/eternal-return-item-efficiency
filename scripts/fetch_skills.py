@@ -697,9 +697,28 @@ def fetch_pages(names, interval=None):
     return pages
 
 
-def build_skills(chars, pages):
-    """skills.json content (wiki values only) for the built characters."""
-    return [parse_page(c["id"], c["name"], pages.get(c["name"])) for c in chars]
+def build_skills(chars, pages, previous=None):
+    """skills.json content (wiki values only) for the built characters. With previous
+    ({name: earlier skills.json entry}), characters missing from pages keep that entry."""
+    return [parse_page(c["id"], c["name"], pages.get(c["name"]))
+            if previous is None or c["name"] in pages else previous[c["name"]] for c in chars]
+
+
+def patched_names(parsed, names):
+    """Characters (in names order) with a section in the parsed patch note, whether or not
+    its rows are read (e.g. a cooldown-only change)."""
+    mentioned = set(parsed["characters"])
+    return [n for n in names if n in mentioned]
+
+
+def plan_pages(mode, parsed, names, previous):
+    """(mode, names to read, previous or None). "patched" reads only characters the patch
+    note mentions plus ones missing from previous; it falls back to "all" without previous
+    skills.json or without any character in the patch note."""
+    patched = patched_names(parsed, names) if mode == "patched" and previous is not None else []
+    if not patched:
+        return "all", list(names), None
+    return "patched", [n for n in names if n in patched or n not in previous], previous
 
 
 # --- patch-note overrides ---------------------------------------------------

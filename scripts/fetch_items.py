@@ -3,9 +3,10 @@
 Source: the JSON API that https://dak.gg/er/items?hl=ko calls in the browser.
 Values that differ from the latest official patch note (+ later hotfixes) are
 replaced by the patch-note value (host decision; see fetch_patchnote.py).
-Usage: python scripts/fetch_items.py
+Usage: python scripts/fetch_items.py [--all]
   writes data/items.json, data/characters.json, data/skills.json (namu.wiki,
-  see fetch_skills.py) and data/items.meta.json
+  see fetch_skills.py; only the patch note's characters are re-read unless --all)
+  and data/items.meta.json
 """
 import json
 import os
@@ -212,9 +213,10 @@ def utc_now():
     return t.strftime("%Y-%m-%dT%H:%M:%S.") + f"{t.microsecond // 1000:03d}Z"
 
 
-def build_all(raw_items, masteries, raw_chars, patch, pages, fetched_at):
+def build_all(raw_items, masteries, raw_chars, patch, pages, fetched_at, previous=None):
     """{"items", "characters", "skills", "meta"} with patch-note overrides applied.
-    pages: {character name: namu.wiki HTML or None} (fetch_skills.fetch_pages)."""
+    pages: {character name: namu.wiki HTML or None} (fetch_skills.fetch_pages); previous:
+    {name: skills.json entry} kept for characters not in pages (skills mode "patched")."""
     import fetch_characters as fc  # fetch_characters imports this module
 
     items = build_items(raw_items, masteries)
@@ -222,7 +224,7 @@ def build_all(raw_items, masteries, raw_chars, patch, pages, fetched_at):
     parsed, item_overrides, item_unparsed = patch_items(items, raw_items, patch)
     char_overrides, char_unparsed = pn.apply_character_changes(chars, parsed["changes"])
     info = patch["info"]
-    skills = fs.build_skills(chars, pages)
+    skills = fs.build_skills(chars, pages, previous)
     skill_overrides, skill_skipped, skill_unparsed = fs.apply_skill_changes(
         skills, parsed["changes"], info["articles"])
     meta = {
@@ -232,23 +234,42 @@ def build_all(raw_items, masteries, raw_chars, patch, pages, fetched_at):
         "overrides": item_overrides + char_overrides + skill_overrides,
         "skipped": skill_skipped,
         "unparsed": parsed["unparsed"] + item_unparsed + char_unparsed + skill_unparsed,
+        "skillsFetched": {"mode": "all" if previous is None else "patched", "characters": list(pages),
+                          "count": len(pages)},
     }
     return {"items": items, "characters": chars, "skills": skills, "meta": meta}
 
 
-def fetch_all(out_dir=DATA_DIR, fetched_at=None, interval=None):
+def previous_skills(out_dir):
+    """{name: entry} from out_dir/skills.json, else this repo's data/skills.json, else None."""
+    for path in (Path(out_dir) / SKILLS_FILE, DATA_DIR / SKILLS_FILE):
+        if path.is_file():
+            return {e["name"]: e for e in json.loads(path.read_text(encoding="utf-8"))}
+    return None
+
+
+def fetch_all(out_dir=DATA_DIR, fetched_at=None, interval=None, skills_mode="patched"):
     """Fetch everything, write items.json, characters.json, skills.json, items.meta.json to out_dir.
-    interval: seconds between namu.wiki requests (default fetch_skills.REQUEST_INTERVAL)."""
+    interval: seconds between namu.wiki requests (default fetch_skills.REQUEST_INTERVAL).
+    skills_mode "patched": re-read only the characters in the latest patch note (fetch_skills.plan_pages);
+    "all": every character."""
     import fetch_characters as fc
 
     raw_chars = fetch_json(fc.CHARACTERS_URL)["characters"]
+    raw_items = fetch_json(ITEMS_URL)["items"]
+    patch = pn.fetch_patch()
+    flat, pct = stat_kinds(raw_items)
+    names = [c["name"] for c in sorted(raw_chars, key=lambda c: int(c["id"]))]
+    _, read, previous = fs.plan_pages(skills_mode, pn.parse_patch(patch["bodies"], flat | pct), names,
+                                      previous_skills(out_dir) if skills_mode == "patched" else None)
     result = build_all(
-        fetch_json(ITEMS_URL)["items"],
+        raw_items,
         fetch_json(MASTERIES_URL)["masteries"],
         raw_chars,
-        pn.fetch_patch(),
-        fs.fetch_pages([c["name"] for c in sorted(raw_chars, key=lambda c: int(c["id"]))], interval),
+        patch,
+        fs.fetch_pages(read, interval),
         fetched_at or utc_now(),
+        previous,
     )
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -266,7 +287,7 @@ def fetch_all(out_dir=DATA_DIR, fetched_at=None, interval=None):
 
 
 def main():
-    result = fetch_all()
+    result = fetch_all(skills_mode="all" if "--all" in sys.argv[1:] else "patched")
     meta = result["meta"]
     print(f"wrote {len(result['items'])} items, {len(result['characters'])} characters, "
           f"{len(result['skills'])} skill entries to {DATA_DIR} "

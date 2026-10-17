@@ -220,7 +220,7 @@ class _Parser:
     def __init__(self, stat_names):
         self.names = sorted(set(stat_names), key=lambda s: (-len(s), s))
         self.name_set = set(stat_names)
-        self.changes, self.unparsed = [], []
+        self.changes, self.unparsed, self.characters = [], [], []
 
     def skip(self, kind, name, text):
         self.unparsed.append({"type": kind, "name": name, "text": text})
@@ -331,6 +331,8 @@ class _Parser:
             self.sub = self.skill = None
             if not SENTENCE_RE.search(text):
                 self.owner, self.owner_depth = text, 0  # character name row
+                if text not in self.characters:
+                    self.characters.append(text)
             return
         if self.owner is None:
             return
@@ -363,12 +365,13 @@ class _Parser:
 
 
 def parse_patch(bodies, stat_names):
-    """{"changes": [...], "unparsed": [...]} over the article bodies in order.
+    """{"changes": [...], "unparsed": [...], "characters": [name row of each character section,
+    whether or not its rows are read]} over the article bodies in order.
     stat_names: dak.gg item stat names (split one-line item rows, validate rows)."""
     p = _Parser(stat_names)
     for part, html in enumerate(bodies):
         p.parse(html, part)
-    return {"changes": p.changes, "unparsed": p.unparsed}
+    return {"changes": p.changes, "unparsed": p.unparsed, "characters": p.characters}
 
 
 def apply_item_changes(items, changes, flat, pct):

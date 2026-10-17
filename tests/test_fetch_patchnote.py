@@ -4,6 +4,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from node_harness import (ROOT, ROBOTS_TXT, article, fi, fs, pn, patch_bodies, record, replay,  # noqa: F401
@@ -71,7 +72,7 @@ def fixture_bodies():
 
 
 NODE_FETCH_ALL = ('const m = await imp("fetch_items.mjs");'
-                  'return m.fetchAll({ outDir: env.OUT, fetchedAt: env.AT, intervalMs: 0 });')
+                  'return m.fetchAll({ outDir: env.OUT, fetchedAt: env.AT, intervalMs: 0, skillsMode: env.MODE });')
 EDGE_HTML = ('<div class="er-article-detail__content"><h5>방어구</h5>'
              '<ul><li><p>더 문</p><ul><li><p><s>쿨다운 감소 10</s> (삭제)</p></li>'
              '<li><p>공격 속도 1% &rarr; 0.001%</p></li></ul></li></ul>'
@@ -232,7 +233,7 @@ class ApplyTests(unittest.TestCase):
     def setUpClass(cls):
         cls.bodies = fixture_bodies()
         with tempfile.TemporaryDirectory() as tmp, replay(cls.bodies):
-            cls.result = fi.fetch_all(tmp, FETCHED_AT)
+            cls.result = fi.fetch_all(tmp, FETCHED_AT, skills_mode="all")
             cls.files = read_outputs(tmp)
 
     def test_overrides_only_where_values_differ(self):
@@ -302,7 +303,7 @@ class ApplyTests(unittest.TestCase):
 
     def test_node_output_identical(self):
         with tempfile.TemporaryDirectory() as tmp:
-            node_result = run_node(self.bodies, NODE_FETCH_ALL, OUT=tmp, AT=FETCHED_AT)
+            node_result = run_node(self.bodies, NODE_FETCH_ALL, OUT=tmp, AT=FETCHED_AT, MODE="all")
             self.assertEqual(read_outputs(tmp), self.files)
             self.assertEqual(sorted(Path(tmp).iterdir()), sorted(Path(tmp) / n for n in self.files))  # no .tmp left
         self.assertEqual(node_result, json.loads(json.dumps(self.result, ensure_ascii=False)))
@@ -313,14 +314,89 @@ class ApplyTests(unittest.TestCase):
         self.assertEqual(json.dumps(node, ensure_ascii=False), json.dumps(py, ensure_ascii=False))
 
 
+class SkillsModeTests(unittest.TestCase):
+    """skills mode "patched": only the patch note's characters are read from namu.wiki."""
+
+    FILLERS = [char(i, f"실험체{i}", 30, []) for i in range(4, 93)]  # 아디나, 루치아 + 89 = 91
+
+    def bodies(self):
+        bodies = fixture_bodies()
+        # 라우라 is left out: the patch note mentions 아디나, 루치아 (and 없는실험체, 라우라: not characters).
+        bodies["https://er.dakgg.io/api/v1/data/characters?hl=ko"] = json.dumps(
+            {"characters": RAW_CHARS[:2] + self.FILLERS}, ensure_ascii=False)
+        del bodies[fs.doc_url("라우라(이터널 리턴)")]
+        return bodies  # filler documents are not in bodies: a request for one fails
+
+    def run_both(self, previous, mode="patched"):
+        bodies = self.bodies()
+        with tempfile.TemporaryDirectory() as py_dir, tempfile.TemporaryDirectory() as js_dir:
+            for d in (py_dir, js_dir):
+                if previous is not None:
+                    (Path(d) / "skills.json").write_text(fs.dumps(previous), encoding="utf-8")
+            with replay(bodies):
+                result = fi.fetch_all(py_dir, FETCHED_AT, skills_mode=mode)
+            events = run_node(bodies, 'const m = await imp("fetch_items.mjs"); const ev = [];'
+                              ' await m.fetchAll({ outDir: env.OUT, fetchedAt: env.AT, intervalMs: 0,'
+                              ' skillsMode: env.MODE, onProgress: (p) => ev.push(p) });'
+                              ' return ev.filter((p) => p.stage === "skills");', OUT=js_dir, AT=FETCHED_AT, MODE=mode)
+            self.assertEqual(read_outputs(js_dir), read_outputs(py_dir))
+        return result, events
+
+    def previous(self):
+        prev = [fs.parse_page(str(c["id"]), c["name"], None) for c in RAW_CHARS[:2] + self.FILLERS]
+        for e in prev:
+            e["wikiRevisedAt"] = "2026-09-01T00:00:00.000Z"  # marks the kept entries
+        return prev
+
+    def test_patched_reads_two_and_keeps_91(self):
+        prev = self.previous()
+        result, events = self.run_both(prev)
+        self.assertEqual(result["meta"]["skillsFetched"],
+                         {"mode": "patched", "characters": ["아디나", "루치아"], "count": 2})
+        self.assertEqual(len(result["skills"]), 91)
+        self.assertEqual(result["skills"][2:], prev[2:])  # fillers unchanged
+        self.assertEqual(result["skills"][0]["wikiRevisedAt"], "2026-10-01T00:00:00.000Z")  # 아디나 re-read
+        self.assertEqual({e["total"] for e in events}, {2})
+
+    def test_fallback_to_all(self):
+        # No skills.json in out_dir nor in the repo data dir: every document is read.
+        bodies = self.bodies()
+        for c in self.FILLERS:
+            for title in (c["name"] + "(이터널 리턴)", c["name"]):
+                bodies[fs.doc_url(title)] = {"status": 404}
+        with tempfile.TemporaryDirectory() as tmp, replay(bodies), \
+                mock.patch.object(fi, "DATA_DIR", Path(tmp) / "none"):
+            result = fi.fetch_all(tmp, FETCHED_AT)
+        self.assertEqual((result["meta"]["skillsFetched"]["mode"], result["meta"]["skillsFetched"]["count"]),
+                         ("all", 91))
+        # Section names count even when no row is read (cooldown only); no character -> "all".
+        names = ["아디나", "루치아"]
+        prev = {n: {} for n in names}
+        none = {"changes": [{"type": "item", "name": "x"}], "unparsed": [], "characters": []}
+        self.assertEqual(fs.plan_pages("patched", none, names, prev), ("all", names, None))
+        self.assertEqual(fs.plan_pages("patched", none | {"characters": ["루치아", "없는실험체"]},
+                                       names + ["신규"], prev), ("patched", ["루치아", "신규"], prev))
+        self.assertEqual(fs.plan_pages("patched", none | {"characters": ["아디나"]}, names, None),
+                         ("all", names, None))
+        node = run_node({}, 'const m = await imp("fetch_skills.mjs"); const prev = new Map([["아디나", {}], ["루치아", {}]]);'
+                        ' const none = {changes: [], unparsed: [], characters: []};'
+                        ' return [m.planPages("patched", none, ["아디나", "루치아"], prev),'
+                        ' m.planPages("patched", {...none, characters: ["루치아", "없는실험체"]}, ["아디나", "루치아", "신규"], prev)];')
+        self.assertEqual(node, [["all", names, None], ["patched", ["루치아", "신규"], {}]])
+        cooldown = ('<div class="er-article-detail__content"><h5>실험체</h5><p>루치아</p>'
+                    '<ul><li><p>얼음 송곳(Q)</p><ul><li><p>쿨다운 8초 → 7초</p></li></ul></li></ul></div>')
+        parsed = pn.parse_patch([cooldown], [])
+        self.assertEqual((parsed["changes"], parsed["characters"]), ([], ["루치아"]))
+
+
 @unittest.skipUnless(os.environ.get("ER_LIVE") == "1", "real namu.wiki requests: set ER_LIVE=1")
 class LiveTests(unittest.TestCase):
     def test_fetch_all_python_and_node_identical(self):
         bodies = {}
         with tempfile.TemporaryDirectory() as py_dir, tempfile.TemporaryDirectory() as js_dir:
             with record(bodies):
-                result = fi.fetch_all(py_dir, FETCHED_AT)  # includes ~91 namu.wiki pages, 1 s apart
-            node_result = run_node(bodies, NODE_FETCH_ALL, OUT=js_dir, AT=FETCHED_AT)
+                result = fi.fetch_all(py_dir, FETCHED_AT, skills_mode="all")  # ~91 namu.wiki pages, 1 s apart
+            node_result = run_node(bodies, NODE_FETCH_ALL, OUT=js_dir, AT=FETCHED_AT, MODE="all")
             self.assertEqual(read_outputs(js_dir), read_outputs(py_dir))
         self.assertEqual(node_result, json.loads(json.dumps(result, ensure_ascii=False)))
         self.assertGreater(len(result["items"]), 400)

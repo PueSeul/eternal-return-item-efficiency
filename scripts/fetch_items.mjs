@@ -2,8 +2,9 @@
 // Fetches Eternal Return equipment from the dak.gg API and builds the same
 // item list as the Python script; values that differ from the latest patch note
 // are replaced by the patch-note value (host decision).
-// Usage: node scripts/fetch_items.mjs  (writes items.json, characters.json, skills.json, items.meta.json)
-import { readFileSync, writeFileSync, mkdirSync, realpathSync, renameSync } from "node:fs";
+// Usage: node scripts/fetch_items.mjs [--all]  (writes items.json, characters.json, skills.json,
+// items.meta.json; only the patch note's characters are re-read from namu.wiki unless --all)
+import { existsSync, readFileSync, writeFileSync, mkdirSync, realpathSync, renameSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import {
@@ -11,7 +12,7 @@ import {
 } from "./fetch_patchnote.mjs";
 import { buildCharacters, CHARACTERS_URL, dumps as dumpsCharacters } from "./fetch_characters.mjs";
 import {
-  buildSkills, applySkillChanges, fetchPages, REQUEST_INTERVAL_MS, dumps as dumpsSkills,
+  buildSkills, applySkillChanges, fetchPages, planPages, REQUEST_INTERVAL_MS, dumps as dumpsSkills,
 } from "./fetch_skills.mjs";
 
 export const ITEMS_URL = "https://er.dakgg.io/api/v1/data/items?hl=ko";
@@ -201,14 +202,15 @@ export function dakggVersion(rawItems) {
 }
 
 /** {items, characters, skills, meta} with patch-note overrides applied (see fetch_items.py build_all).
- * pages: Map character name -> namu.wiki HTML or null (fetch_skills.mjs fetchPages). */
-export function buildAll(rawItems, masteries, rawChars, patch, pages, fetchedAt) {
+ * pages: Map character name -> namu.wiki HTML or null (fetch_skills.mjs fetchPages); previous:
+ * Map name -> skills.json entry kept for characters not in pages (skills mode "patched"). */
+export function buildAll(rawItems, masteries, rawChars, patch, pages, fetchedAt, previous = null) {
   const items = buildItems(rawItems, masteries);
   const characters = buildCharacters(rawChars, masteries);
   const [parsed, itemOverrides, itemUnparsed] = patchItems(items, rawItems, patch);
   const [charOverrides, charUnparsed] = applyCharacterChanges(characters, parsed.changes);
   const { id, version, title, url, date, articles } = patch.info;
-  const skills = buildSkills(characters, pages);
+  const skills = buildSkills(characters, pages, previous);
   const [skillOverrides, skillSkipped, skillUnparsed] = applySkillChanges(skills, parsed.changes, articles);
   const meta = {
     fetchedAt,
@@ -217,8 +219,17 @@ export function buildAll(rawItems, masteries, rawChars, patch, pages, fetchedAt)
     overrides: [...itemOverrides, ...charOverrides, ...skillOverrides],
     skipped: skillSkipped,
     unparsed: [...parsed.unparsed, ...itemUnparsed, ...charUnparsed, ...skillUnparsed],
+    skillsFetched: { mode: previous === null ? "all" : "patched", characters: [...pages.keys()], count: pages.size },
   };
   return { items, characters, skills, meta };
+}
+
+/** Map name -> entry from outDir/skills.json, else this repo's data/skills.json, else null. */
+export function previousSkills(outDir) {
+  for (const file of [path.join(outDir, "skills.json"), path.join(DATA_DIR, "skills.json")]) {
+    if (existsSync(file)) return new Map(JSON.parse(readFileSync(file, "utf8")).map((e) => [e.name, e]));
+  }
+  return null;
 }
 
 /**
@@ -226,13 +237,17 @@ export function buildAll(rawItems, masteries, rawChars, patch, pages, fetchedAt)
  * characters.json, skills.json and items.meta.json to outDir (default: this repo's
  * data/; an app should pass a writable directory). Returns {items, characters, skills, meta}.
  * intervalMs: pause between namu.wiki request starts (default 1000).
+ * skillsMode "patched" (default): re-read only the characters the latest patch note (+ hotfixes)
+ * mentions and keep the others from the existing skills.json (outDir's, else this repo's); falls
+ * back to "all" without one or without any character in the patch note. "all": every character.
+ * meta.skillsFetched = {mode, characters, count} of the documents actually read.
  * onProgress({stage: "items"|"characters"|"patchnotes"|"skills", done, total, message}) at each stage
  * (stage names as src/updater.js progressText reads them; "characters" falls back to message)
  * start/end and after each namu.wiki document. A failure names its stage ("<stage> 단계 실패: <reason>")
  * and aborts the other downloads; signal (AbortSignal) stops all requests and keeps outDir untouched.
  */
 export async function fetchAll({
-  outDir = DATA_DIR, fetchedAt, intervalMs = REQUEST_INTERVAL_MS, onProgress, signal,
+  outDir = DATA_DIR, fetchedAt, intervalMs = REQUEST_INTERVAL_MS, onProgress, signal, skillsMode = "patched",
 } = {}) {
   const progress = (stage, done, total, message) => {
     if (onProgress) onProgress({ stage, done, total, message });
@@ -269,14 +284,18 @@ export async function fetchAll({
     step("characters", "실험체 수집(dak.gg)", () => fetchJson(CHARACTERS_URL, stopped)),
     step("patchnotes", "패치노트 확인", () => fetchPatch(stopped)),
   ]);
-  const names = local("실험체 목록 처리",
-    () => [...chars.characters].sort((a, b) => Number(a.id) - Number(b.id)).map((c) => c.name));
+  const [, read, previous] = local("데이터 처리", () => {
+    const names = [...chars.characters].sort((a, b) => Number(a.id) - Number(b.id)).map((c) => c.name);
+    const [flat, pct] = statKinds(items.items);
+    return planPages(skillsMode, parsePatch(patch.bodies, [...flat, ...pct]), names,
+      skillsMode === "patched" ? previousSkills(outDir) : null);
+  });
   const label = "스킬 수집(나무위키)";
-  const pages = await step("skills", label, () => fetchPages(names, intervalMs, {
+  const pages = await step("skills", label, () => fetchPages(read, intervalMs, {
     signal: stopped, onPage: (done, total, name) => progress("skills", done, total, `${label} 중: ${name}`),
-  }), names.length);
+  }), read.length);
   const result = local("데이터 처리", () => buildAll(items.items, masteries.masteries, chars.characters,
-    patch, pages, fetchedAt ?? new Date().toISOString()));
+    patch, pages, fetchedAt ?? new Date().toISOString(), previous));
   local("파일 저장", () => {
     mkdirSync(outDir, { recursive: true });
     // Write all four to temp files first so a failed write leaves the old set intact.
@@ -289,7 +308,8 @@ export async function fetchAll({
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {
-  const { items, characters, skills, meta } = await fetchAll();
+  const { items, characters, skills, meta } = await fetchAll({
+    skillsMode: process.argv.slice(2).includes("--all") ? "all" : "patched" });
   console.log(`wrote ${items.length} items, ${characters.length} characters, ${skills.length} skill entries `
     + `to ${DATA_DIR} (patch ${meta.patch.version}: ${meta.overrides.length} overrides, `
     + `${meta.skipped.length} skipped, ${meta.unparsed.length} unparsed)`);
