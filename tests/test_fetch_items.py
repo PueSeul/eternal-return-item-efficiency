@@ -241,12 +241,12 @@ class DataFileTests(unittest.TestCase):
                 self.assertEqual(it["grade"], "신화" if name.endswith("-VBS") else "전설")
 
     def test_host_weapon_prices(self):
-        # 호스트 무기 가격표: every 전설 weapon except the VF의수 MT/TL/ML is priced (사용자 지정).
+        # 호스트 무기 가격표: every 전설 weapon is priced (사용자 지정), VF의수 MT/TL/ML included.
         legend = [i for i in self.items if i["slot"] == "무기" and i["grade"] == "전설"]
-        left = sorted(i["name"] for i in legend if i["priceSource"] != "사용자 지정")
-        self.assertEqual(set(left), {"데스애더퀸-MT", "블랙맘바킹-TL", "슈퍼사이드와인더-ML"})
+        self.assertEqual([i["name"] for i in legend if i["priceSource"] != "사용자 지정"], [])
         by_name = {i["name"]: i["price"] for i in legend}
-        for name, price in (("타나토스", 200), ("엔데버 AX", 200), ("운명의 고리", 200), ("영광금귀신기노", 200),
+        for name, price in (("데스애더퀸-MT", 200), ("슈퍼사이드와인더-ML", 250), ("블랙맘바킹-TL", 200),
+                            ("타나토스", 200), ("엔데버 AX", 200), ("운명의 고리", 200), ("영광금귀신기노", 200),
                             ("낙원의 낫", 200), ("아이언 피스트", 250), ("프라가라흐", 250)):
             self.assertEqual(by_name[name], price, name)
 
