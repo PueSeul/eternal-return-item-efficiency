@@ -44,20 +44,29 @@ BLOCK_TAGS = pn.BLOCK_TAGS | {"hr"}
 HEADING_NUM_RE = re.compile(r"^[0-9]+(?:\.[0-9]+)*\. ")
 EDIT_SUFFIX = "[편집]"
 SKILL_SECTION, HISTORY_SECTION = "스킬", "역사"
-SKILL_HEADING_RE = re.compile("^(패시브|Q|W|E|R) - (.+)$")
-GROUP_KEYS = {"패시브": "P", "Q": "Q", "W": "W", "E": "E", "R": "R"}
-DAMAGE = "피해량"
-NUMV = "[0-9]+(?:\\.[0-9]+)?%?"
-# "[샤마쉬의 법전] 주문 피해량 [160 / 240 / 320] (+스킬 증폭의 80%)"
-VALUE_LINE_RE = re.compile("^(?:\\[([^\\[\\]]+)\\] )?([^\\[\\]]+?) \\[(" + NUMV + "(?: / " + NUMV
-                           + ")*)\\]((?: ?\\([^()]*\\))*)$")
-DAMAGE_ROW_RE = re.compile("피해량[^\\[]*\\[")  # damage row the value pattern may not read
-FOOTNOTE_RE = re.compile(r"\)(?:\[[0-9]+\])+$")  # "… (+스킬 증폭의 60%)[3]"
+SKILL_HEADING_RE = re.compile("^(패시브|Q|W|E|R|무기 스킬) - (.+)$")
+GROUP_KEYS = {"패시브": "P", "Q": "Q", "W": "W", "E": "E", "R": "R", "무기 스킬": "D"}
+NUM = "[0-9]+(?:\\.[0-9]+)?"
+# Value row: "[샤마쉬의 법전] 주문 피해량 [160 / 240 / 320] (+스킬 증폭의 80%)",
+# "2타 피해량 [공격력의 55% / 60% / 65%] * (기본 공격 증폭)". Groups: tag, label, body, rest.
+ROW_RE = re.compile(r"^(?:\[([^\[\]]+)\] )?([^\[\]]+?) \[([^\[\]]+)\](.*)$")
+NUM_BODY_RE = re.compile("^" + NUM + "%?(?: / " + NUM + "%?)*$")
+STAT_BODY_RE = re.compile("^(.+?)의 (" + NUM + "%(?: / " + NUM + "%)*)$")
+MULT_RE = re.compile(r"^ ?\* ?\(([^()]*)\)$")
+DAMAGE_ROW_RE = re.compile(r"피해량[^\[]*\[(?![0-9]+\])")  # damage row the row pattern may not read
+FOOTNOTE_RE = re.compile(r"(?<=[)\]])\[[0-9]+\]")  # "… (+스킬 증폭의 60%)[3]"
 PAREN_RE = re.compile(r"\(([^()]*)\)")
+# Coefficients (text inside the parentheses); ratio = damage per stat unit:
 # "+스킬 증폭의 80%", "+공격력의 14% / 16% / 18%" (wiki), "+공격력의 170/175/180%" (patch note)
 COEF_RE = re.compile("^\\+(.+?)의? ([0-9]+(?:\\.[0-9]+)?%?(?: ?/ ?[0-9]+(?:\\.[0-9]+)?%?)*)$")
+COEF_PER_RE = re.compile("^\\+(.+?) (" + NUM + ")(%?) ?당 (" + NUM + ")(%?)$")  # "+스킬 증폭 25 당 1"
+COEF_MUL_RE = re.compile("^\\+(.+?) ?\\* ?(" + NUM + "(?: / " + NUM + ")*)$")  # "+레니 레벨 * 8", "+펠릭스 레벨*3"
+COEF_EACH_RE = re.compile("^\\+(.+?) 당 (?:피해량 )?(" + NUM + "(?: / " + NUM + ")*)$")  # "+소모한 기력 당 2"
+COEF_NAME_RE = re.compile(r"^\+([^0-9%()]+)$")  # "+야성 중첩" (amount not given)
 RATIO_FIELDS = {"공격력": "attackPowerRatio", "스킬 증폭": "skillAmpRatio"}
 LEVEL_FIELDS = ("baseDamage", "attackPowerRatio", "skillAmpRatio")
+NOT_DAMAGE_RE = re.compile("감소|증가")  # "받는 피해량 감소(%)" without a coefficient is no damage
+PERCENT_BASE = "기본값(%)"  # extra-ratio name of a percent base without a row label
 # History: "님루드의 비석(E)의 스킬 증폭 계수가 60%로 증가했다", "(W)의 피해량이 60/80/100(+스킬 증폭의 45%)로"
 KEY_MENTION_RE = re.compile(r"\(([A-Z][A-Z0-9-]*)\)")
 HISTORY_KEYS = {"P", "Q", "W", "E", "R", "RQ", "RW", "RE"}
@@ -162,50 +171,136 @@ def _coef_values(text):
     return None if None in values else values
 
 
-def levels_from(values, coefs):
-    """(levels, None) or (None, reason) for one damage row: values ['70', '110', …],
-    coefs ['+스킬 증폭의 80%', …] (text inside the parentheses)."""
-    if any(v.endswith("%") for v in values):
-        return None, "기본 피해량이 % 값"
-    ratios = {}
-    for coef in coefs:
-        m = COEF_RE.match(coef)
-        if not m or not m.group(2).endswith("%"):
-            return None, f"계수 형식 미해석: ({coef})"
-        field = RATIO_FIELDS.get(m.group(1))
-        if field is None:
-            return None, f"계수 종류: {m.group(1)}"
-        if field in ratios:
-            return None, f"계수 중복: {m.group(1)}"
-        ratios[field] = _coef_values(m.group(2))
-        if ratios[field] is None:
-            return None, "수치 범위"
-    base = [_number(v) for v in values]
+def parse_coef(coef):
+    """(stat, [ratio per level], is_percent, None) or (None, None, None, reason) for one
+    coefficient. ratio is damage per stat unit (None: amount not given, "+야성 중첩")."""
+    m = COEF_PER_RE.match(coef)
+    if m:
+        if m.group(3) != m.group(5):
+            return None, None, None, f"계수 형식 미해석: ({coef})"
+        a, b = _number(m.group(2)), _number(m.group(4))
+        v = pn.num(b / a) if a and b is not None else None
+        if v is None or not (v == 0 or 1e-4 <= v < 1e15):
+            return None, None, None, "수치 범위"
+        return m.group(1), [v], False, None
+    for rx in (COEF_MUL_RE, COEF_EACH_RE):
+        m = rx.match(coef)
+        if m:
+            values = [_number(v) for v in m.group(2).split(" / ")]
+            stat = m.group(1)[:-2] if m.group(1).endswith(" 당") else m.group(1)  # "+고통 중첩 당 * 8"
+            return (stat, values, False, None) if None not in values else (None, None, None, "수치 범위")
+    m = COEF_RE.match(coef)
+    if m and m.group(2).endswith("%"):
+        values = _coef_values(m.group(2))
+        return (m.group(1), values, True, None) if values is not None else (None, None, None, "수치 범위")
+    m = COEF_NAME_RE.match(coef)
+    if m:
+        return _strip(m.group(1)), [None], False, None
+    return None, None, None, f"계수 형식 미해석: ({coef})"
+
+
+def levels_from(values, coefs, label=PERCENT_BASE):
+    """(levels, None) or (None, reason) for one value row: values ['70', '110', …] (or
+    ['6%', …]: percent base, or []: no base), coefs ['+스킬 증폭의 80%', …] (text inside the
+    parentheses). 공격력/스킬 증폭 percentages fill attackPowerRatio/skillAmpRatio; every
+    other coefficient goes to the level's extraRatios [{stat, ratio}]. A percent base
+    ("최대 체력 피해량(%) [6% / 10%]") is baseDamage 0 plus a first extra ratio named by the
+    row label (the calculator shows extra ratios and fills baseDamage)."""
+    pct = [v.endswith("%") for v in values]
+    if any(pct) and not all(pct):
+        return None, "형식 미해석"
+    percent = bool(values) and all(pct)
+    base = [(_ratio if percent else _number)(v.rstrip("%")) for v in values] or [0]
     if None in base:
         return None, "수치 범위"
-    n = len(values)
-    for r in ratios.values():
-        if len(r) != 1 and len(r) != n:
-            if n != 1:
-                return None, "레벨 수 불일치"
-            n = len(r)
-    if any(len(r) not in (1, n) for r in ratios.values()):
+    ratios, extras = {}, [(label, base)] if percent else []
+    if percent:
+        base = [0]
+    for coef in coefs:
+        stat, vals, is_pct, reason = parse_coef(coef)
+        if reason:
+            return None, reason
+        field = RATIO_FIELDS.get(stat) if is_pct else None
+        if field is None:
+            extras.append((stat, vals))
+        elif field in ratios:
+            return None, f"계수 중복: {stat}"
+        else:
+            ratios[field] = vals
+    lists = [base] + list(ratios.values()) + [v for _, v in extras]
+    n = max(len(x) for x in lists)
+    if any(len(x) not in (1, n) for x in lists):
         return None, "레벨 수 불일치"
     pick = lambda xs, i: xs[i] if len(xs) > 1 else xs[0]  # noqa: E731
-    return [{"level": i + 1, "baseDamage": pick(base, i),
-             "attackPowerRatio": pick(ratios.get("attackPowerRatio", [0]), i),
-             "skillAmpRatio": pick(ratios.get("skillAmpRatio", [0]), i)} for i in range(n)], None
+    levels = []
+    for i in range(n):
+        level = {"level": i + 1, "baseDamage": pick(base, i),
+                 "attackPowerRatio": pick(ratios.get("attackPowerRatio", [0]), i),
+                 "skillAmpRatio": pick(ratios.get("skillAmpRatio", [0]), i)}
+        if extras:
+            level["extraRatios"] = [{"stat": s, "ratio": pick(v, i)} for s, v in extras]
+        levels.append(level)
+    return levels, None
+
+
+def _groups(rest):
+    """' (+a) (+b(+c)) * (m)' -> (['+a', '+b(+c)'], 'm'), or None when not of that form."""
+    groups, pos = [], 0
+    while pos < len(rest):
+        m = MULT_RE.match(rest[pos:])
+        if m:
+            return groups, m.group(1)
+        if rest.startswith(" (", pos):
+            pos += 1
+        if not rest.startswith("(", pos):
+            return None
+        depth, end = 0, pos
+        while end < len(rest):
+            depth += {"(": 1, ")": -1}.get(rest[end], 0)
+            if depth == 0:
+                break
+            end += 1
+        if depth != 0:
+            return None
+        groups.append(rest[pos + 1: end])
+        pos = end + 1
+    return groups, None
 
 
 def _value_line(text):
-    m = VALUE_LINE_RE.match(FOOTNOTE_RE.sub(")", text))
+    """Value row as {tag, label, body, values, coefs, multiplier} (values [] and the body as
+    the first coefficient for "[공격력의 55% / 60%]"), or None (no row / unreadable rest:
+    then "unreadable" is True when it still looks like a damage row)."""
+    m = ROW_RE.match(FOOTNOTE_RE.sub("", text))
     if not m:
         return None
-    return {"label": m.group(2), "values": m.group(3).split(" / "), "coefs": PAREN_RE.findall(m.group(4))}
+    g = _groups(m.group(4))
+    body = m.group(3)
+    row = {"tag": m.group(1), "label": m.group(2), "values": None, "coefs": None, "multiplier": None}
+    if g is not None:
+        row["coefs"], row["multiplier"] = g
+        s = STAT_BODY_RE.match(body)
+        if NUM_BODY_RE.match(body):
+            row["values"] = body.split(" / ")
+        elif s:
+            row["values"], row["coefs"] = [], ["+" + s.group(1) + "의 " + s.group(2)] + row["coefs"]
+    return row
+
+
+def _is_damage(row, text):
+    """Damage entry: a value row with a "+" coefficient, a damage label (not 감소/증가 alone)
+    or a stat body."""
+    plus = "(+" in text
+    if row is None:
+        return DAMAGE_ROW_RE.search(text) is not None
+    if plus or (row["values"] == [] and row["coefs"] is not None):
+        return True
+    return "피해" in row["label"] and not NOT_DAMAGE_RE.search(row["label"])
 
 
 def _valueish(text):
-    return _value_line(text) is not None or DAMAGE_ROW_RE.search(text) is not None
+    row = _value_line(text)
+    return (row is not None and row["values"] is not None) or _is_damage(row, text)
 
 
 def _sub_skills(group_lines, letter):
@@ -243,32 +338,34 @@ def _sub_skills(group_lines, letter):
 
 
 def _parse_skill(key, name, lines):
-    """(skill entry, needsReview rows, damage value rows) for one sub-skill."""
-    review, confirmed, damage_rows = [], [], []
+    """(skill, needsReview rows, [(entry, value row)]) for one sub-skill. Every damage row
+    becomes an entry {label ("[태그] 라벨" as written), levels, raw, multiplier?}; an
+    unreadable one keeps levels [] and goes to needsReview. levels/raw/sourceLabel of the
+    skill repeat the first entry (earlier schema)."""
+    review, entries, rows = [], [], []
     for text in lines:
-        if DAMAGE not in text:
+        row = _value_line(text)
+        if not _is_damage(row, text):
             continue
-        v = _value_line(text)
-        if v is None:
-            if DAMAGE_ROW_RE.search(text):
-                review.append({"skill": key, "text": text, "reason": "형식 미해석"})
-            continue
-        if DAMAGE not in v["label"]:
-            continue
-        damage_rows.append(v)
-        levels, reason = levels_from(v["values"], v["coefs"])
-        if v["label"] != DAMAGE:
-            review.append({"skill": key, "text": text, "reason": f"피해량 아님: {v['label']}"})
-        elif levels is None:
-            review.append({"skill": key, "text": text, "reason": reason})
+        if row is None or row["values"] is None:
+            review.append({"skill": key, "text": text, "reason": "형식 미해석"})
+            if row is None:
+                continue
+            levels = None
         else:
-            confirmed.append((text, levels))
-    entry = {"key": key, "name": name, "levels": [], "raw": None, "sourceLabel": None}
-    if len(confirmed) == 1:
-        entry.update(levels=confirmed[0][1], raw=confirmed[0][0], sourceLabel=DAMAGE)
-    else:
-        review += [{"skill": key, "text": t, "reason": "피해량 줄 여러 개"} for t, _ in confirmed]
-    return entry, review, damage_rows
+            levels, reason = levels_from(row["values"], row["coefs"], row["label"])
+            if levels is None:
+                review.append({"skill": key, "text": text, "reason": reason})
+        e = {"label": (f"[{row['tag']}] " if row["tag"] else "") + row["label"], "levels": levels or [], "raw": text}
+        if row["multiplier"]:
+            e["multiplier"] = row["multiplier"]
+        entries.append(e)
+        if levels is not None:
+            rows.append((e, row))
+    first = entries[0] if entries else {"label": None, "levels": [], "raw": None}
+    skill = {"key": key, "name": name, "levels": first["levels"], "raw": first["raw"],
+             "sourceLabel": first["label"], "entries": entries}
+    return skill, review, rows
 
 
 def _history_records(lines):
@@ -303,28 +400,28 @@ def _fmt(v):
     return json.dumps(v, ensure_ascii=False, separators=(",", ":"))
 
 
-def history_review(rows_by_key, lines):
-    """needsReview rows where the latest history record disagrees with the skill box."""
+def history_mismatches(rows_by_key, lines):
+    """[(key, message)] where the latest history record disagrees with every value of the
+    skill box (the box value is kept; the entries get a historyMismatch mark)."""
     last = {}
     for key, field, value, text in _history_records(lines):
         last[(key, field)] = (value, text)
-    review = []
+    found = []
     for (key, field), (value, text) in last.items():
         known = []
-        for v in rows_by_key.get(key, []):
+        for _, v in rows_by_key.get(key, []):
             if field == "baseDamage":
                 base = [_number(x) for x in v["values"]] if not any(x.endswith("%") for x in v["values"]) else [None]
-                if None not in base:
+                if base and None not in base:
                     known.append(base)
                 continue
             for coef in v["coefs"]:
                 c = COEF_RE.match(coef)
-                if c and RATIO_FIELDS.get(c.group(1)) == field:
+                if c and c.group(2).endswith("%") and RATIO_FIELDS.get(c.group(1)) == field:
                     known += _coef_values(c.group(2)) or []
         if known and value not in known:
-            review.append({"skill": key, "text": text,
-                           "reason": f"역사 불일치: {field} 설명란 {_fmt(known)}, 역사 마지막 {_fmt(value)}"})
-    return review
+            found.append((key, f"{field} 설명란 {_fmt(known)}, 역사 마지막 {_fmt(value)}: {text}"))
+    return found
 
 
 def parse_page(character_id, name, html):
@@ -362,7 +459,10 @@ def parse_page(character_id, name, html):
             entry["needsReview"] += review
             rows_by_key.setdefault(key, []).extend(rows)
         i = j
-    entry["needsReview"] += history_review(rows_by_key, [l for s in sections(lines, HISTORY_SECTION) for l in s])
+    for key, message in history_mismatches(rows_by_key, [l for s in sections(lines, HISTORY_SECTION) for l in s]):
+        for e, _ in rows_by_key[key]:
+            mark = e.setdefault("historyMismatch", {"text": ""})
+            mark["text"] += ("\n" if mark["text"] else "") + message
     return entry
 
 
@@ -591,8 +691,16 @@ def patch_levels(text):
     return levels_from(m.group(1).split("/"), PAREN_RE.findall(m.group(2)))
 
 
+def _flat(level):
+    """Level row as [(field, value)]: the three level fields, then "extraRatios.<stat>"
+    per extra coefficient."""
+    out = [(f, level.get(f)) for f in LEVEL_FIELDS]
+    out += [("extraRatios." + str(x.get("stat")), x.get("ratio")) for x in level.get("extraRatios", [])]
+    return out
+
+
 def _same_levels(a, b):
-    key = lambda ls: [(l.get("level"), *(l.get(f) for f in LEVEL_FIELDS)) for l in ls]  # noqa: E731
+    key = lambda ls: [(l.get("level"), _flat(l)) for l in ls]  # noqa: E731
     return key(a) == key(b)
 
 
@@ -601,18 +709,35 @@ def _field_changes(old, new):
     by_level = {l["level"]: l for l in old}
     out = []
     for l in new:
-        o = by_level.get(l["level"], {})
-        for f in LEVEL_FIELDS:
-            if o.get(f) != l[f]:
-                out.append((l["level"], f, o.get(f), l[f]))
+        o = dict(_flat(by_level.get(l["level"], {})))
+        n = _flat(l)
+        for f, v in n:
+            if o.get(f) != v:
+                out.append((l["level"], f, o.get(f), v))
+        out += [(l["level"], f, v, None) for f, v in o.items() if f not in dict(n) and v is not None]
     return out
 
 
+def _plain(label):
+    return TAG_PREFIX_RE.sub("", label or "", count=1)
+
+
+def _key_of(wiki_key, patch_key):
+    """Wiki key under the patch-note key: "Q" itself or a numbered sub-skill "Q2"."""
+    rest = wiki_key[len(patch_key):] if wiki_key.startswith(patch_key) else None
+    return rest is not None and (rest == "" or re.fullmatch("[0-9]+", rest) is not None)
+
+
+def _starts_with_label(text, label):
+    """'추가 피해량 [레벨 × 10]' / '추가 피해량[…]' start with the label '추가 피해량'."""
+    return text.startswith(label) and (len(text) == len(label) or text[len(label)] in " [(")
+
+
 def _merge(rows, index, new_rows):
-    """Append rows; a later row for the same character/skill/level/field updates the
+    """Append rows; a later row for the same character/skill/entry/level/field updates the
     earlier one (dakgg stays the original wiki value)."""
     for r in new_rows:
-        k = (r["characterId"], r["skill"], r["level"], r["field"])
+        k = (r["characterId"], r["skill"], r["label"], r["level"], r["field"])
         if k in index:
             index[k].update({f: v for f, v in r.items() if f != "dakgg"})
         else:
@@ -625,10 +750,11 @@ def apply_skill_changes(skills, changes, articles):
     Returns (overrides, skipped, unparsed); skills are modified in place.
     One override / skipped row per changed level field, in the calculator's shape
     (src/skills.js patchNotes, src/meta.js overrideLines): {type:"skill", characterId,
-    name, skill (key), level, field, stat "<level>레벨 <field>", dakgg (wiki value before
-    the patch note), patchnote, text}. A row is matched to a wiki skill with the same key
-    whose levels equal the row's old value (unless the wiki lists that label as another
-    damage row) or whose label is the same."""
+    name, skill (key), level, field, stat "<label> <level>레벨 <field>", dakgg (wiki value before
+    the patch note), patchnote, text, label (entry label)}. A row is matched to a damage
+    entry of the skill with the same key: the entry with the same label (tag ignored; several
+    -> the one equal to the row's old value), else - when no entry or unreadable row has that
+    label - the entry equal to the row's old value."""
     by_name = {s["name"]: s for s in skills}
     overrides, skipped, unparsed = [], [], []
     over_index, skip_index = {}, {}
@@ -638,26 +764,38 @@ def apply_skill_changes(skills, changes, articles):
         char = by_name.get(c["name"])
         after, _ = patch_levels(c["after"])
         before, _ = patch_levels(c["before"])
-        cands = [s for s in char["skills"] if s["key"] == c["key"] and s["levels"]] if char else []
-        if after is not None and any(_same_levels(s["levels"], after) for s in cands):
-            continue  # the wiki already shows the patched value
-        # The wiki has a separate row with the patch row's label (e.g. 추가 피해량).
-        other_row = char is not None and c["label"] != DAMAGE and any(
-            r["skill"] == c["key"] and TAG_PREFIX_RE.sub("", r["text"], count=1).startswith(c["label"] + " ")
+        same_key = [(s, e) for s in char["skills"] if _key_of(s["key"], c["key"])
+                    for e in s["entries"]] if char else []
+        is_old = lambda e: before is not None and _same_levels(e["levels"], before)  # noqa: E731
+        label = _plain(c["label"])
+        hit = [x for x in same_key if x[1]["label"] == c["label"]] or \
+              [x for x in same_key if _plain(x[1]["label"]) == label]
+        # An unreadable wiki row with that label: never fall back to another entry by value.
+        labelled = bool(hit) or char is not None and any(
+            _key_of(r["skill"] or "", c["key"]) and _starts_with_label(_plain(r["text"]), label)
             for r in char["needsReview"])
-        hit = [s for s in cands if before is not None and not other_row and _same_levels(s["levels"], before)] or \
-              [s for s in cands if s["sourceLabel"] == c["label"]]
-        if after is None or len(hit) != 1:
+        if len(hit) > 1:
+            hit = [x for x in hit if is_old(x[1])]
+        if not labelled:
+            cands = [(s, e) for s, e in same_key if e["levels"]]
+            hit = [x for x in cands if is_old(x[1])]
+            if not hit and after is not None and any(_same_levels(e["levels"], after) for _, e in cands):
+                continue  # the wiki already shows the patched value (row under another label)
+        if after is None or len(hit) != 1 or not hit[0][1]["levels"]:
             unparsed.append({"type": "skill", "name": c["name"], "text": c["text"]})
             continue
-        s = hit[0]
+        s, e = hit[0]
+        if _same_levels(e["levels"], after):
+            continue  # the wiki already shows the patched value
         posted = articles[c["part"]]["createdAt"]
         revised = char["wikiRevisedAt"]
         rows = [{"type": "skill", "characterId": char["characterId"], "name": c["name"], "skill": s["key"],
-                 "level": level, "field": f, "stat": f"{level}레벨 {f}", "dakgg": old, "patchnote": new,
-                 "text": c["text"]} for level, f, old, new in _field_changes(s["levels"], after)]
+                 "level": level, "field": f, "stat": f"{e['label']} {level}레벨 {f}", "dakgg": old, "patchnote": new,
+                 "text": c["text"], "label": e["label"]} for level, f, old, new in _field_changes(e["levels"], after)]
         if is_before(revised, posted):
-            s["levels"], s["raw"] = after, c["text"]
+            e["levels"], e["raw"] = after, c["text"]
+            if s["entries"][0] is e:
+                s["levels"], s["raw"] = after, c["text"]
             _merge(overrides, over_index, rows)
         else:
             _merge(skipped, skip_index, [{**r, "wikiRevisedAt": revised, "patchPostedAt": posted,

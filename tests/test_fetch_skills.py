@@ -37,21 +37,29 @@ class ArdaPageTests(unittest.TestCase):
         self.assertEqual({l["skillAmpRatio"] for l in skills["E"]["levels"]}, {0.65})
         self.assertEqual([l["baseDamage"] for l in skills["E"]["levels"]], [80, 110, 140, 170, 200])
 
-    def test_keys_and_review(self):
+    def test_keys_and_entries(self):
         self.assertEqual(self.entry["wikiRevisedAt"], "2026-10-16T14:01:59.000Z")
         self.assertEqual([s["key"] for s in self.entry["skills"]], ["P", "Q", "RQ", "W", "RW", "E", "RE", "R"])
+        self.assertEqual(self.entry["needsReview"], [])
         skills = by_key(self.entry)
-        self.assertEqual((skills["RQ"]["name"], skills["RQ"]["levels"], skills["RQ"]["raw"]), ("샤마쉬의 법전", [], None))
-        review = {(r["skill"], r["reason"].split(":")[0]) for r in self.entry["needsReview"]}
-        self.assertIn(("RQ", "피해량 아님"), review)  # 주문 피해량
-        self.assertIn(("W", "피해량 아님"), review)  # 추가 피해량
-        self.assertIn(("RW", "피해량 아님"), review)  # 장벽 피해량
-        # 역사: last W record "12.2 … 스킬 증폭 계수가 50%로" vs box 55%/65% -> flagged;
-        # last E record "12.5 … 65%로" matches the box -> not flagged.
-        hist = [r for r in self.entry["needsReview"] if r["reason"].startswith("역사 불일치")]
-        self.assertEqual({r["skill"] for r in hist}, {"W"})
+        rq = skills["RQ"]
+        self.assertEqual(rq["name"], "샤마쉬의 법전")
+        self.assertEqual([e["label"] for e in rq["entries"]], ["[샤마쉬의 법전] 주문 피해량"])
+        self.assertEqual(rq["entries"][0]["levels"], [
+            {"level": n, "baseDamage": b, "attackPowerRatio": 0, "skillAmpRatio": 0.8}
+            for n, b in enumerate([160, 240, 320], 1)])
+        self.assertEqual((rq["levels"], rq["raw"], rq["sourceLabel"]),
+                         (rq["entries"][0]["levels"], rq["entries"][0]["raw"], "[샤마쉬의 법전] 주문 피해량"))
+        self.assertEqual([e["label"] for e in skills["W"]["entries"]], ["피해량", "추가 피해량"])
+        self.assertEqual([e["label"] for e in skills["RW"]["entries"]], ["[바빌론의 주사위] 장벽 피해량"])
+        self.assertEqual(skills["P"]["sourceLabel"], "체력 회복량")  # heal rows are entries too
+        # 역사: last W record "12.2 … 스킬 증폭 계수가 50%로" vs box 55%/65% -> marked, box value kept;
+        # last E record "12.5 … 65%로" matches the box -> not marked.
+        marked = [(s["key"], e["label"]) for s in self.entry["skills"] for e in s["entries"] if "historyMismatch" in e]
+        self.assertEqual(marked, [("W", "피해량"), ("W", "추가 피해량")])
         self.assertIn("12.2 패치로 바빌론의 입방체(W)의 1타 피해량 스킬 증폭 계수가 50%로 증가했다.",
-                      [r["text"] for r in hist])
+                      skills["W"]["entries"][0]["historyMismatch"]["text"])
+        self.assertEqual(skills["W"]["entries"][0]["levels"][0]["skillAmpRatio"], 0.55)
 
     def test_node_identical(self):
         self.assertEqual(run_node({}, NODE_PARSE, ID="66", NAME="아르다", HTML=ARDA_HTML), self.entry)
@@ -63,9 +71,36 @@ class RowTests(unittest.TestCase):
         self.assertEqual([(l["baseDamage"], l["attackPowerRatio"]) for l in levels], [(40, 0.25), (40, 0.35), (40, 0.45)])
         levels, _ = fs.levels_from(["10", "30"], ["+공격력의 170/175%", "+스킬 증폭의 7%"])  # patch-note form
         self.assertEqual(levels[1], {"level": 2, "baseDamage": 30, "attackPowerRatio": 1.75, "skillAmpRatio": 0.07})
-        self.assertEqual(fs.levels_from(["1"], ["+대상 최대 체력의 8%"]), (None, "계수 종류: 대상 최대 체력"))
         self.assertEqual(fs.levels_from(["1", "2"], ["+공격력의 1% / 2% / 3%"]), (None, "레벨 수 불일치"))
-        self.assertEqual(fs.levels_from(["5%"], []), (None, "기본 피해량이 % 값"))
+        self.assertEqual(fs.levels_from(["5%", "6"], []), (None, "형식 미해석"))
+        # Other coefficient kinds go to extraRatios (damage per stat unit), level by level.
+        levels, _ = fs.levels_from(["10", "20"], [
+            "+스킬 증폭의 30%", "+대상 최대 체력의 2% / 3%", "+레니 레벨 * 8", "+스킬 증폭 25 당 1",
+            "+치명타 확률 1% 당 0.1%", "+소모한 기력 당 2", "+비명 중첩 당 피해량 2", "+야성 중첩",
+            "+배터리 중첩 * 15 / 20", "+남은 탄창 * 스킬 증폭의 3%"])
+        self.assertEqual(levels[1], {"level": 2, "baseDamage": 20, "attackPowerRatio": 0, "skillAmpRatio": 0.3,
+                                     "extraRatios": [{"stat": "대상 최대 체력", "ratio": 0.03},
+                                                     {"stat": "레니 레벨", "ratio": 8}, {"stat": "스킬 증폭", "ratio": 0.04},
+                                                     {"stat": "치명타 확률", "ratio": 0.1}, {"stat": "소모한 기력", "ratio": 2},
+                                                     {"stat": "비명 중첩", "ratio": 2}, {"stat": "야성 중첩", "ratio": None},
+                                                     {"stat": "배터리 중첩", "ratio": 20},
+                                                     {"stat": "남은 탄창 * 스킬 증폭", "ratio": 0.03}]})
+        self.assertEqual(fs.levels_from(["6%", "10%"], ["+공격력의 5%"], "최대 체력 피해량(%)")[0][1],
+                         {"level": 2, "baseDamage": 0, "attackPowerRatio": 0.05, "skillAmpRatio": 0,
+                          "extraRatios": [{"stat": "최대 체력 피해량(%)", "ratio": 0.1}]})  # percent base
+        self.assertEqual(fs.levels_from(["1"], ["+소모한 기력 당 1 / 2"])[0][1]["extraRatios"],
+                         [{"stat": "소모한 기력", "ratio": 2}])
+        self.assertEqual(fs.levels_from([], ["+공격력의 55% / 60%"])[0][0],
+                         {"level": 1, "baseDamage": 0, "attackPowerRatio": 0.55, "skillAmpRatio": 0})  # stat body
+        self.assertEqual(fs.levels_from(["1"], ["+대상 현재 체력의 8%(+스킬 증폭의 2%)"]),
+                         (None, "계수 형식 미해석: (+대상 현재 체력의 8%(+스킬 증폭의 2%))"))
+        self.assertEqual(fs.levels_from(["1"], ["+공격력의 1%", "+공격력의 2%"]), (None, "계수 중복: 공격력"))
+        node = run_node({}, 'const m = await imp("fetch_skills.mjs"); return JSON.parse(env.C).map(([v, c]) => m.levelsFrom(v, c));',
+                        C=json.dumps([[["10", "20"], ["+스킬 증폭 25 당 1", "+치명타 확률 1% 당 0.1%", "+야성 중첩"]],
+                                      [["1"], ["+a 0 당 1"]], [["6%"], []]]))
+        self.assertEqual(node, [list(fs.levels_from(["10", "20"], ["+스킬 증폭 25 당 1", "+치명타 확률 1% 당 0.1%",
+                                                                   "+야성 중첩"])),
+                                list(fs.levels_from(["1"], ["+a 0 당 1"])), list(fs.levels_from(["6%"], []))])
 
     def test_page_rows(self):
         html = wiki_page("2026-01-01T00:00:00Z", [
@@ -84,25 +119,35 @@ class RowTests(unittest.TestCase):
         skills = by_key(entry)
         self.assertEqual(len(skills["P"]["levels"]), 3)
         self.assertEqual(skills["W2"]["levels"][1]["skillAmpRatio"], 0.2)  # footnote [2] ignored
-        self.assertEqual(skills["E"]["levels"], [])
-        self.assertEqual([(r["skill"], r["reason"].split(":")[0]) for r in entry["needsReview"]], [
-            ("Q", "형식 미해석"), ("E", "피해량 줄 여러 개"), ("E", "피해량 줄 여러 개"),
-            ("R", "피해량 아님"), ("W", "역사 불일치")])
+        q = skills["Q"]["entries"]
+        self.assertEqual([(e["label"], e.get("multiplier"), len(e["levels"])) for e in q], [("피해량", "기본 공격 증폭", 2)])
+        self.assertEqual([e["label"] for e in skills["E"]["entries"]], ["피해량", "[강화] 피해량"])  # every row kept
+        self.assertEqual(skills["E"]["levels"], skills["E"]["entries"][0]["levels"])
+        self.assertEqual(skills["R"]["entries"][0]["levels"][1]["extraRatios"],
+                         [{"stat": "최대 체력 피해량(%)", "ratio": 0.1}])
+        self.assertEqual(entry["needsReview"], [])
+        self.assertEqual([s["key"] for s in entry["skills"] for e in s["entries"] if "historyMismatch" in e], ["W"])
         self.assertEqual(run_node({}, NODE_PARSE, ID="7", NAME="유키", HTML=html), entry)
 
     def test_edge_rows(self):
         html = wiki_page("2026-01-01T00:00:00Z", [
             ("Q - 하나", [("X RQ", ["피해량 [1 / 2] (+공격력의 10%)"]), ("Y RQ", ["피해량 [3 / 4] (+공격력의 20%)"])]),
-            ("W - 고정", [("W", ["피해량 [100]", "추가 피해량 [레벨 × 10]"])]),
+            ("W - 고정", [("W", ["피해량 [100]", "추가 피해량 [레벨 × 10]", "받는 피해량 감소(%) [50%]",
+                                  "피해량의 일부 회복[1]", "보호막 흡수량 [50] (+스킬 증폭의 30%)", "쿨다운 [8]"])]),
             ("E - 작은 값", [("E", ["피해량 [1] (+공격력의 0.001%)"])]),
             ("R - 언더플로", [("R", ["피해량 [0." + "0" * 330 + "1]"])]),
+            ("무기 스킬 - 돌진", [("Blair D", ["총 공격력 계수 [공격력의 70% / 90%]"])]),
         ])
         html = html.replace("<table>", "<table><tr><td>표 머리글</td></tr>", 1)  # text before the first image
         entry = fs.parse_page("1", "t", html)
         skills = by_key(entry)
-        self.assertEqual(list(skills), ["RQ", "RQ2", "W", "E", "R"])  # no fake sub-skill, unique keys
+        self.assertEqual(list(skills), ["RQ", "RQ2", "W", "E", "R", "D"])  # no fake sub-skill, unique keys
         self.assertEqual(skills["W"]["levels"], [{"level": 1, "baseDamage": 100, "attackPowerRatio": 0,
                                                   "skillAmpRatio": 0}])  # "[100]" is not a footnote
+        # Unreadable rows stay as entries without levels; 감소 rows, footnotes and 쿨다운 are no entries.
+        self.assertEqual([(e["label"], len(e["levels"])) for e in skills["W"]["entries"]],
+                         [("피해량", 1), ("추가 피해량", 0), ("보호막 흡수량", 1)])
+        self.assertEqual(skills["D"]["levels"][1]["attackPowerRatio"], 0.9)
         self.assertEqual([(r["skill"], r["reason"]) for r in entry["needsReview"]],
                          [("W", "형식 미해석"), ("E", "수치 범위"), ("R", "수치 범위")])
         self.assertEqual(run_node({}, NODE_PARSE, ID="1", NAME="t", HTML=html), entry)
@@ -117,17 +162,16 @@ class RowTests(unittest.TestCase):
             ["1.0 패치에서 하나(Q)의 피해량이 10/20(+스킬 증폭의 20%)에서 10/20(+스킬 증폭의 30%)로 증가했다."],
             ["1.0 패치에서 하나(Q)의 피해량이 10/20(+스킬 증폭의 20%)로 바뀌고 이후 스킬 증폭 계수가 30%로 증가했다."],
         ]
-        for history in cases:
+        def mark(rows, history):
             entry = fs.parse_page("1", "t", wiki_page("2026-01-01T00:00:00Z", [("Q - 하나", [("Q", rows)])], history))
-            self.assertEqual(entry["needsReview"], [], history)  # last record is 30% in both
+            self.assertEqual(entry["needsReview"], [], history)
+            return entry["skills"][0]["entries"][0].get("historyMismatch")
+        for history in cases:
+            self.assertIsNone(mark(rows, history), history)  # last record is 30% in both
         # A single new value is not read; the old list must not become the last record.
-        entry = fs.parse_page("1", "t", wiki_page("2026-01-01T00:00:00Z", [("Q - 하나", [("Q", ["피해량 [30]"])])],
-                                                  ["1.0 패치에서 하나(Q)의 피해량이 10/20에서 30으로 변경됐다."]))
-        self.assertEqual(entry["needsReview"], [])
-        entry = fs.parse_page("1", "t", wiki_page("2026-01-01T00:00:00Z", [("Q - 하나", [("Q", rows)])],
-                                                  ["2.0 패치에서 하나(Q)의 스킬 증폭 계수가 25%로 감소했다."]))
-        self.assertEqual([r["reason"] for r in entry["needsReview"]],
-                         ["역사 불일치: skillAmpRatio 설명란 [0.3], 역사 마지막 0.25"])
+        self.assertIsNone(mark(["피해량 [30]"], ["1.0 패치에서 하나(Q)의 피해량이 10/20에서 30으로 변경됐다."]))
+        line = "2.0 패치에서 하나(Q)의 스킬 증폭 계수가 25%로 감소했다."
+        self.assertEqual(mark(rows, [line]), {"text": "skillAmpRatio 설명란 [0.3], 역사 마지막 0.25: " + line})
 
     def test_missing_document_and_section(self):
         self.assertEqual(fs.parse_page("1", "없음", None)["needsReview"][0]["reason"], "문서 없음")
@@ -252,18 +296,60 @@ class ApplyTests(unittest.TestCase):
         self.assertEqual([(o["level"], o["field"], o["dakgg"], o["patchnote"]) for o in over],
                          [(n, "skillAmpRatio", 0.65, 0.7) for n in range(1, 6)])
         self.assertEqual(over[0]["characterId"], "66")
-        self.assertEqual(over[0]["stat"], "1레벨 skillAmpRatio")
+        self.assertEqual((over[0]["stat"], over[0]["label"]), ("피해량 1레벨 skillAmpRatio", "피해량"))
         e = by_key(skills[0])["E"]
         self.assertEqual({l["skillAmpRatio"] for l in e["levels"]}, {0.7})
         self.assertTrue(e["raw"].startswith("s(E) > 피해량"))
 
-    def test_label_of_another_row_is_not_matched_by_value(self):
-        # Wiki W: 피해량 70/90/… and 추가 피해량 50/80/… (needsReview). A 추가 피해량 row whose old
-        # value happens to equal the 피해량 row must not overwrite it.
+    def test_label_wins_over_value(self):
+        # Wiki W: 피해량 70/90/… and 추가 피해량 50/80/…. A 추가 피해량 row whose old value happens
+        # to equal the 피해량 row overwrites the 추가 피해량 entry, not 피해량.
         w = "70/90/110/130/150(+스킬 증폭의 55%)"
-        (over, skipped, unparsed), _ = self.run_both(self.skills(), [
+        (over, skipped, unparsed), skills = self.run_both(self.skills(), [
             change("아르다", "W", "추가 피해량", w, "1/2/3/4/5(+스킬 증폭의 55%)", part=1)])
-        self.assertEqual((over, skipped, len(unparsed)), ([], [], 1))
+        self.assertEqual((skipped, unparsed), ([], []))
+        self.assertEqual({o["label"] for o in over}, {"추가 피해량"})
+        w_entries = by_key(skills[0])["W"]["entries"]
+        self.assertEqual([l["baseDamage"] for l in w_entries[0]["levels"]], [70, 90, 110, 130, 150])
+        self.assertEqual([l["baseDamage"] for l in w_entries[1]["levels"]], [1, 2, 3, 4, 5])
+        self.assertEqual(by_key(skills[0])["W"]["levels"], w_entries[0]["levels"])  # first entry untouched
+
+    def synthetic(self, key, rows):
+        page = wiki_page("2026-01-01T00:00:00Z", [(f"{key} - 하나", [(key, rows)])])
+        return [fs.parse_page("9", "t", page)]
+
+    def test_entry_matching_edges(self):
+        cases = [
+            # Another entry already shows the new value: 피해량 is still overwritten.
+            (["피해량 [10]", "추가 피해량 [20]"], change("t", "Q", "피해량", "10", "20", part=1), "피해량"),
+            # Tagged patch label: matched to the tagged entry, never to 피해량 by its old value.
+            (["피해량 [10]", "[강화] 추가 피해량 [20]"], change("t", "Q", "[강화] 추가 피해량", "20", "30", part=1),
+             "[강화] 추가 피해량"),
+            # Two entries with the label (one unreadable) and an old value that matches neither.
+            (["[일반] 피해량 [10]", "[강화] 피해량 [레벨 × 2]"], change("t", "Q", "피해량", "5", "30", part=1), None),
+            # Unreadable row "추가 피해량[…]" without a space protects 피해량 from the value fallback.
+            (["피해량 [10]", "추가 피해량[레벨 × 2]"], change("t", "Q", "추가 피해량", "10", "30", part=1), None),
+        ]
+        for rows, ch, label in cases:
+            (over, _, unparsed), _ = self.run_both(self.synthetic("Q", rows), [ch])
+            self.assertEqual(({o["label"] for o in over}, len(unparsed)), (({label}, 0) if label else (set(), 1)), rows)
+        # A numbered sub-skill (Q2) is found under the patch-note key Q.
+        skills = [fs.parse_page("9", "t", wiki_page("2026-01-01T00:00:00Z", [("Q - 하나 / 둘", [
+            ("A", ["피해량 [1]"]), ("B", ["피해량 [7]"])])]))]
+        (over, _, unparsed), _ = self.run_both(skills, [change("t", "Q", "피해량", "7", "8", part=1)])
+        self.assertEqual(([(o["skill"], o["patchnote"]) for o in over], unparsed), ([("Q2", 8)], []))
+
+    def test_spell_entry_rq(self):
+        # RQ "[샤마쉬의 법전] 주문 피해량" is an entry: a patch row is matched by its label (tag ignored).
+        (over, skipped, unparsed), skills = self.run_both(self.skills(), [
+            change("아르다", "RQ", "주문 피해량", "160/240/320(+스킬 증폭의 70%)", "170/250/330(+스킬 증폭의 80%)",
+                   part=1)])
+        self.assertEqual((skipped, unparsed), ([], []))
+        self.assertEqual([(o["level"], o["field"], o["dakgg"], o["patchnote"]) for o in over],
+                         [(n, "baseDamage", b, b + 10) for n, b in enumerate([160, 240, 320], 1)])
+        rq = by_key(skills[0])["RQ"]
+        self.assertEqual((rq["levels"], rq["raw"]), (rq["entries"][0]["levels"], rq["entries"][0]["raw"]))
+        self.assertEqual(rq["levels"][2]["baseDamage"], 330)
 
     def test_patch_then_hotfix_rows_merge(self):
         e0 = "80/110/140/170/200(+스킬 증폭의 65%)"
@@ -282,13 +368,15 @@ class ApplyTests(unittest.TestCase):
         changes = [
             change("아르다", "W", "1타 피해량", "60/80/100/120/140(+스킬 증폭의 50%)",
                    "70/90/110/130/150(+스킬 증폭의 55%)"),  # wiki already shows the new value
-            change("아르다", "RQ", "주문 피해량", "1/2/3(+스킬 증폭의 70%)", "1/2/3(+스킬 증폭의 80%)"),  # no levels
-            change("아르다", "Q", "피해량", "1(+대상 최대 체력의 1%)", "2(+대상 최대 체력의 2%)"),
+            change("아르다", "RQ", "주문 피해량", "160/240/320(+스킬 증폭의 70%)",
+                   "160/240/320(+스킬 증폭의 80%)"),  # wiki already shows the new value
+            change("아르다", "Q", "피해량", "1", "2(+대상 현재 체력의 8%(+스킬 증폭의 2%))"),  # unreadable
+            change("아르다", "E", "보호막 흡수량", "1", "2"),  # no such entry
             change("없는실험체", "Q", "피해량", "1", "2"),
         ]
         (over, skipped, unparsed), _ = self.run_both(self.skills(), changes)
         self.assertEqual((over, skipped), ([], []))
-        self.assertEqual([u["text"] for u in unparsed], [c["text"] for c in changes[1:]])
+        self.assertEqual([u["text"] for u in unparsed], [c["text"] for c in changes[2:]])
 
 
 class DataFileTests(unittest.TestCase):
@@ -305,17 +393,28 @@ class DataFileTests(unittest.TestCase):
         for c in self.skills:
             self.assertEqual(list(c), ["characterId", "name", "skills", "wikiRevisedAt", "needsReview"])
             for s in c["skills"]:
-                self.assertEqual(list(s), ["key", "name", "levels", "raw", "sourceLabel"])
-                for l in s["levels"]:
-                    self.assertEqual(list(l), ["level", "baseDamage", "attackPowerRatio", "skillAmpRatio"])
+                self.assertEqual(list(s), ["key", "name", "levels", "raw", "sourceLabel", "entries"])
+                first = s["entries"][0] if s["entries"] else {"label": None, "levels": [], "raw": None}
+                self.assertEqual((s["levels"], s["raw"], s["sourceLabel"]), (first["levels"], first["raw"], first["label"]))
+                for e in s["entries"]:
+                    self.assertLessEqual(set(e), {"label", "levels", "raw", "multiplier", "historyMismatch"})
+                    for l in e["levels"]:
+                        self.assertLessEqual({"level", "baseDamage", "attackPowerRatio", "skillAmpRatio"}, set(l))
+                        self.assertLessEqual(set(l), {"level", "baseDamage", "attackPowerRatio", "skillAmpRatio",
+                                                      "extraRatios"})
+                        self.assertIsInstance(l["baseDamage"], (int, float))
+                        for x in l.get("extraRatios", []):
+                            self.assertEqual(list(x), ["stat", "ratio"])
             for r in c["needsReview"]:
                 self.assertEqual(list(r), ["skill", "text", "reason"])
+        self.assertLessEqual(sum(len(c["needsReview"]) for c in self.skills), 50)
 
     def test_arda(self):
         arda = by_key(next(c for c in self.skills if c["name"] == "아르다"))
         self.assertEqual(arda["Q"]["levels"][4], {"level": 5, "baseDamage": 230, "attackPowerRatio": 0,
                                                  "skillAmpRatio": 0.8})
         self.assertEqual({l["skillAmpRatio"] for l in arda["E"]["levels"]}, {0.65})
+        self.assertEqual(arda["RQ"]["entries"][0]["label"], "[샤마쉬의 법전] 주문 피해량")
 
 
 if __name__ == "__main__":

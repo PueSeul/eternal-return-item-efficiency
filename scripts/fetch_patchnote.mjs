@@ -66,11 +66,11 @@ const MASTERY_STATS = {
 const PCT_SUFFIX = "율";
 // Skill rows (applied to data/skills.json by fetch_skills.mjs), see fetch_patchnote.py.
 const SKILL_HEADER_RE = /^(.+)\(([^()]+)\)$/;
-const SKILL_KEYS = new Set(["P", "Q", "W", "E", "R", "RQ", "RW", "RE"]);
+const SKILL_KEYS = new Set(["P", "Q", "W", "E", "R", "RQ", "RW", "RE", "D"]); // Q2 etc. match "Q"
 const SKILL_VALUES = "[0-9]+(?:\\.[0-9]+)?(?:/[0-9]+(?:\\.[0-9]+)?)*(?:\\([^()]*\\))*";
 const SKILL_CHANGE_RE = new RegExp(`^(.+?) (${SKILL_VALUES}) → (${SKILL_VALUES})$`);
 const SUB_KEY_RE = /^(.+)\((R[QWE])\) (.+)$/;
-const SKILL_DAMAGE = "피해량";
+const SKILL_ROW_RE = /피해|\(\+|계수/; // damage entry row (or a coefficient-only row, reported)
 
 export async function fetchText(url, signal) {
   const resp = await fetch(url, { headers: HEADERS, signal: requestSignal(signal) });
@@ -236,9 +236,10 @@ class Parser {
     else this.changes.push({ type: "character", name, weapon, stat: field, value: vp[0], text });
   }
 
-  /** Damage row under a skill header: a "skill" change, or unparsed when not readable. */
+  /** Damage entry row under a skill header (label with 피해 or values with a "+" coefficient):
+   * a "skill" change, or unparsed when not readable (also coefficient-only rows). */
   skillRow(text) {
-    if (!text.includes(SKILL_DAMAGE) || !text.includes(ARROW)) return;
+    if (!SKILL_ROW_RE.test(text) || !text.includes(ARROW)) return;
     const [name, header] = this.skill;
     let key = header;
     const full = `${name}(${header}) > ${text}`;
@@ -249,7 +250,7 @@ class Parser {
       key = sub[2];
       label = sub[3];
     }
-    if (!m || !SKILL_KEYS.has(key) || !label.includes(SKILL_DAMAGE)) {
+    if (!m || !SKILL_KEYS.has(key) || !(label.includes("피해") || (m[2] + m[3]).includes("(+"))) {
       this.skip("skill", this.owner, full);
       return;
     }

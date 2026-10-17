@@ -35,17 +35,25 @@ const HEADING_NUM_RE = /^[0-9]+(?:\.[0-9]+)*\. /;
 const EDIT_SUFFIX = "[편집]";
 const SKILL_SECTION = "스킬";
 const HISTORY_SECTION = "역사";
-const SKILL_HEADING_RE = /^(패시브|Q|W|E|R) - (.+)$/;
-const GROUP_KEYS = { "패시브": "P", Q: "Q", W: "W", E: "E", R: "R" };
-const DAMAGE = "피해량";
-const NUMV = "[0-9]+(?:\\.[0-9]+)?%?";
-const VALUE_LINE_RE = new RegExp(`^(?:\\[([^\\[\\]]+)\\] )?([^\\[\\]]+?) \\[(${NUMV}(?: / ${NUMV})*)\\]((?: ?\\([^()]*\\))*)$`);
-const DAMAGE_ROW_RE = /피해량[^[]*\[/;
-const FOOTNOTE_RE = /\)(?:\[[0-9]+\])+$/;
+const SKILL_HEADING_RE = /^(패시브|Q|W|E|R|무기 스킬) - (.+)$/;
+const GROUP_KEYS = { "패시브": "P", Q: "Q", W: "W", E: "E", R: "R", "무기 스킬": "D" };
+const NUM = "[0-9]+(?:\\.[0-9]+)?";
+const ROW_RE = /^(?:\[([^[\]]+)\] )?([^[\]]+?) \[([^[\]]+)\](.*)$/;
+const NUM_BODY_RE = new RegExp(`^${NUM}%?(?: / ${NUM}%?)*$`);
+const STAT_BODY_RE = new RegExp(`^(.+?)의 (${NUM}%(?: / ${NUM}%)*)$`);
+const MULT_RE = /^ ?\* ?\(([^()]*)\)$/;
+const DAMAGE_ROW_RE = /피해량[^[]*\[(?![0-9]+\])/;
+const FOOTNOTE_RE = /(?<=[)\]])\[[0-9]+\]/g;
 const PAREN_RE = /\(([^()]*)\)/g;
 const COEF_RE = /^\+(.+?)의? ([0-9]+(?:\.[0-9]+)?%?(?: ?\/ ?[0-9]+(?:\.[0-9]+)?%?)*)$/;
+const COEF_PER_RE = new RegExp(`^\\+(.+?) (${NUM})(%?) ?당 (${NUM})(%?)$`);
+const COEF_MUL_RE = new RegExp(`^\\+(.+?) ?\\* ?(${NUM}(?: / ${NUM})*)$`);
+const COEF_EACH_RE = new RegExp(`^\\+(.+?) 당 (?:피해량 )?(${NUM}(?: / ${NUM})*)$`);
+const COEF_NAME_RE = /^\+([^0-9%()]+)$/;
 const RATIO_FIELDS = { "공격력": "attackPowerRatio", "스킬 증폭": "skillAmpRatio" };
 const LEVEL_FIELDS = ["baseDamage", "attackPowerRatio", "skillAmpRatio"];
+const NOT_DAMAGE_RE = /감소|증가/;
+const PERCENT_BASE = "기본값(%)";
 const KEY_MENTION_RE = /\(([A-Z][A-Z0-9-]*)\)/g;
 const HISTORY_KEYS = new Set(["P", "Q", "W", "E", "R", "RQ", "RW", "RE"]);
 const HISTORY_RATIO_RE = /(스킬 증폭|스증|공격력|공) ?계수(?:가|는|를|도)? (?:[0-9]+(?:\.[0-9]+)?%에서 )?([0-9]+(?:\.[0-9]+)?)%(?:\([^()]*\))?(?:으로|로)/g;
@@ -142,47 +150,121 @@ function coefValues(text) {
   return values.includes(null) ? null : values;
 }
 
-/** [levels, null] or [null, reason] for one damage row (see fetch_skills.py levels_from). */
-export function levelsFrom(values, coefs) {
-  if (values.some((v) => v.endsWith("%"))) return [null, "기본 피해량이 % 값"];
-  const ratios = new Map();
-  for (const coef of coefs) {
-    const m = COEF_RE.exec(coef);
-    if (!m || !m[2].endsWith("%")) return [null, `계수 형식 미해석: (${coef})`];
-    const field = own(RATIO_FIELDS, m[1]);
-    if (field === undefined) return [null, `계수 종류: ${m[1]}`];
-    if (ratios.has(field)) return [null, `계수 중복: ${m[1]}`];
-    const r = coefValues(m[2]);
-    if (r === null) return [null, "수치 범위"];
-    ratios.set(field, r);
+/** [stat, ratios, isPercent, null] or [null, null, null, reason] (see fetch_skills.py parse_coef). */
+export function parseCoef(coef) {
+  const fail = (reason) => [null, null, null, reason];
+  let m = COEF_PER_RE.exec(coef);
+  if (m) {
+    if (m[3] !== m[5]) return fail(`계수 형식 미해석: (${coef})`);
+    const a = number(m[2]);
+    const b = number(m[4]);
+    const v = a !== null && a !== 0 && b !== null ? b / a : null;
+    if (v === null || !(v === 0 || (v >= 1e-4 && v < 1e15))) return fail("수치 범위");
+    return [m[1], [v], false, null];
   }
-  const base = values.map(number);
-  if (base.includes(null)) return [null, "수치 범위"];
-  let n = values.length;
-  for (const r of ratios.values()) {
-    if (r.length !== 1 && r.length !== n) {
-      if (n !== 1) return [null, "레벨 수 불일치"];
-      n = r.length;
+  for (const rx of [COEF_MUL_RE, COEF_EACH_RE]) {
+    m = rx.exec(coef);
+    if (m) {
+      const values = m[2].split(" / ").map(number);
+      const stat = m[1].endsWith(" 당") ? m[1].slice(0, -2) : m[1];
+      return values.includes(null) ? fail("수치 범위") : [stat, values, false, null];
     }
   }
-  if ([...ratios.values()].some((r) => r.length !== 1 && r.length !== n)) return [null, "레벨 수 불일치"];
+  m = COEF_RE.exec(coef);
+  if (m && m[2].endsWith("%")) {
+    const values = coefValues(m[2]);
+    return values === null ? fail("수치 범위") : [m[1], values, true, null];
+  }
+  m = COEF_NAME_RE.exec(coef);
+  if (m) return [strip(m[1]), [null], false, null];
+  return fail(`계수 형식 미해석: (${coef})`);
+}
+
+/** [levels, null] or [null, reason] for one value row (see fetch_skills.py levels_from). */
+export function levelsFrom(values, coefs, label = PERCENT_BASE) {
+  const pct = values.map((v) => v.endsWith("%"));
+  if (pct.some(Boolean) && !pct.every(Boolean)) return [null, "형식 미해석"];
+  const percent = values.length > 0 && pct.every(Boolean);
+  let base = values.map((v) => (percent ? ratio : number)(v.replace(/%+$/, "")));
+  if (!base.length) base = [0];
+  if (base.includes(null)) return [null, "수치 범위"];
+  const ratios = new Map();
+  const extras = percent ? [[label, base]] : [];
+  if (percent) base = [0];
+  for (const coef of coefs) {
+    const [stat, vals, isPct, reason] = parseCoef(coef);
+    if (reason) return [null, reason];
+    const field = isPct ? own(RATIO_FIELDS, stat) : undefined;
+    if (field === undefined) extras.push([stat, vals]);
+    else if (ratios.has(field)) return [null, `계수 중복: ${stat}`];
+    else ratios.set(field, vals);
+  }
+  const lists = [base, ...ratios.values(), ...extras.map(([, v]) => v)];
+  const n = Math.max(...lists.map((x) => x.length));
+  if (lists.some((x) => x.length !== 1 && x.length !== n)) return [null, "레벨 수 불일치"];
   const pick = (xs, i) => (xs.length > 1 ? xs[i] : xs[0]);
   const levels = [];
   for (let i = 0; i < n; i++) {
-    levels.push({ level: i + 1, baseDamage: pick(base, i),
+    const level = { level: i + 1, baseDamage: pick(base, i),
       attackPowerRatio: pick(ratios.get("attackPowerRatio") ?? [0], i),
-      skillAmpRatio: pick(ratios.get("skillAmpRatio") ?? [0], i) });
+      skillAmpRatio: pick(ratios.get("skillAmpRatio") ?? [0], i) };
+    if (extras.length) level.extraRatios = extras.map(([stat, v]) => ({ stat, ratio: pick(v, i) }));
+    levels.push(level);
   }
   return [levels, null];
 }
 
-function valueLine(text) {
-  const m = VALUE_LINE_RE.exec(text.replace(FOOTNOTE_RE, ")"));
-  if (!m) return null;
-  return { label: m[2], values: m[3].split(" / "), coefs: parens(m[4]).map((p) => p[1]) };
+/** [coefficients, multiplier] of the text after the body, or null (see fetch_skills.py _groups). */
+function groups(rest) {
+  const out = [];
+  let pos = 0;
+  while (pos < rest.length) {
+    const m = MULT_RE.exec(rest.slice(pos));
+    if (m) return [out, m[1]];
+    if (rest.startsWith(" (", pos)) pos += 1;
+    if (!rest.startsWith("(", pos)) return null;
+    let depth = 0;
+    let end = pos;
+    for (; end < rest.length; end++) {
+      if (rest[end] === "(") depth += 1;
+      else if (rest[end] === ")") depth -= 1;
+      if (depth === 0) break;
+    }
+    if (depth !== 0) return null;
+    out.push(rest.slice(pos + 1, end));
+    pos = end + 1;
+  }
+  return [out, null];
 }
 
-const valueish = (text) => valueLine(text) !== null || DAMAGE_ROW_RE.test(text);
+function valueLine(text) {
+  const m = ROW_RE.exec(text.replace(FOOTNOTE_RE, ""));
+  if (!m) return null;
+  const g = groups(m[4]);
+  const body = m[3];
+  const row = { tag: m[1] ?? null, label: m[2], values: null, coefs: null, multiplier: null };
+  if (g !== null) {
+    [row.coefs, row.multiplier] = g;
+    const s = STAT_BODY_RE.exec(body);
+    if (NUM_BODY_RE.test(body)) row.values = body.split(" / ");
+    else if (s) {
+      row.values = [];
+      row.coefs = [`+${s[1]}의 ${s[2]}`, ...row.coefs];
+    }
+  }
+  return row;
+}
+
+function isDamage(row, text) {
+  if (row === null) return DAMAGE_ROW_RE.test(text);
+  if (text.includes("(+") || (row.values !== null && row.values.length === 0 && row.coefs !== null)) return true;
+  return row.label.includes("피해") && !NOT_DAMAGE_RE.test(row.label);
+}
+
+const valueish = (text) => {
+  const row = valueLine(text);
+  return (row !== null && row.values !== null) || isDamage(row, text);
+};
 
 function subSkills(groupLines, letter) {
   let subs = [];
@@ -222,33 +304,31 @@ function subSkills(groupLines, letter) {
   return [subs, keys];
 }
 
+/** [skill, needsReview rows, [[entry, value row]]] for one sub-skill (see fetch_skills.py _parse_skill). */
 function parseSkill(key, name, lines) {
-  let review = [];
-  const confirmed = [];
-  const damageRows = [];
+  const review = [];
+  const entries = [];
+  const rows = [];
   for (const text of lines) {
-    if (!text.includes(DAMAGE)) continue;
-    const v = valueLine(text);
-    if (v === null) {
-      if (DAMAGE_ROW_RE.test(text)) review.push({ skill: key, text, reason: "형식 미해석" });
-      continue;
+    const row = valueLine(text);
+    if (!isDamage(row, text)) continue;
+    let levels = null;
+    if (row === null || row.values === null) {
+      review.push({ skill: key, text, reason: "형식 미해석" });
+      if (row === null) continue;
+    } else {
+      let reason;
+      [levels, reason] = levelsFrom(row.values, row.coefs, row.label);
+      if (levels === null) review.push({ skill: key, text, reason });
     }
-    if (!v.label.includes(DAMAGE)) continue;
-    damageRows.push(v);
-    const [levels, reason] = levelsFrom(v.values, v.coefs);
-    if (v.label !== DAMAGE) review.push({ skill: key, text, reason: `피해량 아님: ${v.label}` });
-    else if (levels === null) review.push({ skill: key, text, reason });
-    else confirmed.push([text, levels]);
+    const e = { label: (row.tag ? `[${row.tag}] ` : "") + row.label, levels: levels ?? [], raw: text };
+    if (row.multiplier) e.multiplier = row.multiplier;
+    entries.push(e);
+    if (levels !== null) rows.push([e, row]);
   }
-  const entry = { key, name, levels: [], raw: null, sourceLabel: null };
-  if (confirmed.length === 1) {
-    entry.levels = confirmed[0][1];
-    entry.raw = confirmed[0][0];
-    entry.sourceLabel = DAMAGE;
-  } else {
-    review = review.concat(confirmed.map(([t]) => ({ skill: key, text: t, reason: "피해량 줄 여러 개" })));
-  }
-  return [entry, review, damageRows];
+  const first = entries[0] ?? { label: null, levels: [], raw: null };
+  const skill = { key, name, levels: first.levels, raw: first.raw, sourceLabel: first.label, entries };
+  return [skill, review, rows];
 }
 
 function historyRecords(lines) {
@@ -280,29 +360,29 @@ function historyRecords(lines) {
   return records;
 }
 
-function historyReview(rowsByKey, lines) {
+/** [[key, message]] (see fetch_skills.py history_mismatches). */
+function historyMismatches(rowsByKey, lines) {
   const last = new Map();
   for (const [key, field, value, text] of historyRecords(lines)) last.set(`${key}\u0000${field}`, [key, field, value, text]);
-  const review = [];
+  const found = [];
   for (const [key, field, value, text] of last.values()) {
     const known = [];
-    for (const v of rowsByKey.get(key) ?? []) {
+    for (const [, v] of rowsByKey.get(key) ?? []) {
       if (field === "baseDamage") {
         const base = v.values.some((x) => x.endsWith("%")) ? [null] : v.values.map(number);
-        if (!base.includes(null)) known.push(base);
+        if (base.length && !base.includes(null)) known.push(base);
         continue;
       }
       for (const coef of v.coefs) {
         const c = COEF_RE.exec(coef);
-        if (c && own(RATIO_FIELDS, c[1]) === field) known.push(...(coefValues(c[2]) ?? []));
+        if (c && c[2].endsWith("%") && own(RATIO_FIELDS, c[1]) === field) known.push(...(coefValues(c[2]) ?? []));
       }
     }
     if (known.length && !known.some((k) => same(k, value))) {
-      review.push({ skill: key, text,
-        reason: `역사 불일치: ${field} 설명란 ${JSON.stringify(known)}, 역사 마지막 ${JSON.stringify(value)}` });
+      found.push([key, `${field} 설명란 ${JSON.stringify(known)}, 역사 마지막 ${JSON.stringify(value)}: ${text}`]);
     }
   }
-  return review;
+  return found;
 }
 
 /** skills.json entry for one character (html null: document not found). */
@@ -344,7 +424,12 @@ export function parsePage(characterId, name, html) {
     });
     i = j;
   }
-  entry.needsReview.push(...historyReview(rowsByKey, sections(lines, HISTORY_SECTION).flat()));
+  for (const [key, message] of historyMismatches(rowsByKey, sections(lines, HISTORY_SECTION).flat())) {
+    for (const [e] of rowsByKey.get(key)) {
+      e.historyMismatch ??= { text: "" };
+      e.historyMismatch.text += (e.historyMismatch.text ? "\n" : "") + message;
+    }
+  }
   return entry;
 }
 
@@ -562,25 +647,40 @@ export function patchLevels(text) {
   return levelsFrom(m[1].split("/"), parens(m[2]).map((p) => p[1]));
 }
 
-const levelKey = (ls) => JSON.stringify(ls.map((l) => [l.level ?? null, ...LEVEL_FIELDS.map((f) => l[f] ?? null)]));
+/** Level row as [[field, value]] (see fetch_skills.py _flat). */
+function flat(level) {
+  const val = (f) => (Object.hasOwn(level, f) ? level[f] : null);
+  const out = LEVEL_FIELDS.map((f) => [f, val(f)]);
+  for (const x of level.extraRatios ?? []) out.push([`extraRatios.${x.stat}`, x.ratio ?? null]);
+  return out;
+}
+const levelKey = (ls) => JSON.stringify(ls.map((l) => [l.level ?? null, flat(l)]));
 const sameLevels = (a, b) => levelKey(a) === levelKey(b);
+const plain = (label) => (label ?? "").replace(TAG_PREFIX_RE, "");
+/** Wiki key under the patch-note key: "Q" itself or a numbered sub-skill "Q2". */
+const keyOf = (wikiKey, patchKey) => wikiKey.startsWith(patchKey) && /^[0-9]*$/.test(wikiKey.slice(patchKey.length));
+const startsWithLabel = (text, label) => text.startsWith(label)
+  && (text.length === label.length || " [(".includes(text[label.length]));
 
 function fieldChanges(old, next) {
   const byLevel = new Map(old.map((l) => [l.level, l]));
   const out = [];
   for (const l of next) {
-    const o = byLevel.get(l.level);
-    for (const f of LEVEL_FIELDS) {
-      const ov = o && Object.hasOwn(o, f) ? o[f] : null;
-      if (ov !== l[f]) out.push([l.level, f, ov, l[f]]);
+    const o = new Map(flat(byLevel.get(l.level) ?? {}));
+    const n = flat(l);
+    const nKeys = new Set(n.map(([f]) => f));
+    for (const [f, v] of n) {
+      const ov = o.has(f) ? o.get(f) : null;
+      if (ov !== v) out.push([l.level, f, ov, v]);
     }
+    for (const [f, v] of o) if (!nKeys.has(f) && v !== null) out.push([l.level, f, v, null]);
   }
   return out;
 }
 
 function merge(rows, index, newRows) {
   for (const r of newRows) {
-    const k = JSON.stringify([r.characterId, r.skill, r.level, r.field]);
+    const k = JSON.stringify([r.characterId, r.skill, r.label, r.level, r.field]);
     if (index.has(k)) {
       const { dakgg, ...rest } = r; // dakgg stays the original wiki value
       Object.assign(index.get(k), rest);
@@ -604,26 +704,39 @@ export function applySkillChanges(skills, changes, articles) {
     const char = byName.get(c.name);
     const [after] = patchLevels(c.after);
     const [before] = patchLevels(c.before);
-    const cands = char ? char.skills.filter((s) => s.key === c.key && s.levels.length) : [];
-    if (after !== null && cands.some((s) => sameLevels(s.levels, after))) continue;
-    // The wiki has a separate row with the patch row's label (e.g. 추가 피해량).
-    const otherRow = char !== undefined && c.label !== DAMAGE && char.needsReview.some(
-      (r) => r.skill === c.key && r.text.replace(TAG_PREFIX_RE, "").startsWith(c.label + " "));
-    let hit = cands.filter((s) => before !== null && !otherRow && sameLevels(s.levels, before));
-    if (!hit.length) hit = cands.filter((s) => s.sourceLabel === c.label);
-    if (after === null || hit.length !== 1) {
+    const sameKey = char
+      ? char.skills.filter((s) => keyOf(s.key, c.key)).flatMap((s) => s.entries.map((e) => [s, e])) : [];
+    const isOld = (e) => before !== null && sameLevels(e.levels, before);
+    const label = plain(c.label);
+    let hit = sameKey.filter(([, e]) => e.label === c.label);
+    if (!hit.length) hit = sameKey.filter(([, e]) => plain(e.label) === label);
+    // An unreadable wiki row with that label: never fall back to another entry by value.
+    const labelled = hit.length > 0 || (char !== undefined && char.needsReview.some(
+      (r) => keyOf(r.skill ?? "", c.key) && startsWithLabel(plain(r.text), label)));
+    if (hit.length > 1) hit = hit.filter(([, e]) => isOld(e));
+    if (!labelled) {
+      const cands = sameKey.filter(([, e]) => e.levels.length);
+      hit = cands.filter(([, e]) => isOld(e));
+      if (!hit.length && after !== null && cands.some(([, e]) => sameLevels(e.levels, after))) continue;
+    }
+    if (after === null || hit.length !== 1 || !hit[0][1].levels.length) {
       unparsed.push({ type: "skill", name: c.name, text: c.text });
       continue;
     }
-    const s = hit[0];
+    const [s, e] = hit[0];
+    if (sameLevels(e.levels, after)) continue;
     const posted = articles[c.part].createdAt;
     const revised = char.wikiRevisedAt;
-    const rows = fieldChanges(s.levels, after).map(([level, field, old, value]) => ({
+    const rows = fieldChanges(e.levels, after).map(([level, field, old, value]) => ({
       type: "skill", characterId: char.characterId, name: c.name, skill: s.key, level, field,
-      stat: `${level}레벨 ${field}`, dakgg: old, patchnote: value, text: c.text }));
+      stat: `${e.label} ${level}레벨 ${field}`, dakgg: old, patchnote: value, text: c.text, label: e.label }));
     if (isBefore(revised, posted)) {
-      s.levels = after;
-      s.raw = c.text;
+      e.levels = after;
+      e.raw = c.text;
+      if (s.entries[0] === e) {
+        s.levels = after;
+        s.raw = c.text;
+      }
       merge(overrides, overIndex, rows);
     } else {
       merge(skipped, skipIndex, rows.map((r) => ({ ...r, wikiRevisedAt: revised, patchPostedAt: posted,

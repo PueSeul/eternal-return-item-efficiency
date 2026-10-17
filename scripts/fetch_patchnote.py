@@ -63,11 +63,11 @@ PCT_SUFFIX = "율"  # same rule as fetch_items: % variant of a flat stat name
 # Skill rows (applied to data/skills.json by fetch_skills): header "님루드의 비석(E)",
 # change row "피해량 80/110/140(+스킬 증폭의 60%) → 80/110/140(+스킬 증폭의 65%)".
 SKILL_HEADER_RE = re.compile(r"^(.+)\(([^()]+)\)$")
-SKILL_KEYS = {"P", "Q", "W", "E", "R", "RQ", "RW", "RE"}
+SKILL_KEYS = {"P", "Q", "W", "E", "R", "RQ", "RW", "RE", "D"}  # numbered sub-skills (Q2) match "Q"
 SKILL_VALUES = r"[0-9]+(?:\.[0-9]+)?(?:/[0-9]+(?:\.[0-9]+)?)*(?:\([^()]*\))*"
 SKILL_CHANGE_RE = re.compile("^(.+?) (" + SKILL_VALUES + ") → (" + SKILL_VALUES + ")$")
 SUB_KEY_RE = re.compile(r"^(.+)\((R[QWE])\) (.+)$")  # "광자력 수류탄(RE) 지속 피해량"
-SKILL_DAMAGE = "피해량"
+SKILL_ROW_RE = re.compile(r"피해|\(\+|계수")  # damage entry row (or a coefficient-only row, reported)
 
 
 def fetch_text(url):
@@ -243,8 +243,9 @@ class _Parser:
                                  "value": vp[0], "text": text})
 
     def skill_row(self, text):
-        """Damage row under a skill header: a "skill" change, or unparsed when not readable."""
-        if SKILL_DAMAGE not in text or ARROW not in text:
+        """Damage entry row under a skill header (label with 피해 or values with a "+" coefficient):
+        a "skill" change, or unparsed when not readable (also coefficient-only rows)."""
+        if not SKILL_ROW_RE.search(text) or ARROW not in text:
             return
         name, key = self.skill
         full = f"{name}({key}) > {text}"
@@ -253,7 +254,7 @@ class _Parser:
         sub = SUB_KEY_RE.match(label)
         if sub:
             key, label = sub.group(2), sub.group(3)
-        if not m or key not in SKILL_KEYS or SKILL_DAMAGE not in label:
+        if not m or key not in SKILL_KEYS or not ("피해" in label or "(+" in m.group(2) + m.group(3)):
             self.skip("skill", self.owner, full)
             return
         self.changes.append({"type": "skill", "name": self.owner, "key": key, "skill": name, "label": label,

@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -146,6 +147,9 @@ class ParseTests(unittest.TestCase):
                 '<p>아르다</p><p>아르다는 낮은 피해량 지표를 기록하고 있다</p><ul>'
                 '<li><p>바빌론의 입방체(W)</p><ul>'
                 '<li><p>1타 피해량 60/80(+스킬 증폭의 50%) → 70/90(+스킬 증폭의 55%)</p></li>'
+                '<li><p>보호막 흡수량 100(+스킬 증폭의 50%) → 120(+스킬 증폭의 50%)</p></li>'
+                '<li><p>스킬 증폭 계수 60% → 65%</p></li>'
+                '<li><p>쿨다운 10 → 9</p></li>'
                 '<li><p>바빌론의 주사위(RW)도 적용됩니다.</p></li></ul></li>'
                 '<li><p>오버클럭(R)</p><ul>'
                 '<li><p>광자력 수류탄(RE) 지속 피해량 30/40(+스킬 증폭의 15%) → 30/40(+스킬 증폭의 18%)</p></li>'
@@ -154,9 +158,11 @@ class ParseTests(unittest.TestCase):
                 '</ul></li></ul></div>')
         parsed = pn.parse_patch([html], [])
         got = [(c["name"], c["key"], c["label"]) for c in parsed["changes"] if c["type"] == "skill"]
-        self.assertEqual(got, [("아르다", "W", "1타 피해량"), ("아르다", "RE", "지속 피해량")])
+        self.assertEqual(got, [("아르다", "W", "1타 피해량"), ("아르다", "W", "보호막 흡수량"),
+                               ("아르다", "RE", "지속 피해량")])
         self.assertEqual([c["name"] for c in parsed["changes"] if c["type"] == "character"], ["아디나"])
         self.assertEqual([(u["type"], u["name"], u["text"]) for u in parsed["unparsed"]], [
+            ("skill", "아르다", "바빌론의 입방체(W) > 스킬 증폭 계수 60% → 65%"),
             ("skill", "아르다", "오버클럭(R) > 2타 피해량 공격력의 50/55% → 55/60%"),
             ("skill", "아르다", "휠 댄스(데비 W) > 피해량 40(+공격력의 5%) → 40(+공격력의 6%)")])
         node = run_node({}, 'const m = await imp("fetch_patchnote.mjs"); return m.parsePatch([env.A], []);', A=html)
@@ -273,8 +279,10 @@ class ApplyTests(unittest.TestCase):
         self.assertEqual(len(rows), 8)  # 4 levels × (baseDamage, skillAmpRatio)
         self.assertEqual(rows[0], {
             "type": "skill", "characterId": "1", "name": "아디나", "skill": "E", "level": 1, "field": "baseDamage",
-            "stat": "1레벨 baseDamage", "dakgg": 20, "patchnote": 26,
-            "text": "폴 디그니티(E) > 피해량 20/30/40/50(+스킬 증폭의 6%) → 26/36/46/56(+스킬 증폭의 7%)"})
+            "stat": "피해량 1레벨 baseDamage", "dakgg": 20, "patchnote": 26,
+            "text": "폴 디그니티(E) > 피해량 20/30/40/50(+스킬 증폭의 6%) → 26/36/46/56(+스킬 증폭의 7%)",
+            "label": "피해량"})
+        self.assertEqual(adina["skills"][0]["entries"][0]["levels"], adina["skills"][0]["levels"])
         self.assertEqual((rows[1]["field"], rows[1]["dakgg"], rows[1]["patchnote"]), ("skillAmpRatio", 0.06, 0.07))
         self.assertEqual(meta["skipped"], [])
 
@@ -305,6 +313,7 @@ class ApplyTests(unittest.TestCase):
         self.assertEqual(json.dumps(node, ensure_ascii=False), json.dumps(py, ensure_ascii=False))
 
 
+@unittest.skipUnless(os.environ.get("ER_LIVE") == "1", "real namu.wiki requests: set ER_LIVE=1")
 class LiveTests(unittest.TestCase):
     def test_fetch_all_python_and_node_identical(self):
         bodies = {}
