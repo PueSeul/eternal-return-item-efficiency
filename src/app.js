@@ -286,6 +286,15 @@
       : [el('li', { className: 'muted', textContent: '없음' })]));
     fill('#meta-overrides', Meta.overrideLines(m));
     fill('#meta-unparsed', Meta.unparsedLines(m));
+    // 스킬 재수집 내역(메타 skillsFetched가 있을 때만): 패치노트 줄 바로 아래.
+    let skills = $('#meta-skills');
+    if (!skills) {
+      skills = el('p', { id: 'meta-skills', className: 'muted' });
+      patch.after(skills);
+    }
+    const fetched = Meta.skillsFetchedText(m);
+    skills.textContent = fetched;
+    skills.hidden = !fetched;
   }
 
   // 패치노트로 덮어쓴 스탯이 있는 아이템 표식.
@@ -300,23 +309,55 @@
     const status = $('#update-status');
     if (!Updater.canUpdate(window)) return; // 웹 실행: 버튼 숨김 유지
     btn.hidden = false;
+    // 기본 버튼은 패치된 실험체만 스킬 재수집(skillsMode "patched"), 작은 버튼은 전체(skillsMode "all").
+    const allBtn = el('button', { id: 'update-all-btn', type: 'button', className: 'link-btn',
+      textContent: '스킬 전체 다시 수집', title: '모든 실험체의 스킬 수치를 나무위키에서 다시 수집합니다(오래 걸림)' });
+    btn.after(allBtn);
     // 데스크톱 진행 이벤트: 업데이트 중에만 상태 문구에 단계·진행률 표시.
+    // 예상 남은 시간: 1초마다 갱신, 성공한 실행의 소요 시간을 모드별로 저장해 다음 실행의 초기 예상치로 쓴다.
     let updating = false;
-    if (Updater.canProgress(window)) {
+    const progress = Updater.canProgress(window);
+    const etaKey = (mode) => 'er-update-last-ms:' + mode;
+    let eta = null;
+    let stageText = '';
+    let timer = null;
+    const showProgress = () => {
+      if (!updating) return;
+      const left = Updater.etaText(eta, Date.now());
+      status.textContent = stageText ? `${stageText} · ${left}` : left;
+    };
+    if (progress) {
       window.erDesktop.onUpdateProgress((ev) => {
+        if (!updating) return;
         const text = Updater.progressText(ev);
-        if (updating && text) status.textContent = text;
+        if (text) stageText = text;
+        eta.update(ev);
+        showProgress();
       });
     }
-    btn.onclick = async () => {
+    const run = async (mode) => {
       btn.disabled = true;
-      btn.textContent = '업데이트 중…';
+      allBtn.disabled = true;
+      (mode === 'all' ? allBtn : btn).textContent = '업데이트 중…';
       status.className = 'muted';
       status.textContent = '';
       updating = true;
+      const startedAt = Date.now();
+      if (progress) {
+        let last = NaN;
+        try { last = Number(localStorage.getItem(etaKey(mode))); } catch { /* 저장소 없음 */ }
+        eta = Updater.createEta(startedAt, last);
+        stageText = '';
+        showProgress();
+        timer = setInterval(showProgress, 1000);
+      }
       try {
-        const r = await Updater.runUpdate(window.erDesktop, loadData, fetchMeta, V2 ? fetchSkills : null);
+        const r = await Updater.runUpdate(window.erDesktop, loadData, fetchMeta, V2 ? fetchSkills : null, { skillsMode: mode });
         updating = false; // 이후 늦게 온 진행 이벤트가 결과 문구를 덮지 않도록
+        clearInterval(timer);
+        if (r.ok && progress) {
+          try { localStorage.setItem(etaKey(mode), String(Date.now() - startedAt)); } catch { /* 저장소 없음 */ }
+        }
         if (r.ok) {
           // 반환에 meta가 있으면 그것, 없으면 다시 읽은 메타 파일(runUpdate가 결정).
           setMeta(r.meta);
@@ -342,10 +383,15 @@
         status.textContent = '업데이트 처리 중 오류: ' + err.message;
       } finally {
         updating = false;
+        clearInterval(timer);
         btn.disabled = false;
+        allBtn.disabled = false;
         btn.textContent = '아이템 수치 업데이트';
+        allBtn.textContent = '스킬 전체 다시 수집';
       }
     };
+    btn.onclick = () => run('patched');
+    allBtn.onclick = () => run('all');
   }
 
   // ---------- 슬롯 ----------

@@ -16,6 +16,15 @@ const META = {
   unparsed: [{ name: '이단심판관', text: '스킬 피해 일부 조정' }, { text: '이름 없는 문구' }],
 };
 
+test('skillsFetchedText: 재수집한 실험체 목록, 필드 없으면 빈 문자열', () => {
+  assert.equal(M.skillsFetchedText({ skillsFetched: ['아르다', '블레어'] }), '스킬 재수집: 아르다, 블레어 (2명)');
+  assert.equal(M.skillsFetchedText({ skillsFetched: [{ name: '아르다' }] }), '스킬 재수집: 아르다 (1명)');
+  assert.equal(M.skillsFetchedText({ skillsFetched: { characters: ['블레어'] } }), '스킬 재수집: 블레어 (1명)');
+  assert.equal(M.skillsFetchedText({ skillsFetched: [] }), '스킬 재수집: 없음');
+  assert.equal(M.skillsFetchedText({}), '');
+  assert.equal(M.skillsFetchedText(null), '');
+});
+
 test('headerText: 버전·패치노트·갱신 시각 한 줄, 메타 없으면 null', () => {
   assert.equal(M.headerText(META), '데이터: dak.gg 12.6.0 · 패치노트 12.6 · 갱신 2026-10-17 02:30');
   assert.equal(M.headerText(null), null);

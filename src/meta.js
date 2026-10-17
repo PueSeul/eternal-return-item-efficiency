@@ -13,6 +13,20 @@
   const str = (v) => (['string', 'number', 'boolean'].includes(typeof v) ? String(v).trim() : '');
   const pad = (n) => String(n).padStart(2, '0');
 
+  function skillsFetchedNames(v) {
+    const list = Array.isArray(v) ? v : isObj(v) && Array.isArray(v.characters) ? v.characters : null;
+    if (!list) return null;
+    return list.map((x) => (isObj(x) ? str(x.name) : str(x))).filter(Boolean);
+  }
+
+  // "스킬 재수집: 아르다, 블레어 (2명)" / 빈 목록이면 "스킬 재수집: 없음" / 필드 없으면 ''.
+  function skillsFetchedText(meta) {
+    const m = normalize(meta);
+    if (!m || !m.skillsFetched) return '';
+    const n = m.skillsFetched.length;
+    return n ? `스킬 재수집: ${m.skillsFetched.join(', ')} (${n}명)` : '스킬 재수집: 없음';
+  }
+
   // 메타 객체로 쓸 수 있으면 필드를 문자열·배열로 정리해 돌려주고, 아니면 null.
   function normalize(meta) {
     if (!isObj(meta)) return null;
@@ -24,6 +38,9 @@
       // 이름 없는 덮어쓰기, 내용 없는 확인 필요 항목은 표시할 것이 없어 뺀다.
       overrides: Array.isArray(meta.overrides) ? meta.overrides.filter((o) => isObj(o) && str(o.name)) : [],
       unparsed: Array.isArray(meta.unparsed) ? meta.unparsed.filter((u) => isObj(u) && (str(u.name) || str(u.text))) : [],
+      // 스킬을 다시 수집한 실험체 이름 목록. 필드가 없으면 null(표시 안 함).
+      // 형식 미확정: ["아르다"] · [{name}] · {characters: [...]} 를 받는다.
+      skillsFetched: skillsFetchedNames(meta.skillsFetched),
     };
   }
 
@@ -85,5 +102,5 @@
     return /^https?:\/\//i.test(s) ? s : '';
   }
 
-  return { normalize, formatTime, headerText, overrideLines, unparsedLines, patchedItems, safeUrl };
+  return { normalize, formatTime, headerText, skillsFetchedText, overrideLines, unparsedLines, patchedItems, safeUrl };
 });

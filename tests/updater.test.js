@@ -67,6 +67,35 @@ test('runUpdate 실패: {ok:false, error}로 돌려줘도 그 메시지, reload 
   assert.deepEqual([r.ok, r.message], [false, '업데이트 실패: 나무위키 응답 없음']);
 });
 
+test('runUpdate: options(skillsMode)를 updateItems에 그대로 넘긴다', async () => {
+  const seen = [];
+  const desktop = { updateItems: async (o) => { seen.push(o); return { count: 1 }; } };
+  await U.runUpdate(desktop, async () => true, null, null, { skillsMode: 'all' });
+  await U.runUpdate(desktop, async () => true, null, null, { skillsMode: 'patched' });
+  assert.deepEqual(seen, [{ skillsMode: 'all' }, { skillsMode: 'patched' }]);
+});
+
+test('예상 남은 시간: 초기 예상(기본 2분/지난 소요), 단계 가중치(고정 단계 1 + skills total건) 기반 추정', () => {
+  assert.equal(U.etaText(U.createEta(0), 0), '약 2분 예상');
+  assert.equal(U.etaText(U.createEta(0, 80000), 0), '약 1분 20초 예상');
+  const eta = U.createEta(0);
+  eta.update({ stage: 'items', done: 1, total: 1 });
+  eta.update({ stage: 'characters' });
+  // skills 전: 비율(10s ÷ 1/3 − 10s = 20s)보다 초기 예상의 남은 몫(120 − 10 = 110s)이 크다
+  assert.equal(U.etaText(eta, 10000), '약 1분 50초 남음');
+  eta.update({ stage: 'patchnotes' });
+  eta.update({ stage: 'skills', done: 9, total: 91 });
+  // 완료 3 + 9 / 전체 3 + 91 → 30s ÷ (12/94) − 30s = 205s
+  assert.equal(U.etaText(eta, 30000), '약 3분 25초 남음');
+  eta.update({ stage: 'skills', done: 91, total: 91 });
+  assert.equal(U.etaText(eta, 60000), '곧 완료');
+  assert.equal(U.durationText(45200), '46초');
+  // 첫 이벤트 직후(경과 1초 미만)는 초기 예상치
+  const early = U.createEta(0);
+  early.update({ stage: 'skills', done: 10, total: 91 });
+  assert.equal(U.etaText(early, 100), '약 2분 남음');
+});
+
 test('진행 문구: 단계·진행률, 모르는 단계는 message, 구독 함수 없으면 false', () => {
   assert.equal(U.progressText({ stage: 'items' }), '아이템 수집 중…');
   assert.equal(U.progressText({ stage: 'patchnotes', done: 0, total: 0 }), '패치노트 확인 중…');
