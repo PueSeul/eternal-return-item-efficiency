@@ -1,0 +1,45 @@
+# v* 태그 푸시 → 테스트 → v2 portable exe 빌드 → GitHub Release 생성 + exe 업로드.
+# 프로그램 자동 업데이트(electron/app-update.js)가 이 릴리스의 ER-Damage-Calculator-v2-*-portable.exe 를 받는다.
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Check tag matches package.json version
+        shell: bash
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match package.json version v$version"
+            exit 1
+          fi
+
+      - run: npm ci
+
+      - run: npm test
+
+      - run: npm run build:exe:v2
+
+      - name: Create release with the v2 exe
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          exe="dist/ER-Damage-Calculator-v2-${GITHUB_REF_NAME#v}-portable.exe"
+          test -f "$exe"
+          gh release create "$GITHUB_REF_NAME" "$exe" --title "$GITHUB_REF_NAME" --generate-notes --verify-tag

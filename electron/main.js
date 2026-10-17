@@ -2,11 +2,12 @@
 // 데스크톱(exe) 진입점: 기존 index.html UI를 app://calc/ 주소로 띄운다.
 // file://에서는 data/items.json fetch가 막히므로 커스텀 프로토콜로 파일을 서빙한다(UI 파일은 그대로).
 // 히스토리(localStorage)는 app://calc 주소 기준으로 %APPDATA%\er-damage-efficiency 에 저장된다.
-const { app, BrowserWindow, ipcMain, protocol, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, net, protocol, shell } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const { resolveFile, contentType } = require('./resolve');
 const { loadFetchAll, updateAll } = require('./update');
+const appUpdate = require('./app-update');
 
 const SCHEME = 'app';
 const ORIGIN = `${SCHEME}://calc`;
@@ -20,8 +21,12 @@ const UPDATE_DATA_DIR = path.join(EXTERNAL_ROOT || APP_ROOT, 'data');
 // window.erDesktop.updateItems() (preload.js) → fetchAll() → data/items.json·characters.json·skills.json·items.meta.json 저장. 동시 요청은 하나로 합친다.
 let updating = null;
 let lastUpdate = null; // 검증(smokeClickUpdate)용: 마지막으로 시작한 업데이트 작업
-async function handleUpdateItems(event, options) {
+function assertAppOrigin(event) {
   if (!event.senderFrame || !event.senderFrame.url.startsWith(ORIGIN + '/')) throw new Error('허용되지 않은 요청입니다.');
+}
+
+async function handleUpdateItems(event, options) {
+  assertAppOrigin(event);
   const skillsMode = (options && options.skillsMode) || 'patched';
   if (!updating) {
     // 진행 이벤트는 요청한 창에 'update:progress' 로 보낸다(preload.js onUpdateProgress).
@@ -40,6 +45,89 @@ async function handleUpdateItems(event, options) {
 // 계산식 버전: v2 exe는 빌드 때 패키지 package.json 에 erFormula:"v2" 가 들어간다(electron/build.js --v2).
 // 개발 실행은 환경변수 ER_FORMULA=v2 로 고를 수 있다. 'v2' 외의 값은 기본(v1, 주입 없음).
 const FORMULA = (app.isPackaged ? require('../package.json').erFormula : process.env.ER_FORMULA) === 'v2' ? 'v2' : null;
+
+// 프로그램 자동 업데이트(app-update.js): 릴리스 자산이 v2 exe 라 v2 에서만 켠다. 설치는 포터블 exe 실행에서만
+// 가능하다(PORTABLE_EXECUTABLE_FILE = 실제 exe 경로). ER_UPDATE_API 는 검증용 릴리스 API 주소.
+const APP_UPDATE = FORMULA === 'v2';
+const PORTABLE_EXE = process.env.PORTABLE_EXECUTABLE_FILE || null;
+const UPDATE_API = process.env.ER_UPDATE_API || appUpdate.RELEASES_API;
+const updateFailMarker = () => path.join(app.getPath('userData'), 'app-update-failed.txt');
+let latestRelease = null; // 마지막으로 찾은 새 버전(설치 대상)
+const dismissedVersions = new Set(); // "나중에": 이번 실행에서 다시 알리지 않을 버전
+let installing = null;
+let smokeUpdateQuit = null; // 검증용: 교체 배치를 띄운 뒤 app.quit 대신 부른다
+
+async function checkAppUpdate() {
+  const res = await appUpdate.checkForUpdate({ fetch: net.fetch, currentVersion: app.getVersion(), apiUrl: UPDATE_API });
+  latestRelease = res.status === 'available' ? res : null; // 설치 중이면 handleAppUpdateInstall 이 잡아 둔 대상을 쓴다
+  return res;
+}
+
+const releaseInfo = (r) => ({ version: r.version, notes: r.notes || '', url: r.url || '' });
+
+async function handleAppUpdateCheck(event) {
+  assertAppOrigin(event);
+  const res = await checkAppUpdate();
+  return { status: res.status, current: res.current, ...releaseInfo(res) };
+}
+
+function handleAppUpdateDismiss(event, version) {
+  assertAppOrigin(event);
+  dismissedVersions.add(String(version));
+}
+
+// 받기 → 교체 배치 실행 → 종료. 받기·준비가 실패하면 받은 파일을 지우고(원본 그대로) 오류로 끝낸다.
+function handleAppUpdateInstall(event) {
+  assertAppOrigin(event);
+  if (installing) return installing;
+  if (!PORTABLE_EXE) throw new Error('개발 실행에서는 설치할 수 없습니다(포터블 exe에서만 가능).');
+  const rel = latestRelease;
+  if (!rel) throw new Error('먼저 업데이트를 확인하세요.');
+  if (!rel.asset) throw new Error(`v${rel.version} 릴리스에 v2 exe 파일이 없습니다.`);
+  const sender = event.sender;
+  let last = null;
+  const onProgress = ({ received, total }) => {
+    const percent = total ? Math.min(100, Math.floor((received * 100) / total)) : null;
+    const step = percent === null ? Math.floor(received / 1048576) : percent; // 1% 또는 1MB 마다
+    if (step === last || sender.isDestroyed()) return;
+    last = step;
+    sender.send('app-update:progress', { received, total, percent });
+  };
+  const dest = `${PORTABLE_EXE}.download`;
+  installing = appUpdate.downloadAsset({ fetch: net.fetch, asset: rel.asset, dest, onProgress })
+    .then(async (res) => {
+      try {
+        await appUpdate.launchSwap({ target: PORTABLE_EXE, downloaded: dest, pid: process.pid, failMarker: updateFailMarker() });
+      } catch (err) {
+        await fs.promises.rm(dest, { force: true });
+        throw new Error(`교체 준비 실패: ${err.message}`);
+      }
+      setTimeout(() => (smokeUpdateQuit ? smokeUpdateQuit(res) : app.quit()), 300);
+      return { version: rel.version };
+    })
+    .catch((err) => {
+      installing = null;
+      throw err;
+    });
+  return installing;
+}
+
+// 창 첫 로드 뒤 한 번: 지난 교체 실패 알림, 최신 릴리스 확인 → 새 버전이면 'app-update:available'.
+async function notifyAppUpdate(contents) {
+  const marker = updateFailMarker();
+  if (fs.existsSync(marker)) {
+    fs.rmSync(marker, { force: true });
+    contents.send('app-update:error', '지난 업데이트에서 exe 교체에 실패해 이전 버전을 그대로 실행했습니다.');
+  }
+  try {
+    const res = await checkAppUpdate();
+    if (res.status === 'available' && !dismissedVersions.has(res.version) && !contents.isDestroyed()) {
+      contents.send('app-update:available', releaseInfo(res));
+    }
+  } catch (err) {
+    console.error(err.message); // 시작 시 확인 실패는 알리지 않는다("업데이트 확인"을 누르면 오류가 보인다).
+  }
+}
 
 // 개발 실행(npm run app)과 exe가 같은 히스토리를 쓰도록 저장 위치 고정. v2는 별도 폴더(히스토리 분리).
 app.setPath('userData', path.join(app.getPath('appData'), FORMULA ? 'er-damage-efficiency-v2' : 'er-damage-efficiency'));
@@ -73,9 +161,11 @@ function createWindow() {
       sandbox: true,
       preload: path.join(__dirname, 'preload.js'),
       // preload.js 가 이 인자를 보고 window.ER_FORMULA 를 주입한다.
-      additionalArguments: FORMULA ? [`--er-formula=${FORMULA}`] : [],
+      // --er-app-update: preload.js 가 "업데이트 확인" 버튼과 새 버전 배너를 넣는다.
+      additionalArguments: [...(FORMULA ? [`--er-formula=${FORMULA}`] : []), ...(APP_UPDATE ? ['--er-app-update'] : [])],
     },
   });
+  if (APP_UPDATE) win.webContents.once('did-finish-load', () => notifyAppUpdate(win.webContents));
   // v2 창 제목에는 v2 를 붙인다(페이지 <title> 이 창 제목을 덮어쓰므로 여기서 가로챈다).
   if (FORMULA) {
     win.webContents.on('page-title-updated', (event, title) => {
@@ -100,9 +190,11 @@ function createWindow() {
 // 검증용: ER_SMOKE_OUT=<파일경로> 로 실행하면 로드 결과(JSON)와 스크린샷(.png)을 남기고 종료한다.
 // 데이터가 로드되지 않았거나(배너 표시) 검사 중 오류·제한 시간 초과면 종료 코드 1.
 // ER_SMOKE_UPDATE=<CSS 선택자> 를 함께 주면 그 버튼을 눌러 아이템 업데이트까지 확인한다(결과의 update).
+// ER_SMOKE_APPUPDATE=check|install 이면 프로그램 업데이트 확인·설치까지 확인한다(결과의 appUpdate, smokeAppUpdate).
 function smokeTest(win, outFile) {
   const updateSelector = process.env.ER_SMOKE_UPDATE;
-  const timer = setTimeout(() => finish({ ok: false, error: 'timeout' }), updateSelector ? 600000 : 30000);
+  const appUpdateMode = process.env.ER_SMOKE_APPUPDATE;
+  const timer = setTimeout(() => finish({ ok: false, error: 'timeout' }), updateSelector || appUpdateMode ? 600000 : 30000);
   function finish(result) {
     clearTimeout(timer);
     try {
@@ -137,6 +229,10 @@ function smokeTest(win, outFile) {
         if (updateSelector) {
           result.update = await smokeClickUpdate(win, updateSelector);
           result.ok = result.ok && result.update.ok;
+        }
+        if (appUpdateMode) {
+          result.appUpdate = await smokeAppUpdate(win, appUpdateMode);
+          result.ok = result.ok && result.appUpdate.ok;
         }
         const image = await win.webContents.capturePage();
         fs.writeFileSync(outFile.replace(/\.json$/i, '') + '.png', image.toPNG());
@@ -221,6 +317,45 @@ async function smokeClickUpdate(win, selector) {
   }
 }
 
+// 검증용: check → "업데이트 확인" 클릭 후 상태 문구. install → 시작 알림 배너의 "지금 업데이트" 클릭,
+// 교체 배치를 띄우고 종료하기 직전(smokeUpdateQuit)까지 기다린다. 실패 문구가 배너에 뜨면 실패.
+async function smokeAppUpdate(win, mode) {
+  const js = (code) => win.webContents.executeJavaScript(code);
+  const state = () => js(`(() => {
+    const b = document.getElementById('app-update-banner');
+    const s = document.getElementById('app-update-status');
+    return { bannerShown: !!b && !b.hidden, banner: b ? b.textContent : null, status: s ? s.textContent : null };
+  })()`);
+  let stopped = false;
+  const until = async (cond, ms) => {
+    for (const end = Date.now() + ms; !stopped && Date.now() < end;) {
+      const s = await state();
+      if (cond(s)) return s;
+      await new Promise((r) => setTimeout(r, 200));
+    }
+    return stopped ? null : state();
+  };
+  if (mode === 'check') {
+    await js(`document.getElementById('app-update-check').click()`);
+    const s = await until((x) => x.status && !x.status.includes('확인 중'), 30000);
+    return { ok: !!s.status && !s.status.includes('확인 중') && !s.status.includes('실패'), ...s };
+  }
+  const shown = await until((x) => x.bannerShown, 30000);
+  if (!shown.bannerShown) return { ok: false, error: 'update banner not shown', ...shown };
+  await js(`window.__appUpdateProgress = []; window.erDesktop.appUpdate.onProgress((p) => window.__appUpdateProgress.push(p)); 0`);
+  const startedAt = Date.now();
+  const quitting = new Promise((resolve) => { smokeUpdateQuit = resolve; });
+  await js(`document.getElementById('app-update-now').click()`);
+  const outcome = await Promise.race([
+    quitting.then((res) => ({ downloaded: res })),
+    until((x) => /실패/.test(x.banner || ''), 300000).then((s) => ({ failed: s })),
+  ]);
+  stopped = true;
+  const progress = await js('window.__appUpdateProgress');
+  return { ok: !!outcome.downloaded, elapsedMs: Date.now() - startedAt, bannerText: shown.banner, ...outcome,
+    progressCount: progress.length, lastProgress: progress[progress.length - 1] || null };
+}
+
 if (!app.requestSingleInstanceLock()) {
   // 이미 실행 중이면 기존 창을 앞으로(second-instance). 검증 실행이면 실패로 끝낸다.
   if (process.env.ER_SMOKE_OUT) console.error('smoke: another instance is already running');
@@ -236,6 +371,9 @@ if (!app.requestSingleInstanceLock()) {
   app.whenReady().then(() => {
     protocol.handle(SCHEME, handleRequest);
     ipcMain.handle('er:update-items', handleUpdateItems);
+    ipcMain.handle('app-update:check', handleAppUpdateCheck);
+    ipcMain.handle('app-update:install', handleAppUpdateInstall);
+    ipcMain.handle('app-update:dismiss', handleAppUpdateDismiss);
     createWindow();
   });
   app.on('window-all-closed', () => app.quit());
