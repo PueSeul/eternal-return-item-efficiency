@@ -9,17 +9,18 @@ const builder = require('electron-builder');
 
 const ROOT = path.join(__dirname, '..');
 const DIST = path.join(ROOT, 'dist');
-// npm run build:exe:v2 (= --v2) 또는 환경변수 ER_FORMULA=v2 → v2 계산식용 별도 exe.
-const V2 = process.argv.includes('--v2') || process.env.ER_FORMULA === 'v2';
+// 기본은 v2 계산식 exe(ER-Damage-Calculator-<버전>-portable.exe).
+// npm run build:exe:v1 (= --v1) 또는 환경변수 ER_FORMULA=v1 → v1 계산식용 별도 exe.
+const V1 = process.argv.includes('--v1') || process.env.ER_FORMULA === 'v1';
 
 async function main() {
   const out = fs.mkdtempSync(path.join(os.tmpdir(), 'er-build-'));
   const config = { directories: { output: out } };
-  if (V2) {
-    // 이름·appId 분리, 패키지 package.json 에 erFormula 를 넣어 main.js 가 v2 로 동작하게 한다.
-    config.appId = 'local.er-damage-efficiency-v2';
-    config.productName = 'ER-Damage-Calculator-v2';
-    config.extraMetadata = { erFormula: 'v2' };
+  if (V1) {
+    // 이름·appId 분리, 패키지 package.json 에 erFormula 를 넣어 main.js 가 v1 로 동작하게 한다.
+    config.appId = 'local.er-damage-efficiency-v1';
+    config.productName = 'ER-Damage-Calculator-v1';
+    config.extraMetadata = { erFormula: 'v1' };
   }
   try {
     const artifacts = await builder.build({

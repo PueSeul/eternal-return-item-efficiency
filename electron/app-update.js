@@ -1,7 +1,7 @@
 'use strict';
-// 프로그램 자동 업데이트(v2 포터블 exe). electron-updater 는 portable 대상을 지원하지 않아 직접 구현한다.
+// 프로그램 자동 업데이트(포터블 exe). electron-updater 는 portable 대상을 지원하지 않아 직접 구현한다.
 // 1) GitHub Releases latest 의 태그를 현재 버전과 비교(semver)
-// 2) 자산 ER-Damage-Calculator-v2-*-portable.exe 를 exe 옆 임시 이름(<exe>.download)으로 받기
+// 2) 자산 ER-Damage-Calculator-<버전>-portable.exe(옛 이름 ER-Damage-Calculator-v2-<버전>-portable.exe 도 허용)를 exe 옆 임시 이름(<exe>.download)으로 받기
 // 3) cmd 배치(SWAP_SCRIPT)를 띄우고 종료: 프로세스 종료·exe 잠금 해제 대기 → 원본을 <exe>.old 로 →
 //    받은 파일을 원래 이름으로 → 실행. 실패하면 원본을 되돌려 다시 실행하고 실패 표시 파일을 남긴다.
 const fs = require('fs');
@@ -11,7 +11,8 @@ const { pipeline } = require('stream/promises');
 const { spawn } = require('child_process');
 
 const RELEASES_API = 'https://api.github.com/repos/PueSeul/eternal-return-item-efficiency/releases/latest';
-const ASSET_RE = /^ER-Damage-Calculator-v2-.*-portable\.exe$/;
+// 릴리스 버전과 정확히 같은 자산 이름: 새 이름 우선, 옛 v2 이름 호환. v1 exe(ER-Damage-Calculator-v1-…)는 고르지 않는다.
+const assetNames = (version) => [`ER-Damage-Calculator-${version}-portable.exe`, `ER-Damage-Calculator-v2-${version}-portable.exe`];
 // API 요청 제한 시간이자, 다운로드 중 이 시간 동안 데이터가 오지 않으면 실패로 본다.
 const REQUEST_TIMEOUT_MS = 20000;
 
@@ -50,7 +51,7 @@ function describeError(err) {
 }
 
 // 최신 릴리스 확인. 반환 {status:'latest'|'available', current, version, notes, url, asset}.
-// 릴리스가 아직 없으면(404) 'latest'(version null). asset 은 v2 exe 자산 {name, url, size} 또는 null.
+// 릴리스가 아직 없으면(404) 'latest'(version null). asset 은 exe 자산 {name, url, size} 또는 null.
 async function checkForUpdate({ fetch, currentVersion, apiUrl = RELEASES_API }) {
   let rel;
   try {
@@ -67,7 +68,8 @@ async function checkForUpdate({ fetch, currentVersion, apiUrl = RELEASES_API }) 
   const version = String((rel && rel.tag_name) || '').replace(/^v/, '');
   if (!parseVersion(version)) throw new Error(`업데이트 확인 실패: 릴리스 태그를 읽지 못했습니다(${rel && rel.tag_name}).`);
   if (compareVersions(version, currentVersion) <= 0) return { status: 'latest', current: currentVersion, version };
-  const asset = (rel.assets || []).find((a) => ASSET_RE.test(a.name));
+  const assets = rel.assets || [];
+  const asset = assetNames(version).map((n) => assets.find((a) => a.name === n)).find(Boolean);
   return {
     status: 'available',
     current: currentVersion,
@@ -184,6 +186,6 @@ function launchSwap({ target, downloaded, pid, failMarker, env = process.env, sp
 }
 
 module.exports = {
-  RELEASES_API, ASSET_RE, REQUEST_TIMEOUT_MS, SWAP_SCRIPT,
+  RELEASES_API, REQUEST_TIMEOUT_MS, SWAP_SCRIPT,
   parseVersion, compareVersions, checkForUpdate, downloadAsset, launchSwap,
 };

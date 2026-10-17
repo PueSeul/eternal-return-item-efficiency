@@ -42,11 +42,12 @@ async function handleUpdateItems(event, options) {
   return updating;
 }
 
-// 계산식 버전: v2 exe는 빌드 때 패키지 package.json 에 erFormula:"v2" 가 들어간다(electron/build.js --v2).
-// 개발 실행은 환경변수 ER_FORMULA=v2 로 고를 수 있다. 'v2' 외의 값은 기본(v1, 주입 없음).
-const FORMULA = (app.isPackaged ? require('../package.json').erFormula : process.env.ER_FORMULA) === 'v2' ? 'v2' : null;
+// 계산식 버전: 기본은 v2. v1 exe는 빌드 때 패키지 package.json 에 erFormula:"v1" 이 들어간다(electron/build.js --v1).
+// 개발 실행은 환경변수 ER_FORMULA=v1 로 고를 수 있다. 'v1' 외의 값은 기본(v2).
+const FORMULA = (app.isPackaged ? require('../package.json').erFormula : process.env.ER_FORMULA) === 'v1' ? 'v1' : 'v2';
+const APP_TITLE = '이터널 리턴 아이템별 가격대비 효율 계산기';
 
-// 프로그램 자동 업데이트(app-update.js): 릴리스 자산이 v2 exe 라 v2 에서만 켠다. 설치는 포터블 exe 실행에서만
+// 프로그램 자동 업데이트(app-update.js): 릴리스 자산이 기본(v2) exe 라 v2 에서만 켠다. 설치는 포터블 exe 실행에서만
 // 가능하다(PORTABLE_EXECUTABLE_FILE = 실제 exe 경로). ER_UPDATE_API 는 검증용 릴리스 API 주소.
 const APP_UPDATE = FORMULA === 'v2';
 const PORTABLE_EXE = process.env.PORTABLE_EXECUTABLE_FILE || null;
@@ -83,7 +84,7 @@ function handleAppUpdateInstall(event) {
   if (!PORTABLE_EXE) throw new Error('개발 실행에서는 설치할 수 없습니다(포터블 exe에서만 가능).');
   const rel = latestRelease;
   if (!rel) throw new Error('먼저 업데이트를 확인하세요.');
-  if (!rel.asset) throw new Error(`v${rel.version} 릴리스에 v2 exe 파일이 없습니다.`);
+  if (!rel.asset) throw new Error(`v${rel.version} 릴리스에 exe 파일이 없습니다.`);
   const sender = event.sender;
   let last = null;
   const onProgress = ({ received, total }) => {
@@ -129,8 +130,9 @@ async function notifyAppUpdate(contents) {
   }
 }
 
-// 개발 실행(npm run app)과 exe가 같은 히스토리를 쓰도록 저장 위치 고정. v2는 별도 폴더(히스토리 분리).
-app.setPath('userData', path.join(app.getPath('appData'), FORMULA ? 'er-damage-efficiency-v2' : 'er-damage-efficiency'));
+// 개발 실행(npm run app)과 exe가 같은 히스토리를 쓰도록 저장 위치 고정. v1·v2 는 별도 폴더(히스토리 분리).
+// 폴더 이름은 기존 배포본과 같게 유지한다(v2 = er-damage-efficiency-v2).
+app.setPath('userData', path.join(app.getPath('appData'), FORMULA === 'v2' ? 'er-damage-efficiency-v2' : 'er-damage-efficiency'));
 
 protocol.registerSchemesAsPrivileged([
   { scheme: SCHEME, privileges: { standard: true, secure: true, supportFetchAPI: true } },
@@ -162,18 +164,10 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js'),
       // preload.js 가 이 인자를 보고 window.ER_FORMULA 를 주입한다.
       // --er-app-update: preload.js 가 "업데이트 확인" 버튼과 새 버전 배너를 넣는다.
-      additionalArguments: [...(FORMULA ? [`--er-formula=${FORMULA}`] : []), ...(APP_UPDATE ? ['--er-app-update'] : [])],
+      additionalArguments: [`--er-formula=${FORMULA}`, ...(APP_UPDATE ? ['--er-app-update'] : [])],
     },
   });
   if (APP_UPDATE) win.webContents.once('did-finish-load', () => notifyAppUpdate(win.webContents));
-  // v2 창 제목에는 v2 를 붙인다(페이지 <title> 이 창 제목을 덮어쓰므로 여기서 가로챈다).
-  if (FORMULA) {
-    win.webContents.on('page-title-updated', (event, title) => {
-      if (/\bv2\b/i.test(title)) return;
-      event.preventDefault();
-      win.setTitle(`${title} v2`);
-    });
-  }
   // 외부 링크는 기본 브라우저로, 앱 창은 app:// 밖으로 이동하지 않는다.
   win.webContents.setWindowOpenHandler(({ url }) => {
     if (/^https?:\/\//.test(url)) shell.openExternal(url);
@@ -221,10 +215,10 @@ function smokeTest(win, outFile) {
         result.windowTitle = win.getTitle();
         result.externalRoot = EXTERNAL_ROOT;
         result.userData = app.getPath('userData');
-        // 빌드 버전 확인: v2는 주입·창 제목·v2 입력란(스킬 증폭 계수), v1은 주입 없음.
-        const formulaOk = FORMULA
-          ? result.formula === 'v2' && /\bv2\b/.test(result.windowTitle) && result.hasSkillAmpInput
-          : result.formula === null;
+        // 빌드 버전 확인: v2는 주입·창 제목·v2 입력란(스킬 증폭 계수), v1은 주입.
+        const formulaOk = FORMULA === 'v2'
+          ? result.formula === 'v2' && result.windowTitle === APP_TITLE && result.hasSkillAmpInput
+          : result.formula === 'v1';
         result.ok = result.bannerHidden && result.slotButtons > 0 && formulaOk;
         if (updateSelector) {
           result.update = await smokeClickUpdate(win, updateSelector);

@@ -1,7 +1,7 @@
 (function () {
   'use strict';
-  // 계산식 변형: 데스크톱 v2 빌드는 preload가 window.ER_FORMULA = 'v2'를 주입, 웹은 ?formula=v2.
-  const VARIANT = window.ER_FORMULA === 'v2' || new URLSearchParams(location.search).get('formula') === 'v2' ? 'v2' : 'v1';
+  // 계산식 변형: 기본은 v2. 데스크톱 v1 빌드는 preload가 window.ER_FORMULA = 'v1'을 주입, 웹은 ?formula=v1.
+  const VARIANT = (window.ER_FORMULA || new URLSearchParams(location.search).get('formula') || 'v2') === 'v1' ? 'v1' : 'v2';
   const V2 = VARIANT === 'v2';
   const Formula = V2 ? window.ERFormulaV2 : window.ERFormula;
   const History = window.ERHistory.forVariant(VARIANT);
@@ -60,6 +60,26 @@
     img.onerror = () => { img.style.visibility = 'hidden'; };
     return img;
   }
+
+  // 등급 색 점(이름 옆). 등급은 보조기기용 이름으로도 붙인다.
+  function gradeDot(grade) {
+    const dot = el('span', { className: 'dot', title: grade || '' });
+    dot.dataset.grade = grade || '';
+    dot.setAttribute('role', 'img');
+    dot.setAttribute('aria-label', (grade || '등급 없음') + ' 등급');
+    return dot;
+  }
+
+  // 단색 × 아이콘 버튼(비우기·삭제).
+  function closeButton(label) {
+    const b = el('button', { type: 'button', className: 'icon-btn', title: label });
+    b.setAttribute('aria-label', label);
+    b.innerHTML = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+    return b;
+  }
+
+  // 자동 입력값의 부동소수 꼬리(124.39999999999999)를 입력란에 그대로 보이지 않게 정리.
+  const tidy = (x) => Number(Number(x).toFixed(9));
 
   function statsText(item) {
     return Object.entries(item.stats || {}).map(([k, v]) => `${k} ${v}`).join(' · ') || '스탯 없음';
@@ -409,22 +429,25 @@
   }
 
   // 슬롯 카드 한 장(장비 슬롯·기준 세트 공용). onClear는 아이템이 있을 때만 "비우기" 버튼으로.
+  // 한 줄: 슬롯명 · 아이콘 · 등급 점 + 이름 · 가격 · 변경/비우기. 스탯은 이름의 툴팁으로.
   function slotCard(slot, item, onPick, onClear) {
-    const card = el('div', { className: 'slot' + (item ? ' filled' : '') }, el('div', { className: 'label', textContent: slot }));
+    const card = el('div', { className: 'slot' + (item ? ' filled' : '') }, el('span', { className: 'label', textContent: slot }));
     if (item) {
       card.append(
         itemImage(item),
-        el('div', { className: 'grade-' + item.grade, textContent: item.name }, patchBadge(item)),
-        el('div', { className: 'muted', textContent: `${item.grade} · 가격 ${fmt(item.price)}` }),
+        el('span', { className: 'slot-name', title: `${item.name} (${item.grade})\n${statsText(item)}` },
+          gradeDot(item.grade), el('span', { className: 'name-text', textContent: item.name }), patchBadge(item)),
+        el('span', { className: 'price', textContent: fmt(item.price), title: `가격 ${fmt(item.price)}` }),
       );
     } else {
-      card.append(el('div', { className: 'muted', textContent: '비어 있음' }));
+      card.append(el('span', { className: 'slot-empty', textContent: '비어 있음' }));
     }
-    const pick = el('button', { type: 'button', textContent: item ? '변경' : '선택', disabled: !state.items.length });
+    const pick = el('button', { type: 'button', className: 'text-btn', textContent: item ? '변경' : '선택', disabled: !state.items.length });
+    pick.setAttribute('aria-label', `${slot} ${item ? '변경' : '선택'}`);
     pick.onclick = onPick;
     const actions = el('div', { className: 'actions' }, pick);
     if (item) {
-      const clear = el('button', { type: 'button', textContent: '비우기' });
+      const clear = closeButton(`${slot} 비우기`);
       clear.onclick = onClear;
       actions.append(clear);
     }
@@ -443,8 +466,9 @@
     renderBaseline();
     const filled = Formula.SLOTS.filter((s) => state.equipped[s]).length;
     const all = filled === Formula.SLOTS.length;
-    $('#slot-status').textContent = all ? '모든 슬롯이 채워졌습니다.' : `${filled}/${Formula.SLOTS.length} 슬롯 채워짐 — 모든 슬롯을 채워야 계산할 수 있습니다.`;
+    $('#slot-status').textContent = all ? '' : `${filled}/${Formula.SLOTS.length} — 모두 채워야 계산`;
     $('#calc-btn').disabled = !all;
+    $('#calc-btn').title = all ? '' : '장비 슬롯 5칸을 모두 채워야 계산할 수 있습니다.';
     updateSkillAmpTotal();
     renderAutoNotes();
   }
@@ -483,10 +507,11 @@
     const missing = state.baselineMissing || [];
     // 데이터에 없어 비워 둔 저장 기준도 지울 수 있어야 한다.
     $('#baseline-clear').disabled = !filled && !missing.length;
-    $('#baseline-status').textContent = (filled === Formula.SLOTS.length
-      ? '효율 % = 현재 세트 가격당 데미지 ÷ 기준 세트 가격당 데미지 × 100'
-      : `기준 ${filled}/${Formula.SLOTS.length} 슬롯 — 5칸을 모두 채우기 전에는 히스토리 최고 대비로 계산합니다.`) +
-      (missing.length ? ` (현재 데이터에 없는 저장 기준: ${missing.join(', ')})` : '');
+    // 효율 식 설명은 제목의 툴팁. 여기는 상태만 짧게.
+    const status = $('#baseline-status');
+    status.textContent = (filled === Formula.SLOTS.length ? '' : `${filled}/${Formula.SLOTS.length} — 미완성 시 히스토리 최고 대비`) +
+      (missing.length ? `${filled === Formula.SLOTS.length ? '' : ' · '}데이터에 없는 저장 기준: ${missing.join(', ')}` : '');
+    status.className = missing.length ? 'muted error' : 'muted';
   }
 
   // ---------- 아이템 선택 창 ----------
@@ -502,6 +527,47 @@
     $('#picker-search').focus();
   }
 
+  function pickItem(it) {
+    $('#picker').close();
+    if (state.pickerTarget === 'baseline') {
+      state.baseline[state.pickerSlot] = it;
+      saveBaseline();
+      renderBaseline();
+      return;
+    }
+    state.equipped[state.pickerSlot] = it;
+    renderSlots();
+    if (state.pickerSlot === '무기') applyAuto('amp');
+  }
+
+  // 검색창 키보드 이동(↑↓)으로 고르는 행. 검색창이 포커스를 유지하고 aria-activedescendant로 알린다.
+  function setPickerActive(i) {
+    const rows = [...document.querySelectorAll('#picker-list li[role="option"]')];
+    const search = $('#picker-search');
+    state.pickerActive = rows.length ? Math.max(0, Math.min(rows.length - 1, i)) : -1;
+    rows.forEach((li, n) => {
+      const on = n === state.pickerActive;
+      li.classList.toggle('active', on);
+      li.setAttribute('aria-selected', String(on));
+    });
+    const cur = rows[state.pickerActive];
+    if (cur) {
+      search.setAttribute('aria-activedescendant', cur.id);
+      cur.scrollIntoView({ block: 'nearest' });
+    } else search.removeAttribute('aria-activedescendant');
+  }
+
+  function pickerKey(ev) {
+    if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
+      ev.preventDefault();
+      setPickerActive(state.pickerActive + (ev.key === 'ArrowDown' ? 1 : -1));
+    } else if (ev.key === 'Enter') {
+      ev.preventDefault();
+      const it = state.pickerRows && state.pickerRows[state.pickerActive];
+      if (it) pickItem(it);
+    }
+  }
+
   function renderPicker() {
     const q = $('#picker-search').value.trim().toLowerCase();
     const grade = $('#picker-grade').value;
@@ -510,28 +576,21 @@
     const rows = state.items.filter((it) => it.slot === state.pickerSlot &&
       (!grade || it.grade === grade) &&
       (!q || String(it.name).toLowerCase().includes(q)));
-    for (const it of rows) {
-      const li = el('li', null,
+    state.pickerRows = rows;
+    rows.forEach((it, i) => {
+      const li = el('li', { id: 'pick-' + i },
         itemImage(it),
         el('div', null,
-          el('div', { className: 'grade-' + it.grade, textContent: `${it.name} (${it.grade})` }, patchBadge(it)),
-          el('div', { className: 'muted', textContent: `가격 ${fmt(it.price)}${it.priceSource ? ' — ' + it.priceSource : ''}` }),
-          el('div', { className: 'stats', textContent: statsText(it) })));
-      li.onclick = () => {
-        $('#picker').close();
-        if (state.pickerTarget === 'baseline') {
-          state.baseline[state.pickerSlot] = it;
-          saveBaseline();
-          renderBaseline();
-          return;
-        }
-        state.equipped[state.pickerSlot] = it;
-        renderSlots();
-        if (state.pickerSlot === '무기') applyAuto('amp');
-      };
+          el('div', { className: 'pick-name' }, gradeDot(it.grade), el('span', { textContent: it.name }), patchBadge(it)),
+          el('div', { className: 'stats', textContent: statsText(it) })),
+        el('span', { className: 'price', textContent: fmt(it.price), title: it.priceSource ? `가격 출처: ${it.priceSource}` : '' }));
+      li.setAttribute('role', 'option');
+      li.onclick = () => pickItem(it);
+      li.onmouseenter = () => setPickerActive(i);
       list.append(li);
-    }
-    if (!rows.length) list.append(el('li', { className: 'muted', textContent: '조건에 맞는 아이템이 없습니다.' }));
+    });
+    if (!rows.length) list.append(el('li', { className: 'empty', textContent: '조건에 맞는 아이템이 없습니다.' }));
+    setPickerActive(0);
   }
 
   // ---------- 입력 ----------
@@ -581,9 +640,13 @@
   function renderAutoNotes() {
     if (!V2) return;
     const auto = currentAuto();
+    // 짧게 "자동" / "수동 수정 (자동 124.4)", 산출 근거는 툴팁.
     const note = (id, key, value, source) => {
       const cur = Number($('#in-' + key).value);
-      $('#' + id).textContent = value == null ? '' : `자동: ${source} = ${fmt(value)}${cur === value ? '' : ' · 수동 수정됨'}`;
+      const box = $('#' + id);
+      const same = value != null && cur === tidy(value);
+      box.textContent = value == null ? '' : same ? '자동' : `수동 수정 (자동 ${fmt(value)})`;
+      box.title = value == null ? '' : `자동: ${source} = ${fmt(value)}`;
     };
     note('auto-atk', 'extraAtk', auto.extraAtk, auto.atkSource);
     note('auto-amp', 'extraSkillAmpPct', auto.extraSkillAmpPct, auto.ampSource);
@@ -607,8 +670,8 @@
   function applyAuto(which) {
     if (!V2) return;
     const auto = currentAuto();
-    if (which !== 'amp' && auto.extraAtk != null && Number.isFinite(auto.extraAtk)) $('#in-extraAtk').value = auto.extraAtk;
-    if (which !== 'atk' && auto.extraSkillAmpPct != null && Number.isFinite(auto.extraSkillAmpPct)) $('#in-extraSkillAmpPct').value = auto.extraSkillAmpPct;
+    if (which !== 'amp' && auto.extraAtk != null && Number.isFinite(auto.extraAtk)) $('#in-extraAtk').value = tidy(auto.extraAtk);
+    if (which !== 'atk' && auto.extraSkillAmpPct != null && Number.isFinite(auto.extraSkillAmpPct)) $('#in-extraSkillAmpPct').value = tidy(auto.extraSkillAmpPct);
     hideResult();
     updateSkillAmpTotal();
     renderAutoNotes();
@@ -655,7 +718,8 @@
     };
     const sa = Formula.skillAmpTotal(Formula.SLOTS.map((s) => state.equipped[s]),
       { level: value('level'), extraSkillAmp: value('extraSkillAmp'), extraSkillAmpPct: value('extraSkillAmpPct') });
-    box.textContent = `현재 스킬 증폭 합계 = ${sa == null ? '—' : fmt(sa)}`;
+    box.textContent = `합계 ${sa == null ? '—' : fmt(sa)}`;
+    box.title = '현재 스킬 증폭 합계(아이템 + 아이템 외) — 게임 스탯창 값과 비교';
   }
 
   function readInputs() {
@@ -736,29 +800,37 @@
   function renderResult(r, items, inputs, eff, baseItems, baseResult) {
     const box = $('#result');
     const effText = Baseline.valueText(eff.kind, eff.value);
-    const nodes = [
-      el('div', { className: 'big', textContent: `데미지 총량 = ${fmt(r.D)}` }),
-      el('div', { className: 'big', textContent: `${Baseline.LABELS[eff.kind]} = ${effText}` }),
-    ];
+    // 큰 숫자 2개(데미지 총량 · 효율) + 비교 표. 효율 산출 기준은 툴팁.
+    const stat = (label, value, extra) => el('div', { className: 'stat', title: extra.title || '' },
+      el('span', { className: 'stat-label', textContent: label }),
+      el('span', { className: 'stat-value' + (extra.accent ? ' accent' : ''), textContent: value }));
+    const effTitle = baseResult
+      ? (eff.kind === 'perPrice' ? '기준 가격이 0이라 추가 데미지 ÷ 현재 가격' : '현재 세트 가격당 데미지 ÷ 기준 세트 가격당 데미지 × 100')
+      : '기준 세트가 5칸 다 차 있지 않아 히스토리 최고 대비';
+    const nodes = [el('div', { className: 'result-stats' },
+      stat('데미지 총량', fmt(r.D), {}),
+      stat(Baseline.LABELS[eff.kind], effText, { accent: true, title: effTitle }))];
     if (baseResult) {
       // 비교 표: 행 = 기준 / 현재 / 차이, 열 = 가격 합 · 데미지 총량 · 가격당 데미지.
       const signed = (v, d) => (v == null ? '—' : (v > 0 ? '+' : '') + fmt(v, d));
+      const sign = (v) => (v > 0 ? 'pos' : v < 0 ? 'neg' : '');
       const rows = Baseline.compareRows(r, baseResult).map((row) => {
         const diff = row.label === '차이';
         const f = diff ? signed : (v, d) => (v == null ? '—' : fmt(v, d));
-        return el('tr', null, el('th', { textContent: row.label }),
-          el('td', { textContent: f(row.price) }), el('td', { textContent: f(row.D) }), el('td', { textContent: f(row.ratio, 4) }));
+        const td = (v, d) => el('td', { textContent: f(v, d), className: diff ? sign(v) : '' });
+        return el('tr', { className: diff ? 'diff' : '' }, el('th', { scope: 'row', textContent: row.label }),
+          td(row.price), td(row.D), td(row.ratio, 4));
       });
       nodes.push(el('table', { className: 'compare' },
-        el('thead', null, el('tr', null, ...['', '가격 합', '데미지 총량', '가격당 데미지'].map((t) => el('th', { textContent: t })))),
+        el('thead', null, el('tr', null, ...['', '가격 합', '데미지 총량', '가격당 데미지'].map((t) => el('th', { scope: 'col', textContent: t })))),
         el('tbody', null, ...rows)));
       if (eff.kind === 'perPrice') {
-        nodes.push(el('div', { className: 'muted', textContent: eff.value == null
+        nodes.push(el('p', { className: 'muted note', textContent: eff.value == null
           ? '기준 가격과 현재 가격이 모두 0이라 효율을 계산하지 않습니다.'
-          : `기준 가격이 0이라 추가 데미지 ÷ 현재 가격으로 계산: (${fmt(r.D)} − ${fmt(baseResult.D)}) ÷ ${fmt(r.price)} = ${effText}` }));
+          : `기준 가격 0 — (${fmt(r.D)} − ${fmt(baseResult.D)}) ÷ ${fmt(r.price)} = ${effText}` }));
       }
     } else {
-      nodes.push(el('div', { className: 'muted', textContent: '기준 세트가 5칸 다 차 있지 않아 히스토리 최고 대비로 계산했습니다.' }));
+      nodes.push(el('p', { className: 'muted note', textContent: '기준 세트 미완성 — 히스토리 최고 대비' }));
     }
     // 실제 숫자를 대입한 계산 과정(식 한 줄씩)은 접기/펼치기(기본 접힘, 상태는 localStorage에 기억).
     const refLabel = eff.mode === 'baseline' ? '기준 세트' : '최고';
@@ -814,7 +886,8 @@
         ? el('div', { className: 'hist-base' }, el('span', { className: 'muted small', textContent: '기준' }),
           historyIcons({ itemIds: e.baselineIds, itemNames: e.baselineNames }, ' small'))
         : null;
-      const del = el('button', { type: 'button', className: 'del', textContent: '×', title: '이 기록 삭제' });
+      const del = closeButton('이 기록 삭제');
+      del.classList.add('del');
       del.onclick = (ev) => {
         ev.stopPropagation();
         state.history = History.remove(state.history, e.id);
@@ -822,16 +895,27 @@
         hideResult();
         renderHistory();
       };
-      const li = el('li', { title: '클릭하면 이 구성을 불러옵니다' },
-        el('div', { className: 'muted', textContent: new Date(e.time).toLocaleString('ko-KR') }),
+      // 윗줄: 시각 · 효율(강조), 아랫줄: 데미지 · 가격 · 효율 기준. 이전 계산식 기록은 효율 "—"(툴팁으로 사유).
+      const effNode = current
+        ? el('span', { className: 'hist-eff', textContent: `${effLabel} ${Baseline.valueText(eff.kind, eff.value)}` })
+        : el('span', { className: 'hist-eff old', textContent: '효율 —', title: '이전 계산식 기록 — 효율 비교 제외' });
+      const time = new Date(e.time).toLocaleString('ko-KR');
+      const li = el('li', { title: '클릭하면 이 구성을 불러옵니다', tabIndex: 0 },
+        el('div', { className: 'hist-top' }, el('span', { className: 'hist-time', textContent: time }), effNode),
         historyIcons(e),
         baseRow,
-        el('div', { textContent: `데미지 ${fmt(e.result.D)} · 가격 ${fmt(e.result.price)} · ${current ? `${effLabel} ${Baseline.valueText(eff.kind, eff.value)}${refText}` : '효율 — (이전 계산식 기록, 효율 비교 제외)'}` }),
+        el('div', { className: 'hist-sub', textContent: `데미지 ${fmt(e.result.D)} · 가격 ${fmt(e.result.price)}${current ? refText.replace(/^ \((.*)\)$/, ' · $1') : ' · 이전 계산식'}` }),
         del);
       li.onclick = () => restore(e);
+      li.onkeydown = (ev) => {
+        if (ev.target === li && (ev.key === 'Enter' || ev.key === ' ')) {
+          ev.preventDefault();
+          restore(e);
+        }
+      };
       list.append(li);
     }
-    if (!state.history.length) list.append(el('li', { className: 'muted', textContent: '아직 기록이 없습니다.' }));
+    if (!state.history.length) list.append(el('li', { className: 'empty', textContent: '아직 기록이 없습니다.' }));
   }
 
   function restore(entry) {
@@ -859,14 +943,12 @@
 
   // ---------- 시작 ----------
   async function init() {
-    if (V2) {
-      $('h1').textContent += ' v2';
-      document.title += ' v2';
-    }
+    if (V2) $('h1').textContent = document.title = '이터널 리턴 아이템별 가격대비 효율 계산기';
     const gradeSel = $('#picker-grade');
     gradeSel.append(el('option', { value: '', textContent: '모든 등급' }));
     for (const g of GRADES) gradeSel.append(el('option', { value: g, textContent: g }));
     $('#picker-search').oninput = renderPicker;
+    $('#picker-search').onkeydown = pickerKey;
     gradeSel.onchange = renderPicker;
     $('#picker-close').onclick = () => $('#picker').close();
     $('#data-meta').onclick = () => { renderMetaPanel(); $('#meta-panel').showModal(); };

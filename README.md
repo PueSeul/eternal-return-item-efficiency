@@ -25,8 +25,6 @@
 
 ## 계산식
 
-### v2 계산식 (현재)
-
 ```
 SA = (스킬 증폭 고정 합 + 레벨 당 스킬 증폭 × 캐릭터 레벨 + 아이템 외 스킬 증폭)
      × max(0.1, 1 + % 스킬 증폭 합 + 아이템 외 % 스킬 증폭)
@@ -78,16 +76,10 @@ D  = max(1, B × M × K)
 - 프로그램은 exe 옆 `data/`의 파일을 먼저 읽고, 없으면 exe에 들어 있는 빌드 당시 데이터를 씁니다.
 - 나무위키 수집은 robots.txt를 지키고 요청 시작 간격을 1초 이상 둡니다. 나무위키 내용의 라이선스는 CC BY-NC-SA 2.0 KR입니다.
 
-### 이전 식 (v1)
-
-`D = max(1, (B × A + I) × F)` — B = S × 100 / (R' + 100), A = max(0.1, 1 + 스킬 증폭율 − 적의 스킬 피해 감소율),
-I = 스킬 증폭 합 − 적의 스킬 피해 감소(고정), F = 1 + 최종 피해 증가율 − 적의 최종 피해 감소율.
-v1 exe(`npm run build:exe`)와 웹 기본 주소에서 쓰이며 히스토리는 v2와 따로 저장됩니다.
-
 ## 다운로드와 실행
 
 1. [Releases 최신 버전](https://github.com/PueSeul/eternal-return-item-efficiency/releases/latest)에서
-   `ER-Damage-Calculator-v2-<버전>-portable.exe`를 받습니다.
+   `ER-Damage-Calculator-<버전>-portable.exe`를 받습니다.
 2. 원하는 폴더에 두고 더블클릭합니다(설치 없음). 첫 실행은 압축을 푸느라 몇 초 걸릴 수 있습니다.
 3. 서명되지 않은 exe라 **Windows SmartScreen**("Windows의 PC 보호") 경고가 뜨면 **"추가 정보 → 실행"** 을 누르세요.
 
@@ -103,27 +95,4 @@ v1 exe(`npm run build:exe`)와 웹 기본 주소에서 쓰이며 히스토리는
   `.old`는 문제가 있을 때 되돌릴 수 있게 남겨 두며, 다음 업데이트 때 지워집니다.
 - 받기에 실패하면 받던 파일을 지우고 현재 버전을 그대로 쓰며 배너에 이유를 보여 줍니다. 교체에 실패하면 원래 exe를 되돌려 다시 실행하고 알려 줍니다.
 - **"나중에"**: 이번 실행에서는 그 버전을 시작 알림으로 다시 띄우지 않습니다(다음 실행 때 다시 확인, "업데이트 확인"을 직접 누르면 다시 보임).
-- 확인·설치는 v2 portable exe에서 동작합니다. 개발 실행은 `ER_FORMULA=v2`로 `npm run app`을 띄웠을 때 확인만 됩니다(v1에는 업데이트 UI 없음).
-
-## 개발자용
-
-필요한 것: [Node.js](https://nodejs.org/) 22.12 이상(빌드·데스크톱 실행), 처음 한 번 `npm install`.
-
-| 명령 | 내용 |
-|---|---|
-| `npm start` | 브라우저용 서버(`http://127.0.0.1:5173/`, v2는 `?formula=v2`). 히스토리는 브라우저 localStorage에 저장 |
-| `npm run app` | 개발 창으로 실행(v1). v2는 환경변수 `ER_FORMULA=v2`를 주고 실행 |
-| `npm run build:exe:v2` | v2 portable exe → `dist/ER-Damage-Calculator-v2-<버전>-portable.exe` |
-| `npm run build:exe` | v1 portable exe → `dist/ER-Damage-Calculator-<버전>-portable.exe` |
-| `npm test` | Node 테스트(Node 내장 테스트 러너). 수집 스크립트의 Python 판 테스트는 `python -m unittest discover tests` |
-| `node scripts/fetch_items.mjs` | 데이터 네 파일을 프로젝트 `data/`에 다시 수집(`--all`: 모든 실험체 스킬 재수집). Python 판은 `python scripts/fetch_items.py` |
-
-- `index.html`을 더블클릭해 열면 보안 제한으로 데이터 파일을 읽지 못하니 `npm start`나 `npm run app`으로 실행하세요.
-- 아이템 이미지는 dak.gg CDN 주소라 오프라인에서는 이미지만 보이지 않습니다.
-
-### 릴리스
-
-1. `package.json`의 `version`을 올리고 main에 커밋합니다(예: `1.2.0`).
-2. 같은 버전의 태그를 푸시합니다: `git tag v1.2.0 && git push origin v1.2.0`.
-3. `.github/workflows/release.yml`이 태그와 `version`이 같은지 확인하고 `npm ci` → `npm test` → `npm run build:exe:v2` 뒤
-   GitHub Release를 만들어 v2 exe를 올립니다. 이미 배포된 프로그램은 다음 실행 때 이 릴리스를 새 버전으로 알립니다.
+- 확인·설치는 portable exe에서 동작합니다.

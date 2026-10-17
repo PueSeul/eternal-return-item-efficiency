@@ -16,9 +16,7 @@ function tmpDir(prefix = 'er-app-update-test-') {
 
 const json = (status, body) => async () => new Response(JSON.stringify(body), { status });
 const release = (tag, assets = []) => ({ tag_name: tag, body: '변경 내역', html_url: `https://github.com/x/y/releases/tag/${tag}`, assets });
-const exeAsset = (version, size = 10) => ({
-  name: `ER-Damage-Calculator-v2-${version}-portable.exe`, browser_download_url: `https://example.test/${version}.exe`, size,
-});
+const exeAsset = (name, size = 10) => ({ name, browser_download_url: `https://example.test/${name}`, size });
 
 test('compareVersions orders semver including v prefix and prereleases', () => {
   assert.ok(compareVersions('1.1.0', '1.0.9') > 0);
@@ -31,7 +29,7 @@ test('compareVersions orders semver including v prefix and prereleases', () => {
   assert.throws(() => compareVersions('1.1', '1.0.0'), /버전 형식이 아닙니다: 1\.1/);
 });
 
-test('checkForUpdate: no release (404) or same/older tag is latest, newer tag is available with the v2 asset', async () => {
+test('checkForUpdate: no release (404) or same/older tag is latest, newer tag is available with the exe asset', async () => {
   let called;
   const no = await checkForUpdate({ fetch: async (url, init) => { called = { url, init }; return new Response('{}', { status: 404 }); }, currentVersion: '1.1.0' });
   assert.deepStrictEqual(no, { status: 'latest', current: '1.1.0', version: null });
@@ -39,12 +37,21 @@ test('checkForUpdate: no release (404) or same/older tag is latest, newer tag is
   assert.match(called.init.headers['User-Agent'], /1\.1\.0/);
   assert.strictEqual((await checkForUpdate({ fetch: json(200, release('v1.1.0')), currentVersion: '1.1.0' })).status, 'latest');
   assert.strictEqual((await checkForUpdate({ fetch: json(200, release('v1.0.0')), currentVersion: '1.1.0' })).status, 'latest');
-  const assets = [{ name: 'ER-Damage-Calculator-1.2.0-portable.exe', browser_download_url: 'https://example.test/v1.exe', size: 1 }, exeAsset('1.2.0', 99)];
+  const NEW = 'ER-Damage-Calculator-1.2.0-portable.exe';
+  const OLD = 'ER-Damage-Calculator-v2-1.2.0-portable.exe';
+  const V1 = 'ER-Damage-Calculator-v1-1.2.0-portable.exe';
+  const assets = [exeAsset(V1, 1), exeAsset(OLD, 2), exeAsset(NEW, 99)];
   assert.deepStrictEqual(await checkForUpdate({ fetch: json(200, release('v1.2.0', assets)), currentVersion: '1.1.0' }), {
     status: 'available', current: '1.1.0', version: '1.2.0', notes: '변경 내역', url: 'https://github.com/x/y/releases/tag/v1.2.0',
-    asset: { name: 'ER-Damage-Calculator-v2-1.2.0-portable.exe', url: 'https://example.test/1.2.0.exe', size: 99 },
+    asset: { name: NEW, url: `https://example.test/${NEW}`, size: 99 },
   });
-  assert.strictEqual((await checkForUpdate({ fetch: json(200, release('v1.2.0')), currentVersion: '1.1.0' })).asset, null);
+  const pick = async (list) => (await checkForUpdate({ fetch: json(200, release('v1.2.0', list)), currentVersion: '1.1.0' })).asset;
+  assert.strictEqual((await pick([exeAsset(V1), exeAsset(OLD)])).name, OLD); // 옛 이름만 있으면 그것을 받는다
+  assert.strictEqual(await pick([exeAsset(V1), exeAsset('ER-Damage-Calculator-1.2.0.zip')]), null);
+  // 다른 버전 이름의 자산은 고르지 않는다.
+  assert.strictEqual((await pick([exeAsset('ER-Damage-Calculator-1.1.0-portable.exe'), exeAsset(OLD)])).name, OLD);
+  assert.strictEqual(await pick([exeAsset('ER-Damage-Calculator-1.2.0junk-portable.exe')]), null);
+  assert.strictEqual(await pick([]), null);
 });
 
 test('checkForUpdate failures name the reason', async () => {

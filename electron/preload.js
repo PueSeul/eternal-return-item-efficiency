@@ -2,8 +2,9 @@
 // 렌더러(index.html)에 window.erDesktop 노출. sandbox 렌더러라 electron 모듈만 쓴다.
 const { contextBridge, ipcRenderer } = require('electron');
 
-// v2 exe: main 이 additionalArguments 로 넘긴 --er-formula=v2 를 window.ER_FORMULA 로 주입. 기본(v1)은 주입하지 않음.
-if (process.argv.includes('--er-formula=v2')) contextBridge.exposeInMainWorld('ER_FORMULA', 'v2');
+// main 이 additionalArguments 로 넘긴 --er-formula=v1|v2 를 window.ER_FORMULA 로 주입(src/app.js 기본은 v2).
+const formulaArg = process.argv.find((a) => a === '--er-formula=v1' || a === '--er-formula=v2');
+if (formulaArg) contextBridge.exposeInMainWorld('ER_FORMULA', formulaArg.slice('--er-formula='.length));
 
 // main 이벤트 구독. 반환한 함수를 부르면 구독 해제.
 function subscribe(channel, cb) {
@@ -41,7 +42,7 @@ contextBridge.exposeInMainWorld('erDesktop', {
   appUpdate,
 });
 
-// --er-app-update(v2 exe): 머리글에 "업데이트 확인" 버튼, 그 아래에 새 버전 배너를 넣는다(index.html 은 그대로).
+// --er-app-update(기본 exe): 머리글에 "업데이트 확인" 버튼, 그 아래에 새 버전 배너를 넣는다(index.html 은 그대로).
 // 원격 문자열(릴리스 노트 등)은 textContent·title 로만 넣는다.
 function mountAppUpdateUi() {
   const el = (tag, props = {}) => Object.assign(document.createElement(tag), props);

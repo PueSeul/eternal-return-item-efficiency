@@ -1,5 +1,5 @@
-# v* 태그 푸시 → 테스트 → v2 portable exe 빌드 → GitHub Release 생성 + exe 업로드.
-# 프로그램 자동 업데이트(electron/app-update.js)가 이 릴리스의 ER-Damage-Calculator-v2-*-portable.exe 를 받는다.
+# v* 태그 푸시 → 테스트 → portable exe 빌드 → GitHub Release 생성 + exe 업로드.
+# 프로그램 자동 업데이트(electron/app-update.js)가 이 릴리스의 ER-Damage-Calculator-*-portable.exe 를 받는다.
 name: release
 
 on:
@@ -33,13 +33,16 @@ jobs:
 
       - run: npm test
 
-      - run: npm run build:exe:v2
+      - run: npm run build:exe
 
-      - name: Create release with the v2 exe
+      - name: Create release with the exe
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          exe="dist/ER-Damage-Calculator-v2-${GITHUB_REF_NAME#v}-portable.exe"
+          exe="dist/ER-Damage-Calculator-${GITHUB_REF_NAME#v}-portable.exe"
           test -f "$exe"
-          gh release create "$GITHUB_REF_NAME" "$exe" --title "$GITHUB_REF_NAME" --generate-notes --verify-tag
+          # 1.1.0 의 자동 업데이트는 옛 이름(ER-Damage-Calculator-v2-*-portable.exe)만 찾으므로 같은 파일을 그 이름으로도 올린다.
+          legacy="dist/ER-Damage-Calculator-v2-${GITHUB_REF_NAME#v}-portable.exe"
+          cp "$exe" "$legacy"
+          gh release create "$GITHUB_REF_NAME" "$exe" "$legacy" --title "$GITHUB_REF_NAME" --generate-notes --verify-tag
