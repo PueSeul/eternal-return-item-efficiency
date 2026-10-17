@@ -1,7 +1,10 @@
 // v2 스킬 선택 → 스킬 기본 피해량·계수 자동 입력(브라우저/Node 테스트 공용). 데이터: data/skills.json
 //   [{characterId, name, skills:[{key:'Q'|'W'|'E'|'R'|'P'|'RQ'…, name,
-//      levels:[{level, baseDamage, attackPowerRatio, skillAmpRatio}], raw, sourceLabel}],
+//      entries:[{label, levels:[{level, baseDamage, attackPowerRatio, skillAmpRatio, extraRatios?}], raw, historyMismatch?}],
+//      levels(= entries[0].levels, 이전 스키마), raw, sourceLabel}],
 //     wikiRevisedAt, needsReview:[{skill, text, reason}]}]   (비율은 0~1 소수)
+// entries가 없는 이전 스키마는 {label: sourceLabel, levels, raw} 한 항목으로 본다.
+// extraRatios(계산에 넣지 않는 계수, 표시만): [{stat|label|name, ratio}] · {이름: ratio} · ["문구"] 모두 받는다(형식 미확정).
 // 패치노트로 덮어쓴 스킬 값: items.meta.json overrides 중
 //   {type:'skill', name: 실험체 이름, characterId(선택), skill: 스킬 키 또는 스킬 이름, stat, dakgg, patchnote}.
 (function (root, factory) {
@@ -37,16 +40,48 @@
     return entry && key ? entry.skills.find((s) => str(s.key) === String(key)) || null : null;
   }
 
-  // 레벨 숫자가 있는 레벨 항목만, 레벨 오름차순.
+  // 레벨 숫자가 있는 레벨 항목만, 레벨 오름차순. 피해 항목(entry)이나 이전 스키마의 스킬 모두 받는다.
   function levelsOf(skill) {
     if (!skill || !Array.isArray(skill.levels)) return [];
     return skill.levels.filter((l) => isObj(l) && finite(l.level) != null).sort((a, b) => a.level - b.level);
   }
 
-  // 선택 목록 표시: "Q 샤마쉬의 두루마리", 레벨 수치가 없으면 " (수동 입력)".
-  function optionLabel(skill) {
-    const label = [str(skill.key), str(skill.name)].filter(Boolean).join(' ');
-    return levelsOf(skill).length ? label : `${label} (수동 입력)`;
+  // 스킬의 피해 항목 목록. entries가 비었거나 없으면 이전 스키마 한 항목.
+  function entriesOf(skill) {
+    if (!skill) return [];
+    const list = Array.isArray(skill.entries) ? skill.entries.filter(isObj) : [];
+    return list.length ? list : [{ label: skill.sourceLabel, levels: skill.levels, raw: skill.raw }];
+  }
+
+  // 선택 목록 값 "키#항목번호"(키에는 '#'가 없다).
+  const choiceValue = (skill, index) => `${str(skill.key)}#${index}`;
+
+  // 실험체의 선택지: 스킬 × 피해 항목. [{value, skill, entry, index}]
+  function choices(character) {
+    if (!character) return [];
+    return character.skills.flatMap((skill) => entriesOf(skill).map((entry, index) => ({ value: choiceValue(skill, index), skill, entry, index })));
+  }
+
+  function findChoice(character, value) {
+    return value ? choices(character).find((c) => c.value === String(value)) || null : null;
+  }
+
+  // 기록의 {key, index, label}로 선택지를 찾는다: 라벨이 있으면 같은 키·라벨, 없으면 같은 키·번호(번호 없으면 0).
+  function matchChoice(character, keep) {
+    if (!keep || !keep.key) return null;
+    const list = choices(character).filter((c) => str(c.skill.key) === String(keep.key));
+    const label = str(keep.label);
+    if (label) return list.find((c) => str(c.entry.label) === label) || null;
+    const index = Number.isInteger(keep.index) ? keep.index : 0;
+    return list.find((c) => c.index === index) || null;
+  }
+
+  // 선택 목록 표시: "Q 샤마쉬의 두루마리 — 피해량", 레벨 수치가 없으면 " (수동 입력)".
+  // entry를 안 주면 첫 항목(이전 스키마 호환).
+  function optionLabel(skill, entry) {
+    const e = entry || entriesOf(skill)[0];
+    const label = [str(skill.key), str(skill.name)].filter(Boolean).join(' ') + (e && str(e.label) ? ` — ${str(e.label)}` : '');
+    return levelsOf(e).length ? label : `${label} (수동 입력)`;
   }
 
   // 입력란 값: {skillDamage, atkCoefPct, skillAmpCoefPct}(계수는 % 단위). 숫자가 아닌 항목은 null(입력란 그대로).
@@ -55,6 +90,20 @@
     const l = levelsOf(skill).find((x) => x.level === Number(level));
     if (!l) return null;
     return { skillDamage: finite(l.baseDamage), atkCoefPct: toPct(l.attackPowerRatio), skillAmpCoefPct: toPct(l.skillAmpRatio) };
+  }
+
+  // 그 레벨의 미반영 계수 문구 목록(예: "최대 체력의 3%"). 계산에는 넣지 않는다.
+  function extraRatioTexts(entry, level) {
+    const l = levelsOf(entry).find((x) => x.level === Number(level));
+    const ex = l ? l.extraRatios : null;
+    const one = (name, ratio) => {
+      const pct = toPct(ratio);
+      return str(name) && pct != null ? `${str(name)}의 ${pct}%` : '';
+    };
+    let list = [];
+    if (Array.isArray(ex)) list = ex.map((x) => (isObj(x) ? one(x.stat || x.label || x.name, x.ratio) : str(x)));
+    else if (isObj(ex)) list = Object.entries(ex).map(([k, v]) => one(k, v));
+    return list.filter(Boolean);
   }
 
   // 출처 표시: "나무위키 · 수정 2026-10-16". 날짜는 원문 앞의 YYYY-MM-DD(문서에 적힌 날짜, 시간대 변환 없음),
@@ -77,5 +126,6 @@
       .map((o) => `${str(o.stat)}: ${val(o.dakgg)} → ${val(o.patchnote)}`);
   }
 
-  return { normalize, forCharacter, findSkill, levelsOf, optionLabel, autoValues, sourceText, patchNotes };
+  return { normalize, forCharacter, findSkill, levelsOf, entriesOf, choices, findChoice, matchChoice, optionLabel, autoValues,
+    extraRatioTexts, sourceText, patchNotes };
 });

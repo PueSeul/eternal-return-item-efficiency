@@ -60,6 +60,23 @@ test('runUpdate 실패: reject면 reload하지 않고 오류 메시지', async (
   assert.equal(r.message, '업데이트 실패: 네트워크 오류');
 });
 
+test('runUpdate 실패: {ok:false, error}로 돌려줘도 그 메시지, reload 안 함', async () => {
+  let reloaded = false;
+  const r = await U.runUpdate({ updateItems: async () => ({ ok: false, error: '나무위키 응답 없음' }) }, async () => { reloaded = true; return true; });
+  assert.equal(reloaded, false);
+  assert.deepEqual([r.ok, r.message], [false, '업데이트 실패: 나무위키 응답 없음']);
+});
+
+test('진행 문구: 단계·진행률, 모르는 단계는 message, 구독 함수 없으면 false', () => {
+  assert.equal(U.progressText({ stage: 'items' }), '아이템 수집 중…');
+  assert.equal(U.progressText({ stage: 'patchnotes', done: 0, total: 0 }), '패치노트 확인 중…');
+  assert.equal(U.progressText({ stage: 'skills', done: 37, total: 91 }), '스킬 수집 중 37/91');
+  assert.equal(U.progressText({ stage: 'x', message: '저장 중' }), '저장 중…');
+  assert.equal(U.progressText(null), '');
+  assert.equal(U.canProgress({ erDesktop: { onUpdateProgress: () => {} } }), true);
+  assert.equal(U.canProgress({ erDesktop: { updateItems: async () => ({}) } }), false);
+});
+
 test('runUpdate: 갱신 뒤 데이터 다시 읽기에 실패하면 오류', async () => {
   const r = await U.runUpdate({ updateItems: async () => ({ count: 1 }) }, async () => false);
   assert.equal(r.ok, false);

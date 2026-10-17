@@ -7,6 +7,8 @@
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
 
+  const str = (v) => (['string', 'number'].includes(typeof v) ? String(v).trim() : '');
+
   // 버튼 표시 조건: window.erDesktop?.updateItems가 함수일 때만(웹 실행에서는 숨김).
   function canUpdate(win) {
     return !!(win && win.erDesktop && typeof win.erDesktop.updateItems === 'function');
@@ -35,6 +37,11 @@
       res = await desktop.updateItems();
     } catch (err) {
       return { ok: false, message: '업데이트 실패: ' + ((err && err.message) || String(err)) };
+    }
+    // reject 대신 {ok:false, error|message}로 실패를 돌려주는 경우도 그 메시지를 그대로 보인다.
+    if (res && res.ok === false) {
+      const msg = str(res.error) || str(res.message) || '알 수 없는 오류';
+      return { ok: false, message: '업데이트 실패: ' + msg };
     }
     let reloaded = false;
     try {
@@ -66,5 +73,25 @@
     return { ok: true, count, meta, skills, message: count == null ? '아이템 갱신 완료' : `아이템 ${count}개 갱신 완료` };
   }
 
-  return { canUpdate, rematch, runUpdate };
+  // 진행 이벤트 {stage, done, total, message} → 상태 문구.
+  // 단계 이름: 'items'·'patchnotes'·'skills'(데스크톱 쪽 이름 미확정 — 모르는 단계는 message, 없으면 stage 그대로).
+  // total이 양수면 " done/total", 아니면 "…".
+  const STAGE_TEXT = { items: '아이템 수집 중', patchnotes: '패치노트 확인 중', skills: '스킬 수집 중' };
+  function progressText(ev) {
+    if (!ev || typeof ev !== 'object') return '';
+    const stage = str(ev.stage);
+    const label = STAGE_TEXT[stage] || str(ev.message) || stage;
+    if (!label) return '';
+    const done = Number(ev.done);
+    const total = Number(ev.total);
+    return ev.total != null && Number.isFinite(total) && total > 0 && ev.done != null && Number.isFinite(done)
+      ? `${label} ${done}/${total}` : `${label}…`;
+  }
+
+  // 진행 이벤트 구독 가능 여부(웹 미리보기에서는 false → 기존 문구 유지).
+  function canProgress(win) {
+    return !!(win && win.erDesktop && typeof win.erDesktop.onUpdateProgress === 'function');
+  }
+
+  return { canUpdate, rematch, runUpdate, progressText, canProgress };
 });

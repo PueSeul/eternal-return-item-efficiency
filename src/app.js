@@ -169,44 +169,57 @@
     return ref ? Skills.forCharacter(state.skills, ref.id, ref.name) : null;
   }
 
+  // 선택한 {skill, entry(피해 항목), index}. 없으면 null.
   function currentSkill() {
-    return Skills.findSkill(currentSkillEntry(), $('#in-skill').value);
+    return Skills.findChoice(currentSkillEntry(), $('#in-skill').value);
   }
 
-  // 지금 선택을 { key, level, name }으로(실험체가 없으면 null).
+  // 지금 선택을 { key, index, label, level, name }으로(실험체가 없으면 null).
   function currentSkillKeep() {
     const sel = $('#in-skill');
     if (!sel || !sel.value || !characterRef()) return null;
     const lv = $('#in-skillLevel').value;
-    return { key: sel.value, level: lv === '' ? null : Number(lv), name: sel.selectedOptions[0] ? sel.selectedOptions[0].dataset.name || '' : '' };
+    const d = sel.selectedOptions[0] ? sel.selectedOptions[0].dataset : {};
+    return { key: d.key || '', index: d.index === '' || d.index == null ? null : Number(d.index), label: d.label || '',
+      level: lv === '' ? null : Number(lv), name: d.name || '' };
   }
 
-  // 스킬 선택 목록을 다시 만든다. keep(기록 복원값 등)이 현재 데이터에 없어도 "(현재 데이터에 없음)"으로 남긴다.
+  // 스킬 선택 목록(스킬 × 피해 항목)을 다시 만든다. keep(기록 복원값 등)이 현재 데이터에 없어도 "(현재 데이터에 없음)"으로 남긴다.
   function renderSkillOptions(keep) {
     if (!V2) return;
     const entry = currentSkillEntry();
-    const skills = entry ? entry.skills : [];
-    const option = (value, text, name) => {
+    const list = Skills.choices(entry);
+    const option = (value, text, data) => {
       const o = el('option', { value, textContent: text });
-      o.dataset.name = name || '';
+      Object.assign(o.dataset, { key: data.key || '', index: data.index == null ? '' : String(data.index), label: data.label || '', name: data.name || '' });
       return o;
     };
-    const opts = [option('', skills.length ? '스킬 선택 안 함' : '스킬 데이터 없음')];
-    for (const s of skills) opts.push(option(String(s.key), Skills.optionLabel(s), s.name));
-    if (keep && keep.key && !skills.some((s) => String(s.key) === keep.key)) {
-      opts.push(option(keep.key, `${keep.key}${keep.name ? ' ' + keep.name : ''} (현재 데이터에 없음)`, keep.name));
+    const opts = [option('', list.length ? '스킬 선택 안 함' : '스킬 데이터 없음', {})];
+    for (const c of list) {
+      opts.push(option(c.value, Skills.optionLabel(c.skill, c.entry), { key: String(c.skill.key), index: c.index, label: c.entry.label, name: c.skill.name }));
+    }
+    let value = '';
+    if (keep && keep.key) {
+      const hit = Skills.matchChoice(entry, keep);
+      if (hit) value = hit.value;
+      else {
+        value = 'missing';
+        const text = `${keep.key}${keep.name ? ' ' + keep.name : ''}${keep.label ? ' — ' + keep.label : ''} (현재 데이터에 없음)`;
+        opts.push(option(value, text, keep));
+      }
     }
     const sel = $('#in-skill');
     sel.replaceChildren(...opts);
-    sel.value = keep && keep.key ? keep.key : '';
+    sel.value = value;
     sel.disabled = opts.length === 1;
     renderSkillLevels(keep ? keep.level : null);
   }
 
-  // 선택한 스킬의 레벨 목록. 기본은 최고 레벨, keepLevel이 있으면 그 레벨(데이터에 없으면 표시만 남김).
+  // 선택한 피해 항목의 레벨 목록. 기본은 최고 레벨, keepLevel이 있으면 그 레벨(데이터에 없으면 표시만 남김).
   function renderSkillLevels(keepLevel) {
     const lv = $('#in-skillLevel');
-    const levels = $('#in-skill').value ? Skills.levelsOf(currentSkill()).map((l) => l.level) : [];
+    const choice = currentSkill();
+    const levels = choice ? Skills.levelsOf(choice.entry).map((l) => l.level) : [];
     const opts = levels.map((n) => el('option', { value: String(n), textContent: `${n}레벨` }));
     if ($('#in-skill').value && keepLevel != null && Number.isFinite(keepLevel) && !levels.includes(keepLevel)) {
       opts.push(el('option', { value: String(keepLevel), textContent: `${keepLevel}레벨 (현재 데이터에 없음)` }));
@@ -221,27 +234,29 @@
   // 스킬·레벨을 고르면 스킬 기본 피해량·공격력 계수·스킬 증폭 계수를 채운다(이후 수동 수정 가능).
   function applySkill() {
     const lv = $('#in-skillLevel').value;
-    const auto = lv === '' ? null : Skills.autoValues(currentSkill(), Number(lv));
+    const choice = currentSkill();
+    const auto = lv === '' || !choice ? null : Skills.autoValues(choice.entry, Number(lv));
     if (auto) for (const k of SKILL_FIELDS) if (auto[k] != null) $('#in-' + k).value = auto[k];
     hideResult();
     renderSkillNote();
   }
 
-  // 스킬 출처("나무위키 · 수정 날짜"), 수동 수정 여부, 패치노트 반영 표식.
+  // 스킬 출처("나무위키 · 수정 날짜"), 수동 수정 여부, 패치노트 반영·역사란 불일치 표식, 미반영 계수.
   function renderSkillNote() {
     const note = $('#skill-note');
     if (!V2 || !note) return;
     const entry = currentSkillEntry();
-    const skill = currentSkill();
-    if (!skill) {
+    const choice = currentSkill();
+    if (!choice) {
       note.replaceChildren($('#in-skill').value ? '현재 데이터에 없는 스킬 — 기록된 값 유지' : state.skillsError);
       return;
     }
+    const { skill, entry: dmg } = choice;
     const source = Skills.sourceText(entry);
     const lv = $('#in-skillLevel').value;
-    const auto = lv === '' ? null : Skills.autoValues(skill, Number(lv));
+    const auto = lv === '' ? null : Skills.autoValues(dmg, Number(lv));
     let text;
-    if (!Skills.levelsOf(skill).length) text = `수동 입력(수치 없음) · ${source}`;
+    if (!Skills.levelsOf(dmg).length) text = `수동 입력(수치 없음) · ${source}`;
     else {
       const edited = auto && SKILL_FIELDS.some((k) => {
         const raw = $('#in-' + k).value.trim();
@@ -250,8 +265,13 @@
       text = source + (edited ? ' · 수동 수정됨' : '');
     }
     const patches = Skills.patchNotes(state.meta, characterRef(), skill);
+    const mismatch = dmg.historyMismatch;
+    const extras = lv === '' ? [] : Skills.extraRatioTexts(dmg, Number(lv));
     note.replaceChildren(text, patches.length
-      ? el('span', { className: 'patch-badge', textContent: '패치 반영', title: '패치노트 반영: ' + patches.join(', ') }) : '');
+      ? el('span', { className: 'patch-badge', textContent: '패치 반영', title: '패치노트 반영: ' + patches.join(', ') }) : '',
+    mismatch ? el('span', { className: 'patch-badge', textContent: '역사란과 불일치',
+      title: typeof mismatch === 'string' ? mismatch : '나무위키 역사란 수치와 다릅니다' }) : '',
+    extras.length ? el('span', { className: 'skill-extra', textContent: '미반영 계수: ' + extras.join(', ') }) : '');
   }
 
   function renderMetaPanel() {
@@ -280,13 +300,23 @@
     const status = $('#update-status');
     if (!Updater.canUpdate(window)) return; // 웹 실행: 버튼 숨김 유지
     btn.hidden = false;
+    // 데스크톱 진행 이벤트: 업데이트 중에만 상태 문구에 단계·진행률 표시.
+    let updating = false;
+    if (Updater.canProgress(window)) {
+      window.erDesktop.onUpdateProgress((ev) => {
+        const text = Updater.progressText(ev);
+        if (updating && text) status.textContent = text;
+      });
+    }
     btn.onclick = async () => {
       btn.disabled = true;
       btn.textContent = '업데이트 중…';
       status.className = 'muted';
       status.textContent = '';
+      updating = true;
       try {
         const r = await Updater.runUpdate(window.erDesktop, loadData, fetchMeta, V2 ? fetchSkills : null);
+        updating = false; // 이후 늦게 온 진행 이벤트가 결과 문구를 덮지 않도록
         if (r.ok) {
           // 반환에 meta가 있으면 그것, 없으면 다시 읽은 메타 파일(runUpdate가 결정).
           setMeta(r.meta);
@@ -311,6 +341,7 @@
         status.className = 'muted error';
         status.textContent = '업데이트 처리 중 오류: ' + err.message;
       } finally {
+        updating = false;
         btn.disabled = false;
         btn.textContent = '아이템 수치 업데이트';
       }
@@ -604,6 +635,8 @@
       out.skillKey = keep ? keep.key : null;
       out.skillName = keep ? keep.name || null : null;
       out.skillLevel = keep ? keep.level : null;
+      out.skillEntry = keep ? keep.index : null;
+      out.skillEntryLabel = keep ? keep.label || null : null;
     }
     return out;
   }
@@ -622,7 +655,8 @@
       state.skillCharName = $('#in-character').value.trim();
       const key = inputs && inputs.skillKey != null && inputs.skillKey !== '' ? String(inputs.skillKey) : null;
       const level = inputs && typeof inputs.skillLevel === 'number' ? inputs.skillLevel : null;
-      renderSkillOptions(key && characterRef() ? { key, level, name: (inputs && inputs.skillName) || '' } : null);
+      renderSkillOptions(key && characterRef() ? { key, level, name: (inputs && inputs.skillName) || '',
+        index: Number.isInteger(inputs.skillEntry) ? inputs.skillEntry : null, label: inputs.skillEntryLabel || '' } : null);
       renderAutoNotes();
     }
   }

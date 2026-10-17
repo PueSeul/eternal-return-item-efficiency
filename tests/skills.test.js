@@ -40,14 +40,39 @@ test('레벨 비어 있는 스킬은 "수동 입력", 출처 문구, 실험체 �
   assert.equal(entry.name, '아르다');
   assert.equal(S.forCharacter(FIXTURE, 'none', '아르다'), entry); // id가 틀리면 이름
   assert.equal(S.forCharacter(FIXTURE, 'none', '없음'), null);
-  assert.equal(S.optionLabel(S.findSkill(entry, 'Q')), 'Q 샤마쉬의 두루마리');
+  assert.equal(S.optionLabel(S.findSkill(entry, 'Q')), 'Q 샤마쉬의 두루마리 — 피해량');
   const p = S.findSkill(entry, 'P');
-  assert.equal(S.optionLabel(p), 'P 패시브(테스트) (수동 입력)');
+  assert.equal(S.optionLabel(p), 'P 패시브(테스트) — 체력 회복량 (수동 입력)'); // entries 빈 배열 → 이전 스키마 한 항목
   assert.equal(S.autoValues(p, 1), null);
   assert.equal(S.sourceText(entry), '나무위키 · 수정 2026-10-16');
   assert.equal(S.sourceText({}), '나무위키');
   assert.deepEqual(S.normalize(null), []);
   assert.deepEqual(S.normalize([null, { name: 'x' }, { name: 'y', skills: [null, { key: 'Q' }] }]), [{ name: 'y', skills: [{ key: 'Q' }] }]);
+});
+
+test('entries: 스킬 × 피해 항목 선택지, 라벨/번호로 복원, 미반영 계수·역사란 불일치', () => {
+  const entry = S.forCharacter(FIXTURE, 'arda', '아르다');
+  const list = S.choices(entry);
+  assert.deepEqual(list.map((c) => [c.value, S.optionLabel(c.skill, c.entry)]), [
+    ['Q#0', 'Q 샤마쉬의 두루마리 — 피해량'],
+    ['Q#1', 'Q 샤마쉬의 두루마리 — 추가 피해량(테스트)'],
+    ['P#0', 'P 패시브(테스트) — 체력 회복량 (수동 입력)'],
+  ]);
+  const extra = S.findChoice(entry, 'Q#1');
+  assert.deepEqual(S.autoValues(extra.entry, 2), { skillDamage: 40, atkCoefPct: 10, skillAmpCoefPct: 30 });
+  assert.deepEqual(S.extraRatioTexts(extra.entry, 1), ['최대 체력의 3%']);
+  assert.deepEqual(S.extraRatioTexts(S.findChoice(entry, 'Q#0').entry, 5), []);
+  assert.equal(extra.entry.historyMismatch, '역사란: 추가 피해량 [25 / 45]');
+  assert.deepEqual(S.extraRatioTexts({ levels: [{ level: 1, extraRatios: { '방어력': 0.5 } }] }, 1), ['방어력의 50%']);
+  assert.deepEqual(S.extraRatioTexts({ levels: [{ level: 1, extraRatios: ['대상 잃은 체력의 2%'] }] }, 1), ['대상 잃은 체력의 2%']);
+  // 복원: 라벨 우선, 라벨 없으면 번호(이전 기록은 번호도 없음 → 0), 없는 라벨은 null
+  assert.equal(S.matchChoice(entry, { key: 'Q', label: '추가 피해량(테스트)', index: 0 }).value, 'Q#1');
+  assert.equal(S.matchChoice(entry, { key: 'Q', index: 1 }).value, 'Q#1');
+  assert.equal(S.matchChoice(entry, { key: 'Q' }).value, 'Q#0');
+  assert.equal(S.matchChoice(entry, { key: 'Q', label: '없는 줄' }), null);
+  assert.equal(S.findChoice(entry, 'W#0'), null);
+  // 첫 항목 = 이전 스키마 levels: 379 검산 그대로
+  assert.deepEqual(S.autoValues(S.findChoice(entry, 'Q#0').entry, 5), { skillDamage: 230, atkCoefPct: 0, skillAmpCoefPct: 80 });
 });
 
 test('비율은 % 소수 오차 정리, 숫자가 아닌 값은 null(입력란 유지)', () => {
