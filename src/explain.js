@@ -130,5 +130,20 @@
     return out;
   }
 
-  return { lines, linesV2, num };
+  // 결과 영역 "계산 과정 보기" 펼침 상태(localStorage, v1·v2 공통). 기본 접힘, 저장소 오류도 접힘.
+  const STEPS_OPEN_KEY = 'er-damage-calc-steps-open';
+  function loadStepsOpen(storage) {
+    try {
+      return storage.getItem(STEPS_OPEN_KEY) === '1';
+    } catch {
+      return false;
+    }
+  }
+  function saveStepsOpen(storage, open) {
+    try {
+      storage.setItem(STEPS_OPEN_KEY, open ? '1' : '0');
+    } catch { /* 저장 실패는 무시(다음 실행에 기본 접힘) */ }
+  }
+
+  return { lines, linesV2, num, STEPS_OPEN_KEY, loadStepsOpen, saveStepsOpen };
 });

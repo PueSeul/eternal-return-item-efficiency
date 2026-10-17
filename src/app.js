@@ -680,14 +680,18 @@
     } else {
       nodes.push(el('div', { className: 'muted', textContent: '기준 세트가 5칸 다 차 있지 않아 히스토리 최고 대비로 계산했습니다.' }));
     }
-    // 실제 숫자를 대입한 계산 과정을 식 한 줄씩 표시한다.
+    // 실제 숫자를 대입한 계산 과정(식 한 줄씩)은 접기/펼치기(기본 접힘, 상태는 localStorage에 기억).
     const refLabel = eff.mode === 'baseline' ? '기준 세트' : '최고';
-    nodes.push(el('pre', { className: 'steps', textContent: explainLines(items, inputs, r, eff.refRatio, refLabel).join('\n') }));
+    const steps = el('details', { className: 'all-steps', open: window.ERExplain.loadStepsOpen(localStorage) },
+      el('summary', { textContent: '계산 과정 보기' }),
+      el('pre', { className: 'steps', textContent: explainLines(items, inputs, r, eff.refRatio, refLabel).join('\n') }));
+    steps.addEventListener('toggle', () => window.ERExplain.saveStepsOpen(localStorage, steps.open));
     if (baseResult) {
-      nodes.push(el('details', { className: 'base-steps' },
+      steps.append(el('details', { className: 'base-steps' },
         el('summary', { textContent: `기준 세트 계산 과정 (D = ${fmt(baseResult.D)})` }),
         el('pre', { className: 'steps', textContent: explainLines(baseItems, inputs, baseResult, null).join('\n') })));
     }
+    nodes.push(steps);
     box.replaceChildren(...nodes);
     box.hidden = false;
   }

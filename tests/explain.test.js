@@ -34,6 +34,19 @@ test('계산 과정: 실제 값을 대입한 식 한 줄씩 + 아이템별 기�
   ]);
 });
 
+test('계산 과정 펼침 상태: 기본 접힘, 저장한 값 기억, 저장소 오류는 접힘', () => {
+  const m = new Map();
+  const storage = { getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)) };
+  assert.equal(E.loadStepsOpen(storage), false);
+  E.saveStepsOpen(storage, true);
+  assert.equal(E.loadStepsOpen(storage), true);
+  E.saveStepsOpen(storage, false);
+  assert.equal(E.loadStepsOpen(storage), false);
+  const broken = { getItem: () => { throw new Error('x'); }, setItem: () => { throw new Error('x'); } };
+  assert.equal(E.loadStepsOpen(broken), false);
+  assert.doesNotThrow(() => E.saveStepsOpen(broken, true));
+});
+
 test('계산 과정: A·D 최솟값 적용 표시, 가격 합 0, 택1 없으면 택1 줄 없음', () => {
   const items = ITEMS.map((it) => ({ ...it, price: 0, stats: { ...it.stats } }));
   delete items[0].stats['공격력(택1)'];
