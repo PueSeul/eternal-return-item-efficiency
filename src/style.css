@@ -173,6 +173,7 @@ select:disabled { opacity: .5; }
 .tabs button[aria-pressed="false"]:hover, .tabs button[aria-pressed="false"]:focus-visible { background: var(--hover); color: var(--text); }
 .history { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
 /* 기록 행(72px 이하): 윗줄 아이콘 5개 + 기준 아이콘(작게, 줄 끝), 아랫줄 시각 · 데미지 · 가격 · 효율. */
+.history li:not(.empty) { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 16px; align-items: center; }
 .history li { position: relative; padding: 6px 32px 6px 8px; border-bottom: 1px solid var(--line); cursor: pointer; font-size: 13px; transition: background-color var(--fast); }
 .history li:hover { background: var(--hover); }
 .history li:focus-visible { outline-offset: -2px; }
@@ -183,8 +184,12 @@ select:disabled { opacity: .5; }
 .hist-meta { display: flex; align-items: baseline; gap: 8px; margin-top: 4px; font-size: 12px; white-space: nowrap; min-width: 0; }
 .hist-time, .hist-sub { color: var(--muted); }
 .hist-sub { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-.hist-eff { margin-left: auto; font-size: 13px; font-weight: 600; color: var(--accent); }
-.hist-eff.old { color: var(--muted); font-weight: 400; }
+/* 효율 열: 행 오른쪽, 세로 중앙. 라벨 작게 위, 숫자 21px 굵게. */
+.hist-main { min-width: 0; }
+.hist-eff { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-variant-numeric: tabular-nums; }
+.hist-eff-label { font-size: 11px; color: var(--muted); white-space: nowrap; }
+.hist-eff-value { font-size: 21px; font-weight: 700; line-height: 1.1; color: var(--accent); white-space: nowrap; }
+.hist-eff.old .hist-eff-value { color: var(--muted); font-weight: 400; }
 .history .del { position: absolute; top: 6px; right: 4px; }
 .hist-icons { display: flex; gap: 4px; }
 .hist-icon { width: 46px; height: 46px; border: 1px solid var(--line); border-radius: 4px; display: flex; align-items: center; justify-content: center; }

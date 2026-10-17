@@ -998,19 +998,24 @@
         if (next) next.focus();
         else $('#clear-history').focus();
       };
-      // 윗줄: 아이콘 5개 + 기준 세트 아이콘(작게, 줄 끝). 아랫줄: 시각 · 데미지 · 가격 · 효율(강조).
-      // 효율 기준과 이전 계산식 사유는 툴팁.
+      // 왼쪽: 현재 세트 아이콘 줄, 기준 줄, 메타 줄(시각 · 데미지 · 가격).
+      // 오른쪽 열: 효율(또는 가격당 추가 데미지)을 세로 중앙에 크게. 효율 기준과 이전 계산식 사유는 툴팁.
       const effNode = current
-        ? el('span', { className: 'hist-eff', textContent: `${effLabel} ${Baseline.valueText(eff.kind, eff.value)}`, title: refText.replace(/^ \((.*)\)$/, '$1') })
-        : el('span', { className: 'hist-eff old', textContent: '효율 —', title: '이전 계산식 기록 — 효율 비교 제외' });
+        ? el('div', { className: 'hist-eff', title: refText.replace(/^ \((.*)\)$/, '$1') },
+          el('span', { className: 'hist-eff-label', textContent: effLabel }),
+          el('span', { className: 'hist-eff-value', textContent: Baseline.valueText(eff.kind, eff.value) }))
+        : el('div', { className: 'hist-eff old', title: '이전 계산식 기록 — 효율 비교 제외' },
+          el('span', { className: 'hist-eff-label', textContent: '효율' }),
+          el('span', { className: 'hist-eff-value', textContent: '—' }));
       const date = new Date(e.time);
       const time = date.toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit' });
       const li = el('li', { title: '클릭하면 이 구성을 불러옵니다', tabIndex: 0 },
-        el('div', { className: 'hist-row' }, historyIcons(e), baseRow),
-        el('div', { className: 'hist-meta' },
-          el('span', { className: 'hist-time', textContent: time, title: date.toLocaleString('ko-KR') }),
-          el('span', { className: 'hist-sub', textContent: `데미지 ${fmt(e.result.D)} · 가격 ${fmt(e.result.price)}` }),
-          effNode),
+        el('div', { className: 'hist-main' },
+          el('div', { className: 'hist-row' }, historyIcons(e), baseRow),
+          el('div', { className: 'hist-meta' },
+            el('span', { className: 'hist-time', textContent: time, title: date.toLocaleString('ko-KR') }),
+            el('span', { className: 'hist-sub', textContent: `데미지 ${fmt(e.result.D)} · 가격 ${fmt(e.result.price)}` }))),
+        effNode,
         del);
       li.onclick = () => restore(e);
       li.onkeydown = (ev) => {

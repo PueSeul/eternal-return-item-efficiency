@@ -21,6 +21,14 @@ test('레이아웃: 왼쪽 필요 폭·히스토리 남는 폭, 페이지 스크
   assert.match(css, /@media \(max-width: 1099px\) \{[\s\S]*body \{ display: block; overflow: auto/);
 });
 
+test('히스토리 효율 열: 오른쪽 세로 중앙, 숫자 20~22px 굵게', () => {
+  assert.match(css, /\.history li:not\(\.empty\) \{[^}]*grid-template-columns: minmax\(0, 1fr\) auto;[^}]*align-items: center/);
+  const m = css.match(/\.hist-eff-value \{[^}]*font-size: (\d+)px;[^}]*font-weight: 700/);
+  assert.ok(m && +m[1] >= 20 && +m[1] <= 22);
+  const app = fs.readFileSync(path.join(root, 'src', 'app.js'), 'utf8');
+  assert.match(app, /className: 'hist-eff-value'/);
+});
+
 test('hover/포커스: 비활성 탭 밝게, 링크형 버튼 강조색, 120ms 전환', () => {
   assert.match(css, /--fast: 120ms/);
   assert.match(css, /\.tabs button\[aria-pressed="false"\]:hover[^{]*\{ background: var\(--hover\); color: var\(--text\)/);
