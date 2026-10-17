@@ -67,13 +67,36 @@
   const LISTED_KEYS = ['P', 'Q', 'W', 'E', 'R'];
   const isListed = (skill) => LISTED_KEYS.includes(str(skill.key).trim().toUpperCase());
 
+  // 피해 항목 라벨만 목록에 보인다("피해" 포함, 회복·보호막·흡수량은 제외). 라벨 없는 이전 스키마 항목은 보인다.
+  // "장벽 피해량"처럼 피해 라벨이면 보이고, 피해가 아닌 "장벽"은 "피해" 미포함으로 숨는다.
+  function isDamageLabel(label) {
+    const s = str(label);
+    return !s || (/피해/.test(s) && !/회복|보호막|흡수량/.test(s));
+  }
+
+  // 항목이 모두 피해가 아닌 스킬의 "수동 입력" 선택지 값.
+  const manualValue = (skill) => `${str(skill.key)}#manual`;
+
+  // 목록에 보일 선택지: 피해 항목만, 피해 항목이 없는 스킬은 수치 없는 "수동 입력" 한 칸.
+  function damageChoices(character) {
+    if (!character) return [];
+    return character.skills.flatMap((skill) => {
+      const list = entriesOf(skill).map((entry, index) => ({ value: choiceValue(skill, index), skill, entry, index }))
+        .filter((c) => isDamageLabel(c.entry.label));
+      return list.length ? list : [{ value: manualValue(skill), skill, entry: { label: '', levels: [] }, index: null, manual: true }];
+    });
+  }
+
   function findChoice(character, value) {
-    return value ? choices(character).find((c) => c.value === String(value)) || null : null;
+    if (!value) return null;
+    return choices(character).find((c) => c.value === String(value)) ||
+      damageChoices(character).find((c) => c.manual && c.value === String(value)) || null;
   }
 
   // 기록의 {key, index, label}로 선택지를 찾는다: 라벨이 있으면 같은 키·라벨, 없으면 같은 키·번호(번호 없으면 0).
   function matchChoice(character, keep) {
     if (!keep || !keep.key) return null;
+    if (keep.index === -1) return damageChoices(character).find((c) => c.manual && str(c.skill.key) === String(keep.key)) || null;
     const list = choices(character).filter((c) => str(c.skill.key) === String(keep.key));
     const label = str(keep.label);
     if (label) return list.find((c) => str(c.entry.label) === label) || null;
@@ -152,6 +175,6 @@
       .map((o) => `${str(o.stat)}: ${val(o.dakgg)} → ${val(o.patchnote)}`);
   }
 
-  return { normalize, forCharacter, findSkill, levelsOf, entriesOf, choices, findChoice, matchChoice, optionLabel, autoValues,
+  return { normalize, forCharacter, findSkill, levelsOf, entriesOf, choices, damageChoices, isDamageLabel, findChoice, matchChoice, optionLabel, autoValues,
     LISTED_KEYS, isListed, extraRatioTexts, mismatchText, sourceText, patchNotes };
 });

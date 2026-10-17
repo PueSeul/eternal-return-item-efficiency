@@ -20,7 +20,7 @@ test('스킬 목록: P·Q·W·E·R만 보이고 RQ·Q2·변신·무기 스킬은
   const hit = S.matchChoice(char, { key: 'RQ', index: 0 });
   assert.equal(hit && hit.skill.key, 'RQ');
   const app = fs.readFileSync(path.join(__dirname, '..', 'src', 'app.js'), 'utf8');
-  assert.match(app, /if \(!Skills\.isListed\(hit\.skill\)\) opts\.push\(choiceOption\(hit\)\)/);
+  assert.match(app, /if \(!shown\.some\(\(c\) => c\.value === hit\.value\)\) opts\.push\(choiceOption\(hit\)\)/);
 });
 
 // tests/formula_v2.test.js의 379 검산과 같은 구성·입력.
@@ -183,4 +183,20 @@ test('실제 data/skills.json(있을 때): 아르다 Q 5레벨 230 / 0 / 80%', {
     const texts = S.extraRatioTexts({ levels: [narrative] }, narrative.level);
     assert.equal(texts.length, narrative.extraRatios.length);
   }
+});
+
+test('피해 항목만 목록에: 회복·보호막 숨김, 모두 숨겨지면 수동 입력, 숨김 항목 복원 유지', () => {
+  const lv = [{ level: 1, baseDamage: 10 }];
+  const ch = { skills: [
+    { key: 'Q', name: '가', entries: [{ label: '피해량', levels: lv }, { label: '체력 회복량', levels: lv }, { label: '보호막 흡수량', levels: lv }, { label: 'VF 흡수 피해량', levels: lv }] },
+    { key: 'W', name: '나', entries: [{ label: '보호막 흡수량', levels: lv }, { label: '이동 속도 증가량', levels: lv }] },
+  ] };
+  const shown = S.damageChoices(ch);
+  assert.deepEqual(shown.map((c) => c.value), ['Q#0', 'Q#3', 'W#manual']);
+  assert.equal(S.optionLabel(shown[2].skill, shown[2].entry), 'W 나 (수동 입력)');
+  assert.equal(S.findChoice(ch, 'W#manual').manual, true);
+  assert.equal(S.matchChoice(ch, { key: 'W', index: -1 }).value, 'W#manual');
+  assert.equal(S.matchChoice(ch, { key: 'Q', label: '체력 회복량' }).value, 'Q#1');
+  assert.equal(S.isDamageLabel('3타 피해량'), true);
+  assert.equal(S.isDamageLabel('회복량'), false);
 });

@@ -220,15 +220,17 @@
       return o;
     };
     const opts = [option('', list.length ? '스킬 선택 안 함' : '스킬 데이터 없음', {})];
-    const choiceOption = (c) => option(c.value, Skills.optionLabel(c.skill, c.entry), { key: String(c.skill.key), index: c.index, label: c.entry.label, name: c.skill.name });
-    // P·Q·W·E·R만 목록에 보인다. 숨긴 스킬이 기록에서 복원되면 그 항목만 임시로 넣어 선택을 유지.
-    for (const c of list) if (Skills.isListed(c.skill)) opts.push(choiceOption(c));
+    const choiceOption = (c) => option(c.value, Skills.optionLabel(c.skill, c.entry), { key: String(c.skill.key), index: c.manual ? -1 : c.index, label: c.entry.label, name: c.skill.name });
+    // P·Q·W·E·R의 피해 항목만 목록에 보인다(피해 항목이 없는 스킬은 "수동 입력").
+    // 숨긴 스킬·항목이 기록에서 복원되면 그 항목만 임시로 넣어 선택을 유지.
+    const shown = Skills.damageChoices(entry).filter((c) => Skills.isListed(c.skill));
+    for (const c of shown) opts.push(choiceOption(c));
     let value = '';
     if (keep && keep.key) {
       const hit = Skills.matchChoice(entry, keep);
       if (hit) {
         value = hit.value;
-        if (!Skills.isListed(hit.skill)) opts.push(choiceOption(hit));
+        if (!shown.some((c) => c.value === hit.value)) opts.push(choiceOption(hit));
       }
       else {
         value = 'missing';
