@@ -39,6 +39,10 @@
     } catch (err) {
       return { ok: false, message: '업데이트 실패: ' + ((err && err.message) || String(err)) };
     }
+    // 취소로 끝남({cancelled:true}): 데이터를 다시 읽지 않는다(디스크 데이터는 그대로).
+    if (res && res.cancelled === true) {
+      return { ok: false, cancelled: true, message: '업데이트 취소됨', short: '업데이트 취소됨' };
+    }
     // reject 대신 {ok:false, error|message}로 실패를 돌려주는 경우도 그 메시지를 그대로 보인다.
     if (res && res.ok === false) {
       const msg = str(res.error) || str(res.message) || '알 수 없는 오류';
@@ -76,7 +80,10 @@
     const note = res ? str(res.note) : '';
     // short: 머리글 상태 칸용 짧은 문구(전체 문장 message는 툴팁).
     const short = count == null ? '아이템 갱신됨' : `아이템 ${count}개 갱신됨`;
-    return { ok: true, count, meta, skills, message: note ? `${done} — ${note}` : done, short };
+    const result = { ok: true, count, meta, skills, message: note ? `${done} — ${note}` : done, short };
+    // 취소 요청보다 먼저 끝남({completedBeforeCancel:true}): 갱신은 반영하고 표식만 단다.
+    if (res && res.completedBeforeCancel === true) result.completedBeforeCancel = true;
+    return result;
   }
 
   // 진행 이벤트 {stage, done, total, message} → 상태 문구.
@@ -170,5 +177,11 @@
     return ms < 1000 ? '곧 완료' : `약 ${durationText(ms)} 남음`;
   }
 
-  return { canUpdate, rematch, runUpdate, progressText, canProgress, createEta, durationText, etaText, DEFAULT_ETA_MS };
+  // 취소(×) 버튼 표시: 데스크톱에 cancelUpdate가 있고 단계가 'running'일 때만
+  // (대기 'idle' · 완료 'done' · 오류 'error' · 취소 'cancelled'에서는 숨김).
+  function cancelVisible(phase, win) {
+    return phase === 'running' && !!(win && win.erDesktop && typeof win.erDesktop.cancelUpdate === 'function');
+  }
+
+  return { canUpdate, cancelVisible, rematch, runUpdate, progressText, canProgress, createEta, durationText, etaText, DEFAULT_ETA_MS };
 });

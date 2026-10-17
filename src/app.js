@@ -368,43 +368,42 @@
     if (gauge) status.before(gauge.el); // .update-state 안: 게이지·문구가 버튼 바로 왼쪽에 오른쪽 정렬
     // 취소(×): 진행 중에만 게이지 왼쪽에 보인다. 데스크톱에 cancelUpdate가 없으면 만들지 않는다.
     // {cancelled:true}이면 게이지를 비우고 "업데이트 취소됨"(5초), 늦게 온 runUpdate 결과는 무시(데이터·메타 재로딩 없음).
-    let cancelled = false;
+    let cancelling = false; // 취소(×)를 누른 뒤 원래 updateItems() 결과를 기다리는 중
     const canCancel = typeof (window.erDesktop && window.erDesktop.cancelUpdate) === 'function';
+    // 표시 여부는 단계로만 정한다: 'running'일 때만 보임(Updater.cancelVisible).
+    const setPhase = (phase) => { if (cancelBtn) cancelBtn.hidden = !Updater.cancelVisible(phase, window); };
     const cancelBtn = canCancel ? el('button', { id: 'update-cancel', type: 'button', className: 'icon-btn', title: '업데이트 취소', hidden: true }) : null;
     if (cancelBtn) {
       cancelBtn.setAttribute('aria-label', '업데이트 취소');
       cancelBtn.innerHTML = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg>';
       (gauge ? gauge.el : status).before(cancelBtn);
+      // 누르면 즉시 "취소 중…"으로 고정(진행 이벤트·타이머는 무시). 최종 문구는 원래 updateItems() 결과로 정한다:
+      // {cancelled:true} → "업데이트 취소됨"(재로딩 없음), 완료(completedBeforeCancel 포함) → "취소 전에 완료됨".
+      // cancelUpdate의 반환값(true=신호 보냄, false=이미 끝남)으로는 문구를 바꾸지 않는다. 호출이 예외로 실패할 때만 진행 표시로 되돌린다.
       cancelBtn.onclick = async () => {
-        if (!updating) return;
+        if (!updating || cancelling) return;
+        cancelling = true;
         cancelBtn.disabled = true;
+        clearInterval(timer);
         setStatus('취소 중…', '', false, false);
-        let r = null;
-        try { r = await window.erDesktop.cancelUpdate(); } catch { /* 취소 실패: 진행 계속 */ }
-        if (r && r.cancelled && updating) {
-          cancelled = true;
-          updating = false;
-          clearInterval(timer);
-          if (gauge) { gauge.set(0, ''); gauge.hide(); }
-          cancelBtn.hidden = true;
-          setStatus('업데이트 취소됨', '', false, true);
-          btn.disabled = false;
-          more.disabled = false;
-          btn.classList.remove('busy');
-        } else if (updating) {
+        let failed = false;
+        try { await window.erDesktop.cancelUpdate(); } catch { failed = true; /* 취소 실패: 진행 계속 */ }
+        if (failed && updating) {
+          cancelling = false;
           cancelBtn.disabled = false;
           setStatus('', '', false, false);
+          if (progress) timer = setInterval(showProgress, 1000);
         }
       };
     }
     const showProgress = () => {
-      if (!updating) return;
+      if (!updating || cancelling) return; // 취소 중: 늦게 온 진행 이벤트도 무시
       const now = Date.now();
       gauge.set(eta.fraction(now) * 100, Gauge.detailText([stageText, Updater.etaText(eta, now)]));
     };
     if (progress) {
       window.erDesktop.onUpdateProgress((ev) => {
-        if (!updating) return;
+        if (!updating || cancelling) return;
         const text = Updater.progressText(ev);
         if (text) stageText = text;
         eta.update(ev);
@@ -418,8 +417,9 @@
       btn.classList.add('busy'); // 문구만 "업데이트 중…"으로(겹친 두 문구, 폭 유지)
       setStatus('', '', false, false);
       updating = true;
-      cancelled = false;
-      if (cancelBtn) { cancelBtn.hidden = false; cancelBtn.disabled = false; }
+      cancelling = false;
+      setPhase('running');
+      if (cancelBtn) cancelBtn.disabled = false;
       const startedAt = Date.now();
       if (progress) {
         let last = NaN;
@@ -431,9 +431,15 @@
       }
       try {
         const r = await Updater.runUpdate(window.erDesktop, loadData, fetchMeta, V2 ? fetchSkills : null, { skillsMode: mode });
-        if (cancelled) return; // 취소됨: 결과·재로딩 무시(finally만 실행)
+        const wasCancelling = cancelling;
         updating = false; // 이후 늦게 온 진행 이벤트가 결과 문구를 덮지 않도록
         clearInterval(timer);
+        if (r.cancelled) { // 취소로 끝남: runUpdate가 재로딩하지 않았다. 게이지 비우고 문구 5초.
+          if (gauge) { gauge.set(0, ''); gauge.hide(); }
+          setPhase('cancelled');
+          setStatus('업데이트 취소됨', '', false, true);
+          return;
+        }
         if (r.ok && progress) {
           try { localStorage.setItem(etaKey(mode), String(Date.now() - startedAt)); } catch { /* 저장소 없음 */ }
         }
@@ -462,17 +468,19 @@
           if ($('#picker').open) renderPicker();
           const full = r.message + (removed.length ? ` — 데이터에서 사라져 비운 슬롯: ${removed.join(', ')}` : '') +
             (lostCharacter ? ` — 데이터에서 사라져 비운 실험체: ${lostCharacter}` : '');
-          setStatus(`${r.short} · ${Updater.durationText(Date.now() - startedAt)}`, full, false, true);
+          // 취소를 눌렀지만 먼저 끝난 경우(completedBeforeCancel 또는 취소 요청 중 정상 완료): 갱신은 반영하고 문구로 알린다.
+          if (wasCancelling || r.completedBeforeCancel) setStatus('취소 전에 완료됨', full, false, true);
+          else setStatus(`${r.short} · ${Updater.durationText(Date.now() - startedAt)}`, full, false, true);
         } else {
           setStatus(r.message, r.message, true, false);
         }
       } catch (err) {
-        if (cancelled) return;
         if (gauge) gauge.fail('');
         setStatus('업데이트 처리 중 오류: ' + err.message, '', true, false);
       } finally {
-        if (cancelBtn) cancelBtn.hidden = true;
+        setPhase('idle'); // 완료·오류·취소 모두 대기로 돌아가며 숨김
         updating = false;
+        cancelling = false;
         clearInterval(timer);
         btn.disabled = false;
         more.disabled = false;

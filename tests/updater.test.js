@@ -11,6 +11,36 @@ test('canUpdate: window.erDesktop.updateItems가 함수일 때만 true', () => {
   assert.equal(U.canUpdate(undefined), false);
 });
 
+test('runUpdate: updateItems가 {cancelled:true}로 끝나면 재로딩 없이 "업데이트 취소됨"', async () => {
+  const calls = [];
+  const desktop = { updateItems: async () => { calls.push('update'); return { ok: false, cancelled: true, count: 487 }; } };
+  const r = await U.runUpdate(desktop, async () => { calls.push('reload'); return true; }, async () => { calls.push('meta'); return {}; }, async () => { calls.push('skills'); return {}; });
+  assert.deepEqual(calls, ['update']); // 데이터·메타·스킬 다시 읽지 않음
+  assert.deepEqual(r, { ok: false, cancelled: true, message: '업데이트 취소됨', short: '업데이트 취소됨' });
+});
+
+test('runUpdate: {completedBeforeCancel:true}이면 갱신을 반영하고 표식을 단다', async () => {
+  const calls = [];
+  const desktop = { updateItems: async () => { calls.push('update'); return { count: 487, completedBeforeCancel: true }; } };
+  const r = await U.runUpdate(desktop, async () => { calls.push('reload'); return true; });
+  assert.deepEqual(calls, ['update', 'reload']);
+  assert.equal(r.ok, true);
+  assert.equal(r.completedBeforeCancel, true);
+  assert.equal(r.cancelled, undefined);
+});
+
+test('cancelVisible: 대기→진행→완료/오류/취소→대기 중 진행(running)일 때만 true', () => {
+  const win = { erDesktop: { updateItems: async () => ({}), cancelUpdate: async () => ({ cancelled: true }) } };
+  for (const end of ['done', 'error', 'cancelled']) {
+    const seen = ['idle', 'running', end, 'idle'].map((p) => U.cancelVisible(p, win));
+    assert.deepEqual(seen, [false, true, false, false], end);
+  }
+  // cancelUpdate가 없으면 진행 중에도 숨김(존재 여부만으로 표시하지 않음).
+  assert.equal(U.cancelVisible('running', { erDesktop: { updateItems: async () => ({}) } }), false);
+  assert.equal(U.cancelVisible('idle', win), false);
+  assert.equal(U.cancelVisible('running', undefined), false);
+});
+
 test('runUpdate 성공: reload 후 "아이템 N개 갱신 완료"', async () => {
   const calls = [];
   const desktop = { updateItems: async () => { calls.push('update'); return { count: 312, savedPath: 'C:/x/items.json' }; } };

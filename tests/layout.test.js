@@ -64,12 +64,19 @@ test('머리글: 좌(제목/메타)·우(앱 행/데이터 행) 두 블록, 28px
   assert.doesNotMatch(app0(), /btn\.textContent = /);
   // 취소(×): cancelUpdate가 있을 때만, 진행 중에만 보이고, 취소되면 결과 무시.
   assert.match(css, /#update-cancel \{ width: 20px; height: 20px; flex: none; \}/);
+  assert.match(css, /#update-cancel\[hidden\] \{ display: none; \}/); // .icon-btn display가 hidden을 덮지 않게
+  assert.match(app0(), /setPhase\('running'\)[\s\S]*setPhase\('idle'\)/);
+  assert.match(app0(), /cancelBtn\.hidden = !Updater\.cancelVisible\(phase, window\)/);
   assert.match(css, /#update-cancel:hover:not\(:disabled\), #update-cancel:focus-visible \{ background: #c42b1c; color: #fff; \}/);
   assert.match(app0(), /typeof \(window\.erDesktop && window\.erDesktop\.cancelUpdate\) === 'function'/);
   assert.match(app0(), /title: '업데이트 취소', hidden: true/);
   assert.match(app0(), /setStatus\('취소 중…'/);
   assert.match(app0(), /setStatus\('업데이트 취소됨', '', false, true\)/);
-  assert.match(app0(), /if \(cancelled\) return; \/\/ 취소됨/);
+  assert.match(app0(), /if \(r\.cancelled\) \{[\s\S]*?setStatus\('업데이트 취소됨', '', false, true\);\s*return;/);
+  assert.match(app0(), /if \(wasCancelling \|\| r\.completedBeforeCancel\) setStatus\('취소 전에 완료됨'/);
+  assert.match(app0(), /if \(!updating \|\| cancelling\) return; \/\/ 취소 중/);
+  // cancelUpdate 반환(true/false)으로 "취소 중…"을 지우지 않는다: 예외일 때만 되돌림.
+  assert.match(app0(), /try \{ await window\.erDesktop\.cancelUpdate\(\); \} catch \{ failed = true;[\s\S]*?if \(failed && updating\)/);
   assert.match(app0(), /ERDropdown\.menu\(more, \$\('#update-split'\), '업데이트 방식', \['전체 재확인 · 약 2분'\], \(\) => run\('all'\)\)/);
   assert.match(app0(), /btn\.onclick = \(\) => run\('patched'\)/);
   assert.match(app0(), /btn\.disabled = true;\s*more\.disabled = true;/);
