@@ -22,27 +22,28 @@
 
   <main class="layout">
     <section class="panel calc-panel">
-      <div class="block">
-        <div class="block-head">
-          <h2>장비 슬롯</h2>
-          <span id="slot-status" class="muted"></span>
+      <div class="block slot-pair">
+        <div class="slot-col">
+          <div class="block-head">
+            <h2>장비 슬롯</h2>
+            <span id="slot-status" class="muted"></span>
+          </div>
+          <div id="slots" class="slots"></div>
         </div>
-        <div id="slots" class="slots"></div>
+        <div class="slot-col">
+          <div class="block-head">
+            <h2 title="효율 % = 현재 세트 가격당 데미지 ÷ 기준 세트 가격당 데미지 × 100. 5칸을 모두 채우기 전에는 히스토리 최고 대비로 계산합니다.">데미지 효율 계산 기준</h2>
+            <span id="baseline-status" class="muted"></span>
+            <span class="spacer"></span>
+            <button id="baseline-clear" class="text-btn" type="button" disabled>기준 비우기</button>
+          </div>
+          <div id="baseline-slots" class="slots"></div>
+        </div>
       </div>
 
       <div class="block">
         <div class="block-head"><h2>입력값</h2></div>
         <form id="inputs" class="inputs" onsubmit="return false"></form>
-      </div>
-
-      <div class="block">
-        <div class="block-head">
-          <h2 title="효율 % = 현재 세트 가격당 데미지 ÷ 기준 세트 가격당 데미지 × 100. 5칸을 모두 채우기 전에는 히스토리 최고 대비로 계산합니다.">데미지 효율 계산 기준</h2>
-          <span id="baseline-status" class="muted"></span>
-          <span class="spacer"></span>
-          <button id="baseline-clear" class="text-btn" type="button" disabled>기준 비우기</button>
-        </div>
-        <div id="baseline-slots" class="slots compact"></div>
       </div>
 
       <div class="block calc-row">
@@ -100,6 +101,7 @@
   <script src="src/explain.js"></script>
   <script src="src/updater.js"></script>
   <script src="src/meta.js"></script>
+  <script src="src/gauge.js"></script>
   <script src="src/app.js"></script>
 </body>
 </html>

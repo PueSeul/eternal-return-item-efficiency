@@ -10,6 +10,7 @@
   const Meta = window.ERMeta;
   const Baseline = window.ERBaseline;
   const Skills = window.ERSkills;
+  const Gauge = window.ERGauge;
   const SKILL_FIELDS = ['skillDamage', 'atkCoefPct', 'skillAmpCoefPct'];
   const DATA_URL = 'data/items.json';
   const META_URL = 'data/items.meta.json';
@@ -270,6 +271,7 @@
     const choice = currentSkill();
     if (!choice) {
       note.replaceChildren($('#in-skill').value ? '현재 데이터에 없는 스킬 — 기록된 값 유지' : state.skillsError);
+      note.title = note.textContent;
       return;
     }
     const { skill, entry: dmg } = choice;
@@ -293,6 +295,8 @@
     mismatch ? el('span', { className: 'patch-badge', textContent: '역사란과 불일치',
       title: mismatch }) : '',
     extras.length ? el('span', { className: 'skill-extra', textContent: '미반영 계수: ' + extras.join(', ') }) : '');
+    // 메모는 한 줄로 잘리므로 전체 문구는 툴팁으로.
+    note.title = [text, mismatch ? '역사란과 불일치: ' + mismatch : '', extras.length ? '미반영 계수: ' + extras.join(', ') : ''].filter(Boolean).join('\n');
   }
 
   function renderMetaPanel() {
@@ -336,16 +340,19 @@
     btn.after(allBtn);
     // 데스크톱 진행 이벤트: 업데이트 중에만 상태 문구에 단계·진행률 표시.
     // 예상 남은 시간: 1초마다 갱신, 성공한 실행의 소요 시간을 모드별로 저장해 다음 실행의 초기 예상치로 쓴다.
+    // 진행 표시는 원형 게이지(퍼센트 + "단계 · 남은 시간"), 결과·오류 문구는 상태 문구.
     let updating = false;
     const progress = Updater.canProgress(window);
     const etaKey = (mode) => 'er-update-last-ms:' + mode;
     let eta = null;
     let stageText = '';
     let timer = null;
+    const gauge = progress ? Gauge.create(document, 'update-gauge', '데이터 업데이트 진행') : null;
+    if (gauge) status.before(gauge.el);
     const showProgress = () => {
       if (!updating) return;
-      const left = Updater.etaText(eta, Date.now());
-      status.textContent = stageText ? `${stageText} · ${left}` : left;
+      const now = Date.now();
+      gauge.set(eta.fraction(now) * 100, Gauge.detailText([stageText, Updater.etaText(eta, now)]));
     };
     if (progress) {
       window.erDesktop.onUpdateProgress((ev) => {
@@ -379,6 +386,10 @@
         if (r.ok && progress) {
           try { localStorage.setItem(etaKey(mode), String(Date.now() - startedAt)); } catch { /* 저장소 없음 */ }
         }
+        if (gauge) {
+          if (r.ok) gauge.done('');
+          else gauge.fail('');
+        }
         if (r.ok) {
           // 반환에 meta가 있으면 그것, 없으면 다시 읽은 메타 파일(runUpdate가 결정).
           setMeta(r.meta);
@@ -400,6 +411,7 @@
           status.textContent = r.message;
         }
       } catch (err) {
+        if (gauge) gauge.fail('');
         status.className = 'muted error';
         status.textContent = '업데이트 처리 중 오류: ' + err.message;
       } finally {
@@ -413,6 +425,61 @@
     };
     btn.onclick = () => run('patched');
     allBtn.onclick = () => run('all');
+  }
+
+  // ---------- 프로그램 업데이트 배너(데스크톱 preload가 넣는 #app-update-banner) ----------
+  // 다운로드 진행({received, total, percent})을 같은 원형 게이지로 배너 맨 앞에 표시한다.
+  // 문구: "내려받는 중 · 5.0 / 20.0 MB · 약 12초 남음"(괄호 없음). 남은 시간은 첫 진행 이후 받은 속도로 추정.
+  // 시작·완료·실패는 preload가 배너 문구 칸(#app-update-banner의 첫 span)에 쓰는 문구로 안다:
+  // "내려받는 중…" → 0%부터, "내려받기 완료" → 100% 후 1초 뒤 숨김(percent가 null인 경로 포함), "업데이트 실패" → 경고색.
+  function setupAppUpdateGauge() {
+    const au = window.erDesktop && window.erDesktop.appUpdate;
+    if (!au || typeof au.onProgress !== 'function') return;
+    const gauge = Gauge.create(document, 'app-update-gauge', '프로그램 업데이트 다운로드');
+    const mb = (n) => (Number(n) / 1048576).toFixed(1);
+    let started = null; // {at, received}: 이번 다운로드의 첫 진행 시각·양(남은 시간 추정)
+    let lastText = '';
+    let attached = false;
+    const onBannerText = (text) => {
+      if (text === lastText) return;
+      lastText = text;
+      if (/업데이트 실패/.test(text)) gauge.fail();
+      else if (/내려받기 완료/.test(text)) gauge.done('');
+      else if (/내려받는 중…$/.test(text)) { started = null; gauge.set(0, '내려받는 중'); }
+    };
+    const attach = () => {
+      if (attached) return true;
+      const banner = document.getElementById('app-update-banner');
+      const textEl = banner && [...banner.children].find((c) => c.tagName === 'SPAN');
+      if (!textEl) return false;
+      attached = true;
+      banner.prepend(gauge.el);
+      // 문구 칸만 감시한다(게이지 자신의 변경은 감시 대상이 아님).
+      new MutationObserver(() => onBannerText(textEl.textContent))
+        .observe(textEl, { childList: true, subtree: true, characterData: true });
+      lastText = textEl.textContent;
+      return true;
+    };
+    // preload는 DOMContentLoaded에 배너를 만든다. app.js는 그보다 먼저 실행되므로 그때 연결한다.
+    if (!attach()) document.addEventListener('DOMContentLoaded', attach, { once: true });
+    au.onProgress((p) => {
+      if (!p || !attach()) return;
+      const received = Number(p.received);
+      const total = Number(p.total);
+      const hasTotal = Number.isFinite(total) && total > 0;
+      const now = Date.now();
+      if (!started || received < started.received) started = { at: now, received };
+      let left = '';
+      const rate = (received - started.received) / (now - started.at); // 바이트/ms
+      if (hasTotal && rate > 0 && now - started.at >= 1000) {
+        left = `약 ${Updater.durationText((total - received) / rate)} 남음`;
+      }
+      const size = hasTotal ? `${mb(received)} / ${mb(total)} MB` : (Number.isFinite(received) ? `${mb(received)} MB` : '');
+      const pct = Gauge.clampPct(p.percent);
+      if (pct === 100) gauge.done(Gauge.detailText(['내려받기 완료', size]));
+      else gauge.set(pct, Gauge.detailText(['내려받는 중', size, left]));
+    });
+    if (typeof au.onError === 'function') au.onError(() => { if (attach()) gauge.fail(); });
   }
 
   // ---------- 슬롯 ----------
@@ -619,15 +686,15 @@
       const input = el('input', { type: 'search', id: 'in-character', placeholder: '실험체 이름 검색' });
       input.setAttribute('list', 'character-list');
       input.setAttribute('aria-label', '실험체');
-      form.append(el('label', null, '실험체', input, el('datalist', { id: 'character-list' }),
-        el('span', { id: 'character-note', className: 'muted' })));
+      form.append(el('label', null, labelText('실험체'), input, el('datalist', { id: 'character-list' }),
+        el('span', { id: 'character-note', className: 'muted small' })));
       // 스킬 선택(data/skills.json) → 스킬 기본 피해량·계수 자동 입력.
       const skillSel = el('select', { id: 'in-skill', disabled: true });
       skillSel.setAttribute('aria-label', '스킬');
       const levelSel = el('select', { id: 'in-skillLevel', disabled: true });
       levelSel.setAttribute('aria-label', '스킬 레벨');
-      form.append(el('label', null, '스킬', skillSel, el('span', { id: 'skill-note', className: 'muted small' })),
-        el('label', null, '스킬 레벨', levelSel));
+      form.append(el('label', null, labelText('스킬'), skillSel, el('span', { id: 'skill-note', className: 'muted small' })),
+        el('label', null, labelText('스킬 레벨'), levelSel));
     }
     for (const f of INPUT_FIELDS) {
       const input = el('input', { type: 'number', id: 'in-' + f.key, step: f.step, value: Formula.DEFAULT_INPUTS[f.key] ?? '' });
@@ -638,8 +705,13 @@
       const noteId = { extraSkillAmp: 'sa-total', extraAtk: 'auto-atk', extraSkillAmpPct: 'auto-amp' }[f.key];
       const extra = V2 && noteId ? el('span', { id: noteId, className: 'muted small' }) : null;
       if (extra) input.setAttribute('aria-label', f.label);
-      form.append(el('label', null, f.label, input, extra));
+      form.append(el('label', null, labelText(f.label), input, extra));
     }
+  }
+
+  // 조밀한 입력 그리드: 라벨은 한 줄로 자르고 전체 문구는 툴팁으로.
+  function labelText(text) {
+    return el('span', { className: 'lbl', textContent: text, title: text });
   }
 
   // ---------- v2 실험체 자동 입력 ----------
@@ -671,6 +743,7 @@
     const charNote = $('#character-note');
     charNote.className = auto.warning ? 'muted small error' : 'muted small';
     charNote.textContent = state.charactersError || auto.warning;
+    charNote.title = charNote.textContent;
     renderSkillNote();
   }
 
@@ -878,8 +951,8 @@
         img.onerror = () => { img.style.visibility = 'hidden'; };
         box.append(img);
       }
-      const cell = el('div', { className: 'hist-item' + (s.found ? '' : ' missing'), title: `${s.slot}: ${s.name}` },
-        box, el('span', { className: 'hist-name', textContent: s.name }));
+      // 이름은 툴팁으로만(조밀한 기록 행). 데이터에 없는 아이템은 점선 칸.
+      const cell = el('div', { className: 'hist-item' + (s.found ? '' : ' missing'), title: `${s.slot}: ${s.name}${s.found ? '' : ' (현재 데이터에 없음)'}` }, box);
       row.append(cell);
     }
     return row;
@@ -919,16 +992,19 @@
         if (next) next.focus();
         else $('#clear-history').focus();
       };
-      // 윗줄: 시각 · 효율(강조), 아랫줄: 데미지 · 가격 · 효율 기준. 이전 계산식 기록은 효율 "—"(툴팁으로 사유).
+      // 윗줄: 아이콘 5개 + 기준 세트 아이콘(작게, 줄 끝). 아랫줄: 시각 · 데미지 · 가격 · 효율(강조).
+      // 효율 기준과 이전 계산식 사유는 툴팁.
       const effNode = current
-        ? el('span', { className: 'hist-eff', textContent: `${effLabel} ${Baseline.valueText(eff.kind, eff.value)}` })
+        ? el('span', { className: 'hist-eff', textContent: `${effLabel} ${Baseline.valueText(eff.kind, eff.value)}`, title: refText.replace(/^ \((.*)\)$/, '$1') })
         : el('span', { className: 'hist-eff old', textContent: '효율 —', title: '이전 계산식 기록 — 효율 비교 제외' });
-      const time = new Date(e.time).toLocaleString('ko-KR');
+      const date = new Date(e.time);
+      const time = date.toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit' });
       const li = el('li', { title: '클릭하면 이 구성을 불러옵니다', tabIndex: 0 },
-        el('div', { className: 'hist-top' }, el('span', { className: 'hist-time', textContent: time }), effNode),
-        historyIcons(e),
-        baseRow,
-        el('div', { className: 'hist-sub', textContent: `데미지 ${fmt(e.result.D)} · 가격 ${fmt(e.result.price)}${current ? refText.replace(/^ \((.*)\)$/, ' · $1') : ' · 이전 계산식'}` }),
+        el('div', { className: 'hist-row' }, historyIcons(e), baseRow),
+        el('div', { className: 'hist-meta' },
+          el('span', { className: 'hist-time', textContent: time, title: date.toLocaleString('ko-KR') }),
+          el('span', { className: 'hist-sub', textContent: `데미지 ${fmt(e.result.D)} · 가격 ${fmt(e.result.price)}` }),
+          effNode),
         del);
       li.onclick = () => restore(e);
       li.onkeydown = (ev) => {
@@ -1020,6 +1096,7 @@
     setMeta(meta);
     // 최초 로딩이 끝난 뒤에 버튼을 연다(늦게 끝난 최초 로딩이 갱신 데이터를 덮어쓰지 않도록).
     setupUpdater();
+    setupAppUpdateGauge();
     loadBaseline();
     // 데이터 로딩 뒤에 히스토리를 보여 줘야 클릭 복원 시 아이템을 찾을 수 있다.
     state.history = History.load(localStorage);

@@ -134,7 +134,18 @@
       const byRatio = ratio > 0 ? elapsed / ratio - elapsed : byInitial;
       return stages.has('skills') ? Math.max(0, byRatio) : Math.max(byRatio, byInitial);
     }
-    return { update, remainingMs, started: () => seen };
+    // 진행률 0~1(원형 게이지) = 경과 ÷ (경과 + 남은 시간). 남은 시간과 같은 추정을 써서 문구와 어긋나지 않게 하고,
+    // skills 전(작업량 미상)에는 초기 예상치 기준으로 움직인다. 단계가 병렬로 끝나거나 skills로 작업량이 늘어
+    // 추정이 줄 수 있으므로 지금까지의 최댓값을 돌려준다(게이지가 뒤로 가지 않게). 100%는 완료 처리에서 채운다.
+    let maxFraction = 0;
+    function fraction(nowMs) {
+      const elapsed = Math.max(0, nowMs - startMs);
+      const left = remainingMs(nowMs);
+      const f = elapsed + left > 0 ? elapsed / (elapsed + left) : 0;
+      maxFraction = Math.max(maxFraction, Math.min(0.99, f));
+      return maxFraction;
+    }
+    return { update, remainingMs, fraction, started: () => seen };
   }
 
   // 밀리초 → "1분 20초" / "45초" / "2분"(초 올림).
