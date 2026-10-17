@@ -63,6 +63,10 @@
     return character.skills.flatMap((skill) => entriesOf(skill).map((entry, index) => ({ value: choiceValue(skill, index), skill, entry, index })));
   }
 
+  // 선택 목록에 기본으로 보이는 스킬 키(RQ·Q2·변신·무기 스킬 등은 숨김).
+  const LISTED_KEYS = ['P', 'Q', 'W', 'E', 'R'];
+  const isListed = (skill) => LISTED_KEYS.includes(str(skill.key).trim().toUpperCase());
+
   function findChoice(character, value) {
     return value ? choices(character).find((c) => c.value === String(value)) || null : null;
   }
@@ -149,5 +153,5 @@
   }
 
   return { normalize, forCharacter, findSkill, levelsOf, entriesOf, choices, findChoice, matchChoice, optionLabel, autoValues,
-    extraRatioTexts, mismatchText, sourceText, patchNotes };
+    LISTED_KEYS, isListed, extraRatioTexts, mismatchText, sourceText, patchNotes };
 });

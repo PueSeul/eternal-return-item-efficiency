@@ -11,6 +11,18 @@ const Meta = require('../src/meta');
 
 const FIXTURE = S.normalize(JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'skills.sample.json'), 'utf8')));
 const item = (id, slot, name, price, stats) => ({ id, slot, name, price, grade: '전설', imageUrl: '', stats });
+test('스킬 목록: P·Q·W·E·R만 보이고 RQ·Q2·변신·무기 스킬은 숨김, 숨긴 스킬도 기록 복원으로는 찾음', () => {
+  for (const k of ['P', 'Q', 'W', 'E', 'R', 'q']) assert.equal(S.isListed({ key: k }), true, k);
+  for (const k of ['RQ', 'Q2', '변신', 'D', 'WQ', '']) assert.equal(S.isListed({ key: k }), false, k);
+  const char = { skills: [{ key: 'Q', name: 'a', levels: [{ level: 1, baseDamage: 1 }] }, { key: 'RQ', name: 'b', levels: [{ level: 1, baseDamage: 2 }] }] };
+  const shown = S.choices(char).filter((c) => S.isListed(c.skill)).map((c) => c.skill.key);
+  assert.deepEqual(shown, ['Q']);
+  const hit = S.matchChoice(char, { key: 'RQ', index: 0 });
+  assert.equal(hit && hit.skill.key, 'RQ');
+  const app = fs.readFileSync(path.join(__dirname, '..', 'src', 'app.js'), 'utf8');
+  assert.match(app, /if \(!Skills\.isListed\(hit\.skill\)\) opts\.push\(choiceOption\(hit\)\)/);
+});
+
 // tests/formula_v2.test.js의 379 검산과 같은 구성·입력.
 const MEASURED = [
   { ...item('130501', '무기', '여제', 5, { '공격력': 40, '스킬 증폭': 93, '쿨다운 감소': 15 }), weaponType: '아르카나' },

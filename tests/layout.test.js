@@ -21,6 +21,13 @@ test('레이아웃: 왼쪽 필요 폭·히스토리 남는 폭, 페이지 스크
   assert.match(css, /@media \(max-width: 1099px\) \{[\s\S]*body \{ display: block; overflow: auto/);
 });
 
+test('슬롯 두 열 헤더: 32px 한 줄 고정, 제목·버튼 nowrap, 상태 말줄임', () => {
+  assert.match(css, /\.slot-col > \.block-head \{ height: 32px;[^}]*flex-wrap: nowrap/);
+  assert.match(css, /\.slot-col > \.block-head h2 \{ white-space: nowrap; flex-shrink: 0/);
+  assert.match(css, /\.slot-col > \.block-head \.muted \{ overflow: hidden; text-overflow: ellipsis/);
+  assert.match(css, /\.slot-col > \.block-head \.text-btn \{ white-space: nowrap; flex-shrink: 0/);
+});
+
 test('히스토리 효율 열: 오른쪽 세로 중앙, 숫자 20~22px 굵게', () => {
   assert.match(css, /\.history li:not\(\.empty\) \{[^}]*grid-template-columns: minmax\(0, 1fr\) auto;[^}]*align-items: center/);
   const m = css.match(/\.hist-eff-value \{[^}]*font-size: (\d+)px;[^}]*font-weight: 700/);

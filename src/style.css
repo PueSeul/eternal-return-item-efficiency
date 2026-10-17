@@ -87,6 +87,12 @@ main.layout { flex: 1 1 auto; min-height: 0; display: grid; grid-template-column
 .slot-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
 .block-head, .history-head { display: flex; align-items: center; gap: 8px; min-height: 28px; margin-bottom: 4px; }
 .block-head .spacer, .history-head .spacer { flex: 1; }
+/* 장비 슬롯·기준 세트 헤더: 32px 한 줄 고정, 두 열의 행 경계가 같은 선에 오게. */
+.slot-col { min-width: 0; }
+.slot-col > .block-head { height: 32px; min-height: 32px; flex-wrap: nowrap; min-width: 0; }
+.slot-col > .block-head h2 { white-space: nowrap; flex-shrink: 0; }
+.slot-col > .block-head .muted { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.slot-col > .block-head .text-btn { white-space: nowrap; flex-shrink: 0; }
 h2 { font-size: 13px; font-weight: 600; margin: 0; color: var(--text); letter-spacing: .02em; }
 h2[title] { cursor: help; }
 h3 { font-size: 13px; font-weight: 600; margin: 16px 0 8px; }

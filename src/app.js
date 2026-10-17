@@ -217,13 +217,16 @@
       return o;
     };
     const opts = [option('', list.length ? '스킬 선택 안 함' : '스킬 데이터 없음', {})];
-    for (const c of list) {
-      opts.push(option(c.value, Skills.optionLabel(c.skill, c.entry), { key: String(c.skill.key), index: c.index, label: c.entry.label, name: c.skill.name }));
-    }
+    const choiceOption = (c) => option(c.value, Skills.optionLabel(c.skill, c.entry), { key: String(c.skill.key), index: c.index, label: c.entry.label, name: c.skill.name });
+    // P·Q·W·E·R만 목록에 보인다. 숨긴 스킬이 기록에서 복원되면 그 항목만 임시로 넣어 선택을 유지.
+    for (const c of list) if (Skills.isListed(c.skill)) opts.push(choiceOption(c));
     let value = '';
     if (keep && keep.key) {
       const hit = Skills.matchChoice(entry, keep);
-      if (hit) value = hit.value;
+      if (hit) {
+        value = hit.value;
+        if (!Skills.isListed(hit.skill)) opts.push(choiceOption(hit));
+      }
       else {
         value = 'missing';
         const text = `${keep.key}${keep.name ? ' ' + keep.name : ''}${keep.label ? ' — ' + keep.label : ''} (현재 데이터에 없음)`;
@@ -547,7 +550,8 @@
     const filled = Formula.SLOTS.filter((s) => state.equipped[s]).length;
     const all = filled === Formula.SLOTS.length;
     $('#slots-clear').disabled = !filled;
-    $('#slot-status').textContent = all ? '' : `${filled}/${Formula.SLOTS.length} — 모두 채워야 계산`;
+    $('#slot-status').textContent = all ? '' : `${filled}/${Formula.SLOTS.length}`;
+    $('#slot-status').title = all ? '' : `${filled}/${Formula.SLOTS.length} — 모두 채워야 계산`;
     $('#calc-btn').disabled = !all;
     $('#calc-btn').title = all ? '' : '장비 슬롯 5칸을 모두 채워야 계산할 수 있습니다.';
     updateSkillAmpTotal();
@@ -591,8 +595,10 @@
     $('#baseline-clear').disabled = !filled && !missing.length;
     // 효율 식 설명은 제목의 툴팁. 여기는 상태만 짧게.
     const status = $('#baseline-status');
-    status.textContent = (filled === Formula.SLOTS.length ? '' : `${filled}/${Formula.SLOTS.length} — 미완성 시 히스토리 최고 대비`) +
-      (missing.length ? `${filled === Formula.SLOTS.length ? '' : ' · '}데이터에 없는 저장 기준: ${missing.join(', ')}` : '');
+    // 헤더는 한 줄 고정: 짧은 상태만 보이고 전체 문구는 툴팁.
+    const incomplete = filled !== Formula.SLOTS.length;
+    status.textContent = [incomplete ? `${filled}/${Formula.SLOTS.length}` : '', missing.length ? `없는 기준 ${missing.length}개` : ''].filter(Boolean).join(' · ');
+    status.title = [incomplete ? `${filled}/${Formula.SLOTS.length} — 미완성 시 히스토리 최고 대비` : '', missing.length ? `데이터에 없는 저장 기준: ${missing.join(', ')}` : ''].filter(Boolean).join(' · ');
     status.className = missing.length ? 'muted error' : 'muted';
   }
 
