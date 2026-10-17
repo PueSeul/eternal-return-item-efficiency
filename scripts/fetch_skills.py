@@ -199,11 +199,66 @@ def parse_coef(coef):
     return None, None, None, f"계수 형식 미해석: ({coef})"
 
 
+def _split_nested(coef):
+    """'+A의 4 / 7(+B의 2%)%' -> ('+A의 4 / 7%', ['+B의 2%']), or None (unbalanced)."""
+    outer, inners, depth, start = [], [], 0, 0
+    for i, ch in enumerate(coef):
+        if ch == "(":
+            depth += 1
+            if depth == 1:
+                start = i + 1
+                continue
+        elif ch == ")":
+            depth -= 1
+            if depth < 0:
+                return None
+            if depth == 0:
+                inners.append(coef[start:i])
+                continue
+        if depth == 0:
+            outer.append(ch)
+    return ("".join(outer), inners) if depth == 0 else None
+
+
+def coef_tree(coef):
+    """(stat, ratios, is_percent, nested, None) or (None, None, None, None, reason). A
+    coefficient parse_coef cannot read may carry nested coefficients that scale its amount
+    ("+대상 현재 체력의 8%(+스킬 증폭의 2%)"): nested is [(stat, ratios, nested)], read recursively."""
+    stat, vals, is_pct, reason = parse_coef(coef)
+    if reason is None:
+        return stat, vals, is_pct, [], None
+    split = _split_nested(coef)
+    if split is None or not split[1]:
+        return None, None, None, None, reason
+    stat, vals, is_pct, reason = parse_coef(split[0])
+    if reason:
+        return None, None, None, None, reason
+    nested = []
+    for inner in split[1]:
+        s, v, _, n, r = coef_tree(inner)
+        if r:
+            return None, None, None, None, r
+        nested.append((s, v, n))
+    return stat, vals, is_pct, nested, None
+
+
+def _nested_lists(nested):
+    return [x for _, v, n in nested for x in [v] + _nested_lists(n)]
+
+
+def _ratio_entry(stat, vals, nested, pick, i):
+    entry = {"stat": stat, "ratio": pick(vals, i)}
+    if nested:
+        entry["nested"] = [_ratio_entry(s, v, n, pick, i) for s, v, n in nested]
+    return entry
+
+
 def levels_from(values, coefs, label=PERCENT_BASE):
     """(levels, None) or (None, reason) for one value row: values ['70', '110', …] (or
     ['6%', …]: percent base, or []: no base), coefs ['+스킬 증폭의 80%', …] (text inside the
     parentheses). 공격력/스킬 증폭 percentages fill attackPowerRatio/skillAmpRatio; every
-    other coefficient goes to the level's extraRatios [{stat, ratio}]. A percent base
+    other coefficient goes to the level's extraRatios [{stat, ratio, nested?}] (nested: the
+    coefficients inside it, "(+대상 최대 체력의 4 / 7(+추가 공격력의 4%)%)"). A percent base
     ("최대 체력 피해량(%) [6% / 10%]") is baseDamage 0 plus a first extra ratio named by the
     row label (the calculator shows extra ratios and fills baseDamage)."""
     pct = [v.endswith("%") for v in values]
@@ -213,21 +268,21 @@ def levels_from(values, coefs, label=PERCENT_BASE):
     base = [(_ratio if percent else _number)(v.rstrip("%")) for v in values] or [0]
     if None in base:
         return None, "수치 범위"
-    ratios, extras = {}, [(label, base)] if percent else []
+    ratios, extras = {}, [(label, base, [])] if percent else []
     if percent:
         base = [0]
     for coef in coefs:
-        stat, vals, is_pct, reason = parse_coef(coef)
+        stat, vals, is_pct, nested, reason = coef_tree(coef)
         if reason:
             return None, reason
-        field = RATIO_FIELDS.get(stat) if is_pct else None
+        field = RATIO_FIELDS.get(stat) if is_pct and not nested else None
         if field is None:
-            extras.append((stat, vals))
+            extras.append((stat, vals, nested))
         elif field in ratios:
             return None, f"계수 중복: {stat}"
         else:
             ratios[field] = vals
-    lists = [base] + list(ratios.values()) + [v for _, v in extras]
+    lists = [base] + list(ratios.values()) + _nested_lists(extras)
     n = max(len(x) for x in lists)
     if any(len(x) not in (1, n) for x in lists):
         return None, "레벨 수 불일치"
@@ -238,7 +293,7 @@ def levels_from(values, coefs, label=PERCENT_BASE):
                  "attackPowerRatio": pick(ratios.get("attackPowerRatio", [0]), i),
                  "skillAmpRatio": pick(ratios.get("skillAmpRatio", [0]), i)}
         if extras:
-            level["extraRatios"] = [{"stat": s, "ratio": pick(v, i)} for s, v in extras]
+            level["extraRatios"] = [_ratio_entry(s, v, n, pick, i) for s, v, n in extras]
         levels.append(level)
     return levels, None
 
@@ -693,9 +748,14 @@ def patch_levels(text):
 
 def _flat(level):
     """Level row as [(field, value)]: the three level fields, then "extraRatios.<stat>"
-    per extra coefficient."""
+    per extra coefficient ("extraRatios.<stat>.<nested stat>" per nested one)."""
     out = [(f, level.get(f)) for f in LEVEL_FIELDS]
-    out += [("extraRatios." + str(x.get("stat")), x.get("ratio")) for x in level.get("extraRatios", [])]
+
+    def walk(prefix, xs):
+        for x in xs:
+            out.append((prefix + str(x.get("stat")), x.get("ratio")))
+            walk(prefix + str(x.get("stat")) + ".", x.get("nested", []))
+    walk("extraRatios.", level.get("extraRatios", []))
     return out
 
 

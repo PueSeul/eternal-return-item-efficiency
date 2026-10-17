@@ -180,6 +180,53 @@ export function parseCoef(coef) {
   return fail(`계수 형식 미해석: (${coef})`);
 }
 
+/** [outer, inners] or null (see fetch_skills.py _split_nested). */
+function splitNested(coef) {
+  const outer = [];
+  const inners = [];
+  let depth = 0;
+  let start = 0;
+  for (let i = 0; i < coef.length; i++) {
+    const ch = coef[i];
+    if (ch === "(") {
+      depth += 1;
+      if (depth === 1) { start = i + 1; continue; }
+    } else if (ch === ")") {
+      depth -= 1;
+      if (depth < 0) return null;
+      if (depth === 0) { inners.push(coef.slice(start, i)); continue; }
+    }
+    if (depth === 0) outer.push(ch);
+  }
+  return depth === 0 ? [outer.join(""), inners] : null;
+}
+
+/** [stat, ratios, isPercent, nested, null] or [null, null, null, null, reason] (see fetch_skills.py coef_tree). */
+export function coefTree(coef) {
+  const fail = (reason) => [null, null, null, null, reason];
+  let [stat, vals, isPct, reason] = parseCoef(coef);
+  if (reason === null) return [stat, vals, isPct, [], null];
+  const split = splitNested(coef);
+  if (split === null || !split[1].length) return fail(reason);
+  [stat, vals, isPct, reason] = parseCoef(split[0]);
+  if (reason) return fail(reason);
+  const nested = [];
+  for (const inner of split[1]) {
+    const [s, v, , n, r] = coefTree(inner);
+    if (r) return fail(r);
+    nested.push([s, v, n]);
+  }
+  return [stat, vals, isPct, nested, null];
+}
+
+const nestedLists = (nested) => nested.flatMap(([, v, n]) => [v, ...nestedLists(n)]);
+
+function ratioEntry(stat, vals, nested, pick, i) {
+  const entry = { stat, ratio: pick(vals, i) };
+  if (nested.length) entry.nested = nested.map(([s, v, n]) => ratioEntry(s, v, n, pick, i));
+  return entry;
+}
+
 /** [levels, null] or [null, reason] for one value row (see fetch_skills.py levels_from). */
 export function levelsFrom(values, coefs, label = PERCENT_BASE) {
   const pct = values.map((v) => v.endsWith("%"));
@@ -189,17 +236,17 @@ export function levelsFrom(values, coefs, label = PERCENT_BASE) {
   if (!base.length) base = [0];
   if (base.includes(null)) return [null, "수치 범위"];
   const ratios = new Map();
-  const extras = percent ? [[label, base]] : [];
+  const extras = percent ? [[label, base, []]] : [];
   if (percent) base = [0];
   for (const coef of coefs) {
-    const [stat, vals, isPct, reason] = parseCoef(coef);
+    const [stat, vals, isPct, nested, reason] = coefTree(coef);
     if (reason) return [null, reason];
-    const field = isPct ? own(RATIO_FIELDS, stat) : undefined;
-    if (field === undefined) extras.push([stat, vals]);
+    const field = isPct && !nested.length ? own(RATIO_FIELDS, stat) : undefined;
+    if (field === undefined) extras.push([stat, vals, nested]);
     else if (ratios.has(field)) return [null, `계수 중복: ${stat}`];
     else ratios.set(field, vals);
   }
-  const lists = [base, ...ratios.values(), ...extras.map(([, v]) => v)];
+  const lists = [base, ...ratios.values(), ...nestedLists(extras)];
   const n = Math.max(...lists.map((x) => x.length));
   if (lists.some((x) => x.length !== 1 && x.length !== n)) return [null, "레벨 수 불일치"];
   const pick = (xs, i) => (xs.length > 1 ? xs[i] : xs[0]);
@@ -208,7 +255,7 @@ export function levelsFrom(values, coefs, label = PERCENT_BASE) {
     const level = { level: i + 1, baseDamage: pick(base, i),
       attackPowerRatio: pick(ratios.get("attackPowerRatio") ?? [0], i),
       skillAmpRatio: pick(ratios.get("skillAmpRatio") ?? [0], i) };
-    if (extras.length) level.extraRatios = extras.map(([stat, v]) => ({ stat, ratio: pick(v, i) }));
+    if (extras.length) level.extraRatios = extras.map(([stat, v, n]) => ratioEntry(stat, v, n, pick, i));
     levels.push(level);
   }
   return [levels, null];
@@ -651,7 +698,13 @@ export function patchLevels(text) {
 function flat(level) {
   const val = (f) => (Object.hasOwn(level, f) ? level[f] : null);
   const out = LEVEL_FIELDS.map((f) => [f, val(f)]);
-  for (const x of level.extraRatios ?? []) out.push([`extraRatios.${x.stat}`, x.ratio ?? null]);
+  const walk = (prefix, xs) => {
+    for (const x of xs) {
+      out.push([`${prefix}${x.stat}`, x.ratio ?? null]);
+      walk(`${prefix}${x.stat}.`, x.nested ?? []);
+    }
+  };
+  walk("extraRatios.", level.extraRatios ?? []);
   return out;
 }
 const levelKey = (ls) => JSON.stringify(ls.map((l) => [l.level ?? null, flat(l)]));
