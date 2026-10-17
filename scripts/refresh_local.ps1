@@ -62,8 +62,9 @@ try {
   $exists = $LASTEXITCODE -eq 0
   $ErrorActionPreference = $prev
   if (-not $exists) {
+    # 인자에 큰따옴표를 넣지 않는다(PowerShell 5.1 은 네이티브 명령 인자의 큰따옴표를 이스케이프하지 않아 인자가 갈라진다).
     Invoke-Checked gh @('release', 'create', 'data-latest', '--prerelease', '--target', 'main', '--title', '데이터 (자동 갱신)',
-      '--notes', '매일 12:00(KST) 자동 갱신되는 데이터 파일입니다. 프로그램의 "아이템 수치 업데이트"가 받습니다.') | Out-Null
+      '--notes', '매일 12:00(KST) 자동 갱신되는 데이터 파일입니다. 프로그램의 아이템 수치 업데이트 버튼이 받습니다.') | Out-Null
   }
   $assets = @(Get-ChildItem -File -Path $release | ForEach-Object { $_.FullName })
   Invoke-Checked gh (@('release', 'upload', 'data-latest') + $assets + @('--clobber')) | Out-Null
