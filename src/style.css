@@ -10,8 +10,17 @@ h1 { font-size: 20px; margin: 0; }
 h2 { font-size: 16px; margin: 16px 0 8px; }
 .muted { color: var(--muted); font-size: 13px; }
 .banner { margin: 12px 24px; padding: 12px; border: 1px solid var(--warn); color: var(--warn); border-radius: 6px; white-space: pre-line; }
-main { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 16px; padding: 16px 24px; align-items: start; }
-@media (max-width: 900px) { main { grid-template-columns: minmax(0, 1fr); } }
+main.layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; padding: 16px 24px; align-items: start; }
+/* 히스토리: 화면에 고정, 제목·탭은 위에 두고 목록만 내부 스크롤.
+   top/max-height는 main 위아래 여백(16px)만큼 줄인다 — 100vh 그대로면 페이지 끝까지 내렸을 때
+   패널이 main 안쪽 끝에 걸려 제목 위 16px이 화면 밖으로 잘린다(1400x800에서 확인). */
+.history-panel { position: sticky; top: 16px; max-height: calc(100vh - 32px); box-sizing: border-box; display: flex; flex-direction: column; min-height: 0; }
+.history-panel > .history { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+@media (max-width: 1099px) {
+  main.layout { grid-template-columns: minmax(0, 1fr); }
+  .history-panel { position: static; max-height: none; }
+  .history-panel > .history { overflow-y: visible; }
+}
 .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 16px 16px; }
 .panel > h2:first-child, .history-head h2 { margin-top: 4px; }
 .slots { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
