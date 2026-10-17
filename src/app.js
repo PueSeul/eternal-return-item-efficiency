@@ -366,7 +366,7 @@
     let stageText = '';
     let timer = null;
     const gauge = progress ? Gauge.create(document, 'update-gauge', '데이터 업데이트 진행') : null;
-    if (gauge) status.before(gauge.el);
+    if (gauge) status.before(gauge.el); // .update-state 안: 게이지·문구가 버튼 바로 왼쪽에 오른쪽 정렬
     const showProgress = () => {
       if (!updating) return;
       const now = Date.now();
@@ -440,7 +440,7 @@
         clearInterval(timer);
         btn.disabled = false;
         allBtn.disabled = false;
-        btn.textContent = '아이템 수치 업데이트';
+        btn.textContent = '아이템 업데이트';
         allBtn.textContent = '스킬 전체 다시 수집';
       }
     };

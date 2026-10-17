@@ -48,18 +48,22 @@ test('입력 컨트롤: 네이티브 select·datalist 팝업 대신 앱 드롭�
 });
 
 test('머리글: 좌(제목/메타)·우(앱 행/데이터 행) 두 블록, 28px 두 행, 같은 폭 버튼 세로 정렬, 상태 문구 말줄임 없음', () => {
-  assert.match(css, /\.title-row \{ display: grid; grid-auto-rows: 28px/);
-  assert.match(css, /\.update-box \{ display: grid;[^}]*grid-auto-rows: 28px; justify-content: end/);
+  assert.match(css, /\.title-row \{ display: grid; grid-template-rows: 28px 28px 20px/);
+  assert.match(css, /\.update-box \{ display: grid; grid-template-columns: auto auto; grid-template-rows: 28px 28px 20px; justify-content: end/);
   assert.match(css, /#app-update-status, #app-update-check \{ grid-row: 1; \}/);
-  assert.match(css, /#update-gauge, #update-status, #update-btn, #update-all-btn \{ grid-row: 2; \}/);
-  assert.match(css, /#app-update-check, #update-btn \{ grid-column: 3; min-width: 132px; \}/);
-  assert.match(css, /#update-status \{ grid-column: 2; min-width: 220px; \}/);
+  assert.match(css, /\.update-state, #update-btn \{ grid-row: 2; \}/);
+  assert.match(css, /#update-all-btn \{ grid-row: 3; \}/);
+  assert.match(css, /#app-update-check, #update-btn \{ grid-column: 2; min-width: 132px; \}/);
+  assert.match(css, /#update-all-btn \{ grid-column: 2; justify-self: end;/);
+  assert.match(css, /\.update-state \{ display: flex;[^}]*gap: 8px; margin-left: auto; min-width: 220px/);
+  assert.match(html, /<span class="update-state"><span id="update-status"/);
+  assert.match(html, />아이템 업데이트<\/button>/);
   assert.doesNotMatch(css, /#(app-)?update-status[^{]*\{[^}]*(ellipsis|overflow: hidden)/);
   const app = fs.readFileSync(path.join(root, 'src', 'app.js'), 'utf8');
   assert.match(app, /short: '아이템 외 %스증'/);
   assert.match(app, /short: '대상 스킬피해 감소 %'/);
   assert.match(app, /labelText\(f\.short \|\| f\.label, f\.label\)/);
-  assert.match(html, /<div class="update-box">\s*<div id="data-update-group" class="update-group" hidden>\s*<span id="update-status"/);
+  assert.match(html, /<div class="update-box">\s*<div id="data-update-group" class="update-group" hidden>\s*<span class="update-state">/);
   const preload = fs.readFileSync(path.join(root, 'electron', 'preload.js'), 'utf8');
   assert.match(preload, /id: 'app-update-group', className: 'update-group'/);
   assert.match(preload, /`최신 버전 v\$\{res\.current\}`/);
