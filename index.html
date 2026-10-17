@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>이터널 리턴 데미지 효율 계산기</title>
+  <title>이터널 리턴 아이템별 가격대비 효율 계산기</title>
   <link rel="stylesheet" href="src/style.css">
 </head>
 <body>
   <header>
-    <div>
-      <h1>이터널 리턴 아이템 가격 대비 데미지 효율 계산기</h1>
+    <div class="title-row">
+      <h1>이터널 리턴 아이템별 가격대비 효율 계산기</h1>
       <button id="data-meta" class="meta-line" type="button" title="패치노트 반영 내역 보기" hidden></button>
     </div>
     <div class="update-box">
@@ -18,58 +18,71 @@
     </div>
   </header>
 
-  <div id="data-banner" class="banner" hidden></div>
+  <div id="data-banner" class="banner" role="alert" hidden></div>
 
   <main class="layout">
     <section class="panel calc-panel">
-      <h2>장비 슬롯</h2>
-      <div id="slots" class="slots"></div>
-      <p id="slot-status" class="muted"></p>
-
-      <h2>입력값</h2>
-      <form id="inputs" class="inputs" onsubmit="return false"></form>
-
-      <div class="history-head">
-        <h2>데미지 효율 계산 기준</h2>
-        <button id="baseline-clear" type="button" disabled>기준 비우기</button>
+      <div class="block">
+        <div class="block-head">
+          <h2>장비 슬롯</h2>
+          <span id="slot-status" class="muted"></span>
+        </div>
+        <div id="slots" class="slots"></div>
       </div>
-      <div id="baseline-slots" class="slots compact"></div>
-      <p id="baseline-status" class="muted"></p>
 
-      <button id="calc-btn" class="primary" type="button" disabled>계산</button>
-      <div id="result" class="result" hidden></div>
+      <div class="block">
+        <div class="block-head"><h2>입력값</h2></div>
+        <form id="inputs" class="inputs" onsubmit="return false"></form>
+      </div>
+
+      <div class="block">
+        <div class="block-head">
+          <h2 title="효율 % = 현재 세트 가격당 데미지 ÷ 기준 세트 가격당 데미지 × 100. 5칸을 모두 채우기 전에는 히스토리 최고 대비로 계산합니다.">데미지 효율 계산 기준</h2>
+          <span id="baseline-status" class="muted"></span>
+          <span class="spacer"></span>
+          <button id="baseline-clear" class="text-btn" type="button" disabled>기준 비우기</button>
+        </div>
+        <div id="baseline-slots" class="slots compact"></div>
+      </div>
+
+      <div class="block calc-row">
+        <button id="calc-btn" class="primary" type="button" disabled>계산</button>
+        <span id="calc-msg" class="muted error" role="alert"></span>
+      </div>
+      <div id="result" class="result" aria-live="polite" hidden></div>
     </section>
 
     <section class="panel history-panel">
       <div class="history-head">
-        <h2>히스토리</h2>
-        <button id="clear-history" type="button">전체 삭제</button>
+        <h2 title="기록을 클릭하면 그 아이템 구성과 입력값을 다시 불러옵니다. 효율 %는 계산 당시 기준 세트 대비입니다(기준 세트가 비어 있었으면 당시 기록 중 최고치 대비)." aria-describedby="history-help">히스토리</h2>
+        <div id="history-tabs" class="tabs" role="group" aria-label="히스토리 정렬">
+          <button type="button" data-sort="recent" aria-pressed="true">최근순</button>
+          <button type="button" data-sort="efficiency" aria-pressed="false">최고 효율순</button>
+        </div>
+        <span class="spacer"></span>
+        <button id="clear-history" class="text-btn" type="button">전체 삭제</button>
       </div>
-      <div id="history-tabs" class="tabs" role="group" aria-label="히스토리 정렬">
-        <button type="button" data-sort="recent" aria-pressed="true">최근순</button>
-        <button type="button" data-sort="efficiency" aria-pressed="false">최고 효율순</button>
-      </div>
-      <p class="muted">기록을 클릭하면 그 아이템 구성과 입력값을 다시 불러옵니다. 효율 %는 계산 당시 기준 세트 대비입니다(기준 세트가 비어 있었으면 당시 기록 중 최고치 대비).</p>
+      <p id="history-help" class="sr-only">기록을 클릭하면 그 아이템 구성과 입력값을 다시 불러옵니다. 효율 %는 계산 당시 기준 세트 대비입니다(기준 세트가 비어 있었으면 당시 기록 중 최고치 대비).</p>
       <ol id="history" class="history"></ol>
     </section>
   </main>
 
-  <dialog id="picker">
+  <dialog id="picker" aria-labelledby="picker-title">
     <div class="picker-head">
       <h2 id="picker-title"></h2>
-      <button id="picker-close" type="button">닫기</button>
+      <button id="picker-close" class="text-btn" type="button">닫기</button>
     </div>
     <div class="picker-filters">
-      <input id="picker-search" type="search" placeholder="이름 검색">
-      <select id="picker-grade"></select>
+      <input id="picker-search" type="search" placeholder="이름 검색" aria-label="아이템 이름 검색" role="combobox" aria-controls="picker-list" aria-expanded="true" aria-autocomplete="list">
+      <select id="picker-grade" aria-label="등급"></select>
     </div>
-    <ul id="picker-list" class="picker-list"></ul>
+    <ul id="picker-list" class="picker-list" role="listbox" aria-label="아이템 목록"></ul>
   </dialog>
 
-  <dialog id="meta-panel">
+  <dialog id="meta-panel" aria-labelledby="meta-title">
     <div class="picker-head">
-      <h2>패치노트 반영 내역</h2>
-      <button id="meta-close" type="button">닫기</button>
+      <h2 id="meta-title">패치노트 반영 내역</h2>
+      <button id="meta-close" class="text-btn" type="button">닫기</button>
     </div>
     <p id="meta-patch" class="muted"></p>
     <h3>덮어쓴 수치</h3>

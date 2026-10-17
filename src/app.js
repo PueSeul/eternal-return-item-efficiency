@@ -56,7 +56,8 @@
   const fmt = (n, d = 2) => (n == null || !Number.isFinite(n) ? '-' : Number(n).toLocaleString('ko-KR', { maximumFractionDigits: d }));
 
   function itemImage(item) {
-    const img = el('img', { src: item.imageUrl || '', alt: item.name, loading: 'lazy' });
+    // 장식용: 이름은 항상 옆에 글자로 있으므로 대체 텍스트를 비워 중복 낭독을 막는다.
+    const img = el('img', { src: item.imageUrl || '', alt: '', loading: 'lazy' });
     img.onerror = () => { img.style.visibility = 'hidden'; };
     return img;
   }
@@ -418,6 +419,12 @@
   // 구성·입력이 바뀌거나 비교 기준(히스토리)이 바뀌면 이전 결과는 현재 상태와 맞지 않으므로 숨긴다.
   function hideResult() {
     $('#result').hidden = true;
+    setCalcMsg('');
+  }
+
+  // 계산 버튼 옆 작은 인라인 문구(입력 오류·복원 누락). 구성·입력이 바뀌면 hideResult가 지운다.
+  function setCalcMsg(text) {
+    $('#calc-msg').textContent = text;
   }
 
   function saveHistory() {
@@ -462,6 +469,7 @@
       delete state.equipped[slot];
       renderSlots();
       if (slot === '무기') applyAuto('amp');
+      focusSlotButton('#slots', `${slot} 선택`);
     })));
     renderBaseline();
     const filled = Formula.SLOTS.filter((s) => state.equipped[s]).length;
@@ -502,6 +510,7 @@
       delete state.baseline[slot];
       saveBaseline();
       renderBaseline();
+      focusSlotButton('#baseline-slots', `${slot} 선택`);
     })));
     const filled = Formula.SLOTS.filter((s) => state.baseline[s]).length;
     const missing = state.baselineMissing || [];
@@ -529,15 +538,23 @@
 
   function pickItem(it) {
     $('#picker').close();
+    const slot = state.pickerSlot;
     if (state.pickerTarget === 'baseline') {
-      state.baseline[state.pickerSlot] = it;
+      state.baseline[slot] = it;
       saveBaseline();
       renderBaseline();
-      return;
+    } else {
+      state.equipped[slot] = it;
+      renderSlots();
+      if (slot === '무기') applyAuto('amp');
     }
-    state.equipped[state.pickerSlot] = it;
-    renderSlots();
-    if (state.pickerSlot === '무기') applyAuto('amp');
+    focusSlotButton(state.pickerTarget === 'baseline' ? '#baseline-slots' : '#slots', `${slot} 변경`);
+  }
+
+  // 다시 그린 슬롯 행의 버튼(aria-label로 찾음)으로 포커스를 돌려 키보드 흐름이 끊기지 않게.
+  function focusSlotButton(boxSel, label) {
+    const b = [...$(boxSel).querySelectorAll('button')].find((x) => x.getAttribute('aria-label') === label);
+    if (b) b.focus();
   }
 
   // 검색창 키보드 이동(↑↓)으로 고르는 행. 검색창이 포커스를 유지하고 aria-activedescendant로 알린다.
@@ -558,6 +575,7 @@
   }
 
   function pickerKey(ev) {
+    if (ev.isComposing || ev.keyCode === 229) return; // 한글 조합 확정 Enter는 선택이 아니다
     if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
       ev.preventDefault();
       setPickerActive(state.pickerActive + (ev.key === 'ArrowDown' ? 1 : -1));
@@ -777,7 +795,7 @@
     try {
       inputs = readInputs();
     } catch (err) {
-      alert(err.message);
+      setCalcMsg(err.message);
       return;
     }
     const items = Formula.SLOTS.map((s) => state.equipped[s]);
@@ -890,10 +908,16 @@
       del.classList.add('del');
       del.onclick = (ev) => {
         ev.stopPropagation();
+        // 삭제 뒤 포커스는 같은 자리(다음 기록, 없으면 앞 기록)로.
+        const idx = [...list.children].indexOf(li);
         state.history = History.remove(state.history, e.id);
         saveHistory();
         hideResult();
         renderHistory();
+        const rows = list.querySelectorAll('li[tabindex]');
+        const next = rows[Math.min(idx, rows.length - 1)];
+        if (next) next.focus();
+        else $('#clear-history').focus();
       };
       // 윗줄: 시각 · 효율(강조), 아랫줄: 데미지 · 가격 · 효율 기준. 이전 계산식 기록은 효율 "—"(툴팁으로 사유).
       const effNode = current
@@ -938,12 +962,13 @@
     }
     writeInputs(entry.inputs);
     renderSlots();
-    if (missing.length) alert('현재 데이터에서 찾을 수 없는 아이템이 있어 비워 두었습니다: ' + missing.join(', '));
+    if (missing.length) setCalcMsg('현재 데이터에 없어 비워 둔 아이템: ' + missing.join(', '));
   }
 
   // ---------- 시작 ----------
   async function init() {
-    if (V2) $('h1').textContent = document.title = '이터널 리턴 아이템별 가격대비 효율 계산기';
+    // 기본(새 계산식) 제목은 index.html에 있다. 이전 계산식(v1) 빌드만 제목을 바꾼다.
+    if (!V2) $('h1').textContent = document.title = '이터널 리턴 아이템 가격 대비 데미지 효율 계산기';
     const gradeSel = $('#picker-grade');
     gradeSel.append(el('option', { value: '', textContent: '모든 등급' }));
     for (const g of GRADES) gradeSel.append(el('option', { value: g, textContent: g }));
