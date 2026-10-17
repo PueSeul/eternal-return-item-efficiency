@@ -2,7 +2,7 @@
 //   SA = (스킬 증폭 고정 합 + 레벨 당 스킬 증폭 × 성장형 스탯 + 아이템 외 스킬 증폭)
 //        × (1 + % 스킬 증폭 합 + 아이템 외 % 스킬 증폭)          (배수 최솟값 0.1)
 //   S  = 스킬 기본 피해량 + 공격력 계수 × 공격력 합 + 스킬 증폭 계수 × SA
-//   R' = max(0, R × (1 − 방어 관통율 합) − 방어 관통 합)  (합 = 아이템 + 입력란의 추가값) ;  B = S × 100 / (100 + R')
+//   R' = max(0, R × (1 − 방어 관통율) − 방어 관통)  (입력란 값 = 최종값, 기본은 아이템 합 자동 기입) ;  B = S × 100 / (100 + R')
 //   D  = B × M × K   (최솟값 1)
 //        M = 1 + 최종 피해 증가율 + 추가 피해 증가 − 대상 피해 감소   (최솟값 0.1)
 //        K = 1 − 대상 스킬 피해 감소
@@ -14,7 +14,7 @@
 })(typeof self !== 'undefined' ? self : this, function (V1) {
   'use strict';
 
-  const { MIN_AMP, MIN_DAMAGE, SLOTS, STAT_KEYS, effectiveDefense, choiceStat, aggregateStats, totalPrice, efficiencyPercent } = V1;
+  const { MIN_AMP, MIN_DAMAGE, SLOTS, STAT_KEYS, effectiveDefense, choiceStat, aggregateStats, totalPrice, itemPen, efficiencyPercent } = V1;
 
   // 사용자 입력 필드와 기본값. 비율(%) 항목은 퍼센트 단위(예: 5 = 5%)로 입력한다.
   // null = 기본값 없음(스킬 툴팁·대상에 따라 다르므로 사용자가 반드시 입력).
@@ -25,8 +25,8 @@
     atkCoefPct: null,              // 공격력 계수(%) — 툴팁 "(+공격력의 X%)"
     skillAmpCoefPct: null,         // 스킬 증폭 계수(%) — 툴팁 "(+스킬 증폭의 X%)"
     defense: null,                 // R: 피격 대상 방어력
-    extraPen: 0,                   // 아이템 외 추가 방어 관통(고정)
-    extraPenPct: 0,                // 아이템 외 추가 방어 관통율(%)
+    extraPen: 0,                   // 방어 관통(고정) 최종값(키 이름은 기존 기록 호환용)
+    extraPenPct: 0,                // 방어 관통율(%) 최종값
     extraAtk: 0,                  // 아이템 외 공격력(캐릭터 기본·성장 등)
     extraSkillAmp: 0,              // 아이템 외 스킬 증폭(고정)
     extraSkillAmpPct: 0,           // 아이템 외 % 스킬 증폭(무기 숙련도 등)
@@ -79,9 +79,9 @@
     }
     const t = statTotals(items, inputs);
     const S = inputs.skillDamage + (inputs.atkCoefPct / 100) * t.atk + (inputs.skillAmpCoefPct / 100) * t.SA;
-    // 아이템 방어 관통 합(t.penRate·t.pen) + 입력란의 추가값.
-    const penRate = t.penRate + inputs.extraPenPct / 100;
-    const pen = t.pen + inputs.extraPen;
+    // 방어 관통 입력란이 최종값(아이템 합 t.penRate·t.pen은 자동값 표시용, 다시 더하지 않음).
+    const penRate = inputs.extraPenPct / 100;
+    const pen = inputs.extraPen;
     const R = effectiveDefense(inputs.defense, penRate, pen);
     const B = (S * 100) / (100 + R);
     const M = Math.max(MIN_AMP, 1 + t.itemFinalRate + inputs.extraDamageIncreasePct / 100 - inputs.enemyDamageReductionPct / 100);
@@ -93,5 +93,5 @@
     return { stats, choice, SA: t.SA, S, R, B, M, K, D, price, ratio: price > 0 ? D / price : null };
   }
 
-  return { VERSION: 'v2', MIN_AMP, MIN_DAMAGE, SLOTS, STAT_KEYS, DEFAULT_INPUTS, choiceStat, statTotals, skillAmpTotal, calculate, totalPrice, efficiencyPercent };
+  return { VERSION: 'v2', MIN_AMP, MIN_DAMAGE, SLOTS, STAT_KEYS, DEFAULT_INPUTS, choiceStat, statTotals, skillAmpTotal, calculate, totalPrice, itemPen, efficiencyPercent };
 });

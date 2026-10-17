@@ -48,7 +48,14 @@ h1 { font-size: 16px; font-weight: 600; margin: 0; }
 .meta-list a, #meta-patch a { text-decoration: none; }
 .meta-list a:hover, #meta-patch a:hover, .meta-list a:focus-visible, #meta-patch a:focus-visible { text-decoration: underline; }
 .meta-line[hidden] { display: none; }
-.update-box { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.update-box { display: flex; align-items: center; gap: 8px; font-size: 13px; min-width: 0; flex: 0 1 auto; }
+/* 버튼·링크는 접히지 않게 한 줄 고정, 상태 문구(앱·데스크톱 #app-update-status)만 줄여 말줄임(전체 문장은 title). */
+.update-box > * { white-space: nowrap; flex-shrink: 0; }
+#update-status, #app-update-status { min-width: 0; flex-shrink: 1; overflow: hidden; text-overflow: ellipsis; }
+#update-status:empty, #app-update-status:empty { display: none; }
+header h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.title-row { flex: 1 1 auto; }
+.title-row .meta-line { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 #update-status { color: var(--muted); }
 #update-status.error { color: var(--warn); }
 /* 원형 진행 게이지: 22px 링(강조색, 실패 시 경고색) + 퍼센트 + 작은 문구 */

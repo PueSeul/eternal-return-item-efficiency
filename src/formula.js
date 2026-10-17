@@ -7,7 +7,7 @@
 //   최종 피해량 최솟값 1, 모드 증폭 제외(루미아섬 기준)
 // 아이템 스탯 매핑:
 //   스킬에 정의된 피해(S) = 툴팁 기본 피해 + 공격력 계수 × 공격력
-//   적용 방어력(R') = max(0, R × (1 − 방어 관통율 합) − 방어 관통 합)  (합 = 아이템 + 입력란의 추가값)
+//   적용 방어력(R') = max(0, R × (1 − 방어 관통율) − 방어 관통)  (입력란 값 = 최종값, 기본은 아이템 합 자동 기입)
 //   스킬 증폭율 → A, 고정 스킬 증폭 → I, 최종 피해 증가율 → F
 (function (root, factory) {
   const api = factory();
@@ -68,8 +68,8 @@
     skillDamage: null,          // S의 툴팁 기본 피해량
     atkCoefPct: null,           // S의 공격력 계수(%) — 툴팁 "(+공격력의 X%)"
     defense: null,              // R: 피격 대상 방어력
-    extraPen: 0,                // 아이템 외 추가 방어 관통(고정)
-    extraPenPct: 0,             // 아이템 외 추가 방어 관통율(%)
+    extraPen: 0,                // 방어 관통(고정) 최종값(키 이름은 기존 기록 호환용)
+    extraPenPct: 0,             // 방어 관통율(%) 최종값
     enemySkillReductionPct: 0,  // 적의 스킬 피해 감소율(%)
     enemySkillReduction: 0,     // 적의 스킬 피해 감소(고정값)
     extraFinalIncreasePct: 0,   // 아이템 외 추가 최종 피해 증가율(%)
@@ -119,8 +119,9 @@
     const itemFinalRate = sum(STAT_KEYS.finalRate);
     const itemPenRate = sum(STAT_KEYS.penRate);
     const itemPen = sum(STAT_KEYS.pen);
-    const penRate = itemPenRate + inputs.extraPenPct / 100;
-    const pen = itemPen + inputs.extraPen;
+    // 방어 관통 입력란이 최종값(장비 슬롯이 바뀌면 아이템 합으로 자동 기입, 수동 수정 가능). 아이템 합은 표시용.
+    const penRate = inputs.extraPenPct / 100;
+    const pen = inputs.extraPen;
     const S = inputs.skillDamage + (inputs.atkCoefPct / 100) * atk;
     const R = effectiveDefense(inputs.defense, penRate, pen);
     const terms = damage({
@@ -145,11 +146,18 @@
     };
   }
 
+  // 방어 관통 입력란 자동값: 아이템(빈 슬롯 무시)의 방어 관통 합 · 방어 관통율 합(% 단위).
+  function itemPen(items) {
+    const totals = aggregateStats(items.filter(Boolean));
+    const sum = (keys) => keys.reduce((s, k) => s + (totals[k] || 0), 0);
+    return { pen: sum(STAT_KEYS.pen), penPct: sum(STAT_KEYS.penRate) * 100 };
+  }
+
   // 효율 % = (이번 데미지/가격) ÷ (비교 기준의 데미지/가격) × 100
   function efficiencyPercent(ratio, bestRatio) {
     if (ratio == null || !bestRatio) return null;
     return (ratio / bestRatio) * 100;
   }
 
-  return { MIN_AMP, MIN_DAMAGE, SLOTS, STAT_KEYS, DEFAULT_INPUTS, effectiveDefense, choiceStat, damage, aggregateStats, totalPrice, calculate, efficiencyPercent };
+  return { MIN_AMP, MIN_DAMAGE, SLOTS, STAT_KEYS, DEFAULT_INPUTS, effectiveDefense, choiceStat, damage, aggregateStats, totalPrice, itemPen, calculate, efficiencyPercent };
 });

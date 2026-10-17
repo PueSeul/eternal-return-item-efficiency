@@ -146,23 +146,29 @@ test('픽스처는 모든 슬롯을 하나씩 포함', () => {
   assert.deepEqual(items.map((i) => i.slot).sort(), [...F.SLOTS].sort());
 });
 
-test("calculate: 방어 관통율·방어 관통은 적용 방어력 R'을 낮춤", () => {
+test("calculate: 방어 관통 입력란(자동 = 아이템 합)이 적용 방어력 R'을 낮춤", () => {
   const pen = { slot: '무기', price: 1, stats: { '방어 관통율': 0.2, '방어 관통': 10 } };
-  const r = F.calculate([pen], { ...IN, defense: 100 });
+  const auto = F.itemPen([pen, null]);
+  assert.equal(auto.pen, 10);
+  close(auto.penPct, 20);
+  const r = F.calculate([pen], { ...IN, defense: 100, extraPen: auto.pen, extraPenPct: auto.penPct });
   close(r.R, 70); // 100 × (1 − 0.2) − 10
   close(r.B, 100 * 100 / 170);
   // 관통이 방어력보다 크면 R'은 0(하한), B = S
-  const neg = F.calculate([pen], { ...IN, defense: 1 });
+  const neg = F.calculate([pen], { ...IN, defense: 1, extraPen: 10, extraPenPct: 20 });
   assert.equal(neg.R, 0); // max(0, 1 × 0.8 − 10)
   close(neg.B, neg.S);
 });
 
-test("calculate: 추가 방어 관통(고정·%)은 아이템 합에 더해지고, R=150·관통 200이면 R'=0·B=S", () => {
+test("calculate: 방어 관통 입력란이 최종값(아이템 합을 또 더하지 않음, 수동값 그대로), R=150·관통 200이면 R'=0·B=S", () => {
   const pen = { slot: '무기', price: 1, stats: { '방어 관통율': 0.2, '방어 관통': 10 } };
-  const r = F.calculate([pen], { ...IN, defense: 100, extraPen: 5, extraPenPct: 10 });
+  const r = F.calculate([pen], { ...IN, defense: 100, extraPen: 15, extraPenPct: 30 });
   close(r.stats.penRate, 0.3);
   close(r.stats.pen, 15);
-  close(r.R, 55); // 100 × (1 − 0.3) − 15
+  close(r.stats.itemPen, 10); // 표시용 아이템 합
+  close(r.R, 55); // 100 × (1 − 0.3) − 15 (10+15, 20%+30%로 이중 합산하지 않음)
+  const manual0 = F.calculate([pen], { ...IN, defense: 100, extraPen: 0, extraPenPct: 0 });
+  close(manual0.R, 100); // 수동 0이면 아이템 방관이 있어도 0
   const zero = F.calculate([{ slot: '무기', price: 1, stats: {} }], { ...IN, defense: 150, extraPen: 200 });
   assert.equal(zero.R, 0);
   assert.equal(zero.B, zero.S);

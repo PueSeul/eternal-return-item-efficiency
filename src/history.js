@@ -144,7 +144,17 @@
     });
   }
 
-  return { STORAGE_KEY, MAX_ENTRIES, FORMULA_VERSION, SORT_MODES, load, save, add, remove, isCurrent, entryEfficiency, sorted, makeEntry, slotItems };
+  // 복원할 입력값의 방어 관통을 최종값으로. penMode 'total' 기록은 그대로(수동값 유지),
+  // 이전 기록(입력란 = 아이템 합에 더하던 추가값)은 아이템 합(auto: Formula.itemPen 결과) + 추가값으로 바꾼다.
+  function penTotals(inputs, auto) {
+    if (!inputs || inputs.penMode === 'total') return inputs;
+    const tidy = (x) => Number(Number(x).toFixed(9));
+    return { ...inputs, penMode: 'total',
+      extraPen: tidy(auto.pen + (Number(inputs.extraPen) || 0)),
+      extraPenPct: tidy(auto.penPct + (Number(inputs.extraPenPct) || 0)) };
+  }
+
+  return { STORAGE_KEY, MAX_ENTRIES, FORMULA_VERSION, SORT_MODES, load, save, add, remove, isCurrent, entryEfficiency, sorted, makeEntry, slotItems, penTotals };
   }
 
   // v1 계산식 버전. 3 = S·R·공격력 계수 직접 입력, 고정 스킬 증폭은 I 항. 4 = '(택1)' 스탯 자동 결정.

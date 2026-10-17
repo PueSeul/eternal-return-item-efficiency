@@ -22,8 +22,8 @@
     { key: 'atkCoefPct', label: '공격력 계수 (%)', step: 'any', min: 0 },
     { key: 'skillAmpCoefPct', label: '스킬 증폭 계수 (%)', step: 'any', min: 0 },
     { key: 'defense', label: '피격 대상 방어력 (R)', step: 'any', min: 0 },
-    { key: 'extraPen', label: '추가 방어 관통(고정)', step: 'any' },
-    { key: 'extraPenPct', label: '추가 방어 관통율(%)', step: 'any' },
+    { key: 'extraPen', label: '방어 관통(고정)', step: 'any' },
+    { key: 'extraPenPct', label: '방어 관통율(%)', step: 'any' },
     { key: 'extraAtk', label: '아이템 외 공격력', step: 'any' },
     { key: 'extraSkillAmp', label: '아이템 외 스킬 증폭', step: 'any' },
     { key: 'extraSkillAmpPct', label: '아이템 외 % 스킬 증폭 (%)', step: 'any' },
@@ -36,13 +36,16 @@
     { key: 'skillDamage', label: '스킬 기본 피해량 (S)', step: 'any', min: 0 },
     { key: 'atkCoefPct', label: '공격력 계수 (%)', step: 'any', min: 0 },
     { key: 'defense', label: '피격 대상 방어력 (R)', step: 'any', min: 0 },
-    { key: 'extraPen', label: '추가 방어 관통(고정)', step: 'any' },
-    { key: 'extraPenPct', label: '추가 방어 관통율(%)', step: 'any' },
+    { key: 'extraPen', label: '방어 관통(고정)', step: 'any' },
+    { key: 'extraPenPct', label: '방어 관통율(%)', step: 'any' },
     { key: 'enemySkillReductionPct', label: '적의 스킬 피해 감소율 (%)', step: 'any' },
     { key: 'enemySkillReduction', label: '적의 스킬 피해 감소 (고정)', step: 'any' },
     { key: 'extraFinalIncreasePct', label: '추가 최종 피해 증가율 (%)', step: 'any' },
     { key: 'enemyFinalReductionPct', label: '적의 최종 피해 감소율 (%)', step: 'any' },
   ];
+
+  // 방어 관통 입력란 키 → 자동값(Formula.itemPen 결과) 키.
+  const PEN_NOTES = { extraPen: { note: 'auto-pen', auto: 'pen', label: '방어 관통 합' }, extraPenPct: { note: 'auto-penPct', auto: 'penPct', label: '방어 관통율 합(%)' } };
 
   const $ = (sel) => document.querySelector(sel);
   const state = { items: [], byId: new Map(), equipped: {}, history: [], historySort: 'recent', pickerSlot: null, pickerTarget: 'equipped', baseline: {}, characters: [], charactersError: '', meta: null, patched: new Map(), skills: [], skillsError: '', skillCharName: '' };
@@ -396,8 +399,13 @@
         if (r.ok) {
           // 반환에 meta가 있으면 그것, 없으면 다시 읽은 메타 파일(runUpdate가 결정).
           setMeta(r.meta);
+          // 방어 관통이 자동값이던 칸은 갱신된 아이템 수치의 합으로 다시 채운다(수동값은 유지).
+          const oldPen = penAuto(state.equipped);
+          const penWasAuto = Object.keys(PEN_NOTES).filter((key) => penIsAuto(key, oldPen));
           const { equipped, removed } = Updater.rematch(state.equipped, state.byId);
           state.equipped = equipped;
+          const newPen = penAuto(state.equipped);
+          for (const key of penWasAuto) $('#in-' + key).value = tidy(newPen[PEN_NOTES[key].auto]);
           // 기준 세트는 저장값에서 다시 찾는다(최초 로딩 실패로 비어 있던 기준도 갱신 데이터로 복원).
           loadBaseline();
           // v2: 실험체 데이터도 다시 읽고 선택 중인 실험체를 id로 다시 찾는다.
@@ -543,6 +551,7 @@
     box.replaceChildren(...Formula.SLOTS.map((slot) => slotCard(slot, state.equipped[slot], () => openPicker(slot, 'equipped'), () => {
       delete state.equipped[slot];
       renderSlots();
+      applyPenAuto();
       if (slot === '무기') applyAuto('amp');
       focusSlotButton('#slots', `${slot} 선택`);
     })));
@@ -556,6 +565,7 @@
     $('#calc-btn').title = all ? '' : '장비 슬롯 5칸을 모두 채워야 계산할 수 있습니다.';
     updateSkillAmpTotal();
     renderAutoNotes();
+    renderPenNotes();
   }
 
   // ---------- 데미지 효율 계산 기준(기준 세트) ----------
@@ -625,6 +635,7 @@
     } else {
       state.equipped[slot] = it;
       renderSlots();
+      applyPenAuto();
       if (slot === '무기') applyAuto('amp');
     }
     focusSlotButton(state.pickerTarget === 'baseline' ? '#baseline-slots' : '#slots', `${slot} 변경`);
@@ -718,8 +729,9 @@
       if (Formula.DEFAULT_INPUTS[f.key] == null) input.placeholder = '직접 입력';
       // v2: 스탯창 스킬 증폭과 맞춰 볼 수 있도록 현재 합계를 아이템 외 스킬 증폭 옆에 표시,
       // 자동 입력되는 칸에는 자동값 출처를 작게 표시.
-      const noteId = { extraSkillAmp: 'sa-total', extraAtk: 'auto-atk', extraSkillAmpPct: 'auto-amp' }[f.key];
-      const extra = V2 && noteId ? el('span', { id: noteId, className: 'muted small' }) : null;
+      // 방어 관통 두 칸은 v1·v2 모두 자동(아이템 합)/수동 표시.
+      const noteId = { extraSkillAmp: 'sa-total', extraAtk: 'auto-atk', extraSkillAmpPct: 'auto-amp', extraPen: 'auto-pen', extraPenPct: 'auto-penPct' }[f.key];
+      const extra = noteId && (V2 || PEN_NOTES[f.key]) ? el('span', { id: noteId, className: 'muted small' }) : null;
       if (extra) input.setAttribute('aria-label', f.label);
       form.append(el('label', null, labelText(f.label), input, extra));
     }
@@ -761,6 +773,36 @@
     charNote.textContent = state.charactersError || auto.warning;
     charNote.title = charNote.textContent;
     renderSkillNote();
+  }
+
+  // ---------- 방어 관통 자동 입력(v1·v2) ----------
+  // 장비 슬롯이 바뀔 때마다 아이템 방관 합을 입력란에 채운다(아이템 외 공격력과 같은 규칙: 이후 수동 수정 가능,
+  // 다음 슬롯 변경 때 다시 자동값). 입력란 값 = 계산에 쓰는 최종값.
+  function penAuto(set) {
+    return Formula.itemPen(Formula.SLOTS.map((s) => set[s]));
+  }
+
+  function applyPenAuto() {
+    const auto = penAuto(state.equipped);
+    for (const [key, p] of Object.entries(PEN_NOTES)) $('#in-' + key).value = tidy(auto[p.auto]);
+    hideResult();
+    renderPenNotes();
+  }
+
+  // 입력란 값이 현재 장비의 아이템 합과 같으면 "자동", 다르면 "수동 (자동 35)".
+  function penIsAuto(key, auto) {
+    const raw = $('#in-' + key).value.trim();
+    return raw !== '' && Number(raw) === tidy(auto[PEN_NOTES[key].auto]);
+  }
+
+  function renderPenNotes() {
+    const auto = penAuto(state.equipped);
+    for (const [key, p] of Object.entries(PEN_NOTES)) {
+      const box = $('#' + p.note);
+      const value = tidy(auto[p.auto]);
+      box.textContent = penIsAuto(key, auto) ? '자동' : `수동 (자동 ${fmt(value)})`;
+      box.title = `자동: 장비 아이템 ${p.label} = ${fmt(value)}`;
+    }
   }
 
   // 사용자가 실험체를 바꾸면 스킬 선택을 비우고 그 실험체의 스킬 목록으로 바꾼다.
@@ -838,6 +880,8 @@
       if (f.min != null && n < f.min) throw new Error(`"${f.label}" 값은 ${f.min} 이상이어야 합니다.`);
       out[f.key] = n;
     }
+    // 방어 관통 입력란이 최종값인 기록 표시(이전 기록의 extraPen·extraPenPct는 아이템 합에 더하던 추가값).
+    out.penMode = 'total';
     if (V2) {
       // 실험체도 기록에 저장(복원용). 선택하지 않았으면 null.
       // 데이터에 없는(로딩 실패 등) 복원 실험체도 이름·id를 잃지 않도록 복원값을 이어받는다.
@@ -891,17 +935,25 @@
     const result = Formula.calculate(items, inputs);
     // 기준 세트가 5칸 다 차 있으면 같은 입력값으로 기준 세트도 계산해 그 대비로 효율 %·기준 대비를 낸다(미완성이면 "—").
     const baseItems = Baseline.isComplete(state.baseline, Formula.SLOTS) ? Formula.SLOTS.map((s) => state.baseline[s]) : null;
-    const baseResult = baseItems ? Formula.calculate(baseItems, inputs) : null;
+    // 방어 관통이 자동값(현재 장비 합)이면 기준 세트는 기준 아이템의 합으로, 수동이면 그 값 그대로 계산한다.
+    let baseInputs = inputs;
+    if (baseItems) {
+      const cur = penAuto(state.equipped);
+      const base = penAuto(state.baseline);
+      baseInputs = { ...inputs };
+      for (const [key, p] of Object.entries(PEN_NOTES)) if (penIsAuto(key, cur)) baseInputs[key] = tidy(base[p.auto]);
+    }
+    const baseResult = baseItems ? Formula.calculate(baseItems, baseInputs) : null;
     const eff = Baseline.efficiency(result, baseResult);
     const entry = History.makeEntry({ equipped: state.equipped, inputs, result, efficiency: eff,
       baseline: Baseline.snapshot(state.baseline, Formula.SLOTS) });
     state.history = History.add(state.history, entry);
     saveHistory();
-    renderResult(result, items, inputs, eff, baseItems, baseResult);
+    renderResult(result, items, inputs, eff, baseItems, baseResult, baseInputs);
     renderHistory();
   }
 
-  function renderResult(r, items, inputs, eff, baseItems, baseResult) {
+  function renderResult(r, items, inputs, eff, baseItems, baseResult, baseInputs) {
     const box = $('#result');
     // 큰 숫자 3개(데미지 총량 · 데미지 효율 · 기준 대비) + 작은 줄(가격 · 1,000당) + 비교 표. 산출 기준은 툴팁.
     const stat = (label, value, extra) => el('div', { className: 'stat', title: extra.title || '' },
@@ -938,7 +990,7 @@
     if (baseResult) {
       steps.append(el('details', { className: 'base-steps' },
         el('summary', { textContent: `기준 세트 계산 과정 (D = ${fmt(baseResult.D)})` }),
-        el('pre', { className: 'steps', textContent: explainLines(baseItems, inputs, baseResult, null).join('\n') })));
+        el('pre', { className: 'steps', textContent: explainLines(baseItems, baseInputs || inputs, baseResult, null).join('\n') })));
     }
     nodes.push(steps);
     box.replaceChildren(...nodes);
@@ -1045,7 +1097,7 @@
       saveBaseline();
       missing.push(...baseMissing.map((s) => '기준 ' + s));
     }
-    writeInputs(entry.inputs);
+    writeInputs(History.penTotals(entry.inputs, penAuto(state.equipped)));
     renderSlots();
     if (missing.length) setCalcMsg('현재 데이터에 없어 비워 둔 아이템: ' + missing.join(', '));
   }
@@ -1086,9 +1138,19 @@
       const hadWeapon = !!state.equipped['무기'];
       state.equipped = {};
       renderSlots();
+      applyPenAuto();
       if (hadWeapon) applyAuto('amp');
       focusSlotButton('#slots', `${Formula.SLOTS[0]} 선택`);
     };
+    // 머리글 상태 문구는 한 줄로 잘리므로 전체 문장을 툴팁으로(데스크톱이 넣는 #app-update-status 포함).
+    const syncStatusTitles = () => {
+      for (const s of document.querySelectorAll('#update-status, #app-update-status')) {
+        const t = s.textContent.trim();
+        if (s.title !== t) s.title = t;
+      }
+    };
+    new MutationObserver(syncStatusTitles).observe($('header .update-box'), { childList: true, subtree: true, characterData: true });
+    syncStatusTitles();
     renderInputs();
     // 숫자 입력란은 마우스 휠로 값이 바뀌지 않게(포커스 중 휠 기본 동작 차단).
     $('#inputs').addEventListener('wheel', (ev) => {
@@ -1113,6 +1175,7 @@
       hideResult();
       updateSkillAmpTotal();
       renderAutoNotes();
+      renderPenNotes();
     });
     renderSlots();
     const [, , meta] = await Promise.all([loadData(), V2 ? loadCharacters() : null, fetchMeta(), V2 ? loadSkills() : null]);

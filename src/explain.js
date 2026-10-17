@@ -56,12 +56,15 @@
       : [];
   }
 
-  // R' = max(0, R × (1 − 방관율 합) − 방관 고정 합). 합 = 아이템 + 추가(입력란). 0 아래면 원래 값 → 0 표시.
+  // R' = max(0, R × (1 − 방관율) − 방관 고정). 입력란 값이 최종값이고, 아이템 합과 같으면 (자동), 다르면 (수동).
+  // 0 아래면 원래 값 → 0 표시.
+  const same = (a, b) => Math.abs(a - b) < 1e-6;
   function penLines(items, inputs, r) {
     const raw = inputs.defense * (1 - r.stats.penRate) - r.stats.pen;
+    const src = (auto) => (auto ? '(자동)' : '(수동)');
     return [
-      `R' = max(0, ${num(inputs.defense)} × (1 − (아이템 ${withParts(r.stats.itemPenRate, contrib(items, K.penRate), pct)} + ` +
-        `추가 ${pct(inputs.extraPenPct / 100)})) − (아이템 ${withParts(r.stats.itemPen, contrib(items, K.pen))} + 추가 ${num(inputs.extraPen)})) = ` +
+      `R' = max(0, ${num(inputs.defense)} × (1 − 방관율 ${pct(inputs.extraPenPct / 100)}${src(same(inputs.extraPenPct, r.stats.itemPenRate * 100))}) − ` +
+        `방관 고정 ${num(inputs.extraPen)}${src(same(inputs.extraPen, r.stats.itemPen))}) = ` +
         (raw < 0 ? `${num(raw)} → 0` : num(r.R)),
     ];
   }

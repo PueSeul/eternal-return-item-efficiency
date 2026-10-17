@@ -92,6 +92,7 @@ test('v2: 공격력·방어 관통·피해 배수·스킬 피해 감소', () => 
     item('l', '다리', '다리', 100, {}),
   ];
   const inputs = { ...V2.DEFAULT_INPUTS, level: 10, skillDamage: 100, atkCoefPct: 50, skillAmpCoefPct: 20, defense: 100,
+    extraPen: 10, extraPenPct: 10, // 자동값(아이템 합)
     extraAtk: 30, extraSkillAmp: 60, extraSkillAmpPct: 10, extraDamageIncreasePct: 10, enemyDamageReductionPct: 5, enemySkillReductionPct: 20 };
   const r = V2.calculate(items, inputs);
   // 공격력 50+2×10+30=100, SA=(40+60)×(1+0.1+0.1)=120, S=100+50+24=174,
@@ -106,23 +107,37 @@ test('v2: 공격력·방어 관통·피해 배수·스킬 피해 감소', () => 
   assert.ok(Math.abs(r.ratio - r.D / 500) < 1e-12);
 });
 
-test("v2 방어 관통: 추가 고정·% 입력 합산, R=150·관통 200이면 R'=0·B=S, 계산 과정에 둘 다 표시", () => {
+test("v2 방어 관통: 입력란 = 최종값(자동/수동 표시, 이중 합산 없음), R=150·관통 200이면 R'=0·B=S", () => {
   const items = MEASURED.map((it) => ({ ...it, stats: { ...it.stats } }));
   items[1].stats['방어 관통'] = 10; // 쿤달라
   items[2].stats['방어 관통율'] = 0.1; // 이단심판관
-  const inputs = { ...BASE, extraSkillAmp: 351, extraPen: 5, extraPenPct: 20 };
-  const r = V2.calculate(items, inputs);
-  assert.ok(Math.abs(r.stats.penRate - 0.3) < 1e-12);
-  assert.equal(r.stats.pen, 15);
-  assert.ok(Math.abs(r.R - (150 * 0.7 - 15)) < 1e-9); // 90
-  const line = E.linesV2(items, inputs, r, null).find((l) => l.startsWith("R'"));
-  assert.equal(line, "R' = max(0, 150 × (1 − (아이템 10% (이단심판관 10%) + 추가 20%)) − (아이템 10 (쿤달라 10) + 추가 5)) = 90");
+  const auto = V2.itemPen(items);
+  assert.equal(auto.pen, 10);
+  assert.ok(Math.abs(auto.penPct - 10) < 1e-9);
+  const autoIn = { ...BASE, extraSkillAmp: 351, extraPen: 10, extraPenPct: 10 };
+  const a = V2.calculate(items, autoIn);
+  assert.ok(Math.abs(a.R - (150 * 0.9 - 10)) < 1e-9); // 125 — 아이템 합을 또 더하지 않음
+  assert.equal(E.linesV2(items, autoIn, a, null).find((l) => l.startsWith("R'")),
+    "R' = max(0, 150 × (1 − 방관율 10%(자동)) − 방관 고정 10(자동)) = 125");
+  const manIn = { ...autoIn, extraPen: 15, extraPenPct: 30 };
+  const m = V2.calculate(items, manIn);
+  assert.ok(Math.abs(m.R - (150 * 0.7 - 15)) < 1e-9); // 90
+  assert.equal(E.linesV2(items, manIn, m, null).find((l) => l.startsWith("R'")),
+    "R' = max(0, 150 × (1 − 방관율 30%(수동)) − 방관 고정 15(수동)) = 90");
   const zeroIn = { ...BASE, extraSkillAmp: 351, extraPen: 200 };
   const z = V2.calculate(MEASURED, zeroIn);
   assert.equal(z.R, 0);
   assert.equal(z.B, z.S);
   assert.equal(E.linesV2(MEASURED, zeroIn, z, null).find((l) => l.startsWith("R'")),
-    "R' = max(0, 150 × (1 − (아이템 0% + 추가 0%)) − (아이템 0 + 추가 200)) = -50 → 0");
+    "R' = max(0, 150 × (1 − 방관율 0%(자동)) − 방관 고정 200(수동)) = -50 → 0");
+});
+
+test('방어 관통 복원: penMode total 기록은 수동값 유지, 이전 기록은 아이템 합 + 추가값', () => {
+  const H = require('../src/history');
+  const auto = { pen: 10, penPct: 10 };
+  const saved = { extraPen: 3, extraPenPct: 0, penMode: 'total' };
+  assert.equal(H.penTotals(saved, auto), saved);
+  assert.deepEqual(H.penTotals({ extraPen: 5, extraPenPct: 20 }, auto), { extraPen: 15, extraPenPct: 30, penMode: 'total' });
 });
 
 test('v2 최솟값: 증폭 배수 0.1, D 1', () => {
@@ -161,7 +176,7 @@ test('v2 계산 과정: 실제 값을 대입한 식 한 줄씩', () => {
     '스킬 증폭 합 = 아이템 스킬 증폭 330 (여제 93, 쿤달라 82, 이단심판관 30, 임세티 92, 글레이셜 슈즈 33) + 레벨 당 5 (이단심판관 5)×20 + 아이템 외 351 = 781',
     'SA = 781 × (1 + 0.15 (임세티 0.15) + 아이템 외 0) = 781 × 1.15 (최솟값 0.1) = 898.15',
     'S = 230 + 40 × 0% + SA 898.15 × 80% = 948.52',
-    "R' = max(0, 150 × (1 − (아이템 0% + 추가 0%)) − (아이템 0 + 추가 0)) = 150",
+    "R' = max(0, 150 × (1 − 방관율 0%(자동)) − 방관 고정 0(자동)) = 150",
     'B = 948.52 × 100 / (100 + 150) = 379.41',
     '피해 배수 = 1 + 0 + 0 − 0 = 1 (최솟값 0.1)',
     '스킬 피해 감소 배수 = 1 − 0 = 1',
