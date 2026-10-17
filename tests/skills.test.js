@@ -62,7 +62,12 @@ test('entries: 스킬 × 피해 항목 선택지, 라벨/번호로 복원, 미�
   assert.deepEqual(S.autoValues(extra.entry, 2), { skillDamage: 40, atkCoefPct: 10, skillAmpCoefPct: 30 });
   assert.deepEqual(S.extraRatioTexts(extra.entry, 1), ['최대 체력의 3%']);
   assert.deepEqual(S.extraRatioTexts(S.findChoice(entry, 'Q#0').entry, 5), []);
-  assert.equal(extra.entry.historyMismatch, '역사란: 추가 피해량 [25 / 45]');
+  assert.equal(S.mismatchText(extra.entry), '역사란: 추가 피해량 [25 / 45]');
+  assert.equal(S.mismatchText({ historyMismatch: { text: 'baseDamage 설명란 [70], 역사 마지막 [60]' } }), 'baseDamage 설명란 [70], 역사 마지막 [60]');
+  assert.equal(S.mismatchText({ historyMismatch: {} }), '나무위키 역사란 수치와 다릅니다');
+  assert.equal(S.mismatchText(S.findChoice(entry, 'Q#0').entry), '');
+  assert.deepEqual(S.extraRatioTexts({ levels: [{ level: 1, extraRatios: [{ stat: '야성 중첩', ratio: null }, { stat: '대상 현재 체력', ratio: 0.05 }] }] }, 1),
+    ['야성 중첩', '대상 현재 체력의 5%']);
   assert.deepEqual(S.extraRatioTexts({ levels: [{ level: 1, extraRatios: { '방어력': 0.5 } }] }, 1), ['방어력의 50%']);
   assert.deepEqual(S.extraRatioTexts({ levels: [{ level: 1, extraRatios: ['대상 잃은 체력의 2%'] }] }, 1), ['대상 잃은 체력의 2%']);
   // 복원: 라벨 우선, 라벨 없으면 번호(이전 기록은 번호도 없음 → 0), 없는 라벨은 null
@@ -129,4 +134,17 @@ test('실제 data/skills.json(있을 때): 아르다 Q 5레벨 230 / 0 / 80%', {
   const entry = S.forCharacter(list, null, '아르다');
   assert.ok(entry, '아르다 없음');
   assert.deepEqual(S.autoValues(S.findSkill(entry, 'Q'), 5), { skillDamage: 230, atkCoefPct: 0, skillAmpCoefPct: 80 });
+  // 화면과 같은 경로: 선택지(키#번호) → 피해 항목 → 5레벨
+  const q = S.choices(entry).find((c) => c.skill.key === 'Q');
+  assert.equal(S.optionLabel(q.skill, q.entry), 'Q 샤마쉬의 두루마리 — 피해량');
+  assert.deepEqual(S.autoValues(S.findChoice(entry, q.value).entry, 5), { skillDamage: 230, atkCoefPct: 0, skillAmpCoefPct: 80 });
+  // 실제 파일의 historyMismatch({text})·서술형 extraRatios(ratio null)도 원문/라벨로 나온다
+  const all = list.flatMap((c) => c.skills.flatMap((s) => S.entriesOf(s)));
+  const hm = all.find((e) => e.historyMismatch);
+  assert.ok(hm && S.mismatchText(hm) && S.mismatchText(hm) !== '나무위키 역사란 수치와 다릅니다');
+  const narrative = all.flatMap((e) => S.levelsOf(e)).find((l) => (l.extraRatios || []).some((x) => x && x.ratio == null));
+  if (narrative) {
+    const texts = S.extraRatioTexts({ levels: [narrative] }, narrative.level);
+    assert.equal(texts.length, narrative.extraRatios.length);
+  }
 });

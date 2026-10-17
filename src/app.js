@@ -265,12 +265,12 @@
       text = source + (edited ? ' · 수동 수정됨' : '');
     }
     const patches = Skills.patchNotes(state.meta, characterRef(), skill);
-    const mismatch = dmg.historyMismatch;
+    const mismatch = Skills.mismatchText(dmg);
     const extras = lv === '' ? [] : Skills.extraRatioTexts(dmg, Number(lv));
     note.replaceChildren(text, patches.length
       ? el('span', { className: 'patch-badge', textContent: '패치 반영', title: '패치노트 반영: ' + patches.join(', ') }) : '',
     mismatch ? el('span', { className: 'patch-badge', textContent: '역사란과 불일치',
-      title: typeof mismatch === 'string' ? mismatch : '나무위키 역사란 수치와 다릅니다' }) : '',
+      title: mismatch }) : '',
     extras.length ? el('span', { className: 'skill-extra', textContent: '미반영 계수: ' + extras.join(', ') }) : '');
   }
 

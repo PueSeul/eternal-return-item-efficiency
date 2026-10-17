@@ -4,7 +4,8 @@
 //      levels(= entries[0].levels, 이전 스키마), raw, sourceLabel}],
 //     wikiRevisedAt, needsReview:[{skill, text, reason}]}]   (비율은 0~1 소수)
 // entries가 없는 이전 스키마는 {label: sourceLabel, levels, raw} 한 항목으로 본다.
-// extraRatios(계산에 넣지 않는 계수, 표시만): [{stat|label|name, ratio}] · {이름: ratio} · ["문구"] 모두 받는다(형식 미확정).
+// extraRatios(계산에 넣지 않는 계수, 표시만): [{stat|label|name, ratio}] · {이름: ratio} · ["문구"] 모두 받는다. ratio가 없으면 라벨만.
+// historyMismatch: 문자열 또는 {text}(실제 data/skills.json).
 // 패치노트로 덮어쓴 스킬 값: items.meta.json overrides 중
 //   {type:'skill', name: 실험체 이름, characterId(선택), skill: 스킬 키 또는 스킬 이름, stat, dakgg, patchnote}.
 (function (root, factory) {
@@ -96,14 +97,24 @@
   function extraRatioTexts(entry, level) {
     const l = levelsOf(entry).find((x) => x.level === Number(level));
     const ex = l ? l.extraRatios : null;
+    // 비율 숫자가 없는 서술형 계수(예: {stat:"야성 중첩", ratio:null})는 라벨 그대로.
     const one = (name, ratio) => {
       const pct = toPct(ratio);
-      return str(name) && pct != null ? `${str(name)}의 ${pct}%` : '';
+      if (!str(name)) return '';
+      return pct != null ? `${str(name)}의 ${pct}%` : str(name);
     };
     let list = [];
     if (Array.isArray(ex)) list = ex.map((x) => (isObj(x) ? one(x.stat || x.label || x.name, x.ratio) : str(x)));
     else if (isObj(ex)) list = Object.entries(ex).map(([k, v]) => one(k, v));
     return list.filter(Boolean);
+  }
+
+  // historyMismatch 원문: 문자열 또는 {text} 객체. 없으면 ''(값은 있는데 원문이 없으면 기본 문구).
+  function mismatchText(entry) {
+    const m = entry ? entry.historyMismatch : null;
+    if (!m) return '';
+    const text = isObj(m) ? str(m.text) : str(m);
+    return text || '나무위키 역사란 수치와 다릅니다';
   }
 
   // 출처 표시: "나무위키 · 수정 2026-10-16". 날짜는 원문 앞의 YYYY-MM-DD(문서에 적힌 날짜, 시간대 변환 없음),
@@ -127,5 +138,5 @@
   }
 
   return { normalize, forCharacter, findSkill, levelsOf, entriesOf, choices, findChoice, matchChoice, optionLabel, autoValues,
-    extraRatioTexts, sourceText, patchNotes };
+    extraRatioTexts, mismatchText, sourceText, patchNotes };
 });
