@@ -4,7 +4,8 @@ Source: the JSON API that https://dak.gg/er/items?hl=ko calls in the browser.
 Values that differ from the latest official patch note (+ later hotfixes) are
 replaced by the patch-note value (host decision; see fetch_patchnote.py).
 Usage: python scripts/fetch_items.py
-  writes data/items.json, data/characters.json and data/items.meta.json
+  writes data/items.json, data/characters.json, data/skills.json (namu.wiki,
+  see fetch_skills.py) and data/items.meta.json
 """
 import json
 import os
@@ -15,12 +16,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import fetch_patchnote as pn
+import fetch_skills as fs
 
 ITEMS_URL = "https://er.dakgg.io/api/v1/data/items?hl=ko"
 MASTERIES_URL = "https://er.dakgg.io/api/v1/data/masteries?hl=ko"
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 OUT_PATH = DATA_DIR / "items.json"
 ITEMS_FILE, CHARACTERS_FILE, META_FILE = "items.json", "characters.json", "items.meta.json"
+SKILLS_FILE = "skills.json"
 # dak.gg game-asset version in image paths: .../er/game-assets/12.6.0/...
 ASSET_VERSION_RE = re.compile(r"/game-assets/([0-9]+(?:\.[0-9]+)*)/")
 # Shared with scripts/fetch_items.mjs: edit these JSON files, not the code.
@@ -209,8 +212,9 @@ def utc_now():
     return t.strftime("%Y-%m-%dT%H:%M:%S.") + f"{t.microsecond // 1000:03d}Z"
 
 
-def build_all(raw_items, masteries, raw_chars, patch, fetched_at):
-    """{"items", "characters", "meta"} with patch-note overrides applied."""
+def build_all(raw_items, masteries, raw_chars, patch, pages, fetched_at):
+    """{"items", "characters", "skills", "meta"} with patch-note overrides applied.
+    pages: {character name: namu.wiki HTML or None} (fetch_skills.fetch_pages)."""
     import fetch_characters as fc  # fetch_characters imports this module
 
     items = build_items(raw_items, masteries)
@@ -218,32 +222,40 @@ def build_all(raw_items, masteries, raw_chars, patch, fetched_at):
     parsed, item_overrides, item_unparsed = patch_items(items, raw_items, patch)
     char_overrides, char_unparsed = pn.apply_character_changes(chars, parsed["changes"])
     info = patch["info"]
+    skills = fs.build_skills(chars, pages)
+    skill_overrides, skill_skipped, skill_unparsed = fs.apply_skill_changes(
+        skills, parsed["changes"], info["articles"])
     meta = {
         "fetchedAt": fetched_at,
         "dakggVersion": dakgg_version(raw_items),
         "patch": {k: info[k] for k in ("id", "version", "title", "url", "date", "articles")},
-        "overrides": item_overrides + char_overrides,
-        "unparsed": parsed["unparsed"] + item_unparsed + char_unparsed,
+        "overrides": item_overrides + char_overrides + skill_overrides,
+        "skipped": skill_skipped,
+        "unparsed": parsed["unparsed"] + item_unparsed + char_unparsed + skill_unparsed,
     }
-    return {"items": items, "characters": chars, "meta": meta}
+    return {"items": items, "characters": chars, "skills": skills, "meta": meta}
 
 
-def fetch_all(out_dir=DATA_DIR, fetched_at=None):
-    """Fetch everything, write items.json, characters.json, items.meta.json to out_dir."""
+def fetch_all(out_dir=DATA_DIR, fetched_at=None, interval=None):
+    """Fetch everything, write items.json, characters.json, skills.json, items.meta.json to out_dir.
+    interval: seconds between namu.wiki requests (default fetch_skills.REQUEST_INTERVAL)."""
     import fetch_characters as fc
 
+    raw_chars = fetch_json(fc.CHARACTERS_URL)["characters"]
     result = build_all(
         fetch_json(ITEMS_URL)["items"],
         fetch_json(MASTERIES_URL)["masteries"],
-        fetch_json(fc.CHARACTERS_URL)["characters"],
+        raw_chars,
         pn.fetch_patch(),
+        fs.fetch_pages([c["name"] for c in sorted(raw_chars, key=lambda c: int(c["id"]))], interval),
         fetched_at or utc_now(),
     )
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    # Write all three to temp files first so a failed write leaves the old set intact.
+    # Write all four to temp files first so a failed write leaves the old set intact.
     files = ((ITEMS_FILE, dumps(result["items"])),
              (CHARACTERS_FILE, fc.dumps(result["characters"])),
+             (SKILLS_FILE, fs.dumps(result["skills"])),
              (META_FILE, dumps(result["meta"])))
     for name, text in files:
         with open(out_dir / (name + ".tmp"), "w", encoding="utf-8", newline="\n") as f:
@@ -256,9 +268,10 @@ def fetch_all(out_dir=DATA_DIR, fetched_at=None):
 def main():
     result = fetch_all()
     meta = result["meta"]
-    print(f"wrote {len(result['items'])} items, {len(result['characters'])} characters to {DATA_DIR} "
+    print(f"wrote {len(result['items'])} items, {len(result['characters'])} characters, "
+          f"{len(result['skills'])} skill entries to {DATA_DIR} "
           f"(patch {meta['patch']['version']}: {len(meta['overrides'])} overrides, "
-          f"{len(meta['unparsed'])} unparsed)")
+          f"{len(meta['skipped'])} skipped, {len(meta['unparsed'])} unparsed)")
 
 
 if __name__ == "__main__":

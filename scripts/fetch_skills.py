@@ -1,0 +1,691 @@
+"""Fetch skill damage coefficients from namu.wiki and write data/skills.json.
+
+Host decision: namu.wiki is the source. A patch-note row that differs from the
+wiki value overwrites it only when the wiki document was last revised before
+the patch note was posted (a wiki edited after the patch keeps its value).
+Node twin: scripts/fetch_skills.mjs (same rules, byte-identical output).
+
+Source: https://namu.wiki/w/<실험체명>(이터널 리턴) (falls back to /w/<실험체명>
+when that title does not exist), server-rendered HTML. Every request (redirect
+hops included) is checked against https://namu.wiki/robots.txt and spaced at
+least REQUEST_INTERVAL seconds apart. Content license: CC BY-NC-SA 2.0 KR.
+Usage: python scripts/fetch_skills.py  (characters from data/characters.json,
+latest patch note applied; writes data/skills.json)
+"""
+import json
+import re
+import sys
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+from pathlib import Path
+
+import fetch_patchnote as pn
+
+WIKI = "https://namu.wiki"
+ROBOTS_URL = WIKI + "/robots.txt"
+AGENT = "er-damage-efficiency"  # robots.txt product token
+HEADERS = {"User-Agent": AGENT + "/1.0 (skill coefficient fetcher)", "Accept-Language": "ko-KR,ko;q=0.9"}
+DOC_SUFFIX = "(이터널 리턴)"
+REQUEST_INTERVAL = 1.0  # seconds between namu.wiki requests
+MAX_REDIRECTS = 5
+REDIRECT_CODES = {301, 302, 303, 307, 308}
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+OUT_PATH = DATA_DIR / "skills.json"
+CHARACTERS_PATH = DATA_DIR / "characters.json"
+WS = " \t\n\r\v\f"
+
+# --- page parsing -----------------------------------------------------------
+REVISED_RE = re.compile("최근 수정 시각:[ \t\n\r]*<time datetime=[\"']([^\"']+)[\"']")
+ALT_RE = re.compile("[ \t\n\r]alt=(?:'([^']*)'|\"([^\"]*)\")")
+RAW_TEXT_END = {"script": re.compile("</script", re.I), "style": re.compile("</style", re.I)}
+BLOCK_TAGS = pn.BLOCK_TAGS | {"hr"}
+HEADING_NUM_RE = re.compile(r"^[0-9]+(?:\.[0-9]+)*\. ")
+EDIT_SUFFIX = "[편집]"
+SKILL_SECTION, HISTORY_SECTION = "스킬", "역사"
+SKILL_HEADING_RE = re.compile("^(패시브|Q|W|E|R) - (.+)$")
+GROUP_KEYS = {"패시브": "P", "Q": "Q", "W": "W", "E": "E", "R": "R"}
+DAMAGE = "피해량"
+NUMV = "[0-9]+(?:\\.[0-9]+)?%?"
+# "[샤마쉬의 법전] 주문 피해량 [160 / 240 / 320] (+스킬 증폭의 80%)"
+VALUE_LINE_RE = re.compile("^(?:\\[([^\\[\\]]+)\\] )?([^\\[\\]]+?) \\[(" + NUMV + "(?: / " + NUMV
+                           + ")*)\\]((?: ?\\([^()]*\\))*)$")
+DAMAGE_ROW_RE = re.compile("피해량[^\\[]*\\[")  # damage row the value pattern may not read
+FOOTNOTE_RE = re.compile(r"\)(?:\[[0-9]+\])+$")  # "… (+스킬 증폭의 60%)[3]"
+PAREN_RE = re.compile(r"\(([^()]*)\)")
+# "+스킬 증폭의 80%", "+공격력의 14% / 16% / 18%" (wiki), "+공격력의 170/175/180%" (patch note)
+COEF_RE = re.compile("^\\+(.+?)의? ([0-9]+(?:\\.[0-9]+)?%?(?: ?/ ?[0-9]+(?:\\.[0-9]+)?%?)*)$")
+RATIO_FIELDS = {"공격력": "attackPowerRatio", "스킬 증폭": "skillAmpRatio"}
+LEVEL_FIELDS = ("baseDamage", "attackPowerRatio", "skillAmpRatio")
+# History: "님루드의 비석(E)의 스킬 증폭 계수가 60%로 증가했다", "(W)의 피해량이 60/80/100(+스킬 증폭의 45%)로"
+KEY_MENTION_RE = re.compile(r"\(([A-Z][A-Z0-9-]*)\)")
+HISTORY_KEYS = {"P", "Q", "W", "E", "R", "RQ", "RW", "RE"}
+HISTORY_RATIO_RE = re.compile("(스킬 증폭|스증|공격력|공) ?계수(?:가|는|를|도)? (?:[0-9]+(?:\\.[0-9]+)?%에서 )?"
+                              "([0-9]+(?:\\.[0-9]+)?)%(?:\\([^()]*\\))?(?:으로|로)")
+# The new list must not itself be followed by "에서" (then it is the old value).
+HISTORY_BASE_RE = re.compile("피해량이 (?:[0-9./]+(?:\\([^()]*\\))*에서 )?"
+                             "([0-9]+(?:\\.[0-9]+)?(?:/[0-9]+(?:\\.[0-9]+)?)+)(?![0-9./]*(?:\\([^()]*\\))*에서)"
+                             "((?:\\([^()]*\\))*)")
+TAG_PREFIX_RE = re.compile(r"^(?:\[[^\[\]]+\] )?")
+HISTORY_STATS = {"스킬 증폭": "skillAmpRatio", "스증": "skillAmpRatio", "공격력": "attackPowerRatio",
+                 "공": "attackPowerRatio"}
+# Patch-note side: "70/110/150(+스킬 증폭의 80%)"
+PATCH_VALUES_RE = re.compile(r"^([0-9]+(?:\.[0-9]+)?(?:/[0-9]+(?:\.[0-9]+)?)*)((?:\([^()]*\))*)$")
+TIME_RE = re.compile(r"^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(?:\.([0-9]+))?"
+                     r"(Z|[+-][0-9]{2}:[0-9]{2})$")
+UNRESERVED = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~")
+HEX = set("0123456789abcdefABCDEF")
+
+
+def _strip(s):
+    return s.strip(WS)
+
+
+def _number(text):
+    """Decimal text -> int/float, or None outside 1e-4..1e15 (except 0), where
+    Python and JS print floats differently."""
+    v = float(text)
+    if v == 0:
+        return None if re.search("[1-9]", text.split("e")[0]) else 0  # underflow is not zero
+    return pn.num(v) if 1e-4 <= v < 1e15 else None
+
+
+def _ratio(text):
+    """'80' -> 0.8 (percent text shifted by 100, correctly rounded like the JS twin), or None."""
+    return _number(text + "e-2")
+
+
+def page_lines(html):
+    """Document as [(kind, text, in_table)]: kind "h1".."h6" (heading), "img" (image
+    inside a table, text = alt) or "p" (text line); script/style bodies skipped."""
+    out, buf = [], []
+    state = {"kind": "p", "tables": 0}
+
+    def flush():
+        text = pn.SPACE_RE.sub(" ", "".join(buf)).strip(" ")
+        if text:
+            out.append((state["kind"], text, state["tables"] > 0))
+        buf.clear()
+
+    pos = 0
+    while pos < len(html):
+        m = pn.TOKEN_RE.match(html, pos)
+        pos = m.end()
+        if m.group(2) is None:
+            if not m.group(0).startswith("<!--"):
+                buf.append(pn.ENTITY_RE.sub(pn._entity, m.group(0)))
+            continue
+        tag, closing = m.group(2).lower(), m.group(1) == "/"
+        if tag in RAW_TEXT_END and not closing:
+            end = RAW_TEXT_END[tag].search(html, pos)
+            pos = end.start() if end else len(html)
+            continue
+        if tag == "img" and state["tables"] > 0:
+            a = ALT_RE.search(m.group(0))
+            if a:
+                flush()
+                alt = a.group(1) if a.group(1) is not None else a.group(2)
+                out.append(("img", pn.ENTITY_RE.sub(pn._entity, alt), True))
+        if tag == "table":
+            flush()
+            state["tables"] = max(0, state["tables"] + (-1 if closing else 1))
+        if tag in BLOCK_TAGS:
+            flush()
+            state["kind"] = tag if tag in pn.HEADINGS and not closing else "p"
+    flush()
+    return out
+
+
+def heading_title(text):
+    """'4.2. Q - 샤마쉬의 두루마리[편집]' -> 'Q - 샤마쉬의 두루마리'"""
+    if text.endswith(EDIT_SUFFIX):
+        text = text[: -len(EDIT_SUFFIX)]
+    return _strip(HEADING_NUM_RE.sub("", text, count=1))
+
+
+def sections(lines, title):
+    """[lines] under every heading titled `title` (until the next heading of the same or higher level)."""
+    found = []
+    for i, (kind, text, _) in enumerate(lines):
+        if kind in pn.HEADINGS and heading_title(text) == title:
+            j = i + 1
+            while j < len(lines) and not (lines[j][0] in pn.HEADINGS and lines[j][0] <= kind):
+                j += 1
+            found.append(lines[i + 1: j])
+    return found
+
+
+def _coef_values(text):
+    """'25% / 35%' or '170/175%' -> [0.25, 0.35] / [1.7, 1.75], or None (out of range)."""
+    values = [_ratio(_strip(v).rstrip("%")) for v in text.split("/")]
+    return None if None in values else values
+
+
+def levels_from(values, coefs):
+    """(levels, None) or (None, reason) for one damage row: values ['70', '110', …],
+    coefs ['+스킬 증폭의 80%', …] (text inside the parentheses)."""
+    if any(v.endswith("%") for v in values):
+        return None, "기본 피해량이 % 값"
+    ratios = {}
+    for coef in coefs:
+        m = COEF_RE.match(coef)
+        if not m or not m.group(2).endswith("%"):
+            return None, f"계수 형식 미해석: ({coef})"
+        field = RATIO_FIELDS.get(m.group(1))
+        if field is None:
+            return None, f"계수 종류: {m.group(1)}"
+        if field in ratios:
+            return None, f"계수 중복: {m.group(1)}"
+        ratios[field] = _coef_values(m.group(2))
+        if ratios[field] is None:
+            return None, "수치 범위"
+    base = [_number(v) for v in values]
+    if None in base:
+        return None, "수치 범위"
+    n = len(values)
+    for r in ratios.values():
+        if len(r) != 1 and len(r) != n:
+            if n != 1:
+                return None, "레벨 수 불일치"
+            n = len(r)
+    if any(len(r) not in (1, n) for r in ratios.values()):
+        return None, "레벨 수 불일치"
+    pick = lambda xs, i: xs[i] if len(xs) > 1 else xs[0]  # noqa: E731
+    return [{"level": i + 1, "baseDamage": pick(base, i),
+             "attackPowerRatio": pick(ratios.get("attackPowerRatio", [0]), i),
+             "skillAmpRatio": pick(ratios.get("skillAmpRatio", [0]), i)} for i in range(n)], None
+
+
+def _value_line(text):
+    m = VALUE_LINE_RE.match(FOOTNOTE_RE.sub(")", text))
+    if not m:
+        return None
+    return {"label": m.group(2), "values": m.group(3).split(" / "), "coefs": PAREN_RE.findall(m.group(4))}
+
+
+def _valueish(text):
+    return _value_line(text) is not None or DAMAGE_ROW_RE.search(text) is not None
+
+
+def _sub_skills(group_lines, letter):
+    """Split a skill heading's table rows into sub-skills: a run of images starts one.
+    Value rows before the first image form an unnamed first sub-skill."""
+    subs, prev_img = [], False
+    for kind, text, in_table in group_lines:
+        if not in_table or kind in pn.HEADINGS:
+            continue
+        if kind == "img":
+            if not prev_img:
+                subs.append({"alts": [], "lines": []})
+            subs[-1]["alts"].append(text)
+            prev_img = True
+            continue
+        prev_img = False
+        if not subs:
+            if not _valueish(text):
+                continue
+            subs.append({"alts": [], "lines": []})
+        subs[-1]["lines"].append(text)
+    # Later image rows without any value row are illustrations (e.g. interaction tables).
+    subs = [s for i, s in enumerate(subs) if i == 0 or any(_valueish(t) for t in s["lines"])]
+    keys, used = [], set()
+    for s in subs:
+        ult = "R" + letter
+        base = ult if letter in "QWE" and any(a.split(" ")[-1].upper() == ult for a in s["alts"]) else letter
+        key, n = base, 1
+        while key in used:
+            n += 1
+            key = f"{base}{n}"
+        used.add(key)
+        keys.append(key)
+    return subs, keys
+
+
+def _parse_skill(key, name, lines):
+    """(skill entry, needsReview rows, damage value rows) for one sub-skill."""
+    review, confirmed, damage_rows = [], [], []
+    for text in lines:
+        if DAMAGE not in text:
+            continue
+        v = _value_line(text)
+        if v is None:
+            if DAMAGE_ROW_RE.search(text):
+                review.append({"skill": key, "text": text, "reason": "형식 미해석"})
+            continue
+        if DAMAGE not in v["label"]:
+            continue
+        damage_rows.append(v)
+        levels, reason = levels_from(v["values"], v["coefs"])
+        if v["label"] != DAMAGE:
+            review.append({"skill": key, "text": text, "reason": f"피해량 아님: {v['label']}"})
+        elif levels is None:
+            review.append({"skill": key, "text": text, "reason": reason})
+        else:
+            confirmed.append((text, levels))
+    entry = {"key": key, "name": name, "levels": [], "raw": None, "sourceLabel": None}
+    if len(confirmed) == 1:
+        entry.update(levels=confirmed[0][1], raw=confirmed[0][0], sourceLabel=DAMAGE)
+    else:
+        review += [{"skill": key, "text": t, "reason": "피해량 줄 여러 개"} for t, _ in confirmed]
+    return entry, review, damage_rows
+
+
+def _history_records(lines):
+    """[(key, field or "baseDamage", value, line)] in document order (out-of-range values dropped)."""
+    records = []
+    for kind, text, _ in lines:
+        if kind != "p":
+            continue
+        mentions = list(KEY_MENTION_RE.finditer(text))
+        for i, m in enumerate(mentions):
+            key = m.group(1).replace("-", "")
+            if key not in HISTORY_KEYS:
+                continue
+            clause = text[m.end(): mentions[i + 1].start() if i + 1 < len(mentions) else len(text)]
+            found = []  # (position in clause, field, value)
+            for r in HISTORY_RATIO_RE.finditer(clause):
+                found.append((r.start(), HISTORY_STATS[r.group(1)], _ratio(r.group(2))))
+            for b in HISTORY_BASE_RE.finditer(clause):
+                base = [_number(x) for x in b.group(1).split("/")]
+                found.append((b.start(), "baseDamage", None if None in base else base))
+                coefs_at = b.end() - len(b.group(2))
+                for p in PAREN_RE.finditer(b.group(2)):
+                    c = COEF_RE.match(p.group(1))
+                    if c and c.group(1) in RATIO_FIELDS and "/" not in c.group(2):
+                        found.append((coefs_at + p.start(), RATIO_FIELDS[c.group(1)], _ratio(c.group(2).rstrip("%"))))
+            found.sort(key=lambda f: f[0])
+            records += [(key, field, value, text) for _, field, value in found if value is not None]
+    return records
+
+
+def _fmt(v):
+    return json.dumps(v, ensure_ascii=False, separators=(",", ":"))
+
+
+def history_review(rows_by_key, lines):
+    """needsReview rows where the latest history record disagrees with the skill box."""
+    last = {}
+    for key, field, value, text in _history_records(lines):
+        last[(key, field)] = (value, text)
+    review = []
+    for (key, field), (value, text) in last.items():
+        known = []
+        for v in rows_by_key.get(key, []):
+            if field == "baseDamage":
+                base = [_number(x) for x in v["values"]] if not any(x.endswith("%") for x in v["values"]) else [None]
+                if None not in base:
+                    known.append(base)
+                continue
+            for coef in v["coefs"]:
+                c = COEF_RE.match(coef)
+                if c and RATIO_FIELDS.get(c.group(1)) == field:
+                    known += _coef_values(c.group(2)) or []
+        if known and value not in known:
+            review.append({"skill": key, "text": text,
+                           "reason": f"역사 불일치: {field} 설명란 {_fmt(known)}, 역사 마지막 {_fmt(value)}"})
+    return review
+
+
+def parse_page(character_id, name, html):
+    """skills.json entry for one character (html None: document not found)."""
+    entry = {"characterId": character_id, "name": name, "skills": [], "wikiRevisedAt": None, "needsReview": []}
+    if html is None:
+        entry["needsReview"].append({"skill": None, "text": doc_url(name + DOC_SUFFIX), "reason": "문서 없음"})
+        return entry
+    rev = REVISED_RE.search(html)
+    entry["wikiRevisedAt"] = rev.group(1) if rev else None
+    if rev is None:
+        entry["needsReview"].append({"skill": None, "text": "", "reason": "최근 수정 시각 없음"})
+    lines = page_lines(html)
+    skill_sections = sections(lines, SKILL_SECTION)
+    if not skill_sections:
+        entry["needsReview"].append({"skill": None, "text": "", "reason": "스킬 문단 없음"})
+        return entry
+    rows_by_key = {}
+    sec = skill_sections[0]
+    i = 0
+    while i < len(sec):
+        kind, text, _ = sec[i]
+        m = SKILL_HEADING_RE.match(heading_title(text)) if kind in pn.HEADINGS else None
+        if not m:
+            i += 1
+            continue
+        j = i + 1
+        while j < len(sec) and not (sec[j][0] in pn.HEADINGS and sec[j][0] <= kind):
+            j += 1
+        subs, keys = _sub_skills(sec[i + 1: j], GROUP_KEYS[m.group(1)])
+        names = m.group(2).split(" / ")
+        for n, (sub, key) in enumerate(zip(subs, keys)):
+            skill, review, rows = _parse_skill(key, names[n] if len(names) == len(subs) else m.group(2), sub["lines"])
+            entry["skills"].append(skill)
+            entry["needsReview"] += review
+            rows_by_key.setdefault(key, []).extend(rows)
+        i = j
+    entry["needsReview"] += history_review(rows_by_key, [l for s in sections(lines, HISTORY_SECTION) for l in s])
+    return entry
+
+
+# --- robots.txt ---------------------------------------------------------------
+def encode_title(title):
+    """Percent-encode a document title (same bytes as the JS twin)."""
+    return urllib.parse.quote(title, safe="")
+
+
+def doc_url(title):
+    return WIKI + "/w/" + encode_title(title)
+
+
+def robots_normalize(s):
+    """Percent-encoding normal form for robots matching (RFC 9309 2.2.2): non-ASCII
+    as UTF-8 %XX, %XX of unreserved characters decoded, hex upper-case."""
+    chars, out, i = list(s), [], 0
+    while i < len(chars):
+        ch = chars[i]
+        if ch == "%" and i + 2 < len(chars) and chars[i + 1] in HEX and chars[i + 2] in HEX:
+            c = chr(int(chars[i + 1] + chars[i + 2], 16))
+            out.append(c if c in UNRESERVED else "%" + (chars[i + 1] + chars[i + 2]).upper())
+            i += 3
+            continue
+        if ord(ch) > 127:
+            out += ["%%%02X" % b for b in ch.encode("utf-8")]
+        else:
+            out.append(ch)
+        i += 1
+    return "".join(out)
+
+
+def parse_robots(text, agent=AGENT):
+    """[(allow, pattern)] of the groups naming `agent` (case-insensitive), else of the
+    "User-agent: *" groups. Patterns are percent-normalized."""
+    groups, cur = [], None
+    for raw in text.split("\n"):
+        line = _strip(raw.split("#", 1)[0])
+        if ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        key, value = _strip(key).lower(), _strip(value)
+        if key == "user-agent":
+            if cur is None or cur["closed"]:
+                cur = {"agents": [], "rules": [], "closed": False}
+                groups.append(cur)
+            cur["agents"].append(value.lower())
+        elif key in ("allow", "disallow") and cur is not None:
+            cur["closed"] = True  # an empty Disallow still ends the user-agent list
+            if value:
+                cur["rules"].append((key == "allow", robots_normalize(value)))
+    own = [g for g in groups if agent.lower() in g["agents"]]
+    return [r for g in (own or [g for g in groups if "*" in g["agents"]]) for r in g["rules"]]
+
+
+def _robots_match(pattern, path):
+    anchored = pattern.endswith("$")
+    parts = (pattern[:-1] if anchored else pattern).split("*")
+    if not path.startswith(parts[0]):
+        return False
+    pos = len(parts[0])
+    if len(parts) == 1:
+        return not anchored or pos == len(path)
+    for part in parts[1:-1]:
+        i = path.find(part, pos)
+        if i < 0:
+            return False
+        pos = i + len(part)
+    last = parts[-1]
+    if anchored:
+        return len(path) - len(last) >= pos and path.endswith(last)
+    return path.find(last, pos) >= 0
+
+
+def _remove_dot_segments(path):
+    """RFC 3986 5.2.4 on a normalized path (what the JS URL parser does for the twin)."""
+    out = []
+    segs = path.split("/")
+    for i, seg in enumerate(segs[1:], 1):
+        last = i == len(segs) - 1
+        if seg == "..":
+            if out:
+                out.pop()
+            if last:
+                out.append("")
+        elif seg == ".":
+            if last:
+                out.append("")
+        else:
+            out.append(seg)
+    return "/" + "/".join(out)
+
+
+def robots_allowed(rules, url):
+    """Longest matching rule wins, Allow on ties; no match = allowed."""
+    u = urllib.parse.urlsplit(url)
+    path = _remove_dot_segments(robots_normalize(u.path or "/")) + robots_normalize("?" + u.query if u.query else "")
+    best = None
+    for allow, pattern in rules:
+        if _robots_match(pattern, path):
+            cand = (len(pattern), allow)
+            if best is None or cand > best:
+                best = cand
+    return best is None or best[1]
+
+
+# --- fetching -----------------------------------------------------------------
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None  # fetch_pages follows redirects itself (robots check + interval per hop)
+
+
+_OPENER = urllib.request.build_opener(_NoRedirect)
+
+
+def fetch_page(url):
+    """One request, redirects not followed: {"status", "body", "location"}.
+    200, 404 and redirects are returned; other errors raise."""
+    req = urllib.request.Request(url, headers=HEADERS)
+    try:
+        with _OPENER.open(req, timeout=30) as resp:
+            return {"status": resp.status, "body": resp.read().decode("utf-8"), "location": None}
+    except urllib.error.HTTPError as e:
+        with e:
+            if e.code == 404:
+                return {"status": 404, "body": "", "location": None}
+            if e.code in REDIRECT_CODES:
+                return {"status": e.code, "body": "", "location": e.headers.get("Location")}
+            raise
+
+
+class _Throttle:
+    def __init__(self, interval):
+        self.interval, self.last = interval, None
+
+    def wait(self):
+        if self.last is not None:
+            left = self.interval - (time.monotonic() - self.last)
+            if left > 0:
+                time.sleep(left)
+        self.last = time.monotonic()
+
+
+def _resolve(base, location):
+    """Absolute ASCII URL of a redirect target."""
+    return urllib.parse.quote(urllib.parse.urljoin(base, location), safe=":/?#[]@!$&'()*+,;=%")
+
+
+def _get(url, rules, throttle):
+    """Final page after following redirects (each hop robots-checked and throttled)."""
+    for _ in range(MAX_REDIRECTS + 1):
+        if not robots_allowed(rules, url):
+            raise ValueError(f"robots.txt disallows {url}")
+        throttle.wait()
+        page = fetch_page(url)
+        if page["status"] not in REDIRECT_CODES:
+            return page
+        if not page["location"]:
+            raise ValueError(f"redirect without Location from {url}")
+        url = _resolve(url, page["location"])
+    raise ValueError(f"too many redirects from {url}")
+
+
+def fetch_pages(names, interval=None):
+    """{name: document HTML or None} for the characters, robots.txt respected."""
+    throttle = _Throttle(REQUEST_INTERVAL if interval is None else interval)
+    robots = _get(ROBOTS_URL, [], throttle)
+    rules = parse_robots(robots["body"]) if robots["status"] == 200 else []
+    pages = {}
+    for name in names:
+        pages[name] = None
+        for title in (name + DOC_SUFFIX, name):
+            page = _get(doc_url(title), rules, throttle)
+            if page["status"] != 404:
+                pages[name] = page["body"]
+                break
+    return pages
+
+
+def build_skills(chars, pages):
+    """skills.json content (wiki values only) for the built characters."""
+    return [parse_page(c["id"], c["name"], pages.get(c["name"])) for c in chars]
+
+
+# --- patch-note overrides ---------------------------------------------------
+def instant(text):
+    """ISO time -> (epoch seconds, fraction digits), or None when malformed/out of range."""
+    m = TIME_RE.match(text or "")
+    if not m:
+        return None
+    y, mo, d, h, mi, s = (int(m.group(i)) for i in range(1, 7))
+    leap = y % 4 == 0 and (y % 100 != 0 or y % 400 == 0)
+    month_days = [31, 29 if leap else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    if not (1 <= mo <= 12 and 1 <= d <= month_days[mo - 1] and h < 24 and mi < 60 and s < 60):
+        return None
+    off = 0
+    if m.group(8) != "Z":
+        oh, om = int(m.group(8)[1:3]), int(m.group(8)[4:6])
+        if oh > 23 or om > 59:
+            return None
+        off = (1 if m.group(8)[0] == "+" else -1) * (oh * 60 + om)
+    yy = y - (mo <= 2)  # days from civil (proleptic Gregorian)
+    era = yy // 400
+    yoe = yy - era * 400
+    doy = (153 * (mo + (-3 if mo > 2 else 9)) + 2) // 5 + d - 1
+    days = era * 146097 + yoe * 365 + yoe // 4 - yoe // 100 + doy - 719468
+    return ((days * 24 + h) * 60 + mi - off) * 60 + s, m.group(7) or ""
+
+
+def is_before(a, b):
+    """True when ISO time a is strictly earlier than b (False if either is unreadable)."""
+    ia, ib = instant(a), instant(b)
+    if ia is None or ib is None:
+        return False
+    if ia[0] != ib[0]:
+        return ia[0] < ib[0]
+    n = max(len(ia[1]), len(ib[1]))
+    return ia[1].ljust(n, "0") < ib[1].ljust(n, "0")
+
+
+def patch_levels(text):
+    """(levels, reason) for one side of a patch-note row: '70/110/150(+스킬 증폭의 80%)'."""
+    m = PATCH_VALUES_RE.match(text)
+    if not m:
+        return None, "형식 미해석"
+    return levels_from(m.group(1).split("/"), PAREN_RE.findall(m.group(2)))
+
+
+def _same_levels(a, b):
+    key = lambda ls: [(l.get("level"), *(l.get(f) for f in LEVEL_FIELDS)) for l in ls]  # noqa: E731
+    return key(a) == key(b)
+
+
+def _field_changes(old, new):
+    """[(level, field, old value, new value)] where the level rows differ (levels compared by number)."""
+    by_level = {l["level"]: l for l in old}
+    out = []
+    for l in new:
+        o = by_level.get(l["level"], {})
+        for f in LEVEL_FIELDS:
+            if o.get(f) != l[f]:
+                out.append((l["level"], f, o.get(f), l[f]))
+    return out
+
+
+def _merge(rows, index, new_rows):
+    """Append rows; a later row for the same character/skill/level/field updates the
+    earlier one (dakgg stays the original wiki value)."""
+    for r in new_rows:
+        k = (r["characterId"], r["skill"], r["level"], r["field"])
+        if k in index:
+            index[k].update({f: v for f, v in r.items() if f != "dakgg"})
+        else:
+            index[k] = r
+            rows.append(r)
+
+
+def apply_skill_changes(skills, changes, articles):
+    """Overwrite wiki levels with patch-note rows posted after the wiki revision.
+    Returns (overrides, skipped, unparsed); skills are modified in place.
+    One override / skipped row per changed level field, in the calculator's shape
+    (src/skills.js patchNotes, src/meta.js overrideLines): {type:"skill", characterId,
+    name, skill (key), level, field, stat "<level>레벨 <field>", dakgg (wiki value before
+    the patch note), patchnote, text}. A row is matched to a wiki skill with the same key
+    whose levels equal the row's old value (unless the wiki lists that label as another
+    damage row) or whose label is the same."""
+    by_name = {s["name"]: s for s in skills}
+    overrides, skipped, unparsed = [], [], []
+    over_index, skip_index = {}, {}
+    for c in changes:
+        if c["type"] != "skill":
+            continue
+        char = by_name.get(c["name"])
+        after, _ = patch_levels(c["after"])
+        before, _ = patch_levels(c["before"])
+        cands = [s for s in char["skills"] if s["key"] == c["key"] and s["levels"]] if char else []
+        if after is not None and any(_same_levels(s["levels"], after) for s in cands):
+            continue  # the wiki already shows the patched value
+        # The wiki has a separate row with the patch row's label (e.g. 추가 피해량).
+        other_row = char is not None and c["label"] != DAMAGE and any(
+            r["skill"] == c["key"] and TAG_PREFIX_RE.sub("", r["text"], count=1).startswith(c["label"] + " ")
+            for r in char["needsReview"])
+        hit = [s for s in cands if before is not None and not other_row and _same_levels(s["levels"], before)] or \
+              [s for s in cands if s["sourceLabel"] == c["label"]]
+        if after is None or len(hit) != 1:
+            unparsed.append({"type": "skill", "name": c["name"], "text": c["text"]})
+            continue
+        s = hit[0]
+        posted = articles[c["part"]]["createdAt"]
+        revised = char["wikiRevisedAt"]
+        rows = [{"type": "skill", "characterId": char["characterId"], "name": c["name"], "skill": s["key"],
+                 "level": level, "field": f, "stat": f"{level}레벨 {f}", "dakgg": old, "patchnote": new,
+                 "text": c["text"]} for level, f, old, new in _field_changes(s["levels"], after)]
+        if is_before(revised, posted):
+            s["levels"], s["raw"] = after, c["text"]
+            _merge(overrides, over_index, rows)
+        else:
+            _merge(skipped, skip_index, [{**r, "wikiRevisedAt": revised, "patchPostedAt": posted,
+                                          "reason": "나무위키 최근 수정이 패치노트 게시 이후(또는 시각 미확인)"}
+                                         for r in rows])
+    return overrides, skipped, unparsed
+
+
+def dumps(skills):
+    return json.dumps(skills, ensure_ascii=False, indent=2) + "\n"
+
+
+def fetch_skills(chars, interval=None):
+    """skills.json content with patch-note overrides applied."""
+    skills = build_skills(chars, fetch_pages([c["name"] for c in chars], interval))
+    patch = pn.fetch_patch()
+    apply_skill_changes(skills, pn.parse_patch(patch["bodies"], set())["changes"], patch["info"]["articles"])
+    return skills
+
+
+def main():
+    chars = json.loads(CHARACTERS_PATH.read_text(encoding="utf-8"))
+    skills = fetch_skills(chars)
+    with open(OUT_PATH, "w", encoding="utf-8", newline="\n") as f:
+        f.write(dumps(skills))
+    print(f"wrote {len(skills)} characters to {OUT_PATH} "
+          f"({sum(len(c['needsReview']) for c in skills)} needsReview)")
+
+
+if __name__ == "__main__":
+    sys.exit(main())

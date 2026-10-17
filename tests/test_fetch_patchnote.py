@@ -5,8 +5,8 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from node_harness import (ROOT, article, fi, pn, patch_bodies, record, replay,  # noqa: F401
-                          run_node)
+from node_harness import (ROOT, ROBOTS_TXT, article, fi, fs, pn, patch_bodies, record, replay,  # noqa: F401
+                          run_node, wiki_page)
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 PATCH_HTML = (FIXTURES / "patchnote_sample.html").read_text(encoding="utf-8")
@@ -56,10 +56,21 @@ def fixture_bodies():
     bodies[fi.MASTERIES_URL] = json.dumps({"masteries": MASTERIES}, ensure_ascii=False)
     bodies["https://er.dakgg.io/api/v1/data/characters?hl=ko"] = json.dumps(
         {"characters": RAW_CHARS}, ensure_ascii=False)
+    # namu.wiki: 아디나 revised before the patch note (E is overwritten), 루치아 has no
+    # document under either title, 라우라 is redirected and revised after the patch.
+    bodies[fs.ROBOTS_URL] = ROBOTS_TXT
+    bodies[fs.doc_url("아디나(이터널 리턴)")] = wiki_page("2026-10-01T00:00:00.000Z", [
+        ("E - 폴 디그니티", [("Adina E", ["피해량 [20 / 30 / 40 / 50] (+스킬 증폭의 6%)"])])])
+    bodies[fs.doc_url("루치아(이터널 리턴)")] = {"status": 404}
+    bodies[fs.doc_url("루치아")] = {"status": 404}
+    bodies[fs.doc_url("라우라(이터널 리턴)")] = {"status": 302, "location": "/w/%EB%9D%BC%EC%9A%B0%EB%9D%BC?from=x"}
+    bodies[fs.doc_url("라우라") + "?from=x"] = wiki_page("2026-10-16T00:00:00.000Z", [
+        ("Q - 예고장", [("Laura Q", ["피해량 [10 / 20] (+공격력의 50%)"])])])
     return bodies
 
 
-NODE_FETCH_ALL = 'const m = await imp("fetch_items.mjs"); return m.fetchAll({ outDir: env.OUT, fetchedAt: env.AT });'
+NODE_FETCH_ALL = ('const m = await imp("fetch_items.mjs");'
+                  'return m.fetchAll({ outDir: env.OUT, fetchedAt: env.AT, intervalMs: 0 });')
 EDGE_HTML = ('<div class="er-article-detail__content"><h5>방어구</h5>'
              '<ul><li><p>더 문</p><ul><li><p><s>쿨다운 감소 10</s> (삭제)</p></li>'
              '<li><p>공격 속도 1% &rarr; 0.001%</p></li></ul></li></ul>'
@@ -69,7 +80,8 @@ EDGE_STATS = ["공격 속도", "쿨다운 감소"]
 
 
 def read_outputs(out_dir):
-    return {n: (Path(out_dir) / n).read_bytes() for n in ("items.json", "characters.json", "items.meta.json")}
+    return {n: (Path(out_dir) / n).read_bytes()
+            for n in ("items.json", "characters.json", "skills.json", "items.meta.json")}
 
 
 class ArticleSelectionTests(unittest.TestCase):
@@ -117,8 +129,42 @@ class ParseTests(unittest.TestCase):
         flat, pct = fi.stat_kinds(RAW_ITEMS)
         cls.parsed = pn.parse_patch([PATCH_HTML, HOTFIX_HTML], flat | pct)
 
+    def test_skill_changes(self):
+        skills = [c for c in self.parsed["changes"] if c["type"] == "skill"]
+        self.assertEqual(skills, [{
+            "type": "skill", "name": "아디나", "key": "E", "skill": "폴 디그니티", "label": "피해량",
+            "before": "20/30/40/50(+스킬 증폭의 6%)", "after": "26/36/46/56(+스킬 증폭의 7%)",
+            "text": "폴 디그니티(E) > 피해량 20/30/40/50(+스킬 증폭의 6%) → 26/36/46/56(+스킬 증폭의 7%)",
+            "part": 0}])
+
+    def test_skill_rows_and_name_ending_in_da(self):
+        # "아르다" ends in 다 but is a name row (it used to be read as a description,
+        # so its rows went to the previous character).
+        html = ('<div class="er-article-detail__content"><h5>실험체</h5>'
+                '<p>아디나</p><p>상향합니다</p>'
+                '<ul><li><p>아르카나 무기 숙련도 레벨 당 스킬 증폭 4.4% → 4.5%</p></li></ul>'
+                '<p>아르다</p><p>아르다는 낮은 피해량 지표를 기록하고 있다</p><ul>'
+                '<li><p>바빌론의 입방체(W)</p><ul>'
+                '<li><p>1타 피해량 60/80(+스킬 증폭의 50%) → 70/90(+스킬 증폭의 55%)</p></li>'
+                '<li><p>바빌론의 주사위(RW)도 적용됩니다.</p></li></ul></li>'
+                '<li><p>오버클럭(R)</p><ul>'
+                '<li><p>광자력 수류탄(RE) 지속 피해량 30/40(+스킬 증폭의 15%) → 30/40(+스킬 증폭의 18%)</p></li>'
+                '<li><p>2타 피해량 공격력의 50/55% → 55/60%</p></li></ul></li>'
+                '<li><p>휠 댄스(데비 W)</p><ul><li><p>피해량 40(+공격력의 5%) → 40(+공격력의 6%)</p></li>'
+                '</ul></li></ul></div>')
+        parsed = pn.parse_patch([html], [])
+        got = [(c["name"], c["key"], c["label"]) for c in parsed["changes"] if c["type"] == "skill"]
+        self.assertEqual(got, [("아르다", "W", "1타 피해량"), ("아르다", "RE", "지속 피해량")])
+        self.assertEqual([c["name"] for c in parsed["changes"] if c["type"] == "character"], ["아디나"])
+        self.assertEqual([(u["type"], u["name"], u["text"]) for u in parsed["unparsed"]], [
+            ("skill", "아르다", "오버클럭(R) > 2타 피해량 공격력의 50/55% → 55/60%"),
+            ("skill", "아르다", "휠 댄스(데비 W) > 피해량 40(+공격력의 5%) → 40(+공격력의 6%)")])
+        node = run_node({}, 'const m = await imp("fetch_patchnote.mjs"); return m.parsePatch([env.A], []);', A=html)
+        self.assertEqual(node, parsed)
+
     def test_changes(self):
-        got = [(c["type"], c["name"], c.get("weapon"), c["stat"], c["value"]) for c in self.parsed["changes"]]
+        got = [(c["type"], c["name"], c.get("weapon"), c["stat"], c["value"])
+               for c in self.parsed["changes"] if c["type"] != "skill"]
         self.assertEqual(got, [
             ("character", "아디나", "아르카나", "skillAmpRatio", 0.045),
             ("character", "루치아", "저격총", "attackSpeedRatio", 0.045),
@@ -184,7 +230,8 @@ class ApplyTests(unittest.TestCase):
             cls.files = read_outputs(tmp)
 
     def test_overrides_only_where_values_differ(self):
-        got = [(o["type"], o["name"], o["stat"], o["dakgg"], o["patchnote"]) for o in self.result["meta"]["overrides"]]
+        got = [(o["type"], o["name"], o["stat"], o["dakgg"], o["patchnote"])
+               for o in self.result["meta"]["overrides"] if o["type"] != "skill"]
         self.assertEqual(got, [
             ("item", "선녀강림", "공격 속도", 0.4, 0.45),  # hotfix after the patch wins
             ("item", "큐브 워치", "치명타 피해량", None, 0.04),  # (신규) stat
@@ -209,6 +256,28 @@ class ApplyTests(unittest.TestCase):
         self.assertEqual(chars["아디나"]["masteries"]["아르카나"]["skillAmpRatio"], 0.046)
         self.assertEqual(chars["라우라"]["attackPower"], 33)
 
+    def test_skills(self):
+        skills = {c["name"]: c for c in json.loads(self.files["skills.json"])}
+        self.assertEqual(list(skills), ["아디나", "루치아", "라우라"])  # character id order
+        adina = skills["아디나"]
+        self.assertEqual(adina["characterId"], "1")
+        self.assertEqual([(l["level"], l["baseDamage"], l["skillAmpRatio"]) for l in adina["skills"][0]["levels"]],
+                         [(1, 26, 0.07), (2, 36, 0.07), (3, 46, 0.07), (4, 56, 0.07)])  # wiki older: patch wins
+        self.assertEqual(skills["루치아"]["needsReview"], [
+            {"skill": None, "text": fs.doc_url("루치아(이터널 리턴)"), "reason": "문서 없음"}])
+        self.assertEqual(skills["라우라"]["wikiRevisedAt"], "2026-10-16T00:00:00.000Z")  # redirected page
+        self.assertEqual(skills["라우라"]["skills"][0]["levels"][1],
+                         {"level": 2, "baseDamage": 20, "attackPowerRatio": 0.5, "skillAmpRatio": 0})
+        meta = self.result["meta"]
+        rows = [o for o in meta["overrides"] if o["type"] == "skill"]
+        self.assertEqual(len(rows), 8)  # 4 levels × (baseDamage, skillAmpRatio)
+        self.assertEqual(rows[0], {
+            "type": "skill", "characterId": "1", "name": "아디나", "skill": "E", "level": 1, "field": "baseDamage",
+            "stat": "1레벨 baseDamage", "dakgg": 20, "patchnote": 26,
+            "text": "폴 디그니티(E) > 피해량 20/30/40/50(+스킬 증폭의 6%) → 26/36/46/56(+스킬 증폭의 7%)"})
+        self.assertEqual((rows[1]["field"], rows[1]["dakgg"], rows[1]["patchnote"]), ("skillAmpRatio", 0.06, 0.07))
+        self.assertEqual(meta["skipped"], [])
+
     def test_meta(self):
         meta = json.loads(self.files["items.meta.json"])
         self.assertEqual(meta["fetchedAt"], FETCHED_AT)
@@ -217,6 +286,7 @@ class ApplyTests(unittest.TestCase):
             "id": 3898, "version": "12.6", "title": "2026.10.15 - 12.6 패치노트",
             "url": "https://playeternalreturn.com/posts/news/3898", "date": "2026-10-15"})
         self.assertEqual([a["id"] for a in meta["patch"]["articles"]], [3898, 3899])
+        self.assertEqual(meta["patch"]["articles"][0]["createdAt"], "2026-10-14T08:00:00.000000Z")
         unparsed = [(u["type"], u["name"]) for u in meta["unparsed"]]
         self.assertIn(("item", "없는 아이템"), unparsed)  # in the patch note, not in the data
         self.assertIn(("character", "없는실험체"), unparsed)
@@ -240,11 +310,12 @@ class LiveTests(unittest.TestCase):
         bodies = {}
         with tempfile.TemporaryDirectory() as py_dir, tempfile.TemporaryDirectory() as js_dir:
             with record(bodies):
-                result = fi.fetch_all(py_dir, FETCHED_AT)
+                result = fi.fetch_all(py_dir, FETCHED_AT)  # includes ~91 namu.wiki pages, 1 s apart
             node_result = run_node(bodies, NODE_FETCH_ALL, OUT=js_dir, AT=FETCHED_AT)
             self.assertEqual(read_outputs(js_dir), read_outputs(py_dir))
         self.assertEqual(node_result, json.loads(json.dumps(result, ensure_ascii=False)))
         self.assertGreater(len(result["items"]), 400)
+        self.assertEqual(len(result["skills"]), len(result["characters"]))
         self.assertTrue(result["meta"]["patch"]["version"])
 
 

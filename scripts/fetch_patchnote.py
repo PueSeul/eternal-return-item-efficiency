@@ -44,7 +44,8 @@ NEW_STAT_RE = re.compile(r"^(.+) " + NUM + r" \(신규\)$")  # 치명타 피해�
 VALUE_RE = re.compile(r"^(.+) " + NUM + "$")  # new item "능력치" rows: 공격력 27
 NEW_ITEM_RE = re.compile(r"^(.+) \(신규 [^()]*\)$")  # 월왕구천 (신규 전설 등급)
 MASTERY_RE = re.compile(r"^(.+?) 무기 숙련도 레벨 당(?: (.+))?$")
-SENTENCE_RE = re.compile(r"[.!?다요]$")  # character description paragraphs
+# Character description paragraphs; a bare name ending in 다/요 ("아르다") is not one.
+SENTENCE_RE = re.compile(r"[.!?]$|.* .*[다요]$|(?:니다|어요|해요)$")
 ARROW = "→"
 DELETED = "(삭제)"  # "<s>쿨다운 감소 10</s> (삭제)": reported, not applied
 STATS_HEADER = "능력치"
@@ -59,6 +60,14 @@ MASTERY_STATS = {
     ("공격력", False): "attackPower",
 }
 PCT_SUFFIX = "율"  # same rule as fetch_items: % variant of a flat stat name
+# Skill rows (applied to data/skills.json by fetch_skills): header "님루드의 비석(E)",
+# change row "피해량 80/110/140(+스킬 증폭의 60%) → 80/110/140(+스킬 증폭의 65%)".
+SKILL_HEADER_RE = re.compile(r"^(.+)\(([^()]+)\)$")
+SKILL_KEYS = {"P", "Q", "W", "E", "R", "RQ", "RW", "RE"}
+SKILL_VALUES = r"[0-9]+(?:\.[0-9]+)?(?:/[0-9]+(?:\.[0-9]+)?)*(?:\([^()]*\))*"
+SKILL_CHANGE_RE = re.compile("^(.+?) (" + SKILL_VALUES + ") → (" + SKILL_VALUES + ")$")
+SUB_KEY_RE = re.compile(r"^(.+)\((R[QWE])\) (.+)$")  # "광자력 수류탄(RE) 지속 피해량"
+SKILL_DAMAGE = "피해량"
 
 
 def fetch_text(url):
@@ -130,7 +139,8 @@ def fetch_patch():
         "title": latest["title"],
         "url": latest["url"],
         "date": f"{d.group(1)}-{d.group(2)}-{d.group(3)}" if d else latest["createdAt"][:10],
-        "articles": [{"id": a["id"], "title": a["title"], "url": a["url"]} for a in applied],
+        "articles": [{"id": a["id"], "title": a["title"], "url": a["url"], "createdAt": a["createdAt"]}
+                     for a in applied],
     }
     return {"info": info, "bodies": [fetch_text(a["url"]) for a in applied]}
 
@@ -232,7 +242,25 @@ class _Parser:
             self.changes.append({"type": "character", "name": name, "weapon": weapon, "stat": field,
                                  "value": vp[0], "text": text})
 
-    def parse(self, html):
+    def skill_row(self, text):
+        """Damage row under a skill header: a "skill" change, or unparsed when not readable."""
+        if SKILL_DAMAGE not in text or ARROW not in text:
+            return
+        name, key = self.skill
+        full = f"{name}({key}) > {text}"
+        m = SKILL_CHANGE_RE.match(text)
+        label = m.group(1) if m else ""
+        sub = SUB_KEY_RE.match(label)
+        if sub:
+            key, label = sub.group(2), sub.group(3)
+        if not m or key not in SKILL_KEYS or SKILL_DAMAGE not in label:
+            self.skip("skill", self.owner, full)
+            return
+        self.changes.append({"type": "skill", "name": self.owner, "key": key, "skill": name, "label": label,
+                             "before": m.group(2), "after": m.group(3), "text": full, "part": self.part})
+
+    def parse(self, html, part=0):
+        self.part, self.skill = part, None
         self.section = self.owner = self.sub = None
         self.owner_depth = 0
         for kind, depth, text in extract_lines(html):
@@ -299,7 +327,7 @@ class _Parser:
 
     def char_line(self, depth, text):
         if depth == 0:
-            self.sub = None
+            self.sub = self.skill = None
             if not SENTENCE_RE.search(text):
                 self.owner, self.owner_depth = text, 0  # character name row
             return
@@ -307,7 +335,7 @@ class _Parser:
             return
         rel = depth - self.owner_depth
         if rel == 1:
-            self.sub = None
+            self.sub = self.skill = None
             # Rows sometimes repeat the name: "아이솔 기본 체력 900 → 920".
             body = text[len(self.owner) + 1:] if text.startswith(self.owner + " ") else text
             mm = MASTERY_RE.match(body)
@@ -323,17 +351,22 @@ class _Parser:
                                          "stat": CHAR_BASE[m.group(1)], "value": vp[0], "text": text})
                 elif ARROW in text or DELETED in text:
                     self.skip("character", self.owner, text)
-            return  # other rows are skill headers; their details are not stats
+                else:
+                    h = SKILL_HEADER_RE.match(text)  # other rows are skill headers
+                    self.skill = (h.group(1), h.group(2)) if h else None
+            return
         if rel == 2 and self.sub is not None:
             self.mastery(self.owner, self.sub, text, f"{self.sub} 무기 숙련도 레벨 당 > {text}")
+        elif rel == 2 and self.skill is not None:
+            self.skill_row(text)
 
 
 def parse_patch(bodies, stat_names):
     """{"changes": [...], "unparsed": [...]} over the article bodies in order.
     stat_names: dak.gg item stat names (split one-line item rows, validate rows)."""
     p = _Parser(stat_names)
-    for html in bodies:
-        p.parse(html)
+    for part, html in enumerate(bodies):
+        p.parse(html, part)
     return {"changes": p.changes, "unparsed": p.unparsed}
 
 

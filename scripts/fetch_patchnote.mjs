@@ -16,14 +16,15 @@ const DATE_RE = /([0-9]{4})\.([0-9]{2})\.([0-9]{2})/;
 const CONTENT_CLASS = "er-article-detail__content";
 
 // Minimal HTML tokenizer (identical to the Python twin).
-const TOKEN_RE = /<!--[\s\S]*?-->|<(\/?)([A-Za-z][A-Za-z0-9]*)[^>]*>|([^<]+)|</g;
-const BLOCK_TAGS = new Set(["p", "div", "li", "ul", "ol", "br", "table", "tr", "td", "th",
+// Exported for fetch_skills.mjs (same tokenizer on namu.wiki pages).
+export const TOKEN_RE = /<!--[\s\S]*?-->|<(\/?)([A-Za-z][A-Za-z0-9]*)[^>]*>|([^<]+)|</g;
+export const BLOCK_TAGS = new Set(["p", "div", "li", "ul", "ol", "br", "table", "tr", "td", "th",
   "h1", "h2", "h3", "h4", "h5", "h6"]);
-const HEADINGS = new Set(["h1", "h2", "h3", "h4", "h5", "h6"]);
-const ENTITY_RE = /&(#[0-9]+|#[xX][0-9a-fA-F]+|[A-Za-z]+);/g;
+export const HEADINGS = new Set(["h1", "h2", "h3", "h4", "h5", "h6"]);
+export const ENTITY_RE = /&(#[0-9]+|#[xX][0-9a-fA-F]+|[A-Za-z]+);/g;
 const NAMED_ENTITIES = { nbsp: " ", amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", rarr: "→" };
 // Includes every line terminator JS regex "." excludes, so both twins match alike.
-const SPACE_RE = /[ \t\n\r\f\v\u00a0\u2028\u2029]+/g;
+export const SPACE_RE = /[ \t\n\r\f\v\u00a0\u2028\u2029]+/g;
 
 const SECTIONS = { "무기": "item", "방어구": "item", "실험체": "character" };
 const NUM = "([0-9]+(?:\\.[0-9]+)?)(%?)";
@@ -32,7 +33,8 @@ const NEW_STAT_RE = new RegExp(`^(.+) ${NUM} \\(신규\\)$`);
 const VALUE_RE = new RegExp(`^(.+) ${NUM}$`);
 const NEW_ITEM_RE = /^(.+) \(신규 [^()]*\)$/;
 const MASTERY_RE = /^(.+?) 무기 숙련도 레벨 당(?: (.+))?$/;
-const SENTENCE_RE = /[.!?다요]$/;
+// Character description paragraphs; a bare name ending in 다/요 ("아르다") is not one.
+const SENTENCE_RE = /[.!?]$|.* .*[다요]$|(?:니다|어요|해요)$/;
 const ARROW = "→";
 const DELETED = "(삭제)"; // "<s>쿨다운 감소 10</s> (삭제)": reported, not applied
 const STATS_HEADER = "능력치";
@@ -46,6 +48,13 @@ const MASTERY_STATS = {
   "공격력|false": "attackPower",
 };
 const PCT_SUFFIX = "율";
+// Skill rows (applied to data/skills.json by fetch_skills.mjs), see fetch_patchnote.py.
+const SKILL_HEADER_RE = /^(.+)\(([^()]+)\)$/;
+const SKILL_KEYS = new Set(["P", "Q", "W", "E", "R", "RQ", "RW", "RE"]);
+const SKILL_VALUES = "[0-9]+(?:\\.[0-9]+)?(?:/[0-9]+(?:\\.[0-9]+)?)*(?:\\([^()]*\\))*";
+const SKILL_CHANGE_RE = new RegExp(`^(.+?) (${SKILL_VALUES}) → (${SKILL_VALUES})$`);
+const SUB_KEY_RE = /^(.+)\((R[QWE])\) (.+)$/;
+const SKILL_DAMAGE = "피해량";
 
 export async function fetchText(url) {
   const resp = await fetch(url, { headers: HEADERS, signal: AbortSignal.timeout(30000) });
@@ -110,14 +119,14 @@ export async function fetchPatch() {
     title: latest.title,
     url: latest.url,
     date: d ? `${d[1]}-${d[2]}-${d[3]}` : latest.createdAt.slice(0, 10),
-    articles: applied.map((a) => ({ id: a.id, title: a.title, url: a.url })),
+    articles: applied.map((a) => ({ id: a.id, title: a.title, url: a.url, createdAt: a.createdAt })),
   };
   const bodies = [];
   for (const a of applied) bodies.push(await fetchText(a.url));
   return { info, bodies };
 }
 
-function entity(match, e) {
+export function entity(match, e) {
   if (e[0] === "#") {
     const n = e[1] === "x" || e[1] === "X" ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10);
     return n > 0 && n <= 0x10ffff && !(n >= 0xd800 && n <= 0xdfff) ? String.fromCodePoint(n) : match;
@@ -211,7 +220,30 @@ class Parser {
     else this.changes.push({ type: "character", name, weapon, stat: field, value: vp[0], text });
   }
 
-  parse(html) {
+  /** Damage row under a skill header: a "skill" change, or unparsed when not readable. */
+  skillRow(text) {
+    if (!text.includes(SKILL_DAMAGE) || !text.includes(ARROW)) return;
+    const [name, header] = this.skill;
+    let key = header;
+    const full = `${name}(${header}) > ${text}`;
+    const m = SKILL_CHANGE_RE.exec(text);
+    let label = m ? m[1] : "";
+    const sub = SUB_KEY_RE.exec(label);
+    if (sub) {
+      key = sub[2];
+      label = sub[3];
+    }
+    if (!m || !SKILL_KEYS.has(key) || !label.includes(SKILL_DAMAGE)) {
+      this.skip("skill", this.owner, full);
+      return;
+    }
+    this.changes.push({ type: "skill", name: this.owner, key, skill: name, label,
+      before: m[2], after: m[3], text: full, part: this.part });
+  }
+
+  parse(html, part = 0) {
+    this.part = part;
+    this.skill = null;
     this.section = this.owner = this.sub = null;
     this.ownerDepth = 0;
     for (const [kind, depth, text] of extractLines(html)) {
@@ -289,7 +321,7 @@ class Parser {
 
   charLine(depth, text) {
     if (depth === 0) {
-      this.sub = null;
+      this.sub = this.skill = null;
       if (!SENTENCE_RE.test(text)) {
         this.owner = text;
         this.ownerDepth = 0;
@@ -299,7 +331,7 @@ class Parser {
     if (this.owner === null) return;
     const rel = depth - this.ownerDepth;
     if (rel === 1) {
-      this.sub = null;
+      this.sub = this.skill = null;
       // Rows sometimes repeat the name: "아이솔 기본 체력 900 → 920".
       const body = text.startsWith(this.owner + " ") ? text.slice(this.owner.length + 1) : text;
       const mm = MASTERY_RE.exec(body);
@@ -315,12 +347,17 @@ class Parser {
             value: vp[0], text });
         } else if (text.includes(ARROW) || text.includes(DELETED)) {
           this.skip("character", this.owner, text);
+        } else {
+          const h = SKILL_HEADER_RE.exec(text); // other rows are skill headers
+          this.skill = h ? [h[1], h[2]] : null;
         }
       }
       return;
     }
     if (rel === 2 && this.sub !== null) {
       this.mastery(this.owner, this.sub, text, `${this.sub} 무기 숙련도 레벨 당 > ${text}`);
+    } else if (rel === 2 && this.skill !== null) {
+      this.skillRow(text);
     }
   }
 }
@@ -328,7 +365,7 @@ class Parser {
 /** {changes, unparsed} over the article bodies in order. */
 export function parsePatch(bodies, statNames) {
   const p = new Parser(statNames);
-  for (const html of bodies) p.parse(html);
+  bodies.forEach((html, part) => p.parse(html, part));
   return { changes: p.changes, unparsed: p.unparsed };
 }
 

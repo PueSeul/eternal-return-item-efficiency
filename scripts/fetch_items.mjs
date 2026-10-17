@@ -2,12 +2,15 @@
 // Fetches Eternal Return equipment from the dak.gg API and builds the same
 // item list as the Python script; values that differ from the latest patch note
 // are replaced by the patch-note value (host decision).
-// Usage: node scripts/fetch_items.mjs  (writes items.json, characters.json, items.meta.json)
+// Usage: node scripts/fetch_items.mjs  (writes items.json, characters.json, skills.json, items.meta.json)
 import { readFileSync, writeFileSync, mkdirSync, realpathSync, renameSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import { fetchPatch, parsePatch, applyItemChanges, applyCharacterChanges } from "./fetch_patchnote.mjs";
 import { buildCharacters, CHARACTERS_URL, dumps as dumpsCharacters } from "./fetch_characters.mjs";
+import {
+  buildSkills, applySkillChanges, fetchPages, REQUEST_INTERVAL_MS, dumps as dumpsSkills,
+} from "./fetch_skills.mjs";
 
 export const ITEMS_URL = "https://er.dakgg.io/api/v1/data/items?hl=ko";
 export const MASTERIES_URL = "https://er.dakgg.io/api/v1/data/masteries?hl=ko";
@@ -195,45 +198,53 @@ export function dakggVersion(rawItems) {
   return best;
 }
 
-/** {items, characters, meta} with patch-note overrides applied (see fetch_items.py build_all). */
-export function buildAll(rawItems, masteries, rawChars, patch, fetchedAt) {
+/** {items, characters, skills, meta} with patch-note overrides applied (see fetch_items.py build_all).
+ * pages: Map character name -> namu.wiki HTML or null (fetch_skills.mjs fetchPages). */
+export function buildAll(rawItems, masteries, rawChars, patch, pages, fetchedAt) {
   const items = buildItems(rawItems, masteries);
   const characters = buildCharacters(rawChars, masteries);
   const [parsed, itemOverrides, itemUnparsed] = patchItems(items, rawItems, patch);
   const [charOverrides, charUnparsed] = applyCharacterChanges(characters, parsed.changes);
   const { id, version, title, url, date, articles } = patch.info;
+  const skills = buildSkills(characters, pages);
+  const [skillOverrides, skillSkipped, skillUnparsed] = applySkillChanges(skills, parsed.changes, articles);
   const meta = {
     fetchedAt,
     dakggVersion: dakggVersion(rawItems),
     patch: { id, version, title, url, date, articles },
-    overrides: [...itemOverrides, ...charOverrides],
-    unparsed: [...parsed.unparsed, ...itemUnparsed, ...charUnparsed],
+    overrides: [...itemOverrides, ...charOverrides, ...skillOverrides],
+    skipped: skillSkipped,
+    unparsed: [...parsed.unparsed, ...itemUnparsed, ...charUnparsed, ...skillUnparsed],
   };
-  return { items, characters, meta };
+  return { items, characters, skills, meta };
 }
 
 /**
- * Fetch dak.gg + the latest patch note and write items.json, characters.json and
- * items.meta.json to outDir (default: this repo's data/; an app should pass a
- * writable directory). Returns {items, characters, meta}.
+ * Fetch dak.gg + the latest patch note + namu.wiki skill pages and write items.json,
+ * characters.json, skills.json and items.meta.json to outDir (default: this repo's
+ * data/; an app should pass a writable directory). Returns {items, characters, skills, meta}.
+ * intervalMs: pause between namu.wiki requests (default 1000).
  */
-export async function fetchAll({ outDir = DATA_DIR, fetchedAt } = {}) {
+export async function fetchAll({ outDir = DATA_DIR, fetchedAt, intervalMs = REQUEST_INTERVAL_MS } = {}) {
   const [items, masteries, chars, patch] = await Promise.all([
     fetchJson(ITEMS_URL), fetchJson(MASTERIES_URL), fetchJson(CHARACTERS_URL), fetchPatch(),
   ]);
-  const result = buildAll(items.items, masteries.masteries, chars.characters, patch,
+  const names = [...chars.characters].sort((a, b) => Number(a.id) - Number(b.id)).map((c) => c.name);
+  const pages = await fetchPages(names, intervalMs);
+  const result = buildAll(items.items, masteries.masteries, chars.characters, patch, pages,
     fetchedAt ?? new Date().toISOString());
   mkdirSync(outDir, { recursive: true });
-  // Write all three to temp files first so a failed write leaves the old set intact.
+  // Write all four to temp files first so a failed write leaves the old set intact.
   const files = [["items.json", dumps(result.items)], ["characters.json", dumpsCharacters(result.characters)],
-    ["items.meta.json", dumps(result.meta)]];
+    ["skills.json", dumpsSkills(result.skills)], ["items.meta.json", dumps(result.meta)]];
   for (const [name, text] of files) writeFileSync(path.join(outDir, name + ".tmp"), text, "utf8");
   for (const [name] of files) renameSync(path.join(outDir, name + ".tmp"), path.join(outDir, name));
   return result;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {
-  const { items, characters, meta } = await fetchAll();
-  console.log(`wrote ${items.length} items, ${characters.length} characters to ${DATA_DIR} `
-    + `(patch ${meta.patch.version}: ${meta.overrides.length} overrides, ${meta.unparsed.length} unparsed)`);
+  const { items, characters, skills, meta } = await fetchAll();
+  console.log(`wrote ${items.length} items, ${characters.length} characters, ${skills.length} skill entries `
+    + `to ${DATA_DIR} (patch ${meta.patch.version}: ${meta.overrides.length} overrides, `
+    + `${meta.skipped.length} skipped, ${meta.unparsed.length} unparsed)`);
 }
