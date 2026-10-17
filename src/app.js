@@ -384,7 +384,7 @@
       menu.close();
       btn.disabled = true;
       more.disabled = true;
-      btn.textContent = '업데이트 중…';
+      btn.classList.add('busy'); // 문구만 "업데이트 중…"으로(겹친 두 문구, 폭 유지)
       setStatus('', '', false, false);
       updating = true;
       const startedAt = Date.now();
@@ -440,7 +440,7 @@
         clearInterval(timer);
         btn.disabled = false;
         more.disabled = false;
-        btn.textContent = '아이템 업데이트';
+        btn.classList.remove('busy');
       }
     };
     btn.onclick = () => run('patched');

@@ -66,7 +66,11 @@ h1 { font-size: 16px; font-weight: 600; margin: 0; }
 #app-update-check, #update-btn { height: 28px; padding: 0 10px; }
 .split-btn { display: flex; }
 .split-btn[hidden] { display: none; }
-.split-btn #update-btn { flex: 1 1 auto; border-radius: 4px 0 0 4px; }
+.split-btn #update-btn { flex: 1 1 auto; border-radius: 4px 0 0 4px; display: grid; place-items: center; }
+/* 두 문구를 한 칸에 겹쳐 두고 visibility로만 바꾼다: 진행 중에도 버튼 폭이 그대로. */
+#update-btn > span { grid-area: 1 / 1; }
+#update-btn .label-busy, #update-btn.busy .label-idle { visibility: hidden; }
+#update-btn.busy .label-busy { visibility: visible; }
 .split-btn #update-more { flex: none; width: 28px; padding: 0; display: flex; align-items: center; justify-content: center; border-left: none; border-radius: 0 4px 4px 0; }
 #update-more svg { color: var(--muted); transition: transform var(--fast); }
 #update-more[aria-expanded="true"] svg { transform: rotate(180deg); }
