@@ -1,6 +1,6 @@
 {
   "name": "er-damage-efficiency",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "private": true,
   "description": "이터널 리턴 아이템 가격 대비 데미지 효율 계산기",
   "main": "electron/main.js",
