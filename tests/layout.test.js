@@ -31,6 +31,22 @@ test('결과·히스토리 효율 표시: 큰 숫자 3개(데미지·효율·기
   assert.match(main, /height: 900,\s*minHeight: 800,/);
 });
 
+test('입력 컨트롤: 네이티브 select·datalist 팝업 대신 앱 드롭다운, 숫자 스핀 숨김·휠 차단', () => {
+  const app = fs.readFileSync(path.join(root, 'src', 'app.js'), 'utf8');
+  assert.match(html, /<script src="src\/dropdown\.js"><\/script>\s*<script src="src\/app\.js">/);
+  for (const v of ['skillSel', 'levelSel', 'gradeSel']) assert.match(app, new RegExp(`ERDropdown\\.enhance\\(${v}\\)`));
+  assert.match(app, /ERDropdown\.combo\(input,/);
+  assert.doesNotMatch(app, /datalist|setAttribute\('list'/);
+  assert.match(app, /addEventListener\('wheel'[\s\S]{0,160}preventDefault\(\)[\s\S]{0,20}\{ passive: false \}/);
+  assert.match(css, /input\[type="number"\]::-webkit-inner-spin-button[^{]*\{ -webkit-appearance: none/);
+  assert.match(css, /\.dd-list\[popover\] \{ position: fixed;[^}]*overflow-y: auto/);
+  // 검색 입력란: 기본 × 숨김, 앱 × 버튼은 값 있을 때만, 짧은 placeholder
+  assert.match(app, /placeholder: '실험체 검색'/);
+  assert.match(app, /ERDropdown\.clearable\(input\)[\s\S]*ERDropdown\.clearable\(\$\('#picker-search'\)\)/);
+  assert.match(css, /input\[type="search"\]::-webkit-search-cancel-button \{ -webkit-appearance: none; display: none; \}/);
+  assert.match(css, /\.search-box input:placeholder-shown \+ \.search-clear \{ display: none; \}/);
+});
+
 test('슬롯 두 열 헤더: 32px 한 줄 고정, 제목·버튼 nowrap, 상태 말줄임', () => {
   assert.match(css, /\.slot-col > \.block-head \{ height: 32px;[^}]*flex-wrap: nowrap/);
   assert.match(css, /\.slot-col > \.block-head h2 \{ white-space: nowrap; flex-shrink: 0/);

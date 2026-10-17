@@ -694,12 +694,13 @@
   function renderInputs() {
     const form = $('#inputs');
     if (V2) {
-      // 실험체 선택(이름 검색: datalist). 무기 종류는 무기 슬롯 아이템의 weaponType으로 자동 결정.
-      const input = el('input', { type: 'search', id: 'in-character', placeholder: '실험체 이름 검색' });
-      input.setAttribute('list', 'character-list');
+      // 실험체 선택(이름 검색 + 앱 스타일 후보 목록). 무기 종류는 무기 슬롯 아이템의 weaponType으로 자동 결정.
+      const input = el('input', { type: 'search', id: 'in-character', placeholder: '실험체 검색' });
       input.setAttribute('aria-label', '실험체');
-      form.append(el('label', null, labelText('실험체'), input, el('datalist', { id: 'character-list' }),
+      form.append(el('label', null, labelText('실험체'), input,
         el('span', { id: 'character-note', className: 'muted small' })));
+      window.ERDropdown.clearable(input);
+      window.ERDropdown.combo(input, () => state.characters.map((c) => c.name));
       // 스킬 선택(data/skills.json) → 스킬 기본 피해량·계수 자동 입력.
       const skillSel = el('select', { id: 'in-skill', disabled: true });
       skillSel.setAttribute('aria-label', '스킬');
@@ -707,6 +708,9 @@
       levelSel.setAttribute('aria-label', '스킬 레벨');
       form.append(el('label', null, labelText('스킬'), skillSel, el('span', { id: 'skill-note', className: 'muted small' })),
         el('label', null, labelText('스킬 레벨'), levelSel));
+      // 네이티브 select 팝업 대신 앱 스타일 드롭다운(select는 숨겨 값·id 유지).
+      window.ERDropdown.enhance(skillSel);
+      window.ERDropdown.enhance(levelSel);
     }
     for (const f of INPUT_FIELDS) {
       const input = el('input', { type: 'number', id: 'in-' + f.key, step: f.step, value: Formula.DEFAULT_INPUTS[f.key] ?? '' });
@@ -796,7 +800,6 @@
       state.characters = [];
       state.charactersError = 'data/characters.json 없음 — 실험체 자동 입력 불가(아이템 외 입력란에 직접 입력)';
     }
-    $('#character-list').replaceChildren(...state.characters.map((c) => el('option', { value: c.name })));
     let lostName = null;
     if (reselect) {
       const { character, lost } = window.ERCharacters.rematch(state.characters, prevId, prevName);
@@ -1054,6 +1057,8 @@
     const gradeSel = $('#picker-grade');
     gradeSel.append(el('option', { value: '', textContent: '모든 등급' }));
     for (const g of GRADES) gradeSel.append(el('option', { value: g, textContent: g }));
+    window.ERDropdown.enhance(gradeSel);
+    window.ERDropdown.clearable($('#picker-search'));
     $('#picker-search').oninput = renderPicker;
     $('#picker-search').onkeydown = pickerKey;
     gradeSel.onchange = renderPicker;
@@ -1085,6 +1090,10 @@
       focusSlotButton('#slots', `${Formula.SLOTS[0]} 선택`);
     };
     renderInputs();
+    // 숫자 입력란은 마우스 휠로 값이 바뀌지 않게(포커스 중 휠 기본 동작 차단).
+    $('#inputs').addEventListener('wheel', (ev) => {
+      if (ev.target.type === 'number' && document.activeElement === ev.target) ev.preventDefault();
+    }, { passive: false });
     $('#inputs').addEventListener('input', (ev) => {
       if (V2 && ev.target.id === 'in-skill') {
         renderSkillLevels(null);

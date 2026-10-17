@@ -115,6 +115,31 @@ input, select { font: inherit; font-size: 13px; color: var(--text); background: 
 input:hover, select:hover { border-color: var(--muted); }
 input:focus-visible, select:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
 select:disabled { opacity: .5; }
+/* 숫자 입력란: Windows 기본 스핀 버튼 숨김(키보드 ↑↓는 그대로). */
+input[type="number"] { appearance: textfield; }
+input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+/* 앱 스타일 드롭다운(src/dropdown.js): 입력란과 같은 상자 + 아래로 열리는 목록(최대 320px, 내부 스크롤). */
+.dd-btn { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-width: 0; height: 28px; padding: 0 8px; background: var(--bg); border-color: var(--field-line); text-align: left; }
+.dd-btn:hover:not(:disabled) { background: var(--bg); border-color: var(--muted); }
+.dd-btn:focus-visible, .dd-btn[aria-expanded="true"] { outline: none; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.dd-btn:disabled { opacity: .5; cursor: default; }
+.dd-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dd-btn svg { flex: none; color: var(--muted); transition: transform var(--fast); }
+.dd-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+.dd-list[popover] { position: fixed; inset: auto; margin: 0; padding: 4px 0; list-style: none; overflow-y: auto; background: var(--surface); color: var(--text); border: 1px solid var(--line-strong); border-radius: 4px; font-size: 13px; max-width: 480px; }
+.dd-list li { padding: 0 8px; height: 28px; line-height: 28px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+.dd-list li[aria-selected="true"] { color: var(--accent); }
+.dd-list li.active { background: var(--hover); box-shadow: inset 2px 0 0 var(--accent); }
+.dd-list li[aria-disabled="true"] { color: var(--muted); cursor: default; }
+.picker-filters .dd-btn { flex: none; width: 128px; }
+/* 검색 입력란: 기본 지우기 버튼 숨기고 앱 톤 × 버튼(값 있을 때만, hover 강조색). */
+input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; display: none; }
+.search-box { position: relative; display: block; min-width: 0; }
+.search-box input { width: 100%; padding-right: 24px; }
+.search-box input::placeholder { text-overflow: clip; }
+.search-clear { position: absolute; top: 2px; right: 2px; width: 24px; height: 24px; padding: 0; border: 0; display: flex; align-items: center; justify-content: center; color: var(--muted); background: transparent; }
+.search-clear:hover:not(:disabled), .search-clear:focus-visible { color: var(--accent); background: transparent; border-color: transparent; }
+.search-box input:placeholder-shown + .search-clear { display: none; }
 /* 6열 조밀 그리드. 라벨·메모는 한 줄로 자르고 전체 문구는 툴팁(title). */
 .inputs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px 8px; }
 .inputs label { display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: var(--muted); min-width: 0; }
@@ -214,7 +239,7 @@ dialog::backdrop { background: rgba(0, 0, 0, .55); }
 .picker-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .picker-head h2 { font-size: 14px; }
 .picker-filters { display: flex; gap: 8px; margin-bottom: 8px; }
-.picker-filters input { flex: 1; }
+.picker-filters .search-box { flex: 1; }
 .picker-list { list-style: none; padding: 0; margin: 0; max-height: 60vh; overflow-y: auto; border-top: 1px solid var(--line); }
 .picker-list li { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 8px 16px; align-items: center; padding: 8px; border-bottom: 1px solid var(--line); cursor: pointer; font-size: 13px; }
 .picker-list li:hover { background: var(--hover); }
