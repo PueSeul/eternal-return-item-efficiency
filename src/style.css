@@ -79,6 +79,9 @@ header h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-
 .title-row .meta-line { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 #update-status { color: var(--muted); }
 #update-status.error { color: var(--warn); }
+/* 진행 중 게이지 왼쪽의 취소(×) 버튼: 20px 단색 SVG, hover·포커스 시 빨간 배경·흰 글자(타이틀바 닫기 버튼 톤). */
+#update-cancel { width: 20px; height: 20px; flex: none; }
+#update-cancel:hover:not(:disabled), #update-cancel:focus-visible { background: #c42b1c; color: #fff; }
 /* 원형 진행 게이지: 22px 링(강조색, 실패 시 경고색) + 퍼센트 + 작은 문구 */
 .gauge { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; white-space: nowrap; }
 .gauge[hidden] { display: none; }

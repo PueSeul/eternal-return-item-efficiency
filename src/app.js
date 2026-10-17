@@ -366,6 +366,37 @@
     let timer = null;
     const gauge = progress ? Gauge.create(document, 'update-gauge', '데이터 업데이트 진행') : null;
     if (gauge) status.before(gauge.el); // .update-state 안: 게이지·문구가 버튼 바로 왼쪽에 오른쪽 정렬
+    // 취소(×): 진행 중에만 게이지 왼쪽에 보인다. 데스크톱에 cancelUpdate가 없으면 만들지 않는다.
+    // {cancelled:true}이면 게이지를 비우고 "업데이트 취소됨"(5초), 늦게 온 runUpdate 결과는 무시(데이터·메타 재로딩 없음).
+    let cancelled = false;
+    const canCancel = typeof (window.erDesktop && window.erDesktop.cancelUpdate) === 'function';
+    const cancelBtn = canCancel ? el('button', { id: 'update-cancel', type: 'button', className: 'icon-btn', title: '업데이트 취소', hidden: true }) : null;
+    if (cancelBtn) {
+      cancelBtn.setAttribute('aria-label', '업데이트 취소');
+      cancelBtn.innerHTML = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg>';
+      (gauge ? gauge.el : status).before(cancelBtn);
+      cancelBtn.onclick = async () => {
+        if (!updating) return;
+        cancelBtn.disabled = true;
+        setStatus('취소 중…', '', false, false);
+        let r = null;
+        try { r = await window.erDesktop.cancelUpdate(); } catch { /* 취소 실패: 진행 계속 */ }
+        if (r && r.cancelled && updating) {
+          cancelled = true;
+          updating = false;
+          clearInterval(timer);
+          if (gauge) { gauge.set(0, ''); gauge.hide(); }
+          cancelBtn.hidden = true;
+          setStatus('업데이트 취소됨', '', false, true);
+          btn.disabled = false;
+          more.disabled = false;
+          btn.classList.remove('busy');
+        } else if (updating) {
+          cancelBtn.disabled = false;
+          setStatus('', '', false, false);
+        }
+      };
+    }
     const showProgress = () => {
       if (!updating) return;
       const now = Date.now();
@@ -387,6 +418,8 @@
       btn.classList.add('busy'); // 문구만 "업데이트 중…"으로(겹친 두 문구, 폭 유지)
       setStatus('', '', false, false);
       updating = true;
+      cancelled = false;
+      if (cancelBtn) { cancelBtn.hidden = false; cancelBtn.disabled = false; }
       const startedAt = Date.now();
       if (progress) {
         let last = NaN;
@@ -398,6 +431,7 @@
       }
       try {
         const r = await Updater.runUpdate(window.erDesktop, loadData, fetchMeta, V2 ? fetchSkills : null, { skillsMode: mode });
+        if (cancelled) return; // 취소됨: 결과·재로딩 무시(finally만 실행)
         updating = false; // 이후 늦게 온 진행 이벤트가 결과 문구를 덮지 않도록
         clearInterval(timer);
         if (r.ok && progress) {
@@ -433,9 +467,11 @@
           setStatus(r.message, r.message, true, false);
         }
       } catch (err) {
+        if (cancelled) return;
         if (gauge) gauge.fail('');
         setStatus('업데이트 처리 중 오류: ' + err.message, '', true, false);
       } finally {
+        if (cancelBtn) cancelBtn.hidden = true;
         updating = false;
         clearInterval(timer);
         btn.disabled = false;
