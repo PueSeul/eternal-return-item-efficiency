@@ -17,25 +17,36 @@ const SLOTS = F.SLOTS;
 const equipped = Object.fromEntries(items.map((it) => [it.slot, it]));
 const inputs = { ...F.DEFAULT_INPUTS, skillDamage: 200, atkCoefPct: 0, defense: 80 };
 
-test('효율 %: 기준 세트가 있으면 현재 가격당 데미지 ÷ 기준 가격당 데미지 × 100', () => {
+const near = (a, b, eps = 1e-9) => assert.ok(Math.abs(a - b) < eps, `${a} != ${b}`);
+
+test('효율 지표: 기준 세트가 있으면 효율 %·기준 대비 증가율·1,000당을 항상 함께', () => {
   const cur = { D: 300, price: 1000, ratio: 0.3 };
   const base = { D: 200, price: 1000, ratio: 0.2 };
-  const e = B.efficiency(cur, base, 0.6);
+  const e = B.efficiency(cur, base);
   assert.equal(e.mode, 'baseline');
   assert.equal(e.refRatio, 0.2);
-  assert.ok(Math.abs(e.pct - 150) < 1e-9); // 히스토리 최고(0.6)는 무시
-  // 실제 계산 결과로도: 같은 세트면 100%
+  assert.equal(e.baseD, 200);
+  near(e.pct, 150); // 0.3 ÷ 0.2 × 100
+  near(e.gainPct, 50); // (300 ÷ 200 − 1) × 100
+  near(e.per1000, 50); // 50 ÷ 1000 × 1000
+  // 호스트 예시: 현재 D = 기준 D × 1.474, 가격 1,155 → "+47.4%", "1,000당 +41.0%"
+  const ex = B.efficiency({ D: 1.474 * 265, price: 1155, ratio: (1.474 * 265) / 1155 }, { D: 265, price: 1000, ratio: 0.265 });
+  assert.equal(B.signedPct(ex.gainPct), '+47.4%');
+  assert.equal(B.per1000Text(ex.per1000), '1,000당 +41.0%');
+  // 실제 계산 결과로도: 같은 세트면 100%, +0.0%
   const r = F.calculate(items, inputs);
-  assert.ok(Math.abs(B.efficiency(r, F.calculate(items, inputs), null).pct - 100) < 1e-9);
+  const same = B.efficiency(r, F.calculate(items, inputs));
+  near(same.pct, 100);
+  assert.equal(B.signedPct(same.gainPct), '0.0%');
 });
 
-test('효율 %: 기준 세트 미완성(결과 없음)이면 히스토리 최고 대비로 폴백', () => {
+test('효율 지표: 기준 세트 미완성(결과 없음)이면 모두 null("—")', () => {
   const cur = { D: 300, price: 1000, ratio: 0.3 };
-  const e = B.efficiency(cur, null, 0.6);
-  assert.equal(e.mode, 'history');
-  assert.equal(e.refRatio, 0.6);
-  assert.ok(Math.abs(e.pct - 50) < 1e-9);
-  assert.equal(B.efficiency(cur, null, null).pct, null);
+  const e = B.efficiency(cur, null);
+  assert.deepEqual([e.mode, e.pct, e.gainPct, e.per1000, e.refRatio], ['none', null, null, null, null]);
+  assert.equal(B.pctText(e.pct), '—');
+  assert.equal(B.signedPct(e.gainPct), '—');
+  assert.equal(B.per1000Text(e.per1000), '1,000당 —');
   const partial = { ...equipped };
   delete partial['팔'];
   assert.equal(B.isComplete(partial, SLOTS), false);
@@ -43,40 +54,49 @@ test('효율 %: 기준 세트 미완성(결과 없음)이면 히스토리 최고
   assert.equal(B.isComplete({}, SLOTS), false);
 });
 
-test('가격 0: 기준 가격 합 0이면 가격당 추가 데미지 = (현재 D − 기준 D) ÷ 현재 가격 합', () => {
-  const e = B.efficiency({ D: 391.66, price: 1155, ratio: 391.66 / 1155 }, { D: 300, price: 0, ratio: null }, 0.5);
+test('가격 0: 기준 가격 합 0이면 효율 % "—", 기준 대비·1,000당은 계산; 현재 가격 0이면 1,000당 "—"', () => {
+  const e = B.efficiency({ D: 391.66, price: 1155, ratio: 391.66 / 1155 }, { D: 300, price: 0, ratio: null });
   assert.equal(e.mode, 'baseline');
-  assert.equal(e.kind, 'perPrice');
   assert.equal(e.pct, null);
-  assert.ok(Math.abs(e.value - 91.66 / 1155) < 1e-12);
-  assert.equal(B.LABELS[e.kind], '가격당 추가 데미지');
-  assert.equal(B.valueText(e.kind, e.value), '0.0794');
-  // 현재 D가 기준보다 작으면 음수
-  assert.equal(B.valueText('perPrice', B.efficiency({ D: 100, price: 1000, ratio: 0.1 }, { D: 300, price: 0, ratio: null }).value), '-0.2000');
-  // 현재 가격 합도 0이면 "—"
-  const both0 = B.efficiency({ D: 400, price: 0, ratio: null }, { D: 300, price: 0, ratio: null }, 0.5);
-  assert.equal(both0.kind, 'perPrice');
-  assert.equal(both0.value, null);
-  assert.equal(B.valueText(both0.kind, both0.value), '—');
-  // 기준 가격이 0이 아니면 기존 % 식
-  const pctEff = B.efficiency({ D: 300, price: 1000, ratio: 0.3 }, { D: 200, price: 1000, ratio: 0.2 });
-  assert.equal(pctEff.kind, 'percent');
-  assert.ok(Math.abs(pctEff.value - 150) < 1e-9);
-  assert.equal(B.valueText('percent', 150), '150%');
-  assert.equal(B.LABELS.percent, '데미지 효율');
+  assert.equal(B.pctText(e.pct), '—');
+  near(e.gainPct, (391.66 / 300 - 1) * 100);
+  near(e.per1000, ((391.66 / 300 - 1) * 100 / 1155) * 1000);
+  assert.equal(B.signedPct(e.gainPct), '+30.6%');
+  assert.equal(B.per1000Text(e.per1000), '1,000당 +26.5%');
+  // 현재 D가 기준보다 작으면 −
+  const down = B.efficiency({ D: 100, price: 1000, ratio: 0.1 }, { D: 200, price: 1000, ratio: 0.2 });
+  assert.equal(B.signedPct(down.gainPct), '−50.0%');
+  assert.equal(B.per1000Text(down.per1000), '1,000당 −50.0%');
+  // 현재 가격 합 0 → 1,000당 "—"(증가율은 계산)
+  const both0 = B.efficiency({ D: 400, price: 0, ratio: null }, { D: 300, price: 0, ratio: null });
+  assert.equal(both0.pct, null);
+  near(both0.gainPct, (400 / 300 - 1) * 100);
+  assert.equal(both0.per1000, null);
+  // 기준 D 0이면 기준 대비 "—"
+  assert.equal(B.efficiency({ D: 10, price: 100, ratio: 0.1 }, { D: 0, price: 0, ratio: null }).gainPct, null);
+  // 반올림은 양·음 대칭(−6.25 → −6.3%), 아주 작은 음수는 0.0%
+  const m = B.gainMetrics(15, 16, 1000);
+  assert.equal(B.signedPct(m.gainPct), '−6.3%');
+  assert.equal(B.signedPct(6.25), '+6.3%');
+  assert.equal(B.signedPct(-0.04), '0.0%');
+  assert.match(E.lines(items, inputs, F.calculate(items, inputs), null, '기준 세트', { baseD: 16, ...m }).at(-1), /= −6\.3%$/);
+  assert.equal(B.pctText(150), '150%');
+  assert.deepEqual(B.LABELS, { pct: '데미지 효율', gain: '기준 대비' });
 });
 
-test('가격 0: 실제 계산 결과로 기준 가격 0 → 가격당 추가 데미지, 현재 가격 0(기준 가격 있음) → "—"', () => {
+test('가격 0: 실제 계산 결과로 기준 가격 0 → 효율 % 없음·증가율 0, 현재 가격 0(기준 가격 있음) → 효율 %·1,000당 "—"', () => {
   const free = F.calculate(items.map((it) => ({ ...it, price: 0 })), inputs);
   const paid = F.calculate(items, inputs);
   assert.equal(free.ratio, null);
-  const e = B.efficiency(paid, free, 0.5);
+  const e = B.efficiency(paid, free);
   assert.equal(e.mode, 'baseline');
-  assert.equal(e.kind, 'perPrice');
-  assert.equal(e.value, 0); // 같은 스탯이라 추가 데미지 0
-  const back = B.efficiency(free, paid, 0.5);
-  assert.equal(back.kind, 'percent');
+  assert.equal(e.pct, null);
+  assert.equal(e.gainPct, 0); // 같은 스탯이라 증가 0
+  assert.equal(e.per1000, 0);
+  const back = B.efficiency(free, paid);
   assert.equal(back.pct, null);
+  assert.equal(back.gainPct, 0);
+  assert.equal(back.per1000, null);
   // 비교 표의 차이: 가격·데미지는 계산, 가격당 데미지는 한쪽이 없으면 null
   const rows = B.compareRows(paid, free);
   assert.deepEqual(rows.map((x) => x.label), ['기준', '현재', '차이']);
@@ -116,80 +136,76 @@ test('기준 세트 저장/복원: v1·v2 키 분리, 깨진 값은 빈 기준, 
   assert.deepEqual(B.load(storage, 'v1', SLOTS), { 옷: { id: '5', name: '' } });
 });
 
-test('히스토리: 기준 아이템 id·효율 %를 저장하고, 최고 효율순은 저장된 효율 %로 정렬', () => {
+test('히스토리: 기준 아이템 id·세 지표를 저장하고, 최고 효율순은 효율 % → 1,000당 → 값 없음 묶음', () => {
   const snap = B.snapshot(equipped, SLOTS);
   assert.deepEqual(snap.ids, { 무기: 'w1', 머리: 'h1', 옷: 'c1', 팔: 'a1', 다리: 'l1' });
   const r = F.calculate(items, inputs);
   const storage = memoryStorage();
-  const mk = (pct, mode, t, ratio) => H.makeEntry({ equipped, inputs, result: { ...r, ratio }, baseline: snap,
-    efficiency: { pct, mode }, now: new Date(t) });
-  // 비율은 a가 가장 크지만 저장된 효율 %는 b가 가장 크다 → 효율순은 저장 % 기준
-  const a = mk(90, 'baseline', '2026-10-16T01:00:00Z', 0.9);
-  const b = mk(120, 'baseline', '2026-10-16T02:00:00Z', 0.1);
-  const c = mk(null, 'baseline', '2026-10-16T03:00:00Z', 0.5); // 기준 가격 0 → "—", 맨 뒤
-  const legacy = { ...mk(0, 'history', '2026-10-16T04:00:00Z', 0.45) };
-  delete legacy.efficiencyPct; delete legacy.efficiencyMode; delete legacy.baselineIds; // 효율 % 저장 전 기록
-  H.save(storage, [a, b, c, legacy]);
+  const mk = (eff, t) => H.makeEntry({ equipped, inputs, result: r, baseline: snap, efficiency: eff, now: new Date(t) });
+  const a = mk({ mode: 'baseline', pct: 90, gainPct: 80, per1000: 8 }, '2026-10-16T01:00:00Z');
+  const b = mk({ mode: 'baseline', pct: 120, gainPct: -5, per1000: -0.5 }, '2026-10-16T02:00:00Z');
+  const z1 = mk({ mode: 'baseline', pct: null, gainPct: 30, per1000: 300 }, '2026-10-16T03:00:00Z'); // 기준 가격 0
+  const z2 = mk({ mode: 'baseline', pct: null, gainPct: 10, per1000: 400 }, '2026-10-16T04:00:00Z');
+  const gainOnly = mk({ mode: 'baseline', pct: null, gainPct: 10, per1000: null }, '2026-10-16T05:00:00Z'); // 현재 가격 0
+  const none = mk(B.efficiency(r, null), '2026-10-16T06:00:00Z'); // 기준 미완성
+  H.save(storage, [a, b, z1, z2, gainOnly, none]);
   const list = H.load(storage);
   const la = list.find((e) => e.id === a.id);
   assert.deepEqual(la.baselineIds, snap.ids);
   assert.deepEqual(la.baselineNames, snap.names);
-  assert.equal(la.efficiencyPct, 90);
-  assert.equal(la.efficiencyMode, 'baseline');
-  // 예전 기록은 현재 최고 비율(0.9) 대비 50%
-  assert.equal(H.entryPercent(list.find((e) => e.id === legacy.id), H.bestRatio(list)), 50);
-  assert.equal(H.entryPercent(list.find((e) => e.id === c.id), 0.9), null);
-  assert.deepEqual(H.sorted(list, 'efficiency').map((e) => e.id), [b.id, a.id, legacy.id, c.id]);
-  // 이전 계산식 기록은 저장 %가 있어도 비교 제외
-  assert.equal(H.entryPercent({ ...b, formulaVersion: 'old' }, 0.9), null);
+  assert.deepEqual([la.efficiencyMode, la.efficiencyPct, la.efficiencyGainPct, la.efficiencyPer1000], ['baseline', 90, 80, 8]);
+  assert.deepEqual(H.entryEfficiency(la), { pct: 90, gainPct: 80, per1000: 8 });
+  assert.deepEqual(H.entryEfficiency(list.find((e) => e.id === none.id)), { pct: null, gainPct: null, per1000: null });
+  // 효율 % 그룹(120, 90) → 1,000당 그룹(400, 300) → 값 없음(최근 먼저)
+  assert.deepEqual(H.sorted(list, 'efficiency').map((e) => e.id), [b.id, a.id, z2.id, z1.id, none.id, gainOnly.id]);
+  // 이전 계산식 기록은 저장값이 있어도 비교 제외
+  assert.deepEqual(H.entryEfficiency({ ...b, formulaVersion: 'old' }), { pct: null, gainPct: null, per1000: null });
   // 기준·효율을 넘기지 않으면 필드 없음(하위 호환)
   const plain = H.makeEntry({ equipped, inputs, result: r });
   assert.equal('baselineIds' in plain, false);
   assert.equal('efficiencyPct' in plain, false);
 });
 
-test('히스토리: 가격당 추가 데미지 기록은 방식을 저장하고, 최고 효율순은 같은 방식끼리 비교', () => {
-  const snap = B.snapshot(equipped, SLOTS);
-  const r = F.calculate(items, inputs);
-  const storage = memoryStorage();
-  const mk = (eff, t) => H.makeEntry({ equipped, inputs, result: r, baseline: snap, efficiency: eff, now: new Date(t) });
-  const pctA = mk({ mode: 'baseline', kind: 'percent', pct: 90, value: 90 }, '2026-10-16T01:00:00Z');
-  const pctB = mk({ mode: 'history', kind: 'percent', pct: 110, value: 110 }, '2026-10-16T02:00:00Z');
-  const ppA = mk({ mode: 'baseline', kind: 'perPrice', pct: null, value: 0.0794 }, '2026-10-16T03:00:00Z');
-  const ppB = mk({ mode: 'baseline', kind: 'perPrice', pct: null, value: 0.5 }, '2026-10-16T04:00:00Z');
-  const ppNone = mk({ mode: 'baseline', kind: 'perPrice', pct: null, value: null }, '2026-10-16T05:00:00Z');
-  const pctNone = mk({ mode: 'baseline', kind: 'percent', pct: null, value: null }, '2026-10-16T06:00:00Z');
-  const legacy = mk({ mode: 'baseline', pct: 100 }, '2026-10-16T07:00:00Z'); // kind 없는 예전 호출 → %
-  delete legacy.efficiencyKind; // 방식 표시 전 기록
-  H.save(storage, [pctA, pctB, ppA, ppB, ppNone, pctNone, legacy]);
-  const list = H.load(storage);
-  const get = (x) => list.find((e) => e.id === x.id);
-  assert.equal(get(ppA).efficiencyKind, 'perPrice');
-  assert.equal(get(ppA).efficiencyPerPrice, 0.0794);
-  assert.equal(get(ppA).efficiencyPct, null);
-  assert.equal(get(pctA).efficiencyKind, 'percent');
-  assert.equal('efficiencyPerPrice' in get(pctA), false);
-  assert.deepEqual(H.entryEfficiency(get(ppA), 1), { kind: 'perPrice', value: 0.0794 });
-  assert.deepEqual(H.entryEfficiency(get(legacy), 1), { kind: 'percent', value: 100 });
-  assert.deepEqual(H.entryEfficiency({ ...get(ppB), formulaVersion: 'old' }, 1), { kind: 'perPrice', value: null });
-  // 가격당 추가 데미지 0.5가 % 값들보다 수치는 작아도 섞지 않는다: % 그룹 → 가격당 그룹 → 값 없음(최근 먼저)
-  assert.deepEqual(H.sorted(list, 'efficiency').map((e) => e.id),
-    [pctB.id, legacy.id, pctA.id, ppB.id, ppA.id, pctNone.id, ppNone.id]);
-  // v2 기록도 같은 방식 저장·정렬(음수는 양수 뒤, NaN은 값 없음)
+test('히스토리: 예전 기록은 저장된 값으로 새 지표를 재계산, 불가능하면 "—"', () => {
+  const r = F.calculate(items, inputs); // D, price 1000
+  const v = H.FORMULA_VERSION;
+  const old = (extra) => ({ id: 'x', formulaVersion: v, itemIds: {}, result: { D: r.D, price: r.price, ratio: r.ratio }, ...extra });
+  // 기준 가격 0 시절의 '가격당 추가 데미지' v = (D − 기준 D) ÷ 가격 → 기준 D = D − v × 가격
+  const baseD = r.D / 1.25;
+  const pp = H.entryEfficiency(old({ efficiencyMode: 'baseline', efficiencyKind: 'perPrice', efficiencyPct: null, efficiencyPerPrice: (r.D - baseD) / r.price }));
+  assert.equal(pp.pct, null);
+  near(pp.gainPct, 25);
+  near(pp.per1000, 25);
+  assert.deepEqual(H.entryEfficiency(old({ efficiencyKind: 'perPrice', efficiencyPerPrice: null })), { pct: null, gainPct: null, per1000: null });
+  // 기준 세트 대비 효율 % 기록: 효율 %는 그대로, 기준 가격 미저장이라 기준 대비는 "—"
+  assert.deepEqual(H.entryEfficiency(old({ efficiencyMode: 'baseline', efficiencyKind: 'percent', efficiencyPct: 90 })), { pct: 90, gainPct: null, per1000: null });
+  // 히스토리 최고 대비였던 기록·효율 미저장 기록: 기준이 없었으므로 "—"
+  assert.deepEqual(H.entryEfficiency(old({ efficiencyMode: 'history', efficiencyKind: 'percent', efficiencyPct: 110 })), { pct: null, gainPct: null, per1000: null });
+  assert.deepEqual(H.entryEfficiency(old({})), { pct: null, gainPct: null, per1000: null });
+  // v2 기록도 같은 저장·정렬(NaN은 값 없음)
   const H2 = H.forVariant('v2');
-  const mk2 = (value, t) => H2.makeEntry({ equipped, inputs, result: r, efficiency: { mode: 'baseline', kind: 'perPrice', pct: null, value }, now: new Date(t) });
-  const neg = mk2(-0.2, '2026-10-16T01:00:00Z');
-  const pos = mk2(0.1, '2026-10-16T02:00:00Z');
+  const mk2 = (pct, t) => H2.makeEntry({ equipped, inputs, result: r, efficiency: { mode: 'baseline', pct, gainPct: 0, per1000: 0 }, now: new Date(t) });
+  const lo = mk2(80, '2026-10-16T01:00:00Z');
+  const hi = mk2(110, '2026-10-16T02:00:00Z');
   const nan = mk2(NaN, '2026-10-16T03:00:00Z');
-  assert.equal(nan.efficiencyPerPrice, null);
-  assert.deepEqual(H2.entryEfficiency(neg, null), { kind: 'perPrice', value: -0.2 });
-  assert.deepEqual(H2.sorted([nan, neg, pos], 'efficiency').map((e) => e.id), [pos.id, neg.id, nan.id]);
+  assert.equal(nan.efficiencyPct, null);
+  assert.deepEqual(H2.sorted([nan, lo, hi], 'efficiency').map((e) => e.id), [hi.id, lo.id, nan.id]);
 });
 
-test('계산 과정의 효율 줄: 기준 세트 대비 표기', () => {
+test('계산 과정: 효율 줄 + 기준 대비·1,000당 산출 줄', () => {
   const r = F.calculate(items, inputs);
-  const last = (refRatio, label) => E.lines(items, inputs, r, refRatio, label).at(-1);
-  assert.match(last(r.ratio, '기준 세트'), /→ 기준 세트 [\d.,]+ 대비 100%$/);
-  assert.match(last(r.ratio), /→ 최고 [\d.,]+ 대비 100%$/);
-  assert.doesNotMatch(last(null, '기준 세트'), /대비/);
+  const eff = B.efficiency(r, F.calculate(items, inputs));
+  const out = E.lines(items, inputs, r, eff.refRatio, '기준 세트', eff);
+  assert.match(out.at(-3), /→ 기준 세트 [\d.,]+ 대비 100%$/);
+  assert.match(out.at(-2), /^기준 대비 = \(D [\d.]+ ÷ 기준 D [\d.]+ − 1\) × 100 = 0\.0%$/);
+  assert.match(out.at(-1), /^1,000당 = 0\.0% ÷ 가격 합 1000 \(.+\) × 1000 = 0\.0%$/);
+  // 예: 기준 D가 현재의 1/1.474, 가격 1000 → +47.4%, 1,000당 +47.4%
+  const ex = E.lines(items, inputs, r, null, '기준 세트', { baseD: r.D / 1.474, gainPct: 47.4, per1000: 47.4 });
+  assert.match(ex.at(-3), /→ 기준 가격 합 0 — 효율 % 계산 제외$/);
+  assert.match(ex.at(-2), /= \+47\.4%$/);
+  // 기준 미완성
+  assert.equal(E.lines(items, inputs, r, null, '기준 세트', B.efficiency(r, null)).at(-1), '기준 세트 미완성 — 효율·기준 대비 계산 제외');
+  // gain 생략(기준 세트 자체의 계산 과정)·기존 호출: 효율 줄만
+  assert.match(E.lines(items, inputs, r, r.ratio).at(-1), /→ 최고 [\d.,]+ 대비 100%$/);
+  assert.doesNotMatch(E.lines(items, inputs, r, null, '기준 세트').at(-1), /대비/);
 });

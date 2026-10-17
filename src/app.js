@@ -886,12 +886,10 @@
     const items = Formula.SLOTS.map((s) => state.equipped[s]);
     if (items.some((it) => !it)) return;
     const result = Formula.calculate(items, inputs);
-    // 기준 세트가 5칸 다 차 있으면 같은 입력값으로 기준 세트도 계산해 그 대비로 효율 %를 낸다.
+    // 기준 세트가 5칸 다 차 있으면 같은 입력값으로 기준 세트도 계산해 그 대비로 효율 %·기준 대비를 낸다(미완성이면 "—").
     const baseItems = Baseline.isComplete(state.baseline, Formula.SLOTS) ? Formula.SLOTS.map((s) => state.baseline[s]) : null;
     const baseResult = baseItems ? Formula.calculate(baseItems, inputs) : null;
-    // 히스토리 최고 대비(폴백)는 이번 기록까지 포함한 최고치 기준.
-    const best = History.bestRatio(History.add(state.history, { formulaVersion: History.FORMULA_VERSION, result }));
-    const eff = Baseline.efficiency(result, baseResult, best);
+    const eff = Baseline.efficiency(result, baseResult);
     const entry = History.makeEntry({ equipped: state.equipped, inputs, result, efficiency: eff,
       baseline: Baseline.snapshot(state.baseline, Formula.SLOTS) });
     state.history = History.add(state.history, entry);
@@ -902,17 +900,18 @@
 
   function renderResult(r, items, inputs, eff, baseItems, baseResult) {
     const box = $('#result');
-    const effText = Baseline.valueText(eff.kind, eff.value);
-    // 큰 숫자 2개(데미지 총량 · 효율) + 비교 표. 효율 산출 기준은 툴팁.
+    // 큰 숫자 3개(데미지 총량 · 데미지 효율 · 기준 대비) + 작은 줄(가격 · 1,000당) + 비교 표. 산출 기준은 툴팁.
     const stat = (label, value, extra) => el('div', { className: 'stat', title: extra.title || '' },
       el('span', { className: 'stat-label', textContent: label }),
       el('span', { className: 'stat-value' + (extra.accent ? ' accent' : ''), textContent: value }));
-    const effTitle = baseResult
-      ? (eff.kind === 'perPrice' ? '기준 가격이 0이라 추가 데미지 ÷ 현재 가격' : '현재 세트 가격당 데미지 ÷ 기준 세트 가격당 데미지 × 100')
-      : '기준 세트가 5칸 다 차 있지 않아 히스토리 최고 대비';
+    const noBase = '기준 없음 — 기준 세트 5칸을 모두 채우면 계산합니다';
     const nodes = [el('div', { className: 'result-stats' },
       stat('데미지 총량', fmt(r.D), {}),
-      stat(Baseline.LABELS[eff.kind], effText, { accent: true, title: effTitle }))];
+      stat(Baseline.LABELS.pct, Baseline.pctText(eff.pct), { accent: true, title: !baseResult ? noBase
+        : eff.pct == null ? '가격 합이 0이라 계산하지 않습니다' : '현재 세트 가격당 데미지 ÷ 기준 세트 가격당 데미지 × 100' }),
+      stat(Baseline.LABELS.gain, Baseline.signedPct(eff.gainPct), { accent: true, title: baseResult ? '(현재 D ÷ 기준 D − 1) × 100' : noBase })),
+    el('p', { className: 'stat-sub', title: baseResult ? '1,000당 = 기준 대비 증가율 ÷ 현재 가격 합 × 1000' : noBase,
+      textContent: `가격 ${fmt(r.price)} · ${baseResult ? Baseline.per1000Text(eff.per1000) : '기준 없음'}` })];
     if (baseResult) {
       // 비교 표: 행 = 기준 / 현재 / 차이, 열 = 가격 합 · 데미지 총량 · 가격당 데미지.
       const signed = (v, d) => (v == null ? '—' : (v > 0 ? '+' : '') + fmt(v, d));
@@ -927,19 +926,11 @@
       nodes.push(el('table', { className: 'compare' },
         el('thead', null, el('tr', null, ...['', '가격 합', '데미지 총량', '가격당 데미지'].map((t) => el('th', { scope: 'col', textContent: t })))),
         el('tbody', null, ...rows)));
-      if (eff.kind === 'perPrice') {
-        nodes.push(el('p', { className: 'muted note', textContent: eff.value == null
-          ? '기준 가격과 현재 가격이 모두 0이라 효율을 계산하지 않습니다.'
-          : `기준 가격 0 — (${fmt(r.D)} − ${fmt(baseResult.D)}) ÷ ${fmt(r.price)} = ${effText}` }));
-      }
-    } else {
-      nodes.push(el('p', { className: 'muted note', textContent: '기준 세트 미완성 — 히스토리 최고 대비' }));
     }
     // 실제 숫자를 대입한 계산 과정(식 한 줄씩)은 접기/펼치기(기본 접힘, 상태는 localStorage에 기억).
-    const refLabel = eff.mode === 'baseline' ? '기준 세트' : '최고';
     const steps = el('details', { className: 'all-steps', open: window.ERExplain.loadStepsOpen(localStorage) },
       el('summary', { textContent: '계산 과정 보기' }),
-      el('pre', { className: 'steps', textContent: explainLines(items, inputs, r, eff.refRatio, refLabel).join('\n') }));
+      el('pre', { className: 'steps', textContent: explainLines(items, inputs, r, eff.refRatio, '기준 세트', eff).join('\n') }));
     steps.addEventListener('toggle', () => window.ERExplain.saveStepsOpen(localStorage, steps.open));
     if (baseResult) {
       steps.append(el('details', { className: 'base-steps' },
@@ -973,16 +964,12 @@
   function renderHistory() {
     const list = $('#history');
     list.replaceChildren();
-    const best = History.bestRatio(state.history);
     for (const btn of document.querySelectorAll('#history-tabs button')) {
       btn.setAttribute('aria-pressed', String(btn.dataset.sort === state.historySort));
     }
     for (const e of History.sorted(state.history, state.historySort)) {
       const current = History.isCurrent(e);
-      const eff = History.entryEfficiency(e, best);
-      const refText = eff.kind === 'perPrice' ? ' (기준 가격 0)'
-        : e.efficiencyMode === 'baseline' ? ' (기준 세트 대비)' : e.efficiencyMode === 'history' ? ' (당시 최고 대비)' : '';
-      const effLabel = eff.kind === 'perPrice' ? Baseline.LABELS.perPrice : '효율';
+      const eff = History.entryEfficiency(e);
       const hasBase = e.baselineIds && Object.keys(e.baselineIds).length;
       // 기준 세트 아이콘(작게): 이 기록이 어떤 기준 세트 대비였는지.
       const baseRow = hasBase
@@ -1005,14 +992,16 @@
         else $('#clear-history').focus();
       };
       // 왼쪽: 현재 세트 아이콘 줄, 기준 줄, 메타 줄(시각 · 데미지 · 가격).
-      // 오른쪽 열: 효율(또는 가격당 추가 데미지)을 세로 중앙에 크게. 효율 기준과 이전 계산식 사유는 툴팁.
-      const effNode = current
-        ? el('div', { className: 'hist-eff', title: refText.replace(/^ \((.*)\)$/, '$1') },
-          el('span', { className: 'hist-eff-label', textContent: effLabel }),
-          el('span', { className: 'hist-eff-value', textContent: Baseline.valueText(eff.kind, eff.value) }))
-        : el('div', { className: 'hist-eff old', title: '이전 계산식 기록 — 효율 비교 제외' },
+      // 오른쪽 열(세로 중앙): 위 "효율 58.6%"(크게), 아래 "기준 대비 +47.4%", 더 작게 "1,000당 +41.0%".
+      // 산출 기준·기준 없음·이전 계산식 사유는 툴팁.
+      const effTitle = !current ? '이전 계산식 기록 — 효율 비교 제외'
+        : e.efficiencyMode === 'baseline' ? '기준 세트 대비' : '기준 없음';
+      const effNode = el('div', { className: 'hist-eff' + (current ? '' : ' old'), title: effTitle },
+        el('span', { className: 'hist-eff-top' },
           el('span', { className: 'hist-eff-label', textContent: '효율' }),
-          el('span', { className: 'hist-eff-value', textContent: '—' }));
+          el('span', { className: 'hist-eff-value', textContent: Baseline.pctText(eff.pct) })),
+        el('span', { className: 'hist-eff-gain', textContent: `${Baseline.LABELS.gain} ${Baseline.signedPct(eff.gainPct)}` }),
+        el('span', { className: 'hist-eff-sub', textContent: current && e.efficiencyMode !== 'baseline' ? '기준 없음' : Baseline.per1000Text(eff.per1000) }));
       const date = new Date(e.time);
       const time = date.toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit' });
       const li = el('li', { title: '클릭하면 이 구성을 불러옵니다', tabIndex: 0 },

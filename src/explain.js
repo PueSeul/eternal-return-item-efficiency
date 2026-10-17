@@ -67,19 +67,43 @@
   }
 
   // refLabel: 비교 기준 이름(히스토리 최고 = '최고', 기준 세트 = '기준 세트').
-  function efficiencyLine(items, r, bestRatio, refLabel = '최고') {
-    if (!(r.price > 0)) return '가격 합 0 — 효율 계산 제외';
+  // 부호 붙은 % 소수 1자리(음수는 −). 절댓값을 화면과 같은 Intl 반올림으로(양·음 대칭).
+  const fmt1 = new Intl.NumberFormat('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1, useGrouping: false });
+  const signed = (v) => {
+    const s = fmt1.format(Math.abs(v));
+    return (s === '0.0' ? '' : v > 0 ? '+' : '−') + s + '%';
+  };
+
+  // gain: 결과 영역의 기준 대비 지표 { baseD, gainPct, per1000 }(기준 세트 미완성이면 baseD null).
+  // 생략하면(기준 세트 자체의 계산 과정 등) 효율 줄만.
+  function efficiencyLines(items, r, bestRatio, refLabel = '최고', gain) {
     const priceText = withParts(r.price, contrib(items.map((it) => ({ name: it.name, stats: { p: it.price } })), ['p']));
-    const p = Formula.efficiencyPercent(r.ratio, bestRatio);
-    return `효율 = D ${num(r.D)} ÷ 가격 합 ${priceText} = ${num(r.ratio, 4)}` +
-      (p == null ? '' : ` → ${refLabel} ${num(bestRatio, 4)} 대비 ${num(p, 1)}%`);
+    const out = [];
+    if (!(r.price > 0)) out.push('가격 합 0 — 효율 계산 제외');
+    else {
+      const p = Formula.efficiencyPercent(r.ratio, bestRatio);
+      out.push(`효율 = D ${num(r.D)} ÷ 가격 합 ${priceText} = ${num(r.ratio, 4)}` +
+        (p == null ? (gain && gain.baseD != null ? ' → 기준 가격 합 0 — 효율 % 계산 제외' : '') : ` → ${refLabel} ${num(bestRatio, 4)} 대비 ${num(p, 1)}%`));
+    }
+    if (!gain) return out;
+    if (gain.baseD == null) {
+      out.push('기준 세트 미완성 — 효율·기준 대비 계산 제외');
+      return out;
+    }
+    out.push(gain.gainPct == null ? `기준 대비 = 기준 D ${num(gain.baseD)} — 계산 제외`
+      : `기준 대비 = (D ${num(r.D)} ÷ 기준 D ${num(gain.baseD)} − 1) × 100 = ${signed(gain.gainPct)}`);
+    if (gain.gainPct != null) {
+      out.push(gain.per1000 == null ? '1,000당 = 가격 합 0 — 계산 제외'
+        : `1,000당 = ${signed(gain.gainPct)} ÷ 가격 합 ${priceText} × 1000 = ${signed(gain.per1000)}`);
+    }
+    return out;
   }
 
   const minNote = (raw, value, min, f) =>
     (raw < min ? `${f(raw)} → 최솟값 ${min} 적용 = ${f(value)}` : `${f(value)} (최솟값 ${min})`);
 
   // v2(formula_v2.js) 계산 과정. r: FormulaV2.calculate 결과.
-  function linesV2(items, inputs, r, bestRatio, refLabel) {
+  function linesV2(items, inputs, r, bestRatio, refLabel, gain) {
     const out = [];
     if (inputs.characterName) {
       out.push(`실험체: ${inputs.characterName} · 캐릭터 레벨 ${num(inputs.level)} · 숙련도 레벨 ${num(inputs.masteryLevel)}`);
@@ -104,12 +128,13 @@
     const rawD = r.B * r.M * r.K;
     out.push(`D = ${num(r.B)} × ${rate(r.M)} × ${rate(r.K)} = ` +
       (rawD < Formula.MIN_DAMAGE ? `${num(rawD)} → 최솟값 ${Formula.MIN_DAMAGE} 적용 = ${num(r.D)}` : num(r.D)));
-    out.push(efficiencyLine(items, r, bestRatio, refLabel));
+    out.push(...efficiencyLines(items, r, bestRatio, refLabel, gain));
     return out;
   }
 
-  // items: 장착 아이템 5개, inputs: 입력값, r: Formula.calculate 결과, bestRatio: 효율 100% 기준(D/가격).
-  function lines(items, inputs, r, bestRatio, refLabel) {
+  // items: 장착 아이템 5개, inputs: 입력값, r: Formula.calculate 결과, bestRatio: 효율 100% 기준(D/가격),
+  // gain: 기준 대비 지표 { baseD, gainPct, per1000 }(efficiencyLines 참고, 생략 가능).
+  function lines(items, inputs, r, bestRatio, refLabel, gain) {
     const out = choiceLine(items, r);
     out.push(sumLine('공격력', items, inputs.level, K.atk, K.atkPerLevel, K.choiceAtk, r.choice === 'atk', r.stats.atk));
     out.push(`S = ${num(inputs.skillDamage)} + ${num(r.stats.atk)} × ${num(inputs.atkCoefPct)}% = ${num(r.S)}`);
@@ -126,7 +151,7 @@
     const rawD = (r.B * r.A + r.I) * r.F;
     out.push(`D = (${num(r.B)} × ${rate(r.A)} + ${num(r.I)}) × ${rate(r.F)} = ` +
       (rawD < Formula.MIN_DAMAGE ? `${num(rawD)} → 최솟값 ${Formula.MIN_DAMAGE} 적용 = ${num(r.D)}` : num(r.D)));
-    out.push(efficiencyLine(items, r, bestRatio, refLabel));
+    out.push(...efficiencyLines(items, r, bestRatio, refLabel, gain));
     return out;
   }
 

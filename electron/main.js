@@ -172,7 +172,8 @@ async function handleRequest(request) {
 function createWindow() {
   const win = new BrowserWindow({
     width: 1280,
-    height: 860,
+    height: 900,
+    minHeight: 800,
     autoHideMenuBar: true,
     title: windowTitle(APP_TITLE),
     // Windows 기본 제목 표시줄 대신 index.html 의 #titlebar(preload.js 가 보이게 함). 최소화·최대화·닫기는

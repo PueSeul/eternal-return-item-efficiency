@@ -21,6 +21,16 @@ test('레이아웃: 왼쪽 필요 폭·히스토리 남는 폭, 페이지 스크
   assert.match(css, /@media \(max-width: 1099px\) \{[\s\S]*body \{ display: block; overflow: auto/);
 });
 
+test('결과·히스토리 효율 표시: 큰 숫자 3개(데미지·효율·기준 대비) + 가격·1,000당 작은 줄, 히스토리 3단', () => {
+  const app = fs.readFileSync(path.join(root, 'src', 'app.js'), 'utf8');
+  assert.match(app, /stat\('데미지 총량'[\s\S]{0,80}stat\(Baseline\.LABELS\.pct[\s\S]{0,400}stat\(Baseline\.LABELS\.gain/);
+  assert.match(app, /className: 'stat-sub'[\s\S]{0,200}`가격 \$\{fmt\(r\.price\)\} · \$\{baseResult \? Baseline\.per1000Text\(eff\.per1000\) : '기준 없음'\}`/);
+  assert.match(app, /'hist-eff-value'[\s\S]{0,200}'hist-eff-gain'[\s\S]{0,200}'hist-eff-sub'/);
+  assert.match(css, /\.result-stats \{ display: flex; gap: 32px; \}/);
+  const main = fs.readFileSync(path.join(root, 'electron', 'main.js'), 'utf8');
+  assert.match(main, /height: 900,\s*minHeight: 800,/);
+});
+
 test('슬롯 두 열 헤더: 32px 한 줄 고정, 제목·버튼 nowrap, 상태 말줄임', () => {
   assert.match(css, /\.slot-col > \.block-head \{ height: 32px;[^}]*flex-wrap: nowrap/);
   assert.match(css, /\.slot-col > \.block-head h2 \{ white-space: nowrap; flex-shrink: 0/);

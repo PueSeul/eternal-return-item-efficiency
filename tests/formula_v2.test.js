@@ -192,5 +192,5 @@ test('v2 히스토리: 저장 키·계산식 버전이 v1과 분리', () => {
   assert.deepEqual([withChar.inputs.characterId, withChar.inputs.characterName, withChar.inputs.masteryLevel, withChar.inputs.level],
     ['arda', '아르다', 20, 20]);
   assert.ok(H2.isCurrent(loaded) && !H.isCurrent(loaded));
-  assert.equal(H2.bestRatio([loaded]), r.ratio);
+  assert.equal(loaded.result.ratio, r.ratio);
 });

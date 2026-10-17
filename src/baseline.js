@@ -66,28 +66,42 @@
 
   const percent = (ratio, ref) => (ratio == null || !ref ? null : (ratio / ref) * 100);
 
-  // 효율: kind 'percent' = 효율 %, 'perPrice' = 가격당 추가 데미지. value가 그 값(없으면 null "—").
-  // 기준 세트 결과(base)가 있으면 현재 가격당 데미지 ÷ 기준 가격당 데미지 × 100,
-  // 기준 가격 합이 0이면 (현재 D − 기준 D) ÷ 현재 가격 합(현재 가격 합도 0이면 null),
-  // 기준이 없으면(미완성) 히스토리 최고 비율(bestRatio) 대비 %.
-  function efficiency(cur, base, bestRatio) {
-    if (base && !(base.price > 0)) {
-      const value = cur.price > 0 ? (cur.D - base.D) / cur.price : null;
-      return { mode: 'baseline', kind: 'perPrice', refRatio: null, pct: null, value };
-    }
-    const refRatio = base ? base.ratio : bestRatio;
-    const pct = percent(cur.ratio, refRatio);
-    return { mode: base ? 'baseline' : 'history', kind: 'percent', refRatio, pct, value: pct };
+  // 기준 가격 합 0일 때의 지표: 증가율 % = (현재 D ÷ 기준 D − 1) × 100(기준 D 0이면 null),
+  // 1,000당 % = 증가율 ÷ 현재 가격 합 × 1000(현재 가격 합 0이면 null).
+  function gainMetrics(curD, baseD, curPrice) {
+    const gainPct = Number.isFinite(curD) && Number.isFinite(baseD) && baseD !== 0 ? (curD / baseD - 1) * 100 : null;
+    const per1000 = gainPct != null && curPrice > 0 ? (gainPct / curPrice) * 1000 : null;
+    return { gainPct, per1000 };
   }
 
-  const LABELS = { percent: '데미지 효율', perPrice: '가격당 추가 데미지' };
+  // 효율 지표(기준 세트 결과 base 대비, 항상 함께 계산):
+  //   pct = 현재 가격당 데미지 ÷ 기준 가격당 데미지 × 100(기준 또는 현재 가격 합 0이면 null),
+  //   gainPct·per1000 = gainMetrics. 기준 세트가 미완성(base 없음)이면 mode 'none', 모두 null.
+  function efficiency(cur, base) {
+    if (!base) return { mode: 'none', refRatio: null, baseD: null, pct: null, gainPct: null, per1000: null };
+    const refRatio = base.price > 0 ? base.ratio : null;
+    return { mode: 'baseline', refRatio, baseD: base.D, pct: percent(cur.ratio, refRatio), ...gainMetrics(cur.D, base.D, cur.price) };
+  }
 
-  // 효율 값 표시: % 는 소수 1자리 + '%', 가격당 추가 데미지는 소수 4자리. 없으면 '—'.
-  function valueText(kind, value) {
+  const LABELS = { pct: '데미지 효율', gain: '기준 대비' };
+
+  // 부호 붙은 % 소수 1자리("+47.4%", "−12.0%", "0.0%"). 없으면 '—'.
+  function signedPct(v) {
+    if (typeof v !== 'number' || !Number.isFinite(v)) return '—';
+    // 절댓값을 반올림해 양·음 대칭(−6.25 → −6.3%).
+    const s = Math.abs(v).toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    if (s === '0.0') return '0.0%';
+    return (v > 0 ? '+' : '−') + s + '%';
+  }
+
+  // 효율 % 표시: 소수 1자리 + '%'. 없으면 '—'.
+  function pctText(value) {
     if (typeof value !== 'number' || !Number.isFinite(value)) return '—';
-    if (kind === 'perPrice') return value.toLocaleString('ko-KR', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
     return value.toLocaleString('ko-KR', { maximumFractionDigits: 1 }) + '%';
   }
+
+  // "1,000당 +41.0%"(없으면 "1,000당 —").
+  const per1000Text = (v) => `1,000당 ${signedPct(v)}`;
 
   // 비교 표: 기준 / 현재 / 차이(현재 − 기준) × 가격 합 · 데미지 총량 · 가격당 데미지.
   function compareRows(cur, base) {
@@ -100,5 +114,5 @@
     ];
   }
 
-  return { STORAGE_KEYS, storageKey, load, save, resolve, isComplete, snapshot, efficiency, LABELS, valueText, compareRows };
+  return { STORAGE_KEYS, storageKey, load, save, resolve, isComplete, snapshot, gainMetrics, efficiency, LABELS, signedPct, pctText, per1000Text, compareRows };
 });
