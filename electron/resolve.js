@@ -50,8 +50,25 @@ function isFile(p) {
   }
 }
 
+function isDir(p) {
+  try {
+    return fs.statSync(p).isDirectory();
+  } catch {
+    return false;
+  }
+}
+
+// 외부 data/ 의 기준 폴더(실행 중인 exe 가 있는 폴더). 개발 실행(isPackaged false)은 null.
+// 포터블 exe 는 임시 폴더에 풀려 실행되므로(exePath = 임시 경로) 런처가 준 portableDir(PORTABLE_EXECUTABLE_DIR)을 쓴다.
+// 그 폴더가 없으면 임시 폴더(종료 때 지워짐) 대신 userData. 포터블이 아니면 exePath 의 폴더.
+function externalRootOf({ isPackaged, portableDir, exePath, userData }) {
+  if (!isPackaged) return null;
+  if (!portableDir) return path.dirname(exePath);
+  return isDir(portableDir) ? portableDir : userData;
+}
+
 function contentType(file) {
   return TYPES[path.extname(file).toLowerCase()] || 'application/octet-stream';
 }
 
-module.exports = { resolveFile, contentType };
+module.exports = { resolveFile, contentType, externalRootOf };

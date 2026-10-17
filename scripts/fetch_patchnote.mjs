@@ -2,9 +2,10 @@
 // Extracts item / character stat changes from the latest official patch note
 // (plus later hotfixes). Same rules and output as the Python script.
 // Usage: node scripts/fetch_patchnote.mjs  (prints the extracted changes as JSON)
-import { readFileSync, realpathSync } from "node:fs";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { isMain } from "./is_main.mjs";
 
 export const LIST_URL = (page) =>
   `https://playeternalreturn.com/api/v1/posts/news?category=patchnote&hl=ko-KR&page=${page}`;
@@ -470,7 +471,7 @@ export function dumps(obj) {
   return JSON.stringify(obj, null, 2) + "\n";
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {
+if (isMain(import.meta.url)) {
   const patch = await fetchPatch();
   const parsed = parsePatch(patch.bodies, localStatNames());
   process.stdout.write(Buffer.from(dumps({ patch: patch.info, ...parsed }), "utf8"));

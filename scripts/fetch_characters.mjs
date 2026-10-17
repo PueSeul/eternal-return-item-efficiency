@@ -2,9 +2,10 @@
 // Builds data/characters.json byte-identical to the Python script.
 // Values that differ from the latest patch note are replaced by the patch-note value.
 // Usage: node scripts/fetch_characters.mjs
-import { writeFileSync, mkdirSync, realpathSync } from "node:fs";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { writeFileSync, mkdirSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { isMain } from "./is_main.mjs";
 import { fetchPatch, parsePatch, applyCharacterChanges, requestSignal } from "./fetch_patchnote.mjs";
 
 export const CHARACTERS_URL = "https://er.dakgg.io/api/v1/data/characters?hl=ko";
@@ -113,7 +114,7 @@ export async function fetchCharacters() {
   return out;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {
+if (isMain(import.meta.url)) {
   const chars = await fetchCharacters();
   mkdirSync(DATA_DIR, { recursive: true });
   writeFileSync(OUT_PATH, dumps(chars), "utf8");

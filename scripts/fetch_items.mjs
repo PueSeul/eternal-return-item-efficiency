@@ -4,9 +4,10 @@
 // are replaced by the patch-note value (host decision).
 // Usage: node scripts/fetch_items.mjs [--all]  (writes items.json, characters.json, skills.json,
 // items.meta.json; only the patch note's characters are re-read from namu.wiki unless --all)
-import { existsSync, readFileSync, writeFileSync, mkdirSync, realpathSync, renameSync } from "node:fs";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { existsSync, readFileSync, writeFileSync, mkdirSync, renameSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { isMain } from "./is_main.mjs";
 import {
   fetchPatch, parsePatch, applyItemChanges, applyCharacterChanges, requestSignal, describeError,
 } from "./fetch_patchnote.mjs";
@@ -309,7 +310,7 @@ export async function fetchAll({
   return result;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {
+if (isMain(import.meta.url)) {
   const { items, characters, skills, meta } = await fetchAll({
     skillsMode: process.argv.slice(2).includes("--all") ? "all" : "patched" });
   console.log(`wrote ${items.length} items, ${characters.length} characters, ${skills.length} skill entries `

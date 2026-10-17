@@ -4,7 +4,21 @@ const assert = require('node:assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { resolveFile, contentType } = require('./resolve');
+const { resolveFile, contentType, externalRootOf } = require('./resolve');
+
+test('externalRootOf: dev null, portable dir if it exists, else userData; non-portable exe dir', () => {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'er-extroot-'));
+  const exePath = path.join(base, 'Temp', 'xyz', 'ER-Damage-Calculator.exe'); // 포터블이 풀린 임시 경로
+  const userData = path.join(base, 'userData');
+  assert.strictEqual(externalRootOf({ isPackaged: false, portableDir: base, exePath, userData }), null);
+  assert.strictEqual(externalRootOf({ isPackaged: true, portableDir: base, exePath, userData }), base);
+  assert.strictEqual(externalRootOf({ isPackaged: true, portableDir: path.join(base, 'gone'), exePath, userData }), userData);
+  const file = path.join(base, 'f.exe');
+  fs.writeFileSync(file, '');
+  assert.strictEqual(externalRootOf({ isPackaged: true, portableDir: file, exePath, userData }), userData); // 폴더가 아님
+  assert.strictEqual(externalRootOf({ isPackaged: true, portableDir: undefined, exePath, userData }), path.dirname(exePath));
+  fs.rmSync(base, { recursive: true, force: true });
+});
 
 function tmpDirs() {
   const base = fs.mkdtempSync(path.join(os.tmpdir(), 'er-resolve-'));

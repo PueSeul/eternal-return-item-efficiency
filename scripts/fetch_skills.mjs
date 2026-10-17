@@ -5,9 +5,10 @@
 // (redirect hops included) is checked against robots.txt and spaced >= 1 s apart.
 // Content license of namu.wiki: CC BY-NC-SA 2.0 KR.
 // Usage: node scripts/fetch_skills.mjs  (characters from data/characters.json)
-import { readFileSync, writeFileSync, realpathSync } from "node:fs";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { readFileSync, writeFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { isMain } from "./is_main.mjs";
 import {
   TOKEN_RE, BLOCK_TAGS as PN_BLOCK_TAGS, HEADINGS, ENTITY_RE, SPACE_RE, entity,
   fetchPatch, parsePatch, requestSignal, describeError,
@@ -865,7 +866,7 @@ export async function fetchSkills(chars, intervalMs = REQUEST_INTERVAL_MS) {
   return skills;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {
+if (isMain(import.meta.url)) {
   const skills = await fetchSkills(JSON.parse(readFileSync(CHARACTERS_PATH, "utf8")));
   writeFileSync(OUT_PATH, dumps(skills), "utf8");
   const review = skills.reduce((n, c) => n + c.needsReview.length, 0);

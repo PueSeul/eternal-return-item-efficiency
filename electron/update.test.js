@@ -60,6 +60,18 @@ test('updateAll moves the four files into dataDir and returns count/savedPath/sk
   fs.rmSync(root, { recursive: true, force: true });
 });
 
+test('updateAll replaces existing files and skips missing ones without error', async () => {
+  const root = tmpDir();
+  const dataDir = path.join(root, 'data');
+  fs.mkdirSync(dataDir);
+  fs.writeFileSync(path.join(dataDir, 'items.json'), '[{"id":"old"}]'); // 나머지 세 파일은 없음
+  const result = { items: [{ id: '1' }], characters: [{ id: 'c' }], skills: [{ name: 's' }], meta: { m: 1 } };
+  await updateAll(fakeFetchAll(result), dataDir);
+  assert.deepStrictEqual(fs.readdirSync(dataDir).sort(), ['characters.json', 'items.json', 'items.meta.json', 'skills.json']);
+  assert.deepStrictEqual(JSON.parse(fs.readFileSync(path.join(dataDir, 'items.json'), 'utf8')), result.items);
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
 test('updateAll passes skillsMode and the existing data/skills.json as merge base', async () => {
   const root = tmpDir();
   const dataDir = path.join(root, 'data');

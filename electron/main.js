@@ -5,7 +5,7 @@
 const { app, BrowserWindow, ipcMain, net, protocol, shell } = require('electron');
 const fs = require('fs');
 const path = require('path');
-const { resolveFile, contentType } = require('./resolve');
+const { resolveFile, contentType, externalRootOf } = require('./resolve');
 const { loadFetchAll, updateAll } = require('./update');
 const appUpdate = require('./app-update');
 const { titleBarColors } = require('./theme');
@@ -13,11 +13,6 @@ const { titleBarColors } = require('./theme');
 const SCHEME = 'app';
 const ORIGIN = `${SCHEME}://calc`;
 const APP_ROOT = path.join(__dirname, '..');
-// exe 옆 data/ 폴더를 우선 사용(portable exe는 임시 폴더에서 풀려 실행되므로 원래 exe 위치를 쓴다).
-const EXTERNAL_ROOT = !app.isPackaged ? null
-  : process.env.PORTABLE_EXECUTABLE_DIR || path.dirname(process.execPath);
-// 프로그램 안 업데이트가 저장하는 곳: exe 옆 data/ (개발 실행에서는 프로젝트 data/). resolveFile 이 이 파일을 우선 읽는다.
-const UPDATE_DATA_DIR = path.join(EXTERNAL_ROOT || APP_ROOT, 'data');
 
 // window.erDesktop.updateItems() (preload.js) → fetchAll() → data/items.json·characters.json·skills.json·items.meta.json 저장. 동시 요청은 하나로 합친다.
 let updating = null;
@@ -150,6 +145,12 @@ async function notifyAppUpdate(contents) {
 // 개발 실행(npm run app)과 exe가 같은 히스토리를 쓰도록 저장 위치 고정. v1·v2 는 별도 폴더(히스토리 분리).
 // 폴더 이름은 기존 배포본과 같게 유지한다(v2 = er-damage-efficiency-v2).
 app.setPath('userData', path.join(app.getPath('appData'), FORMULA === 'v2' ? 'er-damage-efficiency-v2' : 'er-damage-efficiency'));
+
+// exe 옆 data/ 폴더를 우선 사용(portable exe는 임시 폴더에서 풀려 실행되므로 원래 exe 위치를 쓴다, resolve.js externalRootOf).
+const EXTERNAL_ROOT = externalRootOf({ isPackaged: app.isPackaged, portableDir: process.env.PORTABLE_EXECUTABLE_DIR,
+  exePath: app.getPath('exe'), userData: app.getPath('userData') });
+// 프로그램 안 업데이트가 저장하는 곳: exe 옆 data/ (개발 실행에서는 프로젝트 data/). resolveFile 이 이 파일을 우선 읽는다.
+const UPDATE_DATA_DIR = path.join(EXTERNAL_ROOT || APP_ROOT, 'data');
 
 protocol.registerSchemesAsPrivileged([
   { scheme: SCHEME, privileges: { standard: true, secure: true, supportFetchAPI: true } },
