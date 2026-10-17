@@ -160,11 +160,23 @@ async function readFirst(name, dirs) {
 // bundledDir)의 sha256 과 비교하고, 다르면 네 파일을 받아 sha256 을 확인한 뒤 dataDir 로 원자 교체한다(installFiles).
 // fetchImpl: fetch 와 같은 함수(main.js 는 net.fetch). onProgress: {stage: 'manifest'|'download', done, total, message}.
 // 반환 { count, savedPath, skills, meta, note? } — 이미 같으면 파일을 건드리지 않고 note 로 알린다.
-async function downloadLatest(fetchImpl, dataDir, { onProgress, bundledDir, baseUrl = DATA_RELEASE_URL, timeoutMs = DOWNLOAD_TIMEOUT_MS } = {}) {
+// 상한 타이머는 setTimeout(이벤트 루프를 붙잡음)으로 둔다. AbortSignal.timeout 은 unref 타이머라 다른 할 일이 없으면
+// 상한 전에 프로세스(테스트 러너)가 끝나 대기 중인 요청이 취소된다.
+async function downloadLatest(fetchImpl, dataDir, options = {}) {
+  const timeoutMs = options.timeoutMs ?? DOWNLOAD_TIMEOUT_MS;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(new Error('timeout')), timeoutMs);
+  try {
+    return await fetchLatest(fetchImpl, dataDir, { ...options, timeoutMs }, controller.signal);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function fetchLatest(fetchImpl, dataDir, { onProgress, bundledDir, baseUrl = DATA_RELEASE_URL, timeoutMs }, signal) {
   const progress = (stage, done, total, message) => {
     if (onProgress) onProgress({ stage, done, total, message });
   };
-  const signal = AbortSignal.timeout(timeoutMs);
   const get = async (name) => {
     try {
       const res = await fetchImpl(baseUrl + name, { signal, cache: 'no-store' });
