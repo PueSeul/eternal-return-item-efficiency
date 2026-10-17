@@ -8,6 +8,7 @@ const path = require('path');
 const { resolveFile, contentType } = require('./resolve');
 const { loadFetchAll, updateAll } = require('./update');
 const appUpdate = require('./app-update');
+const { titleBarColors } = require('./theme');
 
 const SCHEME = 'app';
 const ORIGIN = `${SCHEME}://calc`;
@@ -46,17 +47,20 @@ async function handleUpdateItems(event, options) {
 // 개발 실행은 환경변수 ER_FORMULA=v1 로 고를 수 있다. 'v1' 외의 값은 기본(v2).
 const FORMULA = (app.isPackaged ? require('../package.json').erFormula : process.env.ER_FORMULA) === 'v1' ? 'v1' : 'v2';
 const APP_TITLE = '이터널 리턴 아이템별 가격대비 효율 계산기';
+// 창 제목 = 페이지 제목 + 버전(예: "… 계산기 1.2.0").
+const windowTitle = (pageTitle) => `${pageTitle} ${app.getVersion()}`;
+const TITLEBAR_HEIGHT = 36;
 
 // 프로그램 자동 업데이트(app-update.js): 릴리스 자산이 기본(v2) exe 라 v2 에서만 켠다. 설치는 포터블 exe 실행에서만
 // 가능하다(PORTABLE_EXECUTABLE_FILE = 실제 exe 경로). ER_UPDATE_API 는 검증용 릴리스 API 주소.
 const APP_UPDATE = FORMULA === 'v2';
 const PORTABLE_EXE = process.env.PORTABLE_EXECUTABLE_FILE || null;
 const UPDATE_API = process.env.ER_UPDATE_API || appUpdate.RELEASES_API;
-const updateFailMarker = () => path.join(app.getPath('userData'), 'app-update-failed.txt');
+let pendingSwap = null; // 교체 마무리 대상({ from }): 창이 처음 정상 로드된 뒤에 이전 exe 를 지운다(로드 전 실패면 이전 exe 보존)
 let latestRelease = null; // 마지막으로 찾은 새 버전(설치 대상)
 const dismissedVersions = new Set(); // "나중에": 이번 실행에서 다시 알리지 않을 버전
 let installing = null;
-let smokeUpdateQuit = null; // 검증용: 교체 배치를 띄운 뒤 app.quit 대신 부른다
+let smokeUpdateQuit = null; // 검증용: 새 exe 를 띄운 뒤 app.quit 대신 부른다
 
 async function checkAppUpdate() {
   const res = await appUpdate.checkForUpdate({ fetch: net.fetch, currentVersion: app.getVersion(), apiUrl: UPDATE_API });
@@ -77,7 +81,8 @@ function handleAppUpdateDismiss(event, version) {
   dismissedVersions.add(String(version));
 }
 
-// 받기 → 교체 배치 실행 → 종료. 받기·준비가 실패하면 받은 파일을 지우고(원본 그대로) 오류로 끝낸다.
+// 받기(<자산 이름>.download) → <자산 이름>으로 바꾸기 → 새 exe 를 교체 인자로 실행 → 종료(app-update.js launchSwap).
+// 받기·실행이 실패하면 받은 파일을 지우고(원본 그대로) 오류로 끝낸다.
 function handleAppUpdateInstall(event) {
   assertAppOrigin(event);
   if (installing) return installing;
@@ -85,6 +90,11 @@ function handleAppUpdateInstall(event) {
   const rel = latestRelease;
   if (!rel) throw new Error('먼저 업데이트를 확인하세요.');
   if (!rel.asset) throw new Error(`v${rel.version} 릴리스에 exe 파일이 없습니다.`);
+  // 새 exe 는 릴리스 자산 이름으로 둔다(1.1.0 은 원래 이름으로 둬 파일명만 옛 버전으로 남았다).
+  const exe = path.join(path.dirname(PORTABLE_EXE), rel.asset.name);
+  if (path.resolve(exe).toLowerCase() === path.resolve(PORTABLE_EXE).toLowerCase()) {
+    throw new Error(`지금 실행 중인 파일 이름이 새 버전 파일 이름(${rel.asset.name})과 같아 교체할 수 없습니다. 파일 이름을 바꾼 뒤 다시 시도하세요.`);
+  }
   const sender = event.sender;
   let last = null;
   const onProgress = ({ received, total }) => {
@@ -94,14 +104,20 @@ function handleAppUpdateInstall(event) {
     last = step;
     sender.send('app-update:progress', { received, total, percent });
   };
-  const dest = `${PORTABLE_EXE}.download`;
+  const dest = `${exe}.download`;
   installing = appUpdate.downloadAsset({ fetch: net.fetch, asset: rel.asset, dest, onProgress })
     .then(async (res) => {
       try {
-        await appUpdate.launchSwap({ target: PORTABLE_EXE, downloaded: dest, pid: process.pid, failMarker: updateFailMarker() });
+        await fs.promises.rename(dest, exe);
       } catch (err) {
         await fs.promises.rm(dest, { force: true });
-        throw new Error(`교체 준비 실패: ${err.message}`);
+        throw new Error(`새 파일을 ${rel.asset.name}(으)로 저장하지 못했습니다: ${err.code || err.message}`);
+      }
+      try {
+        await appUpdate.launchSwap({ dest: exe, target: PORTABLE_EXE, pid: process.pid });
+      } catch (err) {
+        await fs.promises.rm(exe, { force: true });
+        throw new Error(`새 버전을 실행하지 못했습니다: ${err.code || err.message}`);
       }
       setTimeout(() => (smokeUpdateQuit ? smokeUpdateQuit(res) : app.quit()), 300);
       return { version: rel.version };
@@ -113,12 +129,13 @@ function handleAppUpdateInstall(event) {
   return installing;
 }
 
-// 창 첫 로드 뒤 한 번: 지난 교체 실패 알림, 최신 릴리스 확인 → 새 버전이면 'app-update:available'.
+// 창 첫 로드 뒤 한 번: 교체 마무리 실패 알림, 최신 릴리스 확인 → 새 버전이면 'app-update:available'.
 async function notifyAppUpdate(contents) {
-  const marker = updateFailMarker();
-  if (fs.existsSync(marker)) {
-    fs.rmSync(marker, { force: true });
-    contents.send('app-update:error', '지난 업데이트에서 exe 교체에 실패해 이전 버전을 그대로 실행했습니다.');
+  if (pendingSwap) {
+    appUpdate.finishSwap(pendingSwap).catch((err) => {
+      if (!contents.isDestroyed()) contents.send('app-update:error', err.message);
+    });
+    pendingSwap = null;
   }
   try {
     const res = await checkAppUpdate();
@@ -157,6 +174,11 @@ function createWindow() {
     width: 1280,
     height: 860,
     autoHideMenuBar: true,
+    title: windowTitle(APP_TITLE),
+    // Windows 기본 제목 표시줄 대신 index.html 의 #titlebar(preload.js 가 보이게 함). 최소화·최대화·닫기는
+    // 네이티브 버튼 오버레이를 앱 색(style.css --bg/--text)으로 쓴다(스냅·더블클릭 최대화·닫기 빨강 hover 유지).
+    titleBarStyle: 'hidden',
+    titleBarOverlay: { ...titleBarColors(APP_ROOT), height: TITLEBAR_HEIGHT },
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
@@ -164,8 +186,14 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js'),
       // preload.js 가 이 인자를 보고 window.ER_FORMULA 를 주입한다.
       // --er-app-update: preload.js 가 "업데이트 확인" 버튼과 새 버전 배너를 넣는다.
-      additionalArguments: [`--er-formula=${FORMULA}`, ...(APP_UPDATE ? ['--er-app-update'] : [])],
+      // --er-titlebar / --er-version: preload.js 가 자체 타이틀바를 보이게 하고 버전을 적는다.
+      additionalArguments: [`--er-formula=${FORMULA}`, '--er-titlebar', `--er-version=${app.getVersion()}`,
+        ...(APP_UPDATE ? ['--er-app-update'] : [])],
     },
+  });
+  win.on('page-title-updated', (event, title) => {
+    event.preventDefault();
+    win.setTitle(windowTitle(title));
   });
   if (APP_UPDATE) win.webContents.once('did-finish-load', () => notifyAppUpdate(win.webContents));
   // 외부 링크는 기본 브라우저로, 앱 창은 app:// 밖으로 이동하지 않는다.
@@ -206,20 +234,27 @@ function smokeTest(win, outFile) {
           url: location.href,
           bannerHidden: document.getElementById('data-banner').hidden,
           banner: document.getElementById('data-banner').textContent,
-          itemCount: document.querySelectorAll('#slots select option, #slots button').length,
-          slotButtons: document.querySelectorAll('#slots button').length,
+          itemCount: document.querySelectorAll('#slots select option, #slots button, #slots [role="button"]').length,
+          slotButtons: document.querySelectorAll('#slots button, #slots [role="button"]').length,
           localStorageKeys: Object.keys(localStorage),
           formula: window.ER_FORMULA === undefined ? null : window.ER_FORMULA,
           hasSkillAmpInput: document.body.innerText.includes('스킬 증폭 계수'),
+          titlebarShown: !!document.getElementById('titlebar') && !document.getElementById('titlebar').hidden,
+          titlebarText: (document.getElementById('titlebar') || {}).textContent || null,
+          titlebarHeight: (document.getElementById('titlebar') || { offsetHeight: 0 }).offsetHeight,
         })`);
         result.windowTitle = win.getTitle();
+        result.appVersion = app.getVersion();
+        result.exePath = PORTABLE_EXE;
         result.externalRoot = EXTERNAL_ROOT;
         result.userData = app.getPath('userData');
         // 빌드 버전 확인: v2는 주입·창 제목·v2 입력란(스킬 증폭 계수), v1은 주입.
         const formulaOk = FORMULA === 'v2'
-          ? result.formula === 'v2' && result.windowTitle === APP_TITLE && result.hasSkillAmpInput
+          ? result.formula === 'v2' && result.windowTitle === windowTitle(APP_TITLE) && result.hasSkillAmpInput
           : result.formula === 'v1';
-        result.ok = result.bannerHidden && result.slotButtons > 0 && formulaOk;
+        const titlebarOk = result.titlebarShown && result.titlebarHeight === TITLEBAR_HEIGHT
+          && result.titlebarText.includes(app.getVersion());
+        result.ok = result.bannerHidden && result.slotButtons > 0 && formulaOk && titlebarOk;
         if (updateSelector) {
           result.update = await smokeClickUpdate(win, updateSelector);
           result.ok = result.ok && result.update.ok;
@@ -340,21 +375,56 @@ async function smokeAppUpdate(win, mode) {
   const startedAt = Date.now();
   const quitting = new Promise((resolve) => { smokeUpdateQuit = resolve; });
   await js(`document.getElementById('app-update-now').click()`);
+  // 다운로드 중간(30% 이상) 배너 문구(게이지 + 문구 칸): 퍼센트가 한 번만 보이는지 확인용.
+  const mid = (async () => {
+    while (!stopped) {
+      if (await js('window.__appUpdateProgress.some((p) => p.percent >= 30)')) return (await state()).banner;
+      await new Promise((r) => setTimeout(r, 50));
+    }
+    return null;
+  })();
   const outcome = await Promise.race([
     quitting.then((res) => ({ downloaded: res })),
     until((x) => /실패/.test(x.banner || ''), 300000).then((s) => ({ failed: s })),
   ]);
   stopped = true;
   const progress = await js('window.__appUpdateProgress');
-  return { ok: !!outcome.downloaded, elapsedMs: Date.now() - startedAt, bannerText: shown.banner, ...outcome,
+  return { ok: !!outcome.downloaded, elapsedMs: Date.now() - startedAt, bannerText: shown.banner, bannerMid: await mid, ...outcome,
     progressCount: progress.length, lastProgress: progress[progress.length - 1] || null };
 }
 
-if (!app.requestSingleInstanceLock()) {
-  // 이미 실행 중이면 기존 창을 앞으로(second-instance). 검증 실행이면 실패로 끝낸다.
-  if (process.env.ER_SMOKE_OUT) console.error('smoke: another instance is already running');
-  app.exit(process.env.ER_SMOKE_OUT ? 1 : 0);
-} else {
+// 프로그램 업데이트 뒤 시작 단계(포터블 exe 만). 반환 { exit } 면 이 실행은 끝내고, { swap } 이면 lock 을 잡은 뒤 이전 exe 를 지운다.
+// 1) 교체 인자로 실행됐으면 이전 프로세스 종료를 기다린다(이전 프로세스가 lock 을 놓아야 이 실행이 lock 을 잡는다).
+// 2) 파일 이름의 버전이 실행 중 버전과 다르면(1.1.0·1.2.0 의 교체 결과) wscript 로 이름을 바꿔 다시 시작한다.
+async function prepareStart() {
+  if (!PORTABLE_EXE) return {};
+  const swap = appUpdate.parseSwapArgs(process.argv, PORTABLE_EXE);
+  if (swap) {
+    // 이전 프로세스가 끝나지 않았으면 이전 exe 를 건드리지 않고 그냥 실행한다(lock 확보 실패면 기존 창으로).
+    return (await appUpdate.waitForExit({ pid: swap.pid })) ? { swap } : {};
+  }
+  if (process.argv.includes(appUpdate.NO_RENAME)) return {};
+  const want = appUpdate.misnamedTarget(PORTABLE_EXE, app.getVersion());
+  // VBScript 가 없는 Windows 에서는 바로잡지 않는다(wscript 가 아무것도 실행하지 못하면 프로그램이 사라진다).
+  if (!want || !fs.existsSync(path.join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'vbscript.dll'))) return {};
+  try {
+    await appUpdate.launchRename({ from: PORTABLE_EXE, to: want });
+    return { exit: true };
+  } catch (err) {
+    console.error(`exe 이름 바로잡기 실패: ${err.message}`);
+    return {};
+  }
+}
+
+function startApp({ swap }) {
+  if (!app.requestSingleInstanceLock()) {
+    // 이미 실행 중이면 기존 창을 앞으로(second-instance). 검증 실행이면 실패로 끝낸다.
+    if (process.env.ER_SMOKE_OUT) console.error('smoke: another instance is already running');
+    app.exit(process.env.ER_SMOKE_OUT ? 1 : 0);
+    return;
+  }
+  // 이전 exe 삭제는 창이 정상 로드된 뒤(notifyAppUpdate). 실패 메시지는 'app-update:error'.
+  if (swap) pendingSwap = { from: swap.from };
   app.on('second-instance', () => {
     const [win] = BrowserWindow.getAllWindows();
     if (win) {
@@ -372,3 +442,5 @@ if (!app.requestSingleInstanceLock()) {
   });
   app.on('window-all-closed', () => app.quit());
 }
+
+prepareStart().then((start) => (start.exit ? app.exit(0) : startApp(start)));

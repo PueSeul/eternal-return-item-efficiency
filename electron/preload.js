@@ -67,7 +67,6 @@ function mountAppUpdateUi() {
 
   let shown = null;
   let installing = false; // 설치 중에는 확인 결과가 배너(설치 대상 버전)를 바꾸지 않는다
-  const mb = (n) => (n / 1048576).toFixed(1);
   const show = (info) => {
     if (installing) return;
     shown = info;
@@ -88,11 +87,10 @@ function mountAppUpdateUi() {
     notes.hidden = true;
     banner.hidden = false;
   });
-  appUpdate.onProgress(({ received, total, percent }) => {
-    if (!shown) return;
-    text.textContent = percent === null
-      ? `새 버전 v${shown.version} 내려받는 중 (${mb(received)} MB)`
-      : `새 버전 v${shown.version} 내려받는 중 ${percent}% (${mb(received)} / ${mb(total)} MB)`;
+  // 진행률·크기는 src/app.js 가 배너 앞에 넣는 원형 게이지(src/gauge.js)가 보여 준다("37% 내려받는 중 · 12.3 / 100.0 MB").
+  // 문구 칸에는 버전만 남겨 퍼센트를 두 번 보이지 않게 한다.
+  appUpdate.onProgress(() => {
+    if (shown) text.textContent = `새 버전 v${shown.version}`;
   });
   now.addEventListener('click', async () => {
     if (!shown || installing) return;
@@ -142,7 +140,24 @@ function mountAppUpdateUi() {
   });
 }
 
-if (process.argv.includes('--er-app-update')) {
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountAppUpdateUi);
-  else mountAppUpdateUi();
+// --er-titlebar(데스크톱): index.html 의 #titlebar 를 보이게 하고 아이콘·버전을 넣는다. 제목은 document.title 을 따른다.
+function mountTitlebar() {
+  const bar = document.getElementById('titlebar');
+  if (!bar) return;
+  const versionArg = process.argv.find((a) => a.startsWith('--er-version='));
+  bar.querySelector('.titlebar-icon').src = 'build/icon.ico';
+  bar.querySelector('.titlebar-version').textContent = versionArg ? versionArg.slice('--er-version='.length) : '';
+  const title = bar.querySelector('.titlebar-title');
+  const sync = () => { title.textContent = document.title; };
+  sync();
+  new MutationObserver(sync).observe(document.querySelector('title'), { childList: true, characterData: true, subtree: true });
+  bar.hidden = false;
 }
+
+const onReady = (fn) => {
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+  else fn();
+};
+if (process.argv.includes('--er-titlebar')) onReady(mountTitlebar);
+
+if (process.argv.includes('--er-app-update')) onReady(mountAppUpdateUi);

@@ -11,6 +11,7 @@ const TYPES = {
   '.json': 'application/json; charset=utf-8',
   '.png': 'image/png',
   '.svg': 'image/svg+xml',
+  '.ico': 'image/x-icon',
 };
 
 // root 밖으로 나가는 경로(.., 절대경로, NUL)는 null.

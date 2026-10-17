@@ -7,6 +7,12 @@
   <link rel="stylesheet" href="src/style.css">
 </head>
 <body>
+  <!-- 데스크톱 exe 전용 타이틀바(electron/preload.js 가 보이게 하고 아이콘·제목·버전을 넣음). 웹에서는 숨김. -->
+  <div id="titlebar" class="titlebar" hidden>
+    <img class="titlebar-icon" alt="" width="16" height="16">
+    <span class="titlebar-title"></span>
+    <span class="titlebar-version"></span>
+  </div>
   <header>
     <div class="title-row">
       <h1>이터널 리턴 아이템별 가격대비 효율 계산기</h1>

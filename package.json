@@ -23,7 +23,8 @@
       "electron/**/*",
       "!electron/**/*.test.js",
       "!electron/build.js",
-      "package.json"
+      "package.json",
+      "build/icon.ico"
     ],
     "win": {
       "target": "portable",

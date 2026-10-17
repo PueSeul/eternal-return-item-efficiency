@@ -214,3 +214,12 @@ dialog::backdrop { background: rgba(0, 0, 0, .55); }
 #meta-panel h3 { margin: 16px 0 4px; }
 .meta-list { margin: 0; padding-left: 20px; font-size: 13px; overflow-y: auto; max-height: 30vh; }
 .meta-list a, #meta-patch a { color: var(--accent); }
+
+/* 데스크톱 자체 타이틀바(#titlebar, electron/preload.js 가 보이게 함. 웹에서는 숨김). 창 끌기 영역이며,
+   오른쪽의 창 조절 버튼 오버레이 자리(titlebar-area 밖)는 비운다. 오버레이 색은 main 이 --bg/--text 로 맞춘다. */
+/* 좁은 창(1099px 이하)에서는 문서 전체가 스크롤되므로 위에 붙여 둔다(창 조절 버튼 오버레이도 늘 맨 위). */
+.titlebar { position: sticky; top: 0; z-index: 100; flex: none; height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 12px; padding-right: calc(100vw - env(titlebar-area-x, 0px) - env(titlebar-area-width, 100vw) + 12px); background: var(--bg); color: var(--text); font-size: 12px; white-space: nowrap; overflow: hidden; user-select: none; -webkit-app-region: drag; }
+.titlebar[hidden] { display: none; }
+.titlebar-icon { flex: none; width: 16px; height: 16px; }
+.titlebar-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.titlebar-version { flex: none; color: var(--muted); font-variant-numeric: tabular-nums; }
