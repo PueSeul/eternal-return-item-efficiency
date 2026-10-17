@@ -57,8 +57,12 @@ function mountAppUpdateUi() {
   Object.assign(banner.style, { borderColor: 'var(--accent)', color: 'var(--text)' });
   const text = el('span');
   const now = el('button', { id: 'app-update-now', type: 'button', textContent: '지금 업데이트' });
-  const later = el('button', { id: 'app-update-later', type: 'button', textContent: '나중에' });
-  const notes = el('a', { textContent: '릴리스 노트', target: '_blank', rel: 'noopener' });
+  const later = el('button', { id: 'app-update-later', type: 'button', className: 'text-btn', textContent: '나중에' });
+  // 링크는 앱의 링크형 버튼 모양(.meta-line: 보조색, hover·포커스 때 강조색+밑줄). <a> 기본 밑줄만 지운다.
+  const notes = el('a', { className: 'meta-line', textContent: '릴리스 노트', target: '_blank', rel: 'noopener' });
+  document.head.append(el('style', { textContent:
+    '#app-update-banner a { text-decoration: none; }'
+    + ' #app-update-banner a:hover, #app-update-banner a:focus-visible { color: var(--accent); text-decoration: underline; }' }));
   for (const node of [now, later, notes]) node.style.marginLeft = '10px';
   banner.append(text, now, later, notes);
   const header = document.querySelector('header');
