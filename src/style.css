@@ -172,7 +172,7 @@ select:disabled { opacity: .5; }
 .history li.empty { cursor: default; color: var(--muted); }
 .history li.empty:hover { background: none; }
 /* 1280px 이상에서는 한 줄. 히스토리 열이 좁은 1100~1279px에서는 기준 아이콘이 다음 줄로 내려간다. */
-.hist-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; min-width: 0; }
+.hist-row { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; }
 .hist-meta { display: flex; align-items: baseline; gap: 8px; margin-top: 4px; font-size: 12px; white-space: nowrap; min-width: 0; }
 .hist-time, .hist-sub { color: var(--muted); }
 .hist-sub { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
@@ -180,12 +180,13 @@ select:disabled { opacity: .5; }
 .hist-eff.old { color: var(--muted); font-weight: 400; }
 .history .del { position: absolute; top: 6px; right: 4px; }
 .hist-icons { display: flex; gap: 4px; }
-.hist-icon { width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+.hist-icon { width: 46px; height: 46px; border: 1px solid var(--line); border-radius: 4px; display: flex; align-items: center; justify-content: center; }
 .hist-icon img { max-width: 100%; max-height: 100%; }
 .hist-item.missing .hist-icon { border-style: dashed; }
-.hist-base { display: flex; align-items: center; gap: 4px; margin-left: auto; }
-.hist-icons.small { gap: 2px; }
-.hist-icons.small .hist-icon { width: 18px; height: 18px; border-radius: 2px; }
+.hist-base { display: flex; align-items: center; gap: 8px; }
+.hist-base > .small { width: 28px; }
+.hist-icons.small { gap: 4px; }
+.hist-icons.small .hist-icon { width: 34px; height: 34px; }
 
 /* 대화 상자(아이템 선택 · 패치노트 내역) */
 dialog { width: min(720px, 95vw); max-height: 85vh; background: var(--surface); color: var(--text); border: 1px solid var(--line-strong); border-radius: 4px; padding: 16px; }
