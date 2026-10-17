@@ -1,0 +1,84 @@
+name: namu-probe
+
+# Experiment: does namu.wiki (403 for plain fetch on Actions, run 39053656916) pass for a headless browser?
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Playwright Chromium (temp dir, no repo changes)
+        working-directory: ${{ runner.temp }}
+        run: |
+          mkdir probe && cd probe
+          npm init -y >/dev/null
+          npm i --no-save --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+      - name: Probe
+        working-directory: ${{ runner.temp }}/probe
+        run: |
+          cat > probe.mjs <<'EOF'
+          import { chromium } from "playwright";
+          const BASE = "https://namu.wiki/w/";
+          const DOCS = ["아르다(이터널 리턴)", "재키(이터널 리턴)", "시셀라(이터널 리턴)"];
+          const url = (d) => BASE + encodeURIComponent(d);
+          const CUR_UA = "er-damage-efficiency/1.0 (skill coefficient fetcher)"; // scripts/fetch_skills.mjs HEADERS
+          const CHROME_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
+          const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+          const isChallenge = (body, headers) =>
+            /challenges\.cloudflare\.com|cf-chl|Just a moment|cf_chl_opt/i.test(body) || headers?.["cf-mitigated"] === "challenge";
+          const rows = [];
+          const row = (method, doc, status, skill, chal, note = "") =>
+            rows.push(`| ${method} | ${doc} | ${status} | ${skill ? "yes" : "no"} | ${chal ? "yes" : "no"} | ${note} |`);
+
+          async function viaFetch(ua, doc) {
+            try {
+              const r = await fetch(url(doc), { headers: { "User-Agent": ua, "Accept-Language": "ko-KR,ko;q=0.9",
+                Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" } });
+              const body = await r.text();
+              const h = Object.fromEntries(r.headers);
+              return { status: r.status, skill: body.includes("스킬 증폭"), chal: isChallenge(body, h), note: `server=${h.server ?? ""} len=${body.length}` };
+            } catch (e) { return { status: "ERR", skill: false, chal: false, note: String(e).slice(0, 80) }; }
+          }
+
+          const browser = await chromium.launch({ headless: true });
+          const ctx = await browser.newContext({ locale: "ko-KR" });
+          const page = await ctx.newPage();
+          async function viaBrowser(doc) {
+            try {
+              const resp = await page.goto(url(doc), { waitUntil: "domcontentloaded", timeout: 45000 });
+              const first = resp?.status();
+              let body = await page.content();
+              const chal = isChallenge(body, resp?.headers());
+              if (chal) { // give a JS challenge a chance to resolve itself
+                await page.waitForFunction(() => !/Just a moment|cf-chl/i.test(document.documentElement.outerHTML), null, { timeout: 20000 }).catch(() => {});
+                body = await page.content();
+              }
+              await page.waitForTimeout(2000);
+              body = await page.content();
+              return { status: first, skill: body.includes("스킬 증폭"), chal, note: `final challenge=${isChallenge(body) ? "yes" : "no"} title=${(await page.title()).slice(0, 40)}` };
+            } catch (e) { return { status: "ERR", skill: false, chal: false, note: String(e).slice(0, 80) }; }
+          }
+
+          let r;
+          r = await viaFetch(CUR_UA, DOCS[0]); row("1 fetch (current UA)", DOCS[0], r.status, r.skill, r.chal, r.note);
+          r = await viaBrowser(DOCS[0]); row("2 Playwright Chromium headless", DOCS[0], r.status, r.skill, r.chal, r.note);
+          r = await viaFetch(CHROME_UA, DOCS[0]); row("3 fetch (Chrome UA)", DOCS[0], r.status, r.skill, r.chal, r.note);
+          for (const d of DOCS) { await sleep(10000); r = await viaBrowser(d); row("4 browser x3, 10s apart", d, r.status, r.skill, r.chal, r.note); }
+          for (const d of DOCS) { await sleep(10000); r = await viaFetch(CHROME_UA, d); row("4 fetch Chrome UA x3, 10s apart", d, r.status, r.skill, r.chal, r.note); }
+          await browser.close();
+
+          const md = ["## namu.wiki probe", "", "| method | doc | status | 스킬 증폭 | challenge | note |", "|---|---|---|---|---|---|", ...rows, ""].join("\n");
+          console.log(md);
+          const { appendFileSync } = await import("node:fs");
+          appendFileSync(process.env.GITHUB_STEP_SUMMARY, md + "\n");
+          EOF
+          node probe.mjs
