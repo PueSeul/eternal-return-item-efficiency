@@ -163,10 +163,10 @@
   }
 
   // v1 계산식 버전. 3 = S·R·공격력 계수 직접 입력, 고정 스킬 증폭은 I 항. 4 = '(택1)' 스탯 자동 결정.
-  // 다른 버전 기록은 효율 비교(최고치·효율순)에서 제외한다.
-  const v1 = build('er-damage-calc-history-v1', 4);
-  // v2 계산식(formula_v2.js)은 기록을 따로 저장한다.
-  const v2 = build('er-damage-calc-history-formula-v2', 'v2-1');
+  // 5 = 적용 방어력 R' 하한 0 + 추가 방어 관통 입력. 다른 버전 기록은 효율 비교(최고치·효율순)에서 제외한다.
+  const v1 = build('er-damage-calc-history-v1', 5);
+  // v2 계산식(formula_v2.js)은 기록을 따로 저장한다. v2-2 = R' 하한 0 + 추가 방어 관통 입력.
+  const v2 = build('er-damage-calc-history-formula-v2', 'v2-2');
   v1.forVariant = (variant) => (variant === 'v2' ? v2 : v1);
   v2.forVariant = v1.forVariant;
   return v1;

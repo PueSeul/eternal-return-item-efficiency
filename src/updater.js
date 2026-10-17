@@ -1,5 +1,5 @@
 // "아이템 수치 업데이트" 버튼 로직(브라우저/Node 테스트 공용).
-// 데스크톱(Electron)에서는 preload가 window.erDesktop.updateItems()를 노출한다(성공 시 {count, savedPath[, meta]}, 실패 시 reject).
+// 데스크톱(Electron)에서는 preload가 window.erDesktop.updateItems()를 노출한다(성공 시 {count, savedPath[, meta][, skills]}, 실패 시 reject).
 (function (root, factory) {
   const api = factory();
   if (typeof module === 'object' && module.exports) module.exports = api;
@@ -27,8 +27,9 @@
 
   // updateItems() 실행 → 성공하면 reload()로 data/items.json을 다시 읽는다.
   // reload는 성공 여부(boolean)를 돌려준다. reloadMeta(선택)는 메타 파일을 다시 읽어 돌려준다.
-  // 결과는 { ok, count, meta, message }.
-  async function runUpdate(desktop, reload, reloadMeta) {
+  // reloadSkills(선택)는 data/skills.json을 다시 읽어 돌려준다.
+  // 결과는 { ok, count, meta, skills, message }.
+  async function runUpdate(desktop, reload, reloadMeta, reloadSkills) {
     let res;
     try {
       res = await desktop.updateItems();
@@ -52,7 +53,17 @@
         meta = null;
       }
     }
-    return { ok: true, count, meta, message: count == null ? '아이템 갱신 완료' : `아이템 ${count}개 갱신 완료` };
+    // skills: 반환에 skills 배열(skills.json 내용)이 있으면 그것을, 없으면 reloadSkills()로 다시 읽는다(실패·없음은 null).
+    let skills = res && Array.isArray(res.skills) ? res.skills : null;
+    if (!skills && reloadSkills) {
+      try {
+        const list = await reloadSkills();
+        skills = Array.isArray(list) ? list : null;
+      } catch {
+        skills = null;
+      }
+    }
+    return { ok: true, count, meta, skills, message: count == null ? '아이템 갱신 완료' : `아이템 ${count}개 갱신 완료` };
   }
 
   return { canUpdate, rematch, runUpdate };

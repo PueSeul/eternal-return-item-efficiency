@@ -9,6 +9,8 @@
   const Updater = window.ERUpdater;
   const Meta = window.ERMeta;
   const Baseline = window.ERBaseline;
+  const Skills = window.ERSkills;
+  const SKILL_FIELDS = ['skillDamage', 'atkCoefPct', 'skillAmpCoefPct'];
   const DATA_URL = 'data/items.json';
   const META_URL = 'data/items.meta.json';
   const GRADES = ['일반', '고급', '희귀', '영웅', '전설', '신화'];
@@ -19,6 +21,8 @@
     { key: 'atkCoefPct', label: '공격력 계수 (%)', step: 'any', min: 0 },
     { key: 'skillAmpCoefPct', label: '스킬 증폭 계수 (%)', step: 'any', min: 0 },
     { key: 'defense', label: '피격 대상 방어력 (R)', step: 'any', min: 0 },
+    { key: 'extraPen', label: '추가 방어 관통(고정)', step: 'any' },
+    { key: 'extraPenPct', label: '추가 방어 관통율(%)', step: 'any' },
     { key: 'extraAtk', label: '아이템 외 공격력', step: 'any' },
     { key: 'extraSkillAmp', label: '아이템 외 스킬 증폭', step: 'any' },
     { key: 'extraSkillAmpPct', label: '아이템 외 % 스킬 증폭 (%)', step: 'any' },
@@ -31,6 +35,8 @@
     { key: 'skillDamage', label: '스킬 기본 피해량 (S)', step: 'any', min: 0 },
     { key: 'atkCoefPct', label: '공격력 계수 (%)', step: 'any', min: 0 },
     { key: 'defense', label: '피격 대상 방어력 (R)', step: 'any', min: 0 },
+    { key: 'extraPen', label: '추가 방어 관통(고정)', step: 'any' },
+    { key: 'extraPenPct', label: '추가 방어 관통율(%)', step: 'any' },
     { key: 'enemySkillReductionPct', label: '적의 스킬 피해 감소율 (%)', step: 'any' },
     { key: 'enemySkillReduction', label: '적의 스킬 피해 감소 (고정)', step: 'any' },
     { key: 'extraFinalIncreasePct', label: '추가 최종 피해 증가율 (%)', step: 'any' },
@@ -38,7 +44,7 @@
   ];
 
   const $ = (sel) => document.querySelector(sel);
-  const state = { items: [], byId: new Map(), equipped: {}, history: [], historySort: 'recent', pickerSlot: null, pickerTarget: 'equipped', baseline: {}, characters: [], charactersError: '', meta: null, patched: new Map() };
+  const state = { items: [], byId: new Map(), equipped: {}, history: [], historySort: 'recent', pickerSlot: null, pickerTarget: 'equipped', baseline: {}, characters: [], charactersError: '', meta: null, patched: new Map(), skills: [], skillsError: '', skillCharName: '' };
 
   function el(tag, props, ...children) {
     const node = document.createElement(tag);
@@ -122,6 +128,130 @@
     line.textContent = text || '';
     line.hidden = !text;
     if ($('#meta-panel').open) renderMetaPanel();
+    renderSkillNote(); // 스킬 "패치 반영" 표식
+  }
+
+  // ---------- v2 스킬 선택(data/skills.json) ----------
+  function fetchSkills() {
+    return fetch('data/skills.json', { cache: 'no-store' }).then((res) => {
+      if (!res.ok) throw new Error('없음');
+      return res.json();
+    });
+  }
+
+  // list: skills.json 내용(배열이 아니면 없음으로 표시). 선택 중이던 스킬·레벨은 유지한다.
+  function setSkills(list) {
+    state.skills = Skills.normalize(list);
+    state.skillsError = Array.isArray(list) ? '' : 'data/skills.json 없음 — 스킬 계수는 직접 입력';
+    renderSkillOptions(currentSkillKeep());
+  }
+
+  async function loadSkills() {
+    let list = null;
+    try {
+      list = await fetchSkills();
+    } catch { /* 없음 표시 */ }
+    setSkills(list);
+  }
+
+  // 선택된(또는 기록에서 복원된) 실험체 { id, name }. 실험체 데이터가 없어도 복원된 id를 쓴다.
+  function characterRef() {
+    const c = selectedCharacter();
+    if (c) return { id: String(c.id), name: c.name };
+    const name = $('#in-character').value.trim();
+    if (!name) return null;
+    const r = state.restoredCharacter;
+    return { id: r && r.name === name ? r.id : null, name };
+  }
+
+  function currentSkillEntry() {
+    const ref = characterRef();
+    return ref ? Skills.forCharacter(state.skills, ref.id, ref.name) : null;
+  }
+
+  function currentSkill() {
+    return Skills.findSkill(currentSkillEntry(), $('#in-skill').value);
+  }
+
+  // 지금 선택을 { key, level, name }으로(실험체가 없으면 null).
+  function currentSkillKeep() {
+    const sel = $('#in-skill');
+    if (!sel || !sel.value || !characterRef()) return null;
+    const lv = $('#in-skillLevel').value;
+    return { key: sel.value, level: lv === '' ? null : Number(lv), name: sel.selectedOptions[0] ? sel.selectedOptions[0].dataset.name || '' : '' };
+  }
+
+  // 스킬 선택 목록을 다시 만든다. keep(기록 복원값 등)이 현재 데이터에 없어도 "(현재 데이터에 없음)"으로 남긴다.
+  function renderSkillOptions(keep) {
+    if (!V2) return;
+    const entry = currentSkillEntry();
+    const skills = entry ? entry.skills : [];
+    const option = (value, text, name) => {
+      const o = el('option', { value, textContent: text });
+      o.dataset.name = name || '';
+      return o;
+    };
+    const opts = [option('', skills.length ? '스킬 선택 안 함' : '스킬 데이터 없음')];
+    for (const s of skills) opts.push(option(String(s.key), Skills.optionLabel(s), s.name));
+    if (keep && keep.key && !skills.some((s) => String(s.key) === keep.key)) {
+      opts.push(option(keep.key, `${keep.key}${keep.name ? ' ' + keep.name : ''} (현재 데이터에 없음)`, keep.name));
+    }
+    const sel = $('#in-skill');
+    sel.replaceChildren(...opts);
+    sel.value = keep && keep.key ? keep.key : '';
+    sel.disabled = opts.length === 1;
+    renderSkillLevels(keep ? keep.level : null);
+  }
+
+  // 선택한 스킬의 레벨 목록. 기본은 최고 레벨, keepLevel이 있으면 그 레벨(데이터에 없으면 표시만 남김).
+  function renderSkillLevels(keepLevel) {
+    const lv = $('#in-skillLevel');
+    const levels = $('#in-skill').value ? Skills.levelsOf(currentSkill()).map((l) => l.level) : [];
+    const opts = levels.map((n) => el('option', { value: String(n), textContent: `${n}레벨` }));
+    if ($('#in-skill').value && keepLevel != null && Number.isFinite(keepLevel) && !levels.includes(keepLevel)) {
+      opts.push(el('option', { value: String(keepLevel), textContent: `${keepLevel}레벨 (현재 데이터에 없음)` }));
+    }
+    lv.replaceChildren(...opts);
+    lv.disabled = !opts.length;
+    if (keepLevel != null && opts.some((o) => o.value === String(keepLevel))) lv.value = String(keepLevel);
+    else if (levels.length) lv.value = String(levels[levels.length - 1]);
+    renderSkillNote();
+  }
+
+  // 스킬·레벨을 고르면 스킬 기본 피해량·공격력 계수·스킬 증폭 계수를 채운다(이후 수동 수정 가능).
+  function applySkill() {
+    const lv = $('#in-skillLevel').value;
+    const auto = lv === '' ? null : Skills.autoValues(currentSkill(), Number(lv));
+    if (auto) for (const k of SKILL_FIELDS) if (auto[k] != null) $('#in-' + k).value = auto[k];
+    hideResult();
+    renderSkillNote();
+  }
+
+  // 스킬 출처("나무위키 · 수정 날짜"), 수동 수정 여부, 패치노트 반영 표식.
+  function renderSkillNote() {
+    const note = $('#skill-note');
+    if (!V2 || !note) return;
+    const entry = currentSkillEntry();
+    const skill = currentSkill();
+    if (!skill) {
+      note.replaceChildren($('#in-skill').value ? '현재 데이터에 없는 스킬 — 기록된 값 유지' : state.skillsError);
+      return;
+    }
+    const source = Skills.sourceText(entry);
+    const lv = $('#in-skillLevel').value;
+    const auto = lv === '' ? null : Skills.autoValues(skill, Number(lv));
+    let text;
+    if (!Skills.levelsOf(skill).length) text = `수동 입력(수치 없음) · ${source}`;
+    else {
+      const edited = auto && SKILL_FIELDS.some((k) => {
+        const raw = $('#in-' + k).value.trim();
+        return auto[k] != null && (raw === '' || Number(raw) !== auto[k]);
+      });
+      text = source + (edited ? ' · 수동 수정됨' : '');
+    }
+    const patches = Skills.patchNotes(state.meta, characterRef(), skill);
+    note.replaceChildren(text, patches.length
+      ? el('span', { className: 'patch-badge', textContent: '패치 반영', title: '패치노트 반영: ' + patches.join(', ') }) : '');
   }
 
   function renderMetaPanel() {
@@ -156,7 +286,7 @@
       status.className = 'muted';
       status.textContent = '';
       try {
-        const r = await Updater.runUpdate(window.erDesktop, loadData, fetchMeta);
+        const r = await Updater.runUpdate(window.erDesktop, loadData, fetchMeta, V2 ? fetchSkills : null);
         if (r.ok) {
           // 반환에 meta가 있으면 그것, 없으면 다시 읽은 메타 파일(runUpdate가 결정).
           setMeta(r.meta);
@@ -166,6 +296,8 @@
           loadBaseline();
           // v2: 실험체 데이터도 다시 읽고 선택 중인 실험체를 id로 다시 찾는다.
           const lostCharacter = V2 ? await loadCharacters(true) : null;
+          // v2: 스킬 데이터도 갱신(받은 skills가 없으면 기존 데이터 유지). 선택 중인 스킬·레벨은 키로 유지.
+          if (V2 && r.skills) setSkills(r.skills);
           renderSlots();
           renderHistory();
           if ($('#picker').open) renderPicker();
@@ -335,6 +467,13 @@
       input.setAttribute('aria-label', '실험체');
       form.append(el('label', null, '실험체', input, el('datalist', { id: 'character-list' }),
         el('span', { id: 'character-note', className: 'muted' })));
+      // 스킬 선택(data/skills.json) → 스킬 기본 피해량·계수 자동 입력.
+      const skillSel = el('select', { id: 'in-skill', disabled: true });
+      skillSel.setAttribute('aria-label', '스킬');
+      const levelSel = el('select', { id: 'in-skillLevel', disabled: true });
+      levelSel.setAttribute('aria-label', '스킬 레벨');
+      form.append(el('label', null, '스킬', skillSel, el('span', { id: 'skill-note', className: 'muted small' })),
+        el('label', null, '스킬 레벨', levelSel));
     }
     for (const f of INPUT_FIELDS) {
       const input = el('input', { type: 'number', id: 'in-' + f.key, step: f.step, value: Formula.DEFAULT_INPUTS[f.key] ?? '' });
@@ -374,6 +513,16 @@
     const charNote = $('#character-note');
     charNote.className = auto.warning ? 'muted small error' : 'muted small';
     charNote.textContent = state.charactersError || auto.warning;
+    renderSkillNote();
+  }
+
+  // 사용자가 실험체를 바꾸면 스킬 선택을 비우고 그 실험체의 스킬 목록으로 바꾼다.
+  function syncSkillCharacter() {
+    const ref = characterRef();
+    const name = ref ? ref.name : '';
+    if (name === state.skillCharName) return;
+    state.skillCharName = name;
+    renderSkillOptions(null);
   }
 
   // 실험체·레벨·숙련도·무기가 바뀌면 그 변경에 영향받는 자동값만 입력란에 채운다(이후 수동 수정 가능).
@@ -415,6 +564,8 @@
     // 로딩 중에 이미 실험체 이름을 입력했으면 이제 자동값을 채운다(히스토리는 로딩 뒤에 표시되므로 복원값과 겹치지 않음).
     if (selectedCharacter()) applyAuto('both');
     else renderAutoNotes();
+    state.skillCharName = characterRef() ? characterRef().name : '';
+    renderSkillOptions(currentSkillKeep());
     return lostName;
   }
 
@@ -448,6 +599,11 @@
       const restored = state.restoredCharacter;
       out.characterId = c ? String(c.id) : (restored && restored.name === name ? restored.id : null);
       out.characterName = c ? c.name : (name || null);
+      // 스킬·레벨(복원용). 선택 안 함이면 null.
+      const keep = currentSkillKeep();
+      out.skillKey = keep ? keep.key : null;
+      out.skillName = keep ? keep.name || null : null;
+      out.skillLevel = keep ? keep.level : null;
     }
     return out;
   }
@@ -462,6 +618,11 @@
       $('#in-character').value = c ? c.name : (inputs && inputs.characterName) || '';
       state.restoredCharacter = inputs && inputs.characterName
         ? { id: inputs.characterId == null ? null : String(inputs.characterId), name: $('#in-character').value } : null;
+      // 스킬·레벨 선택 복원(입력란 값은 기록값 그대로, 자동 입력하지 않음).
+      state.skillCharName = $('#in-character').value.trim();
+      const key = inputs && inputs.skillKey != null && inputs.skillKey !== '' ? String(inputs.skillKey) : null;
+      const level = inputs && typeof inputs.skillLevel === 'number' ? inputs.skillLevel : null;
+      renderSkillOptions(key && characterRef() ? { key, level, name: (inputs && inputs.skillName) || '' } : null);
       renderAutoNotes();
     }
   }
@@ -644,9 +805,19 @@
     };
     renderInputs();
     $('#inputs').addEventListener('input', (ev) => {
+      if (V2 && ev.target.id === 'in-skill') {
+        renderSkillLevels(null);
+        applySkill();
+        return;
+      }
+      if (V2 && ev.target.id === 'in-skillLevel') {
+        applySkill();
+        return;
+      }
       const which = V2 && { 'in-character': 'both', 'in-level': 'atk', 'in-masteryLevel': 'amp' }[ev.target.id];
       if (which) {
         applyAuto(which);
+        if (which === 'both') syncSkillCharacter();
         return;
       }
       hideResult();
@@ -654,7 +825,7 @@
       renderAutoNotes();
     });
     renderSlots();
-    const [, , meta] = await Promise.all([loadData(), V2 ? loadCharacters() : null, fetchMeta()]);
+    const [, , meta] = await Promise.all([loadData(), V2 ? loadCharacters() : null, fetchMeta(), V2 ? loadSkills() : null]);
     setMeta(meta);
     // 최초 로딩이 끝난 뒤에 버튼을 연다(늦게 끝난 최초 로딩이 갱신 데이터를 덮어쓰지 않도록).
     setupUpdater();

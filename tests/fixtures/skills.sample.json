@@ -1,0 +1,30 @@
+[
+  {
+    "characterId": "arda",
+    "name": "아르다",
+    "skills": [
+      {
+        "key": "Q",
+        "name": "샤마쉬의 두루마리",
+        "levels": [
+          { "level": 1, "baseDamage": 70, "attackPowerRatio": 0, "skillAmpRatio": 0.8 },
+          { "level": 2, "baseDamage": 110, "attackPowerRatio": 0, "skillAmpRatio": 0.8 },
+          { "level": 3, "baseDamage": 150, "attackPowerRatio": 0, "skillAmpRatio": 0.8 },
+          { "level": 4, "baseDamage": 190, "attackPowerRatio": 0, "skillAmpRatio": 0.8 },
+          { "level": 5, "baseDamage": 230, "attackPowerRatio": 0, "skillAmpRatio": 0.8 }
+        ],
+        "raw": "피해량 [70 / 110 / 150 / 190 / 230] (+스킬 증폭의 80%)",
+        "sourceLabel": "피해량"
+      },
+      {
+        "key": "P",
+        "name": "패시브(테스트)",
+        "levels": [],
+        "raw": "체력 회복량 [50 / 85 / 120] (+스킬 증폭의 10%)",
+        "sourceLabel": "체력 회복량"
+      }
+    ],
+    "wikiRevisedAt": "2026-10-16T12:00:00+09:00",
+    "needsReview": []
+  }
+]

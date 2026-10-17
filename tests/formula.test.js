@@ -151,10 +151,27 @@ test("calculate: 방어 관통율·방어 관통은 적용 방어력 R'을 낮�
   const r = F.calculate([pen], { ...IN, defense: 100 });
   close(r.R, 70); // 100 × (1 − 0.2) − 10
   close(r.B, 100 * 100 / 170);
-  // 공식 피해 공식에 하한이 없으므로 관통이 방어력보다 크면 R'은 음수 그대로(B가 S보다 커짐)
+  // 관통이 방어력보다 크면 R'은 0(하한), B = S
   const neg = F.calculate([pen], { ...IN, defense: 1 });
-  close(neg.R, -9.2); // 1 × 0.8 − 10
-  close(neg.B, 100 * 100 / 90.8);
+  assert.equal(neg.R, 0); // max(0, 1 × 0.8 − 10)
+  close(neg.B, neg.S);
+});
+
+test("calculate: 추가 방어 관통(고정·%)은 아이템 합에 더해지고, R=150·관통 200이면 R'=0·B=S", () => {
+  const pen = { slot: '무기', price: 1, stats: { '방어 관통율': 0.2, '방어 관통': 10 } };
+  const r = F.calculate([pen], { ...IN, defense: 100, extraPen: 5, extraPenPct: 10 });
+  close(r.stats.penRate, 0.3);
+  close(r.stats.pen, 15);
+  close(r.R, 55); // 100 × (1 − 0.3) − 15
+  const zero = F.calculate([{ slot: '무기', price: 1, stats: {} }], { ...IN, defense: 150, extraPen: 200 });
+  assert.equal(zero.R, 0);
+  assert.equal(zero.B, zero.S);
+  assert.equal(F.DEFAULT_INPUTS.extraPen, 0);
+  assert.equal(F.DEFAULT_INPUTS.extraPenPct, 0);
+});
+
+test('슬롯 순서: 무기 · 옷 · 머리 · 팔 · 다리', () => {
+  assert.deepEqual(F.SLOTS, ['무기', '옷', '머리', '팔', '다리']);
 });
 
 test('calculate: 공격력은 계수(%)로 S에, 고정 스킬 증폭은 I에 들어감', () => {

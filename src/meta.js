@@ -1,6 +1,6 @@
 // data/items.meta.json(데이터 출처·패치노트 반영 내역) 표시용 함수(브라우저/Node 테스트 공용).
 // 스키마: {fetchedAt, dakggVersion, patch:{id,version,title,url,date},
-//          overrides:[{type:'item'|'character', name, stat, dakgg, patchnote}], unparsed:[{name, text}]}
+//          overrides:[{type:'item'|'character'|'skill', name, stat, dakgg, patchnote, skill(type 'skill'만)}], unparsed:[{name, text}]}
 (function (root, factory) {
   const api = factory();
   if (typeof module === 'object' && module.exports) module.exports = api;
@@ -55,7 +55,7 @@
     const m = normalize(meta);
     if (!m) return [];
     return m.overrides.map((o) =>
-      `${str(o.name)}${o.type === 'character' ? ' (실험체)' : ''} — ${str(o.stat)}: ${val(o.dakgg)} → ${val(o.patchnote)}`);
+      `${str(o.name)}${o.type === 'character' ? ' (실험체)' : o.type === 'skill' ? ` (스킬 ${str(o.skill) || '?'})` : ''} — ${str(o.stat)}: ${val(o.dakgg)} → ${val(o.patchnote)}`);
   }
 
   // 확인 필요(파싱하지 못한 패치노트 문구): "이름 — 원문".

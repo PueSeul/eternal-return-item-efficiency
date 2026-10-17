@@ -7,7 +7,7 @@
 //   최종 피해량 최솟값 1, 모드 증폭 제외(루미아섬 기준)
 // 아이템 스탯 매핑:
 //   스킬에 정의된 피해(S) = 툴팁 기본 피해 + 공격력 계수 × 공격력
-//   적용 방어력(R') = R × (1 − 방어 관통율) − 방어 관통
+//   적용 방어력(R') = max(0, R × (1 − 방어 관통율 합) − 방어 관통 합)  (합 = 아이템 + 입력란의 추가값)
 //   스킬 증폭율 → A, 고정 스킬 증폭 → I, 최종 피해 증가율 → F
 (function (root, factory) {
   const api = factory();
@@ -19,8 +19,13 @@
   const MIN_AMP = 0.1;
   const MIN_DAMAGE = 1;
 
-  // data/items.json의 slot 값과 동일.
-  const SLOTS = ['무기', '머리', '옷', '팔', '다리'];
+  // data/items.json의 slot 값과 동일(화면 표시 순서). 저장값은 슬롯 이름 키라 순서와 무관.
+  const SLOTS = ['무기', '옷', '머리', '팔', '다리'];
+
+  // 적용 방어력: 방어 관통으로 0 아래로 내려가지 않는다. penRate는 0~1 소수.
+  function effectiveDefense(defense, penRate, pen) {
+    return Math.max(0, defense * (1 - penRate) - pen);
+  }
 
   // 아이템 stats 키(dak.gg 한국어 스탯 이름) → 식의 항. 비율 스탯은 0~1 소수.
   // '(고유) 스킬 증폭'은 dak.gg에서 "+25%"로 표기되는 비율 스탯이라 스킬 증폭율에 합산한다.
@@ -63,6 +68,8 @@
     skillDamage: null,          // S의 툴팁 기본 피해량
     atkCoefPct: null,           // S의 공격력 계수(%) — 툴팁 "(+공격력의 X%)"
     defense: null,              // R: 피격 대상 방어력
+    extraPen: 0,                // 아이템 외 추가 방어 관통(고정)
+    extraPenPct: 0,             // 아이템 외 추가 방어 관통율(%)
     enemySkillReductionPct: 0,  // 적의 스킬 피해 감소율(%)
     enemySkillReduction: 0,     // 적의 스킬 피해 감소(고정값)
     extraFinalIncreasePct: 0,   // 아이템 외 추가 최종 피해 증가율(%)
@@ -110,10 +117,12 @@
       (choice === 'skillAmp' ? sum(STAT_KEYS.choiceSkillAmp) : 0);
     const skillAmpRate = sum(STAT_KEYS.skillAmpRate);
     const itemFinalRate = sum(STAT_KEYS.finalRate);
-    const penRate = sum(STAT_KEYS.penRate);
-    const pen = sum(STAT_KEYS.pen);
+    const itemPenRate = sum(STAT_KEYS.penRate);
+    const itemPen = sum(STAT_KEYS.pen);
+    const penRate = itemPenRate + inputs.extraPenPct / 100;
+    const pen = itemPen + inputs.extraPen;
     const S = inputs.skillDamage + (inputs.atkCoefPct / 100) * atk;
-    const R = inputs.defense * (1 - penRate) - pen;
+    const R = effectiveDefense(inputs.defense, penRate, pen);
     const terms = damage({
       S,
       R,
@@ -126,7 +135,7 @@
     });
     const price = totalPrice(items);
     return {
-      stats: { atk, skillAmp, skillAmpRate, itemFinalRate, penRate, pen },
+      stats: { atk, skillAmp, skillAmpRate, itemFinalRate, itemPenRate, itemPen, penRate, pen },
       choice,
       S,
       R,
@@ -142,5 +151,5 @@
     return (ratio / bestRatio) * 100;
   }
 
-  return { MIN_AMP, MIN_DAMAGE, SLOTS, STAT_KEYS, DEFAULT_INPUTS, choiceStat, damage, aggregateStats, totalPrice, calculate, efficiencyPercent };
+  return { MIN_AMP, MIN_DAMAGE, SLOTS, STAT_KEYS, DEFAULT_INPUTS, effectiveDefense, choiceStat, damage, aggregateStats, totalPrice, calculate, efficiencyPercent };
 });

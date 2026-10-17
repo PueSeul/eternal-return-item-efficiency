@@ -16,7 +16,7 @@ test('runUpdate 성공: reload 후 "아이템 N개 갱신 완료"', async () => 
   const desktop = { updateItems: async () => { calls.push('update'); return { count: 312, savedPath: 'C:/x/items.json' }; } };
   const r = await U.runUpdate(desktop, async () => { calls.push('reload'); return true; });
   assert.deepEqual(calls, ['update', 'reload']);
-  assert.deepEqual(r, { ok: true, count: 312, meta: null, message: '아이템 312개 갱신 완료' });
+  assert.deepEqual(r, { ok: true, count: 312, meta: null, skills: null, message: '아이템 312개 갱신 완료' });
 });
 
 test('runUpdate: 반환에 meta 객체가 있으면 결과에 그대로, 아니면 null', async () => {

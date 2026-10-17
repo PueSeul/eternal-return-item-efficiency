@@ -56,10 +56,13 @@
       : [];
   }
 
+  // R' = max(0, R × (1 − 방관율 합) − 방관 고정 합). 합 = 아이템 + 추가(입력란). 0 아래면 원래 값 → 0 표시.
   function penLines(items, inputs, r) {
+    const raw = inputs.defense * (1 - r.stats.penRate) - r.stats.pen;
     return [
-      `R' = ${num(inputs.defense)} × (1 − ${withParts(r.stats.penRate, contrib(items, K.penRate), pct)}) − ` +
-        `${withParts(r.stats.pen, contrib(items, K.pen))} = ${num(r.R)}`,
+      `R' = max(0, ${num(inputs.defense)} × (1 − (아이템 ${withParts(r.stats.itemPenRate, contrib(items, K.penRate), pct)} + ` +
+        `추가 ${pct(inputs.extraPenPct / 100)})) − (아이템 ${withParts(r.stats.itemPen, contrib(items, K.pen))} + 추가 ${num(inputs.extraPen)})) = ` +
+        (raw < 0 ? `${num(raw)} → 0` : num(r.R)),
     ];
   }
 
