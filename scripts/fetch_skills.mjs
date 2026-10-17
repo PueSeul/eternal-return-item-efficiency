@@ -618,8 +618,25 @@ export async function fetchPage(url, signal) {
   return { status: resp.status, body: await resp.text(), location: null };
 }
 
+/** Resolves after ms; rejects with signal.reason as soon as signal aborts (timer cleared). */
+function pause(ms, signal) {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) return reject(signal.reason);
+    const onAbort = () => {
+      clearTimeout(timer);
+      reject(signal.reason);
+    };
+    const timer = setTimeout(() => {
+      signal?.removeEventListener("abort", onAbort);
+      resolve();
+    }, ms);
+    signal?.addEventListener("abort", onAbort, { once: true });
+  });
+}
+
 // Callers are served one at a time and each turn is measured from the previous turn's actual
 // start, so concurrent callers (and late timers) never start requests less than intervalMs apart.
+// The wait ends at once when signal aborts.
 function throttle(intervalMs, signal) {
   let chain = Promise.resolve();
   let last = null;
@@ -628,7 +645,7 @@ function throttle(intervalMs, signal) {
       signal?.throwIfAborted();
       for (let left = last === null ? 0 : intervalMs - (performance.now() - last); left > 0;
         left = intervalMs - (performance.now() - last)) {
-        await new Promise((r) => setTimeout(r, left));
+        await pause(left, signal);
       }
       signal?.throwIfAborted();
       last = performance.now();

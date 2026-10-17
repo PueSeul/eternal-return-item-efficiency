@@ -2,6 +2,9 @@
 // with globalThis.fetch replaced (no network).
 import test from "node:test";
 import assert from "node:assert";
+import { existsSync } from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { fetchPages, ROBOTS_URL } from "./fetch_skills.mjs";
 import { describeError } from "./fetch_patchnote.mjs";
 import { fetchAll, ITEMS_URL } from "./fetch_items.mjs";
@@ -109,4 +112,31 @@ test("fetchAll: a processing error is named too", async () => {
     if (url === article.url) return new Response("<p></p>");
     return new Response("", { status: 404 });
   }, () => fetchAll({ outDir: "unused", intervalMs: 0 })), /^Error: 데이터 처리 단계 실패: item 7 has no type$/);
+});
+
+test("fetchAll: signal ends the namu.wiki wait at once, starts no more requests and writes nothing", async () => {
+  const article = { id: 1, url: "https://example.invalid/1", created_at: "2026-10-14T08:00:00Z", is_hidden: false,
+    i18ns: { ko_KR: { title: "2026.10.15 - 12.6 패치노트" } } };
+  const outDir = path.join(os.tmpdir(), `er-cancel-test-${process.pid}-${Date.now()}`);
+  const controller = new AbortController();
+  const docs = [];
+  let abortedAt = 0;
+  const run = withFetch(async (url) => {
+    if (url === ROBOTS_URL) return new Response(ROBOTS);
+    if (url === ITEMS_URL) return Response.json({ items: [] });
+    if (url.includes("dakgg")) return Response.json({ masteries: [], characters: [{ id: 1, name: "아르다" }] });
+    if (url.includes("posts/news")) return Response.json({ articles: [article], total_page: 1 });
+    if (url === article.url) return new Response('<div class="er-article-detail__content"><p></p></div>');
+    docs.push(url);
+    return new Response("<p></p>");
+  }, () => fetchAll({
+    outDir, skillsMode: "all", intervalMs: 60000, signal: controller.signal,
+    onProgress: (p) => {
+      if (p.stage === "skills" && p.done === 0) setTimeout(() => { abortedAt = performance.now(); controller.abort(new Error("취소")); }, 20);
+    },
+  }));
+  await assert.rejects(run, /^Error: 취소$/);
+  assert.ok(abortedAt > 0 && performance.now() - abortedAt < 200, `ended ${performance.now() - abortedAt}ms after the abort`);
+  assert.deepStrictEqual(docs, [], "the throttled document request never starts");
+  assert.ok(!existsSync(outDir), "outDir untouched");
 });

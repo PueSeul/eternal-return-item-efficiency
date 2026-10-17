@@ -16,6 +16,7 @@ const APP_ROOT = path.join(__dirname, '..');
 
 // window.erDesktop.updateItems() (preload.js) → fetchAll() → data/items.json·characters.json·skills.json·items.meta.json 저장. 동시 요청은 하나로 합친다.
 let updating = null;
+let updateController = null; // 진행 중인 업데이트의 취소(update:cancel). 끝나면 null
 let lastUpdate = null; // 검증(smokeClickUpdate)용: 마지막으로 시작한 업데이트 작업
 function assertAppOrigin(event) {
   if (!event.senderFrame || !event.senderFrame.url.startsWith(ORIGIN + '/')) throw new Error('허용되지 않은 요청입니다.');
@@ -24,28 +25,46 @@ function assertAppOrigin(event) {
 async function handleUpdateItems(event, options) {
   assertAppOrigin(event);
   const skillsMode = (options && options.skillsMode) || 'patched';
+  // 취소한 작업에는 합치지 않는다: 그 작업이 끝나기(임시 폴더 정리)를 기다린 뒤 새로 시작한다.
+  while (updating && updateController && updateController.signal.aborted) await updating.catch(() => {});
   if (!updating) {
-    // 진행 이벤트는 요청한 창에 'update:progress' 로 보낸다(preload.js onUpdateProgress).
+    // 진행 이벤트는 요청한 창에 'update:progress' 로 보낸다(preload.js onUpdateProgress). 교체 전까지 취소할 수 있다.
     const sender = event.sender;
     const onProgress = (p) => {
-      if (!sender.isDestroyed()) sender.send('update:progress', p);
+      if (!sender.isDestroyed()) sender.send('update:progress', { ...p, cancellable: true });
     };
+    const controller = new AbortController();
+    const { signal } = controller;
     const collect = (mode) => loadFetchAll(APP_ROOT)
-      .then((fetchAll) => updateAll(fetchAll, UPDATE_DATA_DIR, { onProgress, skillsMode: mode }));
+      .then((fetchAll) => updateAll(fetchAll, UPDATE_DATA_DIR, { onProgress, skillsMode: mode, signal }));
     // 기본(patched): GitHub data-latest 자산을 받고, 실패하면 dak.gg·패치노트 직접 수집. ▾ 메뉴 "전체 재확인"(all)은 직접 수집.
     // ER_DATA_URL 은 검증용 자산 주소(끝에 /).
     const job = skillsMode === 'patched'
       ? updateLatest({
         download: () => downloadLatest(net.fetch, UPDATE_DATA_DIR, { onProgress, bundledDir: path.join(APP_ROOT, 'data'),
-          baseUrl: process.env.ER_DATA_URL || DATA_RELEASE_URL }),
+          baseUrl: process.env.ER_DATA_URL || DATA_RELEASE_URL, signal }),
         collect: () => collect('patched'),
         onProgress,
+        signal,
       })
       : collect(skillsMode);
-    updating = job.finally(() => { updating = null; });
+    updateController = controller;
+    updating = job.finally(() => {
+      updating = null;
+      updateController = null;
+    });
     lastUpdate = updating;
   }
   return updating;
+}
+
+// 진행 중인 데이터 업데이트 취소. 교체 전 단계면 업데이트 요청이 { cancelled: true } 로 끝나고 네 파일은 그대로다.
+// 반환: 취소 신호를 보냈으면 true, 진행 중인 업데이트가 없으면 false.
+function handleUpdateCancel(event) {
+  assertAppOrigin(event);
+  if (!updateController) return false;
+  updateController.abort(new Error('사용자가 업데이트를 취소했습니다.'));
+  return true;
 }
 
 // 계산식 버전: 기본은 v2. v1 exe는 빌드 때 패키지 package.json 에 erFormula:"v1" 이 들어간다(electron/build.js --v1).
@@ -452,6 +471,7 @@ function startApp({ swap }) {
   app.whenReady().then(() => {
     protocol.handle(SCHEME, handleRequest);
     ipcMain.handle('er:update-items', handleUpdateItems);
+    ipcMain.handle('update:cancel', handleUpdateCancel);
     ipcMain.handle('app-update:check', handleAppUpdateCheck);
     ipcMain.handle('app-update:install', handleAppUpdateInstall);
     ipcMain.handle('app-update:dismiss', handleAppUpdateDismiss);

@@ -30,9 +30,28 @@ function pendingText(stages, last) {
   return last ? ` (마지막 진행: ${text(last)})` : '';
 }
 
+// 취소(signal: 사용자 취소 AbortSignal) 결과. 네 파일은 바꾸지 않았다.
+const CANCELLED = Object.freeze({ cancelled: true });
+
+// 임시 폴더 정리. 실패(예: 백신이 잠근 파일의 EPERM)는 무시한다: 교체가 끝난 뒤의 정리 실패가 업데이트 실패나
+// 취소로 보고되지 않게 하고, 실패 경로에서는 원래 오류를 가리지 않게 한다(남은 .update-* 폴더는 읽지 않는다).
+async function removeStaging(staging) {
+  await fs.promises.rm(staging, { recursive: true, force: true }).catch(() => {});
+}
+
+// signal 이 중단되면 controller 도 같은 이유로 중단한다. 반환한 함수로 연결을 푼다.
+function forwardAbort(signal, controller) {
+  if (!signal) return () => {};
+  const onAbort = () => controller.abort(signal.reason);
+  if (signal.aborted) onAbort();
+  else signal.addEventListener('abort', onAbort, { once: true });
+  return () => signal.removeEventListener('abort', onAbort);
+}
+
 // fetchAll 을 timeoutMs 안에 끝내지 못하면 reject. 진행 이벤트는 onProgress 로 넘기고, 단계별 마지막 이벤트로
-// 상한을 넘겼을 때 어느 단계가 끝나지 않았는지 오류 문구에 쓴다.
-async function runWithTimeout(fetchAll, options, onProgress, timeoutMs) {
+// 상한을 넘겼을 때 어느 단계가 끝나지 않았는지 오류 문구에 쓴다. signal(사용자 취소)이 중단되면 fetchAll 에 같은
+// 중단 신호를 보내고 fetchAll 이 끝나기를 기다리지 않고 signal.reason 으로 reject.
+async function runWithTimeout(fetchAll, options, onProgress, timeoutMs, signal) {
   const controller = new AbortController();
   const stages = new Map();
   let last = null;
@@ -45,8 +64,9 @@ async function runWithTimeout(fetchAll, options, onProgress, timeoutMs) {
       if (onProgress) onProgress(p);
     },
   });
-  job.catch(() => {}); // 상한을 넘긴 뒤 늦게 끝나는 실패는 이미 보고했다.
+  job.catch(() => {}); // 상한을 넘긴(또는 취소한) 뒤 늦게 끝나는 실패는 이미 보고했다.
   let timer;
+  let unlink = () => {};
   const timeout = new Promise((resolve, reject) => {
     timer = setTimeout(() => {
       const where = pendingText(stages, last);
@@ -54,11 +74,14 @@ async function runWithTimeout(fetchAll, options, onProgress, timeoutMs) {
       controller.abort(err);
       reject(err);
     }, timeoutMs);
+    controller.signal.addEventListener('abort', () => reject(controller.signal.reason), { once: true });
+    unlink = forwardAbort(signal, controller);
   });
   try {
     return await Promise.race([job, timeout]);
   } finally {
     clearTimeout(timer);
+    unlink();
   }
 }
 
@@ -67,22 +90,31 @@ async function runWithTimeout(fetchAll, options, onProgress, timeoutMs) {
 // dataDir: 저장할 data 폴더. onProgress: 진행 이벤트 {stage, done, total, message}. timeoutMs: 전체 상한(기본 8분).
 // skillsMode: 'patched'(기본, 패치노트 실험체만 재수집) | 'all'. 'patched' 의 병합 기준은 dataDir 의 기존 skills.json 이라
 // staging 에 복사해 둔다(fetchAll 은 outDir/skills.json 을 먼저 읽는다).
+// signal: 사용자 취소 AbortSignal. 교체(installFiles) 전에 중단되면 네 파일을 건드리지 않고 { cancelled: true }.
 // 반환 { count, savedPath, skills, meta } (savedPath 는 items.json).
-async function updateAll(fetchAll, dataDir, { onProgress, timeoutMs = UPDATE_TIMEOUT_MS, skillsMode = 'patched' } = {}) {
+async function updateAll(fetchAll, dataDir, { onProgress, timeoutMs = UPDATE_TIMEOUT_MS, skillsMode = 'patched', signal } = {}) {
   if (skillsMode !== 'patched' && skillsMode !== 'all') throw new Error(`알 수 없는 skillsMode: ${skillsMode}`);
+  if (signal && signal.aborted) return CANCELLED;
   await fs.promises.mkdir(dataDir, { recursive: true });
   const staging = await fs.promises.mkdtemp(path.join(dataDir, '.update-'));
   try {
     await fs.promises.copyFile(path.join(dataDir, 'skills.json'), path.join(staging, 'skills.json')).catch((err) => {
       if (err.code !== 'ENOENT') throw err;
     });
-    const { items, characters, skills, meta } =
-      (await runWithTimeout(fetchAll, { outDir: staging, skillsMode }, onProgress, timeoutMs)) || {};
+    let res;
+    try {
+      res = await runWithTimeout(fetchAll, { outDir: staging, skillsMode }, onProgress, timeoutMs, signal);
+    } catch (err) {
+      if (signal && signal.aborted) return CANCELLED;
+      throw err;
+    }
+    if (signal && signal.aborted) return CANCELLED;
+    const { items, characters, skills, meta } = res || {};
     checkData({ items, characters, skills });
     await installFiles(staging, dataDir);
     return { count: items.length, savedPath: path.join(dataDir, 'items.json'), skills, meta };
   } finally {
-    await fs.promises.rm(staging, { recursive: true, force: true });
+    await removeStaging(staging);
   }
 }
 
@@ -162,18 +194,26 @@ async function readFirst(name, dirs) {
 // 반환 { count, savedPath, skills, meta, note? } — 이미 같으면 파일을 건드리지 않고 note 로 알린다.
 // 상한 타이머는 setTimeout(이벤트 루프를 붙잡음)으로 둔다. AbortSignal.timeout 은 unref 타이머라 다른 할 일이 없으면
 // 상한 전에 프로세스(테스트 러너)가 끝나 대기 중인 요청이 취소된다.
+// options.signal: 사용자 취소. 요청을 바로 중단하고, 교체 전이면 파일을 건드리지 않고 { cancelled: true }.
 async function downloadLatest(fetchImpl, dataDir, options = {}) {
   const timeoutMs = options.timeoutMs ?? DOWNLOAD_TIMEOUT_MS;
+  const cancel = options.signal;
+  if (cancel && cancel.aborted) return CANCELLED;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(new Error('timeout')), timeoutMs);
+  const unlink = forwardAbort(cancel, controller);
   try {
     return await fetchLatest(fetchImpl, dataDir, { ...options, timeoutMs }, controller.signal);
+  } catch (err) {
+    if (cancel && cancel.aborted) return CANCELLED;
+    throw err;
   } finally {
     clearTimeout(timer);
+    unlink();
   }
 }
 
-async function fetchLatest(fetchImpl, dataDir, { onProgress, bundledDir, baseUrl = DATA_RELEASE_URL, timeoutMs }, signal) {
+async function fetchLatest(fetchImpl, dataDir, { onProgress, bundledDir, baseUrl = DATA_RELEASE_URL, timeoutMs, signal: cancel }, signal) {
   const progress = (stage, done, total, message) => {
     if (onProgress) onProgress({ stage, done, total, message });
   };
@@ -194,6 +234,7 @@ async function fetchLatest(fetchImpl, dataDir, { onProgress, bundledDir, baseUrl
   const dirs = bundledDir && path.resolve(bundledDir) !== path.resolve(dataDir) ? [dataDir, bundledDir] : [dataDir];
   const local = await Promise.all(FILES.map((name) => readFirst(name, dirs)));
   if (FILES.every((name, i) => local[i] && sha256(local[i]) === manifest.sha256[name])) {
+    if (cancel && cancel.aborted) return CANCELLED;
     const [items, , skills, meta] = local.map((buf) => JSON.parse(buf.toString('utf8')));
     const itemsDir = dirs.find((dir) => fs.existsSync(path.join(dir, 'items.json')));
     return { count: items.length, savedPath: path.join(itemsDir, 'items.json'), skills, meta, upToDate: true,
@@ -224,29 +265,36 @@ async function fetchLatest(fetchImpl, dataDir, { onProgress, bundledDir, baseUrl
     const items = parsed['items.json'];
     const skills = parsed['skills.json'];
     checkData({ items, characters: parsed['characters.json'], skills });
+    if (cancel && cancel.aborted) return CANCELLED;
     await installFiles(staging, dataDir);
     return { count: items.length, savedPath: path.join(dataDir, 'items.json'), skills, meta: parsed['items.meta.json'] };
   } finally {
-    await fs.promises.rm(staging, { recursive: true, force: true });
+    await removeStaging(staging);
   }
 }
 
 // 기본 업데이트: download() 를 먼저 하고, 실패하면(GitHub 접근 실패·검증 실패) collect()(dak.gg·패치노트 직접 수집)로
 // 폴백한다. 폴백은 진행 이벤트 'fallback' 과 결과 note 로 알리고, 폴백도 실패하면 두 원인을 함께 담아 reject.
-async function updateLatest({ download, collect, onProgress }) {
+// signal(사용자 취소)이 중단되면 폴백하지 않고 { cancelled: true }(download·collect 에도 같은 signal 을 넘긴다).
+async function updateLatest({ download, collect, onProgress, signal }) {
+  const cancelled = () => signal && signal.aborted;
   let reason;
   try {
     return await download();
   } catch (err) {
+    if (cancelled()) return CANCELLED;
     reason = (err && err.message) || String(err);
   }
+  if (cancelled()) return CANCELLED;
   if (onProgress) onProgress({ stage: 'fallback', done: 0, total: 1, message: `GitHub 데이터를 받지 못해 직접 수집합니다(${reason})` });
   let res;
   try {
     res = await collect();
   } catch (err) {
+    if (cancelled()) return CANCELLED;
     throw new Error(`${(err && err.message) || String(err)} (GitHub 데이터도 받지 못함: ${reason})`, { cause: err });
   }
+  if (res && res.cancelled) return res;
   return { ...res, note: `GitHub 데이터를 받지 못해 dak.gg·패치노트에서 직접 수집했습니다(${reason})` };
 }
 

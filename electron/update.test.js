@@ -213,6 +213,94 @@ test('updateLatest falls back to collect with a note, and names both causes when
     /^Error: dak down \(GitHub 데이터도 받지 못함: gh down\)$/);
 });
 
+// 취소: dataDir 의 기존 파일 내용·목록이 그대로인지(임시 폴더도 남지 않는다).
+function snapshot(dir) {
+  return Object.fromEntries(fs.readdirSync(dir).sort().map((n) => [n, fs.readFileSync(path.join(dir, n), 'utf8')]));
+}
+
+test('updateAll cancel: returns {cancelled:true} at once without waiting for fetchAll and leaves the files untouched', async () => {
+  const root = tmpDir();
+  for (const [n, t] of Object.entries(RELEASE)) fs.writeFileSync(path.join(root, n), t);
+  const before = snapshot(root);
+  let seen;
+  const hang = (opts) => { seen = opts.signal; return new Promise(() => {}); }; // 신호를 무시하고 끝나지 않는 fetchAll
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(new Error('cancel')), 30);
+  const t0 = performance.now();
+  const res = await updateAll(hang, root, { signal: controller.signal, onProgress: () => {} });
+  assert.deepStrictEqual(res, { cancelled: true });
+  assert.ok(performance.now() - t0 < 500, `took ${performance.now() - t0}ms`);
+  assert.ok(seen.aborted, 'fetchAll gets the abort');
+  assert.deepStrictEqual(snapshot(root), before);
+  // 수집은 끝났지만 교체 전에 취소된 경우도 파일을 바꾸지 않는다.
+  const late = new AbortController();
+  const done = async (opts) => {
+    const res2 = await fakeFetchAll({ items: [{ id: 'new' }], characters: [{}], skills: [{}], meta: {} })(opts);
+    late.abort();
+    return res2;
+  };
+  assert.deepStrictEqual(await updateAll(done, root, { signal: late.signal }), { cancelled: true });
+  assert.deepStrictEqual(snapshot(root), before);
+  // 이미 취소된 신호면 시작하지 않는다.
+  assert.deepStrictEqual(await updateAll(() => assert.fail('not started'), root, { signal: late.signal }), { cancelled: true });
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
+test('downloadLatest cancel: aborts the request, or stops before replacing after the downloads', async () => {
+  const root = tmpDir();
+  fs.writeFileSync(path.join(root, 'items.json'), '[{"id":"old"}]\n');
+  const before = snapshot(root);
+  const hang = async (url, { signal }) => new Promise((_, reject) => signal.addEventListener('abort', () => reject(signal.reason)));
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), 30);
+  const t0 = performance.now();
+  assert.deepStrictEqual(await downloadLatest(hang, root, { baseUrl: 'https://x/', signal: controller.signal }), { cancelled: true });
+  assert.ok(performance.now() - t0 < 500, `took ${performance.now() - t0}ms`);
+  assert.deepStrictEqual(snapshot(root), before);
+  // 네 파일을 다 받은 직후(마지막 download 이벤트)에 취소 → 교체하지 않는다.
+  const late = new AbortController();
+  const onProgress = (p) => { if (p.stage === 'download' && p.done === 4) late.abort(); };
+  const res = await downloadLatest(fakeRelease(RELEASE).fetchImpl, root, { baseUrl: 'https://x/', onProgress, signal: late.signal });
+  assert.deepStrictEqual(res, { cancelled: true });
+  assert.deepStrictEqual(snapshot(root), before);
+  // 이미 최신이어도 manifest 를 받은 뒤 취소했으면 성공이 아니라 취소로 끝난다.
+  const same = tmpDir();
+  for (const [n, t] of Object.entries(RELEASE)) fs.writeFileSync(path.join(same, n), t);
+  const c3 = new AbortController();
+  const onManifest = (p) => { if (p.stage === 'manifest' && p.done === 1) c3.abort(); };
+  assert.deepStrictEqual(await downloadLatest(fakeRelease(RELEASE).fetchImpl, same, { baseUrl: 'https://x/', onProgress: onManifest, signal: c3.signal }),
+    { cancelled: true });
+  fs.rmSync(same, { recursive: true, force: true });
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
+test('updateLatest cancel: no fallback after a cancelled download, collect result passed through', async () => {
+  const controller = new AbortController();
+  const seen = [];
+  const res = await updateLatest({
+    download: async () => { controller.abort(); throw new Error('manifest 받기 실패: timeout'); },
+    collect: async () => assert.fail('no fallback after cancel'),
+    onProgress: (p) => seen.push(p),
+    signal: controller.signal,
+  });
+  assert.deepStrictEqual(res, { cancelled: true });
+  assert.deepStrictEqual(seen, []);
+  const c2 = new AbortController();
+  const res2 = await updateLatest({
+    download: async () => { throw new Error('gh down'); },
+    collect: async () => { c2.abort(); return { cancelled: true }; },
+    signal: c2.signal,
+  });
+  assert.deepStrictEqual(res2, { cancelled: true }); // note 를 붙이지 않는다
+  const c3 = new AbortController();
+  const res3 = await updateLatest({
+    download: async () => { throw new Error('gh down'); },
+    collect: async () => { c3.abort(); throw new Error('aborted'); },
+    signal: c3.signal,
+  });
+  assert.deepStrictEqual(res3, { cancelled: true });
+});
+
 test('loadFetchAll imports scripts/fetch_items.mjs from appRoot', async () => {
   const root = tmpDir();
   fs.mkdirSync(path.join(root, 'scripts'));
