@@ -26,10 +26,10 @@
     { key: 'extraPenPct', label: '방어 관통율(%)', step: 'any' },
     { key: 'extraAtk', label: '아이템 외 공격력', step: 'any' },
     { key: 'extraSkillAmp', label: '아이템 외 스킬 증폭', step: 'any' },
-    { key: 'extraSkillAmpPct', label: '아이템 외 % 스킬 증폭 (%)', step: 'any' },
+    { key: 'extraSkillAmpPct', label: '아이템 외 % 스킬 증폭 (%)', short: '아이템 외 %스증', step: 'any' },
     { key: 'extraDamageIncreasePct', label: '추가 피해 증가 (%)', step: 'any' },
     { key: 'enemyDamageReductionPct', label: '대상 피해 감소 (%)', step: 'any' },
-    { key: 'enemySkillReductionPct', label: '대상 스킬 피해 감소 (%)', step: 'any' },
+    { key: 'enemySkillReductionPct', label: '대상 스킬 피해 감소 (%)', short: '대상 스킬피해 감소 %', step: 'any' },
   ];
   const INPUT_FIELDS = V2 ? INPUT_FIELDS_V2 : [
     { key: 'level', label: '성장형 스탯', step: 1, min: 1 },
@@ -743,13 +743,14 @@
       const noteId = { extraSkillAmp: 'sa-total', extraAtk: 'auto-atk', extraSkillAmpPct: 'auto-amp', extraPen: 'auto-pen', extraPenPct: 'auto-penPct' }[f.key];
       const extra = noteId && (V2 || PEN_NOTES[f.key]) ? el('span', { id: noteId, className: 'muted small' }) : null;
       if (extra) input.setAttribute('aria-label', f.label);
-      form.append(el('label', null, labelText(f.label), input, extra));
+      form.append(el('label', null, labelText(f.short || f.label, f.label), input, extra));
     }
   }
 
   // 조밀한 입력 그리드: 라벨은 한 줄로 자르고 전체 문구는 툴팁으로.
-  function labelText(text) {
-    return el('span', { className: 'lbl', textContent: text, title: text });
+  // short: 칸이 좁은 라벨의 짧은 문구(전체 이름 full은 툴팁).
+  function labelText(text, full) {
+    return el('span', { className: 'lbl', textContent: text, title: full || text });
   }
 
   // ---------- v2 실험체 자동 입력 ----------

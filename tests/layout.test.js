@@ -47,12 +47,18 @@ test('입력 컨트롤: 네이티브 select·datalist 팝업 대신 앱 드롭�
   assert.match(css, /\.search-box input:placeholder-shown \+ \.search-clear \{ display: none; \}/);
 });
 
-test('머리글 두 행: 2행 오른쪽 정렬 업데이트 그룹, 넘치면 줄바꿈, 상태 문구 최소 220px·말줄임 없음', () => {
-  assert.match(css, /\nheader \{[^}]*flex-direction: column/);
-  assert.match(css, /\.update-box \{[^}]*flex-wrap: wrap; justify-content: flex-end/);
-  assert.match(css, /\.update-group \{[^}]*flex-wrap: wrap/);
-  const rule = css.match(/#update-status, #app-update-status \{([^}]*)\}/);
-  assert.ok(rule && /min-width: 220px/.test(rule[1]) && !/ellipsis|overflow: hidden/.test(rule[1]));
+test('머리글: 좌(제목/메타)·우(앱 행/데이터 행) 두 블록, 28px 두 행, 같은 폭 버튼 세로 정렬, 상태 문구 말줄임 없음', () => {
+  assert.match(css, /\.title-row \{ display: grid; grid-auto-rows: 28px/);
+  assert.match(css, /\.update-box \{ display: grid;[^}]*grid-auto-rows: 28px; justify-content: end/);
+  assert.match(css, /#app-update-status, #app-update-check \{ grid-row: 1; \}/);
+  assert.match(css, /#update-gauge, #update-status, #update-btn, #update-all-btn \{ grid-row: 2; \}/);
+  assert.match(css, /#app-update-check, #update-btn \{ grid-column: 3; min-width: 132px; \}/);
+  assert.match(css, /#update-status \{ grid-column: 2; min-width: 220px; \}/);
+  assert.doesNotMatch(css, /#(app-)?update-status[^{]*\{[^}]*(ellipsis|overflow: hidden)/);
+  const app = fs.readFileSync(path.join(root, 'src', 'app.js'), 'utf8');
+  assert.match(app, /short: '아이템 외 %스증'/);
+  assert.match(app, /short: '대상 스킬피해 감소 %'/);
+  assert.match(app, /labelText\(f\.short \|\| f\.label, f\.label\)/);
   assert.match(html, /<div class="update-box">\s*<div id="data-update-group" class="update-group" hidden>\s*<span id="update-status"/);
   const preload = fs.readFileSync(path.join(root, 'electron', 'preload.js'), 'utf8');
   assert.match(preload, /id: 'app-update-group', className: 'update-group'/);
