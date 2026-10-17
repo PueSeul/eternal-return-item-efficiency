@@ -6,7 +6,13 @@ const { contextBridge, ipcRenderer } = require('electron');
 if (process.argv.includes('--er-formula=v2')) contextBridge.exposeInMainWorld('ER_FORMULA', 'v2');
 
 contextBridge.exposeInMainWorld('erDesktop', {
-  // 아이템 수치 업데이트: 성공 시 { count, savedPath, meta }, 실패 시 오류 메시지로 reject.
+  // 업데이트 진행 이벤트 {stage, done, total, message} 구독. 반환한 함수를 부르면 구독 해제.
+  onUpdateProgress: (cb) => {
+    const listener = (_event, p) => cb(p);
+    ipcRenderer.on('update:progress', listener);
+    return () => ipcRenderer.removeListener('update:progress', listener);
+  },
+  // 아이템 수치 업데이트: 성공 시 { count, savedPath, skills, meta }, 실패 시 오류 메시지(어느 단계에서 왜)로 reject.
   updateItems: async () => {
     try {
       return await ipcRenderer.invoke('er:update-items');

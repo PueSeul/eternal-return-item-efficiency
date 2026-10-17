@@ -23,8 +23,13 @@ let lastUpdate = null; // 검증(smokeClickUpdate)용: 마지막으로 시작한
 async function handleUpdateItems(event) {
   if (!event.senderFrame || !event.senderFrame.url.startsWith(ORIGIN + '/')) throw new Error('허용되지 않은 요청입니다.');
   if (!updating) {
+    // 진행 이벤트는 요청한 창에 'update:progress' 로 보낸다(preload.js onUpdateProgress).
+    const sender = event.sender;
+    const onProgress = (p) => {
+      if (!sender.isDestroyed()) sender.send('update:progress', p);
+    };
     updating = loadFetchAll(APP_ROOT)
-      .then((fetchAll) => updateAll(fetchAll, UPDATE_DATA_DIR))
+      .then((fetchAll) => updateAll(fetchAll, UPDATE_DATA_DIR, { onProgress }))
       .finally(() => { updating = null; });
     lastUpdate = updating;
   }
@@ -151,6 +156,27 @@ async function smokeClickUpdate(win, selector) {
   }));
   const before = mtime();
   const prev = lastUpdate;
+  // 렌더러가 preload 의 onUpdateProgress 로 받은 진행 이벤트를 시각과 함께 모은다(IPC 전달 확인용).
+  await win.webContents.executeJavaScript(`(() => {
+    window.__smokeProgress = [];
+    window.erDesktop.onUpdateProgress((p) => window.__smokeProgress.push({ t: Date.now(), ...p }));
+  })()`);
+  const progressLog = async (startedAt) => {
+    const events = await win.webContents.executeJavaScript('window.__smokeProgress');
+    return {
+      progressCount: events.length,
+      progressStages: [...new Set(events.map((e) => e.stage))],
+      // 단계별 첫·마지막 이벤트 시각(시작 기준 ms)과 마지막 이벤트.
+      progressTimeline: Object.fromEntries([...new Set(events.map((e) => e.stage))].map((s) => {
+        const of = events.filter((e) => e.stage === s);
+        return [s, { firstMs: of[0].t - startedAt, lastMs: of[of.length - 1].t - startedAt, events: of.length,
+          last: `${of[of.length - 1].done}/${of[of.length - 1].total} ${of[of.length - 1].message}` }];
+      })),
+      // 이벤트 사이 가장 긴 공백(멈춤처럼 보이는 구간).
+      maxGapMs: events.reduce((m, e, i) => (i ? Math.max(m, e.t - events[i - 1].t) : m), 0),
+    };
+  };
+  const startedAt = Date.now();
   // 버튼은 UI 최초 로딩(v2는 캐릭터 데이터 포함)이 끝난 뒤에 보이므로 최대 15초 기다린다.
   let clicked = false;
   for (const end = Date.now() + 15000; !clicked && Date.now() < end;) {
@@ -164,6 +190,8 @@ async function smokeClickUpdate(win, selector) {
   if (lastUpdate === prev) return { ok: false, error: 'click did not start update' };
   try {
     const res = await lastUpdate;
+    const elapsedMs = Date.now() - startedAt;
+    const progress = await progressLog(startedAt);
     await new Promise((r) => setTimeout(r, 2000)); // UI가 새 파일을 다시 읽을 시간
     const after = mtime();
     // 프로토콜로 다시 읽은 네 파일(외부 data/ 우선)과 UI 상태 문구.
@@ -180,13 +208,15 @@ async function smokeClickUpdate(win, selector) {
     })()`);
     const ok = names.every((n) => after[n] !== null && after[n] !== before[n])
       && ui.servedCount === res.count && ui.servedMeta === JSON.stringify(res.meta)
-      && ui.servedSkills === JSON.stringify(res.skills) && ui.bannerHidden;
+      && ui.servedSkills === JSON.stringify(res.skills) && ui.bannerHidden && progress.progressCount > 0;
     // 결과 파일이 커지지 않도록 skills 는 개수만 남긴다.
     const { skills, ...rest } = res;
     const { servedSkills, ...uiRest } = ui;
-    return { ok, before, after, ...rest, skillCount: skills.length, servedSkillCount: JSON.parse(servedSkills).length, ...uiRest };
+    return { ok, elapsedMs, ...progress, before, after, ...rest, skillCount: skills.length,
+      servedSkillCount: JSON.parse(servedSkills).length, ...uiRest };
   } catch (err) {
-    return { ok: false, before, error: String(err && err.message || err) };
+    return { ok: false, elapsedMs: Date.now() - startedAt, ...(await progressLog(startedAt)), before,
+      error: String(err && err.message || err) };
   }
 }
 

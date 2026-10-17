@@ -6,7 +6,9 @@
 import { readFileSync, writeFileSync, mkdirSync, realpathSync, renameSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
-import { fetchPatch, parsePatch, applyItemChanges, applyCharacterChanges } from "./fetch_patchnote.mjs";
+import {
+  fetchPatch, parsePatch, applyItemChanges, applyCharacterChanges, requestSignal, describeError,
+} from "./fetch_patchnote.mjs";
 import { buildCharacters, CHARACTERS_URL, dumps as dumpsCharacters } from "./fetch_characters.mjs";
 import {
   buildSkills, applySkillChanges, fetchPages, REQUEST_INTERVAL_MS, dumps as dumpsSkills,
@@ -40,10 +42,10 @@ const CHOICE_SEP = " 또는 ";
 const CHOICE_SUFFIX = "(택1)";
 const PCT_SUFFIX = "율";
 
-async function fetchJson(url) {
+async function fetchJson(url, signal) {
   const resp = await fetch(url, {
     headers: { "User-Agent": "Mozilla/5.0", Referer: "https://dak.gg/", Accept: "application/json" },
-    signal: AbortSignal.timeout(30000),
+    signal: requestSignal(signal),
   });
   if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${url}`);
   return resp.json();
@@ -223,22 +225,65 @@ export function buildAll(rawItems, masteries, rawChars, patch, pages, fetchedAt)
  * Fetch dak.gg + the latest patch note + namu.wiki skill pages and write items.json,
  * characters.json, skills.json and items.meta.json to outDir (default: this repo's
  * data/; an app should pass a writable directory). Returns {items, characters, skills, meta}.
- * intervalMs: pause between namu.wiki requests (default 1000).
+ * intervalMs: pause between namu.wiki request starts (default 1000).
+ * onProgress({stage: "items"|"characters"|"patchnote"|"skills", done, total, message}) at each stage
+ * start/end and after each namu.wiki document. A failure names its stage ("<stage> 단계 실패: <reason>")
+ * and aborts the other downloads; signal (AbortSignal) stops all requests and keeps outDir untouched.
  */
-export async function fetchAll({ outDir = DATA_DIR, fetchedAt, intervalMs = REQUEST_INTERVAL_MS } = {}) {
-  const [items, masteries, chars, patch] = await Promise.all([
-    fetchJson(ITEMS_URL), fetchJson(MASTERIES_URL), fetchJson(CHARACTERS_URL), fetchPatch(),
+export async function fetchAll({
+  outDir = DATA_DIR, fetchedAt, intervalMs = REQUEST_INTERVAL_MS, onProgress, signal,
+} = {}) {
+  const progress = (stage, done, total, message) => {
+    if (onProgress) onProgress({ stage, done, total, message });
+  };
+  const stop = new AbortController();
+  const stopped = signal ? AbortSignal.any([signal, stop.signal]) : stop.signal;
+  const failure = (label, err) => new Error(`${label} 단계 실패: ${describeError(err)}`, { cause: err });
+  // Download stage: progress at start/end; the first failure is named and cancels the sibling stages.
+  const step = async (stage, label, run, total = 1) => {
+    progress(stage, 0, total, `${label} 중`);
+    try {
+      const value = await run();
+      progress(stage, total, total, `${label} 완료`);
+      return value;
+    } catch (err) {
+      if (stopped.aborted) throw err;
+      const named = failure(label, err);
+      stop.abort(named);
+      throw named;
+    }
+  };
+  // Local stage (no requests): only failures are named.
+  const local = (label, run) => {
+    stopped.throwIfAborted();
+    try {
+      return run();
+    } catch (err) {
+      throw failure(label, err);
+    }
+  };
+  const [[items, masteries], chars, patch] = await Promise.all([
+    step("items", "아이템 수집(dak.gg)",
+      () => Promise.all([fetchJson(ITEMS_URL, stopped), fetchJson(MASTERIES_URL, stopped)])),
+    step("characters", "실험체 수집(dak.gg)", () => fetchJson(CHARACTERS_URL, stopped)),
+    step("patchnote", "패치노트 확인", () => fetchPatch(stopped)),
   ]);
-  const names = [...chars.characters].sort((a, b) => Number(a.id) - Number(b.id)).map((c) => c.name);
-  const pages = await fetchPages(names, intervalMs);
-  const result = buildAll(items.items, masteries.masteries, chars.characters, patch, pages,
-    fetchedAt ?? new Date().toISOString());
-  mkdirSync(outDir, { recursive: true });
-  // Write all four to temp files first so a failed write leaves the old set intact.
-  const files = [["items.json", dumps(result.items)], ["characters.json", dumpsCharacters(result.characters)],
-    ["skills.json", dumpsSkills(result.skills)], ["items.meta.json", dumps(result.meta)]];
-  for (const [name, text] of files) writeFileSync(path.join(outDir, name + ".tmp"), text, "utf8");
-  for (const [name] of files) renameSync(path.join(outDir, name + ".tmp"), path.join(outDir, name));
+  const names = local("실험체 목록 처리",
+    () => [...chars.characters].sort((a, b) => Number(a.id) - Number(b.id)).map((c) => c.name));
+  const label = "스킬 수집(나무위키)";
+  const pages = await step("skills", label, () => fetchPages(names, intervalMs, {
+    signal: stopped, onPage: (done, total, name) => progress("skills", done, total, `${label} 중: ${name}`),
+  }), names.length);
+  const result = local("데이터 처리", () => buildAll(items.items, masteries.masteries, chars.characters,
+    patch, pages, fetchedAt ?? new Date().toISOString()));
+  local("파일 저장", () => {
+    mkdirSync(outDir, { recursive: true });
+    // Write all four to temp files first so a failed write leaves the old set intact.
+    const files = [["items.json", dumps(result.items)], ["characters.json", dumpsCharacters(result.characters)],
+      ["skills.json", dumpsSkills(result.skills)], ["items.meta.json", dumps(result.meta)]];
+    for (const [name, text] of files) writeFileSync(path.join(outDir, name + ".tmp"), text, "utf8");
+    for (const [name] of files) renameSync(path.join(outDir, name + ".tmp"), path.join(outDir, name));
+  });
   return result;
 }
 

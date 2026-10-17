@@ -10,7 +10,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import {
   TOKEN_RE, BLOCK_TAGS as PN_BLOCK_TAGS, HEADINGS, ENTITY_RE, SPACE_RE, entity,
-  fetchPatch, parsePatch,
+  fetchPatch, parsePatch, requestSignal, describeError,
 } from "./fetch_patchnote.mjs";
 
 export const WIKI = "https://namu.wiki";
@@ -18,7 +18,8 @@ export const ROBOTS_URL = WIKI + "/robots.txt";
 const AGENT = "er-damage-efficiency"; // robots.txt product token
 const HEADERS = { "User-Agent": AGENT + "/1.0 (skill coefficient fetcher)", "Accept-Language": "ko-KR,ko;q=0.9" };
 export const DOC_SUFFIX = "(이터널 리턴)";
-export const REQUEST_INTERVAL_MS = 1000; // between namu.wiki requests
+export const REQUEST_INTERVAL_MS = 1000; // between namu.wiki request starts
+export const PAGE_CONCURRENCY = 3; // namu.wiki requests in flight at once
 const MAX_REDIRECTS = 5;
 const REDIRECT_CODES = new Set([301, 302, 303, 307, 308]);
 const DATA_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "data");
@@ -437,31 +438,40 @@ export function robotsAllowed(rules, url) {
 
 // --- fetching ------------------------------------------------------------------
 /** One request, redirects not followed: {status, body, location}; 200/404/3xx returned, others throw. */
-export async function fetchPage(url) {
-  const resp = await fetch(url, { headers: HEADERS, redirect: "manual", signal: AbortSignal.timeout(30000) });
+export async function fetchPage(url, signal) {
+  const resp = await fetch(url, { headers: HEADERS, redirect: "manual", signal: requestSignal(signal) });
   if (resp.status === 404) return { status: 404, body: "", location: null };
   if (REDIRECT_CODES.has(resp.status)) return { status: resp.status, body: "", location: resp.headers.get("location") };
   if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${url}`);
   return { status: resp.status, body: await resp.text(), location: null };
 }
 
-function throttle(intervalMs) {
+// Callers are served one at a time and each turn is measured from the previous turn's actual
+// start, so concurrent callers (and late timers) never start requests less than intervalMs apart.
+function throttle(intervalMs, signal) {
+  let chain = Promise.resolve();
   let last = null;
-  return async () => {
-    if (last !== null) {
-      const left = intervalMs - (performance.now() - last);
-      if (left > 0) await new Promise((r) => setTimeout(r, left));
-    }
-    last = performance.now();
+  return () => {
+    const turn = chain.then(async () => {
+      signal?.throwIfAborted();
+      for (let left = last === null ? 0 : intervalMs - (performance.now() - last); left > 0;
+        left = intervalMs - (performance.now() - last)) {
+        await new Promise((r) => setTimeout(r, left));
+      }
+      signal?.throwIfAborted();
+      last = performance.now();
+    });
+    chain = turn.catch(() => {});
+    return turn;
   };
 }
 
 /** Final page after following redirects (each hop robots-checked and throttled). */
-async function getPage(url, rules, wait) {
+async function getPage(url, rules, wait, signal) {
   for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
     if (!robotsAllowed(rules, url)) throw new Error(`robots.txt disallows ${url}`);
     await wait();
-    const page = await fetchPage(url);
+    const page = await fetchPage(url, signal);
     if (!REDIRECT_CODES.has(page.status)) return page;
     if (!page.location) throw new Error(`redirect without Location from ${url}`);
     url = new URL(page.location, url).href;
@@ -469,22 +479,41 @@ async function getPage(url, rules, wait) {
   throw new Error(`too many redirects from ${url}`);
 }
 
-/** Map name -> document HTML or null, robots.txt respected, requests intervalMs apart. */
-export async function fetchPages(names, intervalMs = REQUEST_INTERVAL_MS) {
-  const wait = throttle(intervalMs);
-  const robots = await getPage(ROBOTS_URL, [], wait);
+/** Map name -> document HTML or null, robots.txt respected, request starts intervalMs apart,
+ * at most `concurrency` documents in flight. onPage(done, total, name) after each document;
+ * a failure names the document and aborts the requests in flight and the remaining ones. */
+export async function fetchPages(names, intervalMs = REQUEST_INTERVAL_MS,
+  { concurrency = PAGE_CONCURRENCY, onPage, signal } = {}) {
+  const stop = new AbortController();
+  const stopped = signal ? AbortSignal.any([signal, stop.signal]) : stop.signal;
+  const wait = throttle(intervalMs, stopped);
+  const robots = await getPage(ROBOTS_URL, [], wait, stopped);
   const rules = robots.status === 200 ? parseRobots(robots.body) : [];
-  const pages = new Map();
-  for (const name of names) {
-    pages.set(name, null);
-    for (const title of [name + DOC_SUFFIX, name]) {
-      const page = await getPage(docUrl(title), rules, wait);
-      if (page.status !== 404) {
-        pages.set(name, page.body);
-        break;
+  const pages = new Map(names.map((name) => [name, null]));
+  let next = 0;
+  let done = 0;
+  const worker = async () => {
+    while (!stopped.aborted && next < names.length) {
+      const name = names[next++];
+      try {
+        for (const title of [name + DOC_SUFFIX, name]) {
+          const page = await getPage(docUrl(title), rules, wait, stopped);
+          if (page.status !== 404) {
+            pages.set(name, page.body);
+            break;
+          }
+        }
+      } catch (err) {
+        if (stopped.aborted) throw err; // another document failed first, or the caller stopped
+        const failure = new Error(`나무위키 문서 "${name}": ${describeError(err)}`, { cause: err });
+        stop.abort(failure);
+        throw failure;
       }
+      done += 1;
+      if (onPage) onPage(done, names.length, name);
     }
-  }
+  };
+  await Promise.all(Array.from({ length: Math.min(concurrency, names.length) }, worker));
   return pages;
 }
 

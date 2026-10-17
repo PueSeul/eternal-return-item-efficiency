@@ -6,6 +6,31 @@ const os = require('os');
 const path = require('path');
 const { updateAll, loadFetchAll } = require('./update');
 
+test('updateAll forwards progress events and rejects with the last stage after the overall limit', async () => {
+  const root = tmpDir();
+  const seen = [];
+  let signal;
+  const slow = async (opts) => {
+    signal = opts.signal;
+    opts.onProgress({ stage: 'patchnote', done: 0, total: 1, message: '패치노트 확인 중' });
+    opts.onProgress({ stage: 'items', done: 0, total: 1, message: '아이템 수집(dak.gg) 중' });
+    opts.onProgress({ stage: 'items', done: 1, total: 1, message: '아이템 수집(dak.gg) 완료' });
+    await new Promise((r) => setTimeout(r, 500));
+    throw new Error('late failure');
+  };
+  // 마지막 이벤트(아이템 완료)가 아니라 끝나지 않은 단계(패치노트)를 알린다.
+  await assert.rejects(updateAll(slow, root, { onProgress: (p) => seen.push(p), timeoutMs: 100 }),
+    /0\.1초 안에 끝나지 않아 중단했습니다 \(끝나지 않은 단계: 패치노트 확인 중\)/);
+  assert.strictEqual(seen.length, 3);
+  assert.ok(signal.aborted);
+  assert.deepStrictEqual(fs.readdirSync(root), []); // 임시 폴더도 남지 않는다
+  // fetchAll 의 단계 오류는 그대로 전달된다.
+  await assert.rejects(updateAll(async () => { throw new Error('패치노트 확인 단계 실패: 응답 없음(20초 초과)'); }, root),
+    /패치노트 확인 단계 실패: 응답 없음/);
+  await new Promise((r) => setTimeout(r, 500)); // slow 의 늦은 실패가 처리되지 않은 거부로 남지 않는지
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
 function tmpDir() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'er-update-test-'));
 }

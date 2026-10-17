@@ -5,7 +5,7 @@
 import { writeFileSync, mkdirSync, realpathSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
-import { fetchPatch, parsePatch, applyCharacterChanges } from "./fetch_patchnote.mjs";
+import { fetchPatch, parsePatch, applyCharacterChanges, requestSignal } from "./fetch_patchnote.mjs";
 
 export const CHARACTERS_URL = "https://er.dakgg.io/api/v1/data/characters?hl=ko";
 export const MASTERIES_URL = "https://er.dakgg.io/api/v1/data/masteries?hl=ko";
@@ -26,7 +26,7 @@ const MASTERY_FIELDS = {
 async function fetchJson(url) {
   const resp = await fetch(url, {
     headers: { "User-Agent": "Mozilla/5.0", Referer: "https://dak.gg/", Accept: "application/json" },
-    signal: AbortSignal.timeout(30000),
+    signal: requestSignal(),
   });
   if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${url}`);
   return resp.json();

@@ -9,6 +9,22 @@ import path from "node:path";
 export const LIST_URL = (page) =>
   `https://playeternalreturn.com/api/v1/posts/news?category=patchnote&hl=ko-KR&page=${page}`;
 const HEADERS = { "User-Agent": "Mozilla/5.0", "Accept-Language": "ko-KR,ko;q=0.9" };
+// Per-request limit shared by the Node fetchers (an app update must not wait forever on one request).
+export const REQUEST_TIMEOUT_MS = 20000;
+
+/** Per-request signal: REQUEST_TIMEOUT_MS, ended earlier by `signal` (overall stop) when given. */
+export function requestSignal(signal) {
+  const timeout = AbortSignal.timeout(REQUEST_TIMEOUT_MS);
+  return signal ? AbortSignal.any([signal, timeout]) : timeout;
+}
+
+/** Short Korean reason for a failed request (timeout / network cause / message). */
+export function describeError(err) {
+  if (err && err.name === "TimeoutError") return `응답 없음(${REQUEST_TIMEOUT_MS / 1000}초 초과)`;
+  const msg = String((err && err.message) || err);
+  const cause = err && err.cause;
+  return cause ? `${msg} (${cause.code || cause.message || cause})` : msg;
+}
 const ITEMS_PATH = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "data", "items.json");
 
 const TITLE_RE = /([0-9]+\.[0-9]+)[a-z]? ?(패치노트|핫픽스)/;
@@ -56,8 +72,8 @@ const SKILL_CHANGE_RE = new RegExp(`^(.+?) (${SKILL_VALUES}) → (${SKILL_VALUES
 const SUB_KEY_RE = /^(.+)\((R[QWE])\) (.+)$/;
 const SKILL_DAMAGE = "피해량";
 
-export async function fetchText(url) {
-  const resp = await fetch(url, { headers: HEADERS, signal: AbortSignal.timeout(30000) });
+export async function fetchText(url, signal) {
+  const resp = await fetch(url, { headers: HEADERS, signal: requestSignal(signal) });
   if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${url}`);
   return resp.text();
 }
@@ -94,13 +110,13 @@ export function selectArticles(articles) {
   return [parts, hotfixes];
 }
 
-/** {info: patch metadata, bodies: [article HTML in application order]} */
-export async function fetchPatch() {
+/** {info: patch metadata, bodies: [article HTML in application order]}; signal stops further requests. */
+export async function fetchPatch(signal) {
   const articles = [];
   let page = 1;
   let selected;
   for (;;) {
-    const data = JSON.parse(await fetchText(LIST_URL(page)));
+    const data = JSON.parse(await fetchText(LIST_URL(page), signal));
     articles.push(...data.articles);
     selected = selectArticles(articles);
     // Stop once an older regular note is listed: all parts of the latest are loaded.
@@ -122,7 +138,7 @@ export async function fetchPatch() {
     articles: applied.map((a) => ({ id: a.id, title: a.title, url: a.url, createdAt: a.createdAt })),
   };
   const bodies = [];
-  for (const a of applied) bodies.push(await fetchText(a.url));
+  for (const a of applied) bodies.push(await fetchText(a.url, signal));
   return { info, bodies };
 }
 
