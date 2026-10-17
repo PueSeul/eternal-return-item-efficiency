@@ -1,0 +1,47 @@
+name: source-probe
+
+# Experiment: which skill-number sources answer from GitHub Actions (datacenter IP)? Status codes only.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Probe
+        run: |
+          cat > probe.mjs <<'EOF'
+          const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
+          const T = [
+            ["naver lounge DB API (character list)", "https://comm-api.game.naver.com/nng_main/v1/game/db/character/GM_670/dataType/character?order=ranking&offset=0&limit=100", "재키"],
+            ["naver lounge DB API (Jackie detail)", "https://comm-api.game.naver.com/nng_main/v1/game/db/character/objectId/CH_670_1", "공격력의"],
+            ["fandom MediaWiki API (Jackie wikitext)", "https://eternalreturn.fandom.com/api.php?action=parse&page=Jackie&prop=wikitext&format=json", "Attack Power"],
+            ["fandom page", "https://eternalreturn.fandom.com/wiki/Jackie", "Attack Power"],
+            ["dak.gg skills API", "https://er.dakgg.io/api/v1/data/skills?hl=ko", "연참"],
+            ["official site", "https://playeternalreturn.com/main?hl=ko-KR", "이터널"],
+            ["open-api (no key)", "https://open-api.bser.io/v1/data/Character", "code"],
+            ["er.op.gg", "https://er.op.gg/", "html"],
+            ["tracker.gg", "https://tracker.gg/eternal-return", "html"],
+            ["namu.wiki", "https://namu.wiki/w/" + encodeURIComponent("재키(이터널 리턴)"), "공격력의"],
+          ];
+          const rows = [];
+          for (const [name, url, needle] of T) {
+            try {
+              const r = await fetch(url, { headers: { "User-Agent": UA, "Referer": url.includes("dakgg") ? "https://dak.gg/" : "" } });
+              const b = await r.text();
+              const chal = /Just a moment|cf-chl|challenges\.cloudflare\.com/i.test(b);
+              rows.push(`| ${name} | ${r.status} | ${b.includes(needle) ? "yes" : "no"} | ${chal ? "yes" : "no"} | ${b.length} |`);
+            } catch (e) { rows.push(`| ${name} | ERR | no | no | ${String(e.cause ?? e).slice(0, 60)} |`); }
+          }
+          const md = ["## source probe", "", "| source | status | needle | challenge | len |", "|---|---|---|---|---|", ...rows, ""].join("\n");
+          console.log(md);
+          (await import("node:fs")).appendFileSync(process.env.GITHUB_STEP_SUMMARY, md + "\n");
+          EOF
+          node probe.mjs
