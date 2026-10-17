@@ -1,8 +1,12 @@
 {
-  "gradePriceSource": "등급 기반 대체값",
-  "gradePrice": {"영웅": 0, "전설": 5, "신화": 6},
+  "gradePriceSource": {"영웅": "등급 기반 대체값", "전설": "등급 기반 대체값", "신화": "초월 일괄 500"},
+  "gradePrice": {"영웅": 0, "전설": 5, "신화": 500},
   "itemPriceSource": "호스트 지정 가격(재료 기준)",
   "itemPriceGroups": [
+    {"price": 700, "priceSource": "사용자 지정", "names": ["블랙맘바킹-VBS", "데스애더퀸-VBS"]},
+    {"price": 750, "priceSource": "사용자 지정", "names": ["슈퍼사이드와인더-VBS"]},
+    {"price": 550, "priceSource": "사용자 지정", "names": ["블랙맘바킹-FC", "데스애더퀸-FC"]},
+    {"price": 600, "priceSource": "사용자 지정", "names": ["슈퍼사이드와인더-FC"]},
     {
       "price": 200,
       "material": "생명의 나무",

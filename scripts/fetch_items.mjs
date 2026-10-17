@@ -27,9 +27,11 @@ const GRADES = {
 // Shared with scripts/fetch_items.py: edit these JSON files, not the code.
 const PRICE_TABLE = JSON.parse(readFileSync(path.join(DATA_DIR, "price_table.json"), "utf8"));
 const GRADE_PRICE = PRICE_TABLE.gradePrice;
-const PRICE_SOURCE = PRICE_TABLE.gradePriceSource;
-const ITEM_PRICE_SOURCE = PRICE_TABLE.itemPriceSource;
-const ITEM_PRICE = new Map(PRICE_TABLE.itemPriceGroups.flatMap((g) => g.names.map((n) => [n, g.price])));
+const GRADE_PRICE_SOURCE = PRICE_TABLE.gradePriceSource;
+// A group's priceSource overrides the table-wide itemPriceSource.
+const ITEM_PRICE = new Map(PRICE_TABLE.itemPriceGroups.flatMap((g) => g.names.map(
+  (n) => [n, { price: g.price, source: g.priceSource ?? PRICE_TABLE.itemPriceSource }],
+)));
 const EXCLUDED_NAMES = new Set(
   JSON.parse(readFileSync(path.join(DATA_DIR, "exclusions.json"), "utf8")).headNames,
 );
@@ -149,8 +151,8 @@ export function buildItems(rawItems, masteries) {
       grade,
       slot,
       imageUrl: field(it, "imageUrl"),
-      price: hostPrice ?? required(GRADE_PRICE, grade, "grade price"),
-      priceSource: hostPrice === undefined ? PRICE_SOURCE : ITEM_PRICE_SOURCE,
+      price: hostPrice === undefined ? required(GRADE_PRICE, grade, "grade price") : hostPrice.price,
+      priceSource: hostPrice === undefined ? required(GRADE_PRICE_SOURCE, grade, "grade price source") : hostPrice.source,
       stats,
     };
     if (slot === "무기") row.weaponType = required(weaponNames, it.weaponType, "weaponType");

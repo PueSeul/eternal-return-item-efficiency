@@ -42,12 +42,16 @@ GRADES = {
     "Mythic": "신화",
 }
 _PRICE_TABLE = json.loads(PRICE_TABLE_PATH.read_text(encoding="utf-8"))
-# Grade-based placeholder price (영웅 = 0 per host); overridden by ITEM_PRICE.
+# Grade-based price and source per grade (영웅 = 0, 신화 = 500 per host); overridden by ITEM_PRICE.
 GRADE_PRICE = _PRICE_TABLE["gradePrice"]
-PRICE_SOURCE = _PRICE_TABLE["gradePriceSource"]
-# 호스트 지정 가격(재료 기준), by exact item name; same-name variants share it.
-ITEM_PRICE_SOURCE = _PRICE_TABLE["itemPriceSource"]
+GRADE_PRICE_SOURCE = _PRICE_TABLE["gradePriceSource"]
+# Host prices by exact item name; same-name variants share them. A group's
+# "priceSource" overrides the table-wide "itemPriceSource".
 ITEM_PRICE = {name: g["price"] for g in _PRICE_TABLE["itemPriceGroups"] for name in g["names"]}
+ITEM_PRICE_SOURCE = {
+    name: g.get("priceSource", _PRICE_TABLE["itemPriceSource"])
+    for g in _PRICE_TABLE["itemPriceGroups"] for name in g["names"]
+}
 PAGE_GRADES = {"Epic", "Legend", "Mythic"}
 ARMOR_SLOTS = {"Head": "머리", "Chest": "옷", "Arm": "팔", "Leg": "다리"}
 # 호스트 요청: head items excluded by exact name. "천상의 메아리" has two ids (201516, 201517).
@@ -171,7 +175,7 @@ def build_items(raw_items, masteries):
             "slot": slot,
             "imageUrl": it["imageUrl"],
             "price": ITEM_PRICE.get(it["name"], GRADE_PRICE[grade]),
-            "priceSource": ITEM_PRICE_SOURCE if it["name"] in ITEM_PRICE else PRICE_SOURCE,
+            "priceSource": ITEM_PRICE_SOURCE.get(it["name"], GRADE_PRICE_SOURCE[grade]),
             "stats": stats,
         }
         if slot == "무기":

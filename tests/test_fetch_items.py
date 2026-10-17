@@ -67,7 +67,10 @@ class ParseTests(unittest.TestCase):
         self.assertEqual([r["id"] for r in out], ["1", "2", "8", "9", "10"])
         self.assertEqual([r["slot"] for r in out[2:]], ["머리", "옷", "팔"])
         self.assertEqual(out[0]["grade"], "신화")
-        self.assertEqual(out[0]["price"], 6)
+        self.assertEqual(out[0]["price"], 500)
+        self.assertEqual(out[0]["priceSource"], "초월 일괄 500")
+        self.assertEqual(out[3]["price"], 500)  # mythic armor too
+        self.assertEqual((out[2]["price"], out[2]["priceSource"]), (5, "등급 기반 대체값"))
         self.assertEqual(out[0]["weaponType"], "권총")
         self.assertEqual(out[0]["stats"], {"이동 속도": 0.04, "공격 속도": 0.4})
         self.assertEqual(out[1]["stats"], {"이동 속도율": 0.02})
@@ -157,10 +160,10 @@ class DataFileTests(unittest.TestCase):
                 self.assertTrue(it["imageUrl"].startswith("https://"))
                 if it["name"] in fi.ITEM_PRICE:
                     self.assertEqual(it["price"], fi.ITEM_PRICE[it["name"]])
-                    self.assertEqual(it["priceSource"], "호스트 지정 가격(재료 기준)")
+                    self.assertIn(it["priceSource"], {"호스트 지정 가격(재료 기준)", "사용자 지정"})
                 else:
-                    self.assertEqual(it["price"], {"영웅": 0, "전설": 5, "신화": 6}[it["grade"]])
-                    self.assertEqual(it["priceSource"], fi.PRICE_SOURCE)
+                    self.assertEqual(it["price"], {"영웅": 0, "전설": 5, "신화": 500}[it["grade"]])
+                    self.assertEqual(it["priceSource"], fi.GRADE_PRICE_SOURCE[it["grade"]])
                 self.assertNotIsInstance(it["price"], bool)
                 if it["slot"] == "무기":
                     self.assertIsInstance(it["weaponType"], str)
@@ -214,6 +217,33 @@ class DataFileTests(unittest.TestCase):
             for it in by_name.get(name, []):
                 self.assertEqual(it["price"], price)
         self.assertTrue(any(n in by_name for n in fi.ITEM_PRICE))
+
+    def test_host_mythic_and_user_prices(self):
+        # 호스트 지시: every 초월(신화) item is 500 except three VBS weapons;
+        # 전설 keeps the table except the three FC weapons.
+        user = {"블랙맘바킹-VBS": 700, "데스애더퀸-VBS": 700, "슈퍼사이드와인더-VBS": 750,
+                "블랙맘바킹-FC": 550, "데스애더퀸-FC": 550, "슈퍼사이드와인더-FC": 600}
+        mythic = [i for i in self.items if i["grade"] == "신화"]
+        self.assertTrue(mythic)
+        for it in mythic:
+            with self.subTest(id=it["id"]):
+                if it["name"] in user:
+                    self.assertEqual((it["price"], it["priceSource"]), (user[it["name"]], "사용자 지정"))
+                else:
+                    self.assertEqual((it["price"], it["priceSource"]), (500, "초월 일괄 500"))
+        self.assertEqual({i["name"] for i in mythic if i["price"] != 500},
+                         {n for n in user if n.endswith("-VBS")})
+        for name, price in user.items():
+            rows = [i for i in self.items if i["name"] == name]
+            self.assertTrue(rows, name)
+            for it in rows:
+                self.assertEqual((it["price"], it["priceSource"]), (price, "사용자 지정"))
+                self.assertEqual(it["grade"], "신화" if name.endswith("-VBS") else "전설")
+
+    def test_price_names_unique(self):
+        names = [n for g in json.loads((ROOT / "data" / "price_table.json").read_text(encoding="utf-8"))
+                 ["itemPriceGroups"] for n in g["names"]]
+        self.assertEqual(len(names), len(set(names)))
 
     def test_epic_price_zero(self):
         epic = [i for i in self.items if i["grade"] == "영웅"]
