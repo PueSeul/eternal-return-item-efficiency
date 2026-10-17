@@ -19,6 +19,18 @@ test('runUpdate 성공: reload 후 "아이템 N개 갱신 완료"', async () => 
   assert.deepEqual(r, { ok: true, count: 312, meta: null, skills: null, message: '아이템 312개 갱신 완료' });
 });
 
+test('runUpdate: 반환의 note(직접 수집 폴백 등)를 완료 문구 뒤에 붙인다', async () => {
+  const r = await U.runUpdate({ updateItems: async () => ({ count: 3, note: 'GitHub 데이터를 받지 못해 직접 수집했습니다(x)' }) }, async () => true);
+  assert.equal(r.message, '아이템 3개 갱신 완료 — GitHub 데이터를 받지 못해 직접 수집했습니다(x)');
+});
+
+test('progressText: GitHub 데이터 단계(manifest·download)와 폴백(message)', () => {
+  assert.equal(U.progressText({ stage: 'manifest', done: 0, total: 1 }), 'GitHub 데이터 확인 중 0/1');
+  assert.equal(U.progressText({ stage: 'download', done: 2, total: 4 }), 'GitHub 데이터 내려받는 중 2/4');
+  assert.equal(U.progressText({ stage: 'fallback', message: 'GitHub 데이터를 받지 못해 직접 수집합니다(x)' }),
+    'GitHub 데이터를 받지 못해 직접 수집합니다(x)…');
+});
+
 test('runUpdate: 반환에 meta 객체가 있으면 결과에 그대로, 아니면 null', async () => {
   const meta = { dakggVersion: '12.6.0', overrides: [] };
   const r = await U.runUpdate({ updateItems: async () => ({ count: 1, savedPath: 'x', meta }) }, async () => true);

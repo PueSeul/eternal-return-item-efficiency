@@ -1,6 +1,7 @@
 'use strict';
 // 프로그램 안 "아이템 수치 업데이트": fetchAll() 결과를 data/items.json·characters.json·skills.json·items.meta.json 에 저장한다.
 // Electron 없이 테스트할 수 있도록 main.js 에서 분리.
+const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const { pathToFileURL } = require('url');
@@ -77,37 +78,164 @@ async function updateAll(fetchAll, dataDir, { onProgress, timeoutMs = UPDATE_TIM
     });
     const { items, characters, skills, meta } =
       (await runWithTimeout(fetchAll, { outDir: staging, skillsMode }, onProgress, timeoutMs)) || {};
-    if (!Array.isArray(items)) throw new Error('받은 아이템 데이터가 배열이 아닙니다.');
-    if (items.length === 0) throw new Error('받은 아이템이 0개라 기존 데이터를 유지합니다.');
-    if (!Array.isArray(characters) || characters.length === 0) throw new Error('받은 캐릭터가 0개라 기존 데이터를 유지합니다.');
-    if (!Array.isArray(skills) || skills.length === 0) throw new Error('받은 스킬 데이터가 0개라 기존 데이터를 유지합니다.');
-    for (const name of FILES) await fs.promises.access(path.join(staging, name));
-    // 기존 파일을 staging/old 로 옮겨 두고 새 파일을 넣는다. 중간에 실패하면 넣은 파일을 되돌려 네 파일이 섞이지 않게 한다.
-    const backup = path.join(staging, 'old');
-    await fs.promises.mkdir(backup);
-    const done = [];
-    try {
-      for (const name of FILES) {
-        const target = path.join(dataDir, name);
-        const old = path.join(backup, name);
-        const had = await fs.promises.rename(target, old).then(() => true, (err) => {
-          if (err.code === 'ENOENT') return false;
-          throw err;
-        });
-        done.push({ target, old, had });
-        await fs.promises.rename(path.join(staging, name), target);
-      }
-    } catch (err) {
-      for (const { target, old, had } of done.reverse()) {
-        await fs.promises.rm(target, { force: true });
-        if (had) await fs.promises.rename(old, target);
-      }
-      throw err;
-    }
+    checkData({ items, characters, skills });
+    await installFiles(staging, dataDir);
     return { count: items.length, savedPath: path.join(dataDir, 'items.json'), skills, meta };
   } finally {
     await fs.promises.rm(staging, { recursive: true, force: true });
   }
 }
 
-module.exports = { loadFetchAll, updateAll, UPDATE_TIMEOUT_MS };
+// 기존 파일을 덮어쓰기 전에 받은 데이터를 확인한다.
+function checkData({ items, characters, skills }) {
+  if (!Array.isArray(items)) throw new Error('받은 아이템 데이터가 배열이 아닙니다.');
+  if (items.length === 0) throw new Error('받은 아이템이 0개라 기존 데이터를 유지합니다.');
+  if (!Array.isArray(characters) || characters.length === 0) throw new Error('받은 캐릭터가 0개라 기존 데이터를 유지합니다.');
+  if (!Array.isArray(skills) || skills.length === 0) throw new Error('받은 스킬 데이터가 0개라 기존 데이터를 유지합니다.');
+}
+
+// staging 의 네 파일을 dataDir 로 옮긴다. 기존 파일을 staging/old 로 옮겨 두고 새 파일을 넣으며,
+// 중간에 실패하면 넣은 파일을 되돌려 네 파일이 섞이지 않게 한다. dataDir 에 없던 파일은 건너뛴다.
+async function installFiles(staging, dataDir) {
+  for (const name of FILES) await fs.promises.access(path.join(staging, name));
+  const backup = path.join(staging, 'old');
+  await fs.promises.mkdir(backup);
+  const done = [];
+  try {
+    for (const name of FILES) {
+      const target = path.join(dataDir, name);
+      const old = path.join(backup, name);
+      const had = await fs.promises.rename(target, old).then(() => true, (err) => {
+        if (err.code === 'ENOENT') return false;
+        throw err;
+      });
+      done.push({ target, old, had });
+      await fs.promises.rename(path.join(staging, name), target);
+    }
+  } catch (err) {
+    for (const { target, old, had } of done.reverse()) {
+      await fs.promises.rm(target, { force: true });
+      if (had) await fs.promises.rename(old, target);
+    }
+    throw err;
+  }
+}
+
+// GitHub 고정 릴리스 data-latest(.github/workflows/data-refresh.yml 이 매일 올림)의 자산 주소.
+const DATA_RELEASE_URL = 'https://github.com/PueSeul/eternal-return-item-efficiency/releases/download/data-latest/';
+const MANIFEST_NAME = 'data-manifest.json';
+// 내려받기 전체 상한(manifest + 네 파일, 합계 약 1.6MB).
+const DOWNLOAD_TIMEOUT_MS = 60 * 1000;
+
+const sha256 = (buf) => crypto.createHash('sha256').update(buf).digest('hex');
+
+// manifest: {generatedAt, sha256: {파일 이름: hex}, dakggVersion, patch}. 네 파일의 sha256 이 없으면 오류.
+function parseManifest(buf) {
+  let manifest;
+  try {
+    manifest = JSON.parse(buf.toString('utf8'));
+  } catch {
+    throw new Error(`${MANIFEST_NAME}이 JSON이 아닙니다.`);
+  }
+  const sha = manifest && manifest.sha256;
+  if (!sha || FILES.some((name) => !/^[0-9a-f]{64}$/.test(sha[name]))) {
+    throw new Error(`${MANIFEST_NAME}에 네 파일의 sha256이 없습니다.`);
+  }
+  return manifest;
+}
+
+// 지금 프로그램이 읽는 파일(dirs 순서로 처음 있는 것, resolve.js 와 같은 우선순위)의 내용. 없으면 null.
+async function readFirst(name, dirs) {
+  for (const dir of dirs) {
+    try {
+      return await fs.promises.readFile(path.join(dir, name));
+    } catch (err) {
+      if (err.code !== 'ENOENT') throw err;
+    }
+  }
+  return null;
+}
+
+// "아이템 수치 업데이트" 기본 동작: data-latest 의 data-manifest.json 을 받아 지금 읽는 네 파일(dataDir, 없으면
+// bundledDir)의 sha256 과 비교하고, 다르면 네 파일을 받아 sha256 을 확인한 뒤 dataDir 로 원자 교체한다(installFiles).
+// fetchImpl: fetch 와 같은 함수(main.js 는 net.fetch). onProgress: {stage: 'manifest'|'download', done, total, message}.
+// 반환 { count, savedPath, skills, meta, note? } — 이미 같으면 파일을 건드리지 않고 note 로 알린다.
+async function downloadLatest(fetchImpl, dataDir, { onProgress, bundledDir, baseUrl = DATA_RELEASE_URL, timeoutMs = DOWNLOAD_TIMEOUT_MS } = {}) {
+  const progress = (stage, done, total, message) => {
+    if (onProgress) onProgress({ stage, done, total, message });
+  };
+  const signal = AbortSignal.timeout(timeoutMs);
+  const get = async (name) => {
+    try {
+      const res = await fetchImpl(baseUrl + name, { signal, cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return Buffer.from(await res.arrayBuffer());
+    } catch (err) {
+      const reason = signal.aborted ? `${durationText(timeoutMs)} 안에 끝나지 않음` : (err && err.message) || String(err);
+      throw new Error(`${name} 받기 실패: ${reason}`);
+    }
+  };
+  progress('manifest', 0, 1, '데이터 정보 확인(GitHub) 중');
+  const manifest = parseManifest(await get(MANIFEST_NAME));
+  progress('manifest', 1, 1, '데이터 정보 확인(GitHub) 완료');
+
+  const dirs = bundledDir && path.resolve(bundledDir) !== path.resolve(dataDir) ? [dataDir, bundledDir] : [dataDir];
+  const local = await Promise.all(FILES.map((name) => readFirst(name, dirs)));
+  if (FILES.every((name, i) => local[i] && sha256(local[i]) === manifest.sha256[name])) {
+    const [items, , skills, meta] = local.map((buf) => JSON.parse(buf.toString('utf8')));
+    const itemsDir = dirs.find((dir) => fs.existsSync(path.join(dir, 'items.json')));
+    return { count: items.length, savedPath: path.join(itemsDir, 'items.json'), skills, meta, upToDate: true,
+      note: '변경 없음(이미 최신 데이터)' };
+  }
+
+  await fs.promises.mkdir(dataDir, { recursive: true });
+  const staging = await fs.promises.mkdtemp(path.join(dataDir, '.update-'));
+  try {
+    const parsed = {};
+    let done = 0;
+    progress('download', 0, FILES.length, '데이터 내려받기(GitHub) 중');
+    // allSettled: 하나가 실패해도 나머지 쓰기가 끝난 뒤 staging 을 지운다.
+    const results = await Promise.allSettled(FILES.map(async (name) => {
+      const buf = await get(name);
+      if (sha256(buf) !== manifest.sha256[name]) throw new Error(`${name}의 sha256이 ${MANIFEST_NAME}과 다릅니다.`);
+      try {
+        parsed[name] = JSON.parse(buf.toString('utf8'));
+      } catch {
+        throw new Error(`${name}이 JSON이 아닙니다.`);
+      }
+      await fs.promises.writeFile(path.join(staging, name), buf);
+      done += 1;
+      progress('download', done, FILES.length, `데이터 내려받기(GitHub) 중: ${name}`);
+    }));
+    const failed = results.find((r) => r.status === 'rejected');
+    if (failed) throw failed.reason;
+    const items = parsed['items.json'];
+    const skills = parsed['skills.json'];
+    checkData({ items, characters: parsed['characters.json'], skills });
+    await installFiles(staging, dataDir);
+    return { count: items.length, savedPath: path.join(dataDir, 'items.json'), skills, meta: parsed['items.meta.json'] };
+  } finally {
+    await fs.promises.rm(staging, { recursive: true, force: true });
+  }
+}
+
+// 기본 업데이트: download() 를 먼저 하고, 실패하면(GitHub 접근 실패·검증 실패) collect()(dak.gg·패치노트 직접 수집)로
+// 폴백한다. 폴백은 진행 이벤트 'fallback' 과 결과 note 로 알리고, 폴백도 실패하면 두 원인을 함께 담아 reject.
+async function updateLatest({ download, collect, onProgress }) {
+  let reason;
+  try {
+    return await download();
+  } catch (err) {
+    reason = (err && err.message) || String(err);
+  }
+  if (onProgress) onProgress({ stage: 'fallback', done: 0, total: 1, message: `GitHub 데이터를 받지 못해 직접 수집합니다(${reason})` });
+  let res;
+  try {
+    res = await collect();
+  } catch (err) {
+    throw new Error(`${(err && err.message) || String(err)} (GitHub 데이터도 받지 못함: ${reason})`, { cause: err });
+  }
+  return { ...res, note: `GitHub 데이터를 받지 못해 dak.gg·패치노트에서 직접 수집했습니다(${reason})` };
+}
+
+module.exports = { loadFetchAll, updateAll, downloadLatest, updateLatest, UPDATE_TIMEOUT_MS, DATA_RELEASE_URL, MANIFEST_NAME, FILES };

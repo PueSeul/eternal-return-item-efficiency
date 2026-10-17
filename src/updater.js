@@ -71,13 +71,20 @@
         skills = null;
       }
     }
-    return { ok: true, count, meta, skills, message: count == null ? '아이템 갱신 완료' : `아이템 ${count}개 갱신 완료` };
+    // note: 데스크톱이 알리는 부가 사실(GitHub 데이터 대신 직접 수집, 이미 최신 등).
+    const done = count == null ? '아이템 갱신 완료' : `아이템 ${count}개 갱신 완료`;
+    const note = res ? str(res.note) : '';
+    return { ok: true, count, meta, skills, message: note ? `${done} — ${note}` : done };
   }
 
   // 진행 이벤트 {stage, done, total, message} → 상태 문구.
-  // 단계 이름: 'items'·'patchnotes'·'skills'(데스크톱 쪽 이름 미확정 — 모르는 단계는 message, 없으면 stage 그대로).
+  // 단계 이름: 'manifest'·'download'(GitHub 데이터), 'items'·'characters'·'patchnotes'·'skills'(직접 수집),
+  // 'fallback'(GitHub 실패 → 직접 수집, message 그대로). 모르는 단계는 message, 없으면 stage 그대로.
   // total이 양수면 " done/total", 아니면 "…".
-  const STAGE_TEXT = { items: '아이템 수집 중', characters: '실험체 수집 중', patchnotes: '패치노트 확인 중', skills: '스킬 수집 중' };
+  const STAGE_TEXT = {
+    manifest: 'GitHub 데이터 확인 중', download: 'GitHub 데이터 내려받는 중',
+    items: '아이템 수집 중', characters: '실험체 수집 중', patchnotes: '패치노트 확인 중', skills: '스킬 수집 중',
+  };
   function progressText(ev) {
     if (!ev || typeof ev !== 'object') return '';
     const stage = str(ev.stage);

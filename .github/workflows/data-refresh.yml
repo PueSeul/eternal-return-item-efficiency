@@ -1,0 +1,69 @@
+# 매일 12:00 KST(03:00 UTC) + 수동 실행: dak.gg·패치노트·나무위키(전체 실험체, 요청 간격 1초)에서 데이터를 받아
+# data/ 가 바뀌었으면 커밋하고, 고정 릴리스 data-latest 에 네 파일 + data-manifest.json 을 올린다.
+# 프로그램의 "아이템 수치 업데이트"(electron/update.js downloadLatest)가 이 자산을 받는다.
+# data-latest 는 사전 릴리스라 releases/latest(프로그램 자동 업데이트)에 잡히지 않고, release.yml 은 v* 태그에만 돈다.
+name: data-refresh
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: data-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Fetch data
+        run: node scripts/refresh_data.mjs "$RUNNER_TEMP/data-release"
+
+      - name: Commit data/
+        run: |
+          if git diff --quiet -- data/; then
+            echo "data/ unchanged"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/
+            git commit -m "[data] $(TZ=Asia/Seoul date +%F) 자동 갱신"
+            git pull --rebase origin "$GITHUB_REF_NAME"
+            git push origin "HEAD:$GITHUB_REF_NAME"
+          fi
+
+      - name: Upload to release data-latest
+        run: |
+          if ! gh release view data-latest > /dev/null 2>&1; then
+            gh release create data-latest --prerelease --target "$(git rev-parse HEAD)" \
+              --title "데이터 (자동 갱신)" --notes "매일 12:00(KST) 자동 갱신되는 데이터 파일입니다. 프로그램의 \"아이템 수치 업데이트\"가 받습니다."
+          fi
+          gh release upload data-latest "$RUNNER_TEMP"/data-release/* --clobber
+
+      - name: Open an issue on failure
+        if: failure()
+        run: |
+          title="데이터 자동 갱신 실패 $(TZ=Asia/Seoul date +%F)"
+          if gh issue list --state open --search "\"$title\" in:title" --json title --jq '.[].title' | grep -Fxq "$title"; then
+            echo "issue already open: $title"
+          else
+            gh issue create --title "$title" --body "실행 기록: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          fi

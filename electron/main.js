@@ -6,7 +6,7 @@ const { app, BrowserWindow, ipcMain, net, protocol, shell } = require('electron'
 const fs = require('fs');
 const path = require('path');
 const { resolveFile, contentType, externalRootOf } = require('./resolve');
-const { loadFetchAll, updateAll } = require('./update');
+const { loadFetchAll, updateAll, downloadLatest, updateLatest, DATA_RELEASE_URL } = require('./update');
 const appUpdate = require('./app-update');
 const { titleBarColors } = require('./theme');
 
@@ -30,9 +30,19 @@ async function handleUpdateItems(event, options) {
     const onProgress = (p) => {
       if (!sender.isDestroyed()) sender.send('update:progress', p);
     };
-    updating = loadFetchAll(APP_ROOT)
-      .then((fetchAll) => updateAll(fetchAll, UPDATE_DATA_DIR, { onProgress, skillsMode }))
-      .finally(() => { updating = null; });
+    const collect = (mode) => loadFetchAll(APP_ROOT)
+      .then((fetchAll) => updateAll(fetchAll, UPDATE_DATA_DIR, { onProgress, skillsMode: mode }));
+    // 기본(patched): GitHub data-latest 자산을 받고, 실패하면 dak.gg·패치노트 직접 수집. "스킬 전체 다시 수집"(all)은 직접 수집.
+    // ER_DATA_URL 은 검증용 자산 주소(끝에 /).
+    const job = skillsMode === 'patched'
+      ? updateLatest({
+        download: () => downloadLatest(net.fetch, UPDATE_DATA_DIR, { onProgress, bundledDir: path.join(APP_ROOT, 'data'),
+          baseUrl: process.env.ER_DATA_URL || DATA_RELEASE_URL }),
+        collect: () => collect('patched'),
+        onProgress,
+      })
+      : collect(skillsMode);
+    updating = job.finally(() => { updating = null; });
     lastUpdate = updating;
   }
   return updating;
@@ -144,7 +154,9 @@ async function notifyAppUpdate(contents) {
 
 // 개발 실행(npm run app)과 exe가 같은 히스토리를 쓰도록 저장 위치 고정. v1·v2 는 별도 폴더(히스토리 분리).
 // 폴더 이름은 기존 배포본과 같게 유지한다(v2 = er-damage-efficiency-v2).
-app.setPath('userData', path.join(app.getPath('appData'), FORMULA === 'v2' ? 'er-damage-efficiency-v2' : 'er-damage-efficiency'));
+// 검증 실행(ER_SMOKE_OUT)은 ER_SMOKE_USER_DATA 로 userData(히스토리·단일 실행 잠금)를 따로 둘 수 있다(실행 중인 프로그램과 겹치지 않게).
+app.setPath('userData', (process.env.ER_SMOKE_OUT && process.env.ER_SMOKE_USER_DATA)
+  || path.join(app.getPath('appData'), FORMULA === 'v2' ? 'er-damage-efficiency-v2' : 'er-damage-efficiency'));
 
 // exe 옆 data/ 폴더를 우선 사용(portable exe는 임시 폴더에서 풀려 실행되므로 원래 exe 위치를 쓴다, resolve.js externalRootOf).
 const EXTERNAL_ROOT = externalRootOf({ isPackaged: app.isPackaged, portableDir: process.env.PORTABLE_EXECUTABLE_DIR,
@@ -334,7 +346,10 @@ async function smokeClickUpdate(win, selector) {
         bannerHidden: document.getElementById('data-banner').hidden,
       };
     })()`);
-    const ok = names.every((n) => after[n] !== null && after[n] !== before[n])
+    // 이미 최신(downloadLatest upToDate)이면 파일이 그대로여야 하고, 아니면 네 파일 모두 새로 써져야 한다.
+    const filesOk = res.upToDate ? names.every((n) => after[n] === before[n])
+      : names.every((n) => after[n] !== null && after[n] !== before[n]);
+    const ok = filesOk
       && ui.servedCount === res.count && ui.servedMeta === JSON.stringify(res.meta)
       && ui.servedSkills === JSON.stringify(res.skills) && ui.bannerHidden && progress.progressCount > 0;
     // 결과 파일이 커지지 않도록 skills 는 개수만 남긴다.

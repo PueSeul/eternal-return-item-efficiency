@@ -4,7 +4,8 @@ const assert = require('node:assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { updateAll, loadFetchAll } = require('./update');
+const crypto = require('crypto');
+const { updateAll, loadFetchAll, downloadLatest, updateLatest, MANIFEST_NAME } = require('./update');
 
 test('updateAll forwards progress events and rejects with the last stage after the overall limit', async () => {
   const root = tmpDir();
@@ -120,6 +121,96 @@ test('updateAll keeps existing files on fetch failure or empty/bad result', asyn
   assert.deepStrictEqual(fs.readdirSync(root).sort(), ['characters.json', 'items.json']);
   assert.strictEqual(fs.readFileSync(path.join(root, 'items.json'), 'utf8'), '[{"id":"old"}]\n');
   fs.rmSync(root, { recursive: true, force: true });
+});
+
+// data-latest 자산 흉내: name → 내용(문자열). manifest 는 contents 의 sha256 으로 만든다(override 로 덮어쓰기).
+function fakeRelease(contents, { override = {}, status = {} } = {}) {
+  const sha = Object.fromEntries(Object.entries(contents).map(([n, t]) => [n, crypto.createHash('sha256').update(t).digest('hex')]));
+  const assets = { ...contents, [MANIFEST_NAME]: JSON.stringify({ generatedAt: 'T', sha256: { ...sha, ...override } }) };
+  const calls = [];
+  const fetchImpl = async (url) => {
+    const name = url.slice(url.lastIndexOf('/') + 1);
+    calls.push(name);
+    if (status[name] || !(name in assets)) return { ok: false, status: status[name] || 404 };
+    return { ok: true, status: 200, arrayBuffer: async () => new TextEncoder().encode(assets[name]).buffer };
+  };
+  return { fetchImpl, calls };
+}
+
+const RELEASE = {
+  'items.json': '[{"id":"1"},{"id":"2"}]\n', 'characters.json': '[{"id":"c"}]\n',
+  'skills.json': '[{"name":"s"}]\n', 'items.meta.json': '{"fetchedAt":"T"}\n',
+};
+
+test('downloadLatest replaces the four files after sha256 check and reports manifest/download progress', async () => {
+  const root = tmpDir();
+  const dataDir = path.join(root, 'data');
+  fs.mkdirSync(dataDir);
+  fs.writeFileSync(path.join(dataDir, 'items.json'), '[{"id":"old"}]\n');
+  const { fetchImpl, calls } = fakeRelease(RELEASE);
+  const seen = [];
+  const res = await downloadLatest(fetchImpl, dataDir, { onProgress: (p) => seen.push(p), baseUrl: 'https://x/' });
+  assert.deepStrictEqual(res, { count: 2, savedPath: path.join(dataDir, 'items.json'), skills: [{ name: 's' }], meta: { fetchedAt: 'T' } });
+  assert.strictEqual(calls[0], MANIFEST_NAME);
+  for (const [n, t] of Object.entries(RELEASE)) assert.strictEqual(fs.readFileSync(path.join(dataDir, n), 'utf8'), t);
+  assert.deepStrictEqual(fs.readdirSync(dataDir).sort(), ['characters.json', 'items.json', 'items.meta.json', 'skills.json']);
+  assert.deepStrictEqual([...new Set(seen.map((p) => p.stage))], ['manifest', 'download']);
+  assert.deepStrictEqual(seen.at(-1).done, 4);
+  // 다시 부르면 sha256 이 같아 manifest 만 받고 파일을 건드리지 않는다.
+  const again = fakeRelease(RELEASE);
+  const mtime = fs.statSync(path.join(dataDir, 'skills.json')).mtimeMs;
+  const res2 = await downloadLatest(again.fetchImpl, dataDir, { baseUrl: 'https://x/' });
+  assert.deepStrictEqual(again.calls, [MANIFEST_NAME]);
+  assert.strictEqual(res2.count, 2);
+  assert.match(res2.note, /이미 최신/);
+  assert.strictEqual(res2.upToDate, true);
+  assert.strictEqual(fs.statSync(path.join(dataDir, 'skills.json')).mtimeMs, mtime);
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
+test('downloadLatest compares with the bundled data when dataDir has no files', async () => {
+  const root = tmpDir();
+  const bundled = path.join(root, 'bundled');
+  fs.mkdirSync(bundled);
+  for (const [n, t] of Object.entries(RELEASE)) fs.writeFileSync(path.join(bundled, n), t);
+  const { fetchImpl, calls } = fakeRelease(RELEASE);
+  const res = await downloadLatest(fetchImpl, path.join(root, 'data'), { bundledDir: bundled, baseUrl: 'https://x/' });
+  assert.deepStrictEqual(calls, [MANIFEST_NAME]);
+  assert.strictEqual(res.savedPath, path.join(bundled, 'items.json'));
+  assert.ok(!fs.existsSync(path.join(root, 'data')));
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
+test('downloadLatest keeps existing files on HTTP error, bad manifest, sha256 mismatch or bad data', async () => {
+  const root = tmpDir();
+  fs.writeFileSync(path.join(root, 'items.json'), '[{"id":"old"}]\n');
+  const opts = { baseUrl: 'https://x/' };
+  await assert.rejects(downloadLatest(fakeRelease({}, { status: { [MANIFEST_NAME]: 404 } }).fetchImpl, root, opts),
+    /data-manifest\.json 받기 실패: HTTP 404/);
+  await assert.rejects(downloadLatest(fakeRelease({ 'items.json': '[]' }).fetchImpl, root, opts), /네 파일의 sha256이 없습니다/);
+  await assert.rejects(downloadLatest(fakeRelease(RELEASE, { override: { 'skills.json': 'a'.repeat(64) } }).fetchImpl, root, opts),
+    /skills\.json의 sha256이 data-manifest\.json과 다릅니다/);
+  await assert.rejects(downloadLatest(fakeRelease(RELEASE, { status: { 'characters.json': 500 } }).fetchImpl, root, opts),
+    /characters\.json 받기 실패: HTTP 500/);
+  await assert.rejects(downloadLatest(fakeRelease({ ...RELEASE, 'items.json': '[]' }).fetchImpl, root, opts), /아이템이 0개/);
+  const hang = async (url, { signal }) => new Promise((_, reject) => signal.addEventListener('abort', () => reject(signal.reason)));
+  await assert.rejects(downloadLatest(hang, root, { ...opts, timeoutMs: 50 }), /받기 실패: 0\.05초 안에 끝나지 않음/);
+  assert.deepStrictEqual(fs.readdirSync(root), ['items.json']); // 임시 폴더도 남지 않는다
+  assert.strictEqual(fs.readFileSync(path.join(root, 'items.json'), 'utf8'), '[{"id":"old"}]\n');
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
+test('updateLatest falls back to collect with a note, and names both causes when both fail', async () => {
+  const ok = { count: 1, savedPath: 'p', skills: [], meta: {} };
+  assert.deepStrictEqual(await updateLatest({ download: async () => ok, collect: async () => assert.fail('no fallback') }), ok);
+  const seen = [];
+  const res = await updateLatest({ download: async () => { throw new Error('data-manifest.json 받기 실패: HTTP 404'); },
+    collect: async () => ok, onProgress: (p) => seen.push(p) });
+  assert.match(res.note, /GitHub 데이터를 받지 못해 dak\.gg·패치노트에서 직접 수집했습니다\(data-manifest\.json 받기 실패: HTTP 404\)/);
+  assert.strictEqual(res.count, 1);
+  assert.deepStrictEqual(seen.map((p) => p.stage), ['fallback']);
+  await assert.rejects(updateLatest({ download: async () => { throw new Error('gh down'); }, collect: async () => { throw new Error('dak down'); } }),
+    /^Error: dak down \(GitHub 데이터도 받지 못함: gh down\)$/);
 });
 
 test('loadFetchAll imports scripts/fetch_items.mjs from appRoot', async () => {
