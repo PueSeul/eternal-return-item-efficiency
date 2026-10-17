@@ -6,7 +6,7 @@ const { app, BrowserWindow, ipcMain, net, protocol, shell } = require('electron'
 const fs = require('fs');
 const path = require('path');
 const { resolveFile, contentType, externalRootOf } = require('./resolve');
-const { loadFetchAll, updateAll, downloadLatest, updateLatest, DATA_RELEASE_URL } = require('./update');
+const { loadFetchAll, updateAll, downloadLatest, startUpdate, cancelJob, DATA_RELEASE_URL } = require('./update');
 const appUpdate = require('./app-update');
 const { titleBarColors } = require('./theme');
 
@@ -39,15 +39,14 @@ async function handleUpdateItems(event, options) {
       .then((fetchAll) => updateAll(fetchAll, UPDATE_DATA_DIR, { onProgress, skillsMode: mode, signal }));
     // 기본(patched): GitHub data-latest 자산을 받고, 실패하면 dak.gg·패치노트 직접 수집. ▾ 메뉴 "전체 재확인"(all)은 직접 수집.
     // ER_DATA_URL 은 검증용 자산 주소(끝에 /).
-    const job = skillsMode === 'patched'
-      ? updateLatest({
-        download: () => downloadLatest(net.fetch, UPDATE_DATA_DIR, { onProgress, bundledDir: path.join(APP_ROOT, 'data'),
-          baseUrl: process.env.ER_DATA_URL || DATA_RELEASE_URL, signal }),
-        collect: () => collect('patched'),
-        onProgress,
-        signal,
-      })
-      : collect(skillsMode);
+    const job = startUpdate({
+      skillsMode,
+      download: () => downloadLatest(net.fetch, UPDATE_DATA_DIR, { onProgress, bundledDir: path.join(APP_ROOT, 'data'),
+        baseUrl: process.env.ER_DATA_URL || DATA_RELEASE_URL, signal }),
+      collect,
+      onProgress,
+      signal,
+    });
     updateController = controller;
     updating = job.finally(() => {
       updating = null;
@@ -58,13 +57,13 @@ async function handleUpdateItems(event, options) {
   return updating;
 }
 
-// 진행 중인 데이터 업데이트 취소. 교체 전 단계면 업데이트 요청이 { cancelled: true } 로 끝나고 네 파일은 그대로다.
-// 반환: 취소 신호를 보냈으면 true, 진행 중인 업데이트가 없으면 false.
-function handleUpdateCancel(event) {
+// 진행 중인 데이터 업데이트 취소. 업데이트가 끝나기를 기다려 결과를 돌려준다(cancelJob):
+// 교체 전에 멈췄으면 { cancelled: true }(네 파일 그대로), 교체가 이미 시작됐으면 끝내고
+// { cancelled: false, completedBeforeCancel: true }, 진행 중인 업데이트가 없으면 { cancelled: false }.
+async function handleUpdateCancel(event) {
   assertAppOrigin(event);
-  if (!updateController) return false;
-  updateController.abort(new Error('사용자가 업데이트를 취소했습니다.'));
-  return true;
+  if (!updateController) return { cancelled: false };
+  return cancelJob(updateController, updating, new Error('사용자가 업데이트를 취소했습니다.'));
 }
 
 // 계산식 버전: 기본은 v2. v1 exe는 빌드 때 패키지 package.json 에 erFormula:"v1" 이 들어간다(electron/build.js --v1).

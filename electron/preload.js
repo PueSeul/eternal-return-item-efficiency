@@ -36,10 +36,12 @@ const appUpdate = {
 contextBridge.exposeInMainWorld('erDesktop', {
   // 업데이트 진행 이벤트 {stage, done, total, message, cancellable: true} 구독.
   onUpdateProgress: (cb) => subscribe('update:progress', cb),
-  // 아이템 수치 업데이트: 성공 시 { count, savedPath, skills, meta }, 취소 시 { cancelled: true }(네 파일 그대로),
-  // 실패 시 오류 메시지(어느 단계에서 왜)로 reject. options.skillsMode: 'patched'(기본) | 'all'.
+  // 아이템 수치 업데이트: 성공 시 { count, savedPath, skills, meta }(교체 중 취소가 왔으면 completedBeforeCancel: true 추가),
+  // 취소 시 { cancelled: true }(네 파일 그대로), 실패 시 오류 메시지(어느 단계에서 왜)로 reject.
+  // options.skillsMode: 'patched'(기본) | 'all'.
   updateItems: (options) => invoke('er:update-items', { skillsMode: options && options.skillsMode }),
-  // 진행 중인 업데이트 취소: 취소 신호를 보냈으면 true, 진행 중인 업데이트가 없으면 false.
+  // 진행 중인 업데이트 취소 → 업데이트가 끝난 뒤 { cancelled: true }(교체 전에 멈춤) |
+  // { cancelled: false, completedBeforeCancel: true }(이미 교체됨) | { cancelled: false }(진행 중인 업데이트 없음·실패).
   cancelUpdate: () => invoke('update:cancel'),
   appUpdate,
 });

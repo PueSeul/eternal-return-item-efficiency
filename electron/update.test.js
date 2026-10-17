@@ -5,7 +5,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const crypto = require('crypto');
-const { updateAll, loadFetchAll, downloadLatest, updateLatest, MANIFEST_NAME } = require('./update');
+const { updateAll, loadFetchAll, downloadLatest, updateLatest, startUpdate, cancelJob, MANIFEST_NAME } = require('./update');
 
 test('updateAll forwards progress events and rejects with the last stage after the overall limit', async () => {
   const root = tmpDir();
@@ -299,6 +299,108 @@ test('updateLatest cancel: no fallback after a cancelled download, collect resul
     signal: c3.signal,
   });
   assert.deepStrictEqual(res3, { cancelled: true });
+});
+
+test('cancelJob on the GitHub download path (updateLatest → downloadLatest): {cancelled:true}, files untouched, no fallback', async () => {
+  const root = tmpDir();
+  fs.writeFileSync(path.join(root, 'items.json'), '[{"id":"old"}]\n');
+  const before = snapshot(root);
+  const { fetchImpl } = fakeRelease(RELEASE);
+  // manifest 는 바로, 자산은 신호가 올 때까지 끝나지 않는 GitHub(1.8.4 실측: 취소해도 "아이템 갱신됨").
+  // fetch 처럼 이미 중단된 신호면 바로 reject.
+  const slow = async (url, init) => (url.endsWith(MANIFEST_NAME) ? fetchImpl(url, init)
+    : new Promise((_, reject) => {
+      if (init.signal.aborted) reject(init.signal.reason);
+      else init.signal.addEventListener('abort', () => reject(init.signal.reason));
+    }));
+  for (const at of ['manifest', 'download']) {
+    const controller = new AbortController();
+    const { signal } = controller;
+    let started;
+    const ready = new Promise((resolve) => { started = resolve; });
+    const onProgress = (p) => { if (p.stage === at && p.done === 0) started(); };
+    const job = updateLatest({
+      download: () => downloadLatest(slow, root, { baseUrl: 'https://x/', onProgress, signal }),
+      collect: async () => assert.fail('no fallback after cancel'),
+      onProgress,
+      signal,
+    });
+    await ready;
+    const t0 = performance.now();
+    assert.deepStrictEqual(await cancelJob(controller, job, new Error('사용자 취소')), { cancelled: true });
+    assert.ok(performance.now() - t0 < 500, `took ${performance.now() - t0}ms`);
+    assert.deepStrictEqual(await job, { cancelled: true });
+    assert.deepStrictEqual(snapshot(root), before, `files untouched (cancel at ${at})`);
+  }
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
+test('전체 재확인(skillsMode all) 취소: 수집이 AbortError 로 끝나도 GitHub 내려받기로 폴백하지 않고 {cancelled:true}', async () => {
+  const root = tmpDir();
+  for (const [n, t] of Object.entries(RELEASE)) fs.writeFileSync(path.join(root, n), t);
+  const before = snapshot(root);
+  const controller = new AbortController();
+  const { signal } = controller;
+  let started;
+  const ready = new Promise((resolve) => { started = resolve; });
+  // 나무위키 수집처럼 신호가 오면 AbortError 로 끝나는 fetchAll.
+  const fetchAll = (opts) => {
+    started();
+    return new Promise((_, reject) => opts.signal.addEventListener('abort', () => reject(new DOMException('aborted', 'AbortError'))));
+  };
+  const seen = [];
+  const job = startUpdate({
+    skillsMode: 'all',
+    download: async () => assert.fail('no GitHub download in 전체 재확인'),
+    collect: (mode) => updateAll(fetchAll, root, { skillsMode: mode, signal, onProgress: (p) => seen.push(p) }),
+    onProgress: (p) => seen.push(p),
+    signal,
+  });
+  await ready;
+  assert.deepStrictEqual(await cancelJob(controller, job, new Error('사용자 취소')), { cancelled: true });
+  assert.deepStrictEqual(await job, { cancelled: true });
+  assert.ok(!seen.some((p) => p.stage === 'fallback'), 'no fallback event');
+  assert.deepStrictEqual(snapshot(root), before);
+  // 기본 버튼(patched)에서 직접 수집 폴백 중 취소돼도 다른 경로로 넘어가지 않는다.
+  const c2 = new AbortController();
+  const job2 = startUpdate({
+    skillsMode: 'patched',
+    download: async () => { throw new Error('gh down'); },
+    collect: (mode) => updateAll((opts) => { setTimeout(() => c2.abort(), 10); return fetchAll(opts); }, root, { skillsMode: mode, signal: c2.signal }),
+    signal: c2.signal,
+  });
+  assert.deepStrictEqual(await job2, { cancelled: true });
+  assert.deepStrictEqual(snapshot(root), before);
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
+test('cancel after the swap started: swap completes, result marks completedBeforeCancel, cancelJob says not cancelled', async () => {
+  const root = tmpDir();
+  fs.writeFileSync(path.join(root, 'items.json'), '[{"id":"old"}]\n');
+  const controller = new AbortController();
+  const { mkdir } = fs.promises;
+  let job;
+  let cancelling;
+  // installFiles 의 첫 동작(staging/old 만들기) 시점에 취소가 온다.
+  fs.promises.mkdir = async (dir, ...rest) => {
+    if (path.basename(dir) === 'old' && !cancelling) cancelling = cancelJob(controller, job, new Error('사용자 취소'));
+    return mkdir.call(fs.promises, dir, ...rest);
+  };
+  try {
+    job = downloadLatest(fakeRelease(RELEASE).fetchImpl, root, { baseUrl: 'https://x/', signal: controller.signal });
+    const res = await job;
+    assert.strictEqual(res.cancelled, false);
+    assert.strictEqual(res.completedBeforeCancel, true);
+    assert.strictEqual(res.count, 2);
+    assert.deepStrictEqual(await cancelling, { cancelled: false, completedBeforeCancel: true });
+  } finally {
+    fs.promises.mkdir = mkdir;
+  }
+  for (const [n, t] of Object.entries(RELEASE)) assert.strictEqual(fs.readFileSync(path.join(root, n), 'utf8'), t);
+  // 업데이트가 취소와 무관하게 실패했으면 취소도 아니고 완료도 아니다.
+  assert.deepStrictEqual(await cancelJob(new AbortController(), Promise.reject(new Error('x')), new Error('c')),
+    { cancelled: false, completedBeforeCancel: false });
+  fs.rmSync(root, { recursive: true, force: true });
 });
 
 test('loadFetchAll imports scripts/fetch_items.mjs from appRoot', async () => {

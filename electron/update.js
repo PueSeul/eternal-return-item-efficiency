@@ -33,6 +33,21 @@ function pendingText(stages, last) {
 // 취소(signal: 사용자 취소 AbortSignal) 결과. 네 파일은 바꾸지 않았다.
 const CANCELLED = Object.freeze({ cancelled: true });
 
+// 교체(installFiles)가 시작된 뒤 온 취소는 교체를 끝내고 성공 결과에 그 사실을 표시한다.
+function afterInstall(res, signal) {
+  return signal && signal.aborted ? { ...res, cancelled: false, completedBeforeCancel: true } : res;
+}
+
+// update:cancel: 진행 중인 업데이트(job)에 취소 신호를 보내고 끝나기를 기다려 결과를 구분한다.
+// 교체 전에 멈췄으면 { cancelled: true }, 교체가 끝난 뒤였으면 { cancelled: false, completedBeforeCancel: true },
+// 취소와 무관하게 실패했으면 { cancelled: false, completedBeforeCancel: false }(실패는 업데이트 요청 쪽이 알린다).
+async function cancelJob(controller, job, reason) {
+  controller.abort(reason);
+  const res = await job.catch(() => null);
+  if (res && res.cancelled) return { cancelled: true };
+  return { cancelled: false, completedBeforeCancel: !!(res && res.completedBeforeCancel) };
+}
+
 // 임시 폴더 정리. 실패(예: 백신이 잠근 파일의 EPERM)는 무시한다: 교체가 끝난 뒤의 정리 실패가 업데이트 실패나
 // 취소로 보고되지 않게 하고, 실패 경로에서는 원래 오류를 가리지 않게 한다(남은 .update-* 폴더는 읽지 않는다).
 async function removeStaging(staging) {
@@ -112,7 +127,7 @@ async function updateAll(fetchAll, dataDir, { onProgress, timeoutMs = UPDATE_TIM
     const { items, characters, skills, meta } = res || {};
     checkData({ items, characters, skills });
     await installFiles(staging, dataDir);
-    return { count: items.length, savedPath: path.join(dataDir, 'items.json'), skills, meta };
+    return afterInstall({ count: items.length, savedPath: path.join(dataDir, 'items.json'), skills, meta }, signal);
   } finally {
     await removeStaging(staging);
   }
@@ -267,7 +282,7 @@ async function fetchLatest(fetchImpl, dataDir, { onProgress, bundledDir, baseUrl
     checkData({ items, characters: parsed['characters.json'], skills });
     if (cancel && cancel.aborted) return CANCELLED;
     await installFiles(staging, dataDir);
-    return { count: items.length, savedPath: path.join(dataDir, 'items.json'), skills, meta: parsed['items.meta.json'] };
+    return afterInstall({ count: items.length, savedPath: path.join(dataDir, 'items.json'), skills, meta: parsed['items.meta.json'] }, cancel);
   } finally {
     await removeStaging(staging);
   }
@@ -298,4 +313,12 @@ async function updateLatest({ download, collect, onProgress, signal }) {
   return { ...res, note: `GitHub 데이터를 받지 못해 dak.gg·패치노트에서 직접 수집했습니다(${reason})` };
 }
 
-module.exports = { loadFetchAll, updateAll, downloadLatest, updateLatest, UPDATE_TIMEOUT_MS, DATA_RELEASE_URL, MANIFEST_NAME, FILES };
+// main.js 의 업데이트 작업 선택. 'patched'(기본 버튼): GitHub 내려받기 → 실패 시 직접 수집(updateLatest).
+// 그 밖('all', ▾ 전체 재확인): 직접 수집만 — GitHub 내려받기로 폴백하지 않는다. 취소는 어느 경로든 { cancelled: true }.
+// download(): downloadLatest 호출, collect(mode): updateAll 호출(둘 다 같은 signal 을 넘긴 것).
+function startUpdate({ skillsMode, download, collect, onProgress, signal }) {
+  if (skillsMode !== 'patched') return collect(skillsMode);
+  return updateLatest({ download, collect: () => collect('patched'), onProgress, signal });
+}
+
+module.exports = { loadFetchAll, updateAll, downloadLatest, updateLatest, startUpdate, cancelJob, UPDATE_TIMEOUT_MS,DATA_RELEASE_URL, MANIFEST_NAME, FILES };
