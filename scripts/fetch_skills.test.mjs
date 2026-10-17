@@ -93,7 +93,7 @@ test("fetchAll: failure names the stage and aborts the other downloads", async (
       init.signal.addEventListener("abort", () => { aborted.push(url); reject(init.signal.reason); });
     });
   }, () => fetchAll({ outDir: "unused", onProgress: (p) => events.push(p) })), /아이템 수집\(dak\.gg\) 단계 실패: 응답 없음\(20초 초과\)/);
-  assert.deepStrictEqual(events.map((e) => e.stage).sort(), ["characters", "items", "patchnote"]);
+  assert.deepStrictEqual(events.map((e) => e.stage).sort(), ["characters", "items", "patchnotes"]);
   for (const e of events) assert.deepStrictEqual(Object.keys(e), ["stage", "done", "total", "message"]);
   assert.strictEqual(aborted.length, 3, "masteries, characters and the patch-note list are aborted");
 });

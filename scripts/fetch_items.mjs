@@ -226,7 +226,8 @@ export function buildAll(rawItems, masteries, rawChars, patch, pages, fetchedAt)
  * characters.json, skills.json and items.meta.json to outDir (default: this repo's
  * data/; an app should pass a writable directory). Returns {items, characters, skills, meta}.
  * intervalMs: pause between namu.wiki request starts (default 1000).
- * onProgress({stage: "items"|"characters"|"patchnote"|"skills", done, total, message}) at each stage
+ * onProgress({stage: "items"|"characters"|"patchnotes"|"skills", done, total, message}) at each stage
+ * (stage names as src/updater.js progressText reads them; "characters" falls back to message)
  * start/end and after each namu.wiki document. A failure names its stage ("<stage> 단계 실패: <reason>")
  * and aborts the other downloads; signal (AbortSignal) stops all requests and keeps outDir untouched.
  */
@@ -266,7 +267,7 @@ export async function fetchAll({
     step("items", "아이템 수집(dak.gg)",
       () => Promise.all([fetchJson(ITEMS_URL, stopped), fetchJson(MASTERIES_URL, stopped)])),
     step("characters", "실험체 수집(dak.gg)", () => fetchJson(CHARACTERS_URL, stopped)),
-    step("patchnote", "패치노트 확인", () => fetchPatch(stopped)),
+    step("patchnotes", "패치노트 확인", () => fetchPatch(stopped)),
   ]);
   const names = local("실험체 목록 처리",
     () => [...chars.characters].sort((a, b) => Number(a.id) - Number(b.id)).map((c) => c.name));
