@@ -32,7 +32,7 @@ async function handleUpdateItems(event, options) {
     };
     const collect = (mode) => loadFetchAll(APP_ROOT)
       .then((fetchAll) => updateAll(fetchAll, UPDATE_DATA_DIR, { onProgress, skillsMode: mode }));
-    // 기본(patched): GitHub data-latest 자산을 받고, 실패하면 dak.gg·패치노트 직접 수집. "스킬 전체 다시 수집"(all)은 직접 수집.
+    // 기본(patched): GitHub data-latest 자산을 받고, 실패하면 dak.gg·패치노트 직접 수집. ▾ 메뉴 "전체 재확인"(all)은 직접 수집.
     // ER_DATA_URL 은 검증용 자산 주소(끝에 /).
     const job = skillsMode === 'patched'
       ? updateLatest({

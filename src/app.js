@@ -342,7 +342,7 @@
     const status = $('#update-status');
     if (!Updater.canUpdate(window)) return; // 웹 실행: 버튼 숨김 유지
     $('#data-update-group').hidden = false;
-    btn.hidden = false;
+    $('#update-split').hidden = false;
     // 상태 문구: 짧은 문구 + 툴팁에 전체 문장. 완료 문구(fade)는 5초 뒤 지운다(오류는 남김).
     let clearTimer = null;
     const setStatus = (text, full, error, fade) => {
@@ -352,10 +352,9 @@
       status.title = full || text;
       if (fade) clearTimer = setTimeout(() => { status.textContent = ''; status.title = ''; }, 5000);
     };
-    // 기본 버튼은 패치된 실험체만 스킬 재수집(skillsMode "patched"), 작은 버튼은 전체(skillsMode "all").
-    const allBtn = el('button', { id: 'update-all-btn', type: 'button', className: 'link-btn',
-      textContent: '스킬 전체 다시 수집', title: '모든 실험체의 스킬 수치를 나무위키에서 다시 수집합니다(오래 걸림)' });
-    btn.after(allBtn);
+    // 스플릿 버튼: 본체는 패치된 실험체만 스킬 재수집(skillsMode "patched"), ▾ 메뉴는 전체(skillsMode "all").
+    const more = $('#update-more');
+    const menu = ERDropdown.menu(more, $('#update-split'), '업데이트 방식', ['전체 재확인 · 약 2분'], () => run('all'));
     // 데스크톱 진행 이벤트: 업데이트 중에만 상태 문구에 단계·진행률 표시.
     // 예상 남은 시간: 1초마다 갱신, 성공한 실행의 소요 시간을 모드별로 저장해 다음 실행의 초기 예상치로 쓴다.
     // 진행 표시는 원형 게이지(퍼센트 + "단계 · 남은 시간"), 결과·오류 문구는 상태 문구.
@@ -382,9 +381,10 @@
       });
     }
     const run = async (mode) => {
+      menu.close();
       btn.disabled = true;
-      allBtn.disabled = true;
-      (mode === 'all' ? allBtn : btn).textContent = '업데이트 중…';
+      more.disabled = true;
+      btn.textContent = '업데이트 중…';
       setStatus('', '', false, false);
       updating = true;
       const startedAt = Date.now();
@@ -439,13 +439,11 @@
         updating = false;
         clearInterval(timer);
         btn.disabled = false;
-        allBtn.disabled = false;
+        more.disabled = false;
         btn.textContent = '아이템 업데이트';
-        allBtn.textContent = '스킬 전체 다시 수집';
       }
     };
     btn.onclick = () => run('patched');
-    allBtn.onclick = () => run('all');
   }
 
   // ---------- 프로그램 업데이트 배너(데스크톱 preload가 넣는 #app-update-banner) ----------

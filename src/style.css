@@ -38,11 +38,10 @@ body {
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
 /* 머리말 */
-/* 좌우 두 블록, 같은 3단 높이(28px · 28px · 20px). 왼쪽: 1행 제목, 2행 데이터 메타.
-   오른쪽(오른쪽 정렬): 1행 [앱 상태] [업데이트 확인], 2행 [게이지·데이터 상태] [아이템 업데이트],
-   3행 버튼 바로 아래 오른쪽 끝선에 맞춘 "스킬 전체 다시 수집" 링크. */
+/* 좌우 두 블록, 같은 2단 높이(28px · 28px). 왼쪽: 1행 제목, 2행 데이터 메타.
+   오른쪽(오른쪽 정렬): 1행 [앱 상태] [업데이트 확인], 2행 [게이지·데이터 상태] [아이템 업데이트 ▾ 스플릿 버튼]. */
 header { flex: none; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 8px 24px; border-bottom: 1px solid var(--line); }
-.title-row { display: grid; grid-template-rows: 28px 28px 20px; align-items: center; justify-items: start; min-width: 0; }
+.title-row { display: grid; grid-template-rows: 28px 28px; row-gap: 4px; align-items: center; justify-items: start; min-width: 0; }
 h1 { font-size: 16px; font-weight: 600; margin: 0; }
 .meta-line { padding: 0; background: none; border: none; color: var(--muted); font-size: 12px; cursor: pointer; }
 .meta-line { transition: color var(--fast); }
@@ -51,20 +50,26 @@ h1 { font-size: 16px; font-weight: 600; margin: 0; }
 .meta-list a, #meta-patch a { text-decoration: none; }
 .meta-list a:hover, #meta-patch a:hover, .meta-list a:focus-visible, #meta-patch a:focus-visible { text-decoration: underline; }
 .meta-line[hidden] { display: none; }
-.update-box { display: grid; grid-template-columns: auto auto; grid-template-rows: 28px 28px 20px; justify-content: end; align-items: center; column-gap: 8px; font-size: 13px; flex: none; }
+.update-box { display: grid; grid-template-columns: auto auto; grid-template-rows: 28px 28px; row-gap: 4px; justify-content: end; align-items: center; column-gap: 8px; font-size: 13px; flex: none; }
 .update-box:not(:has(.update-group:not([hidden]))) { display: none; }
 /* 그룹은 격자에 칸만 내준다: 열 1 = 상태(오른쪽 정렬, 자르지 않음·전체 문장은 title), 열 2 = 같은 폭 버튼·링크. */
 .update-group { display: contents; }
 .update-group[hidden] { display: none; }
 .update-box > .update-group > * { white-space: nowrap; }
 #app-update-status, #app-update-check { grid-row: 1; }
-.update-state, #update-btn { grid-row: 2; }
-#update-all-btn { grid-row: 3; }
+.update-state, #update-split { grid-row: 2; }
 #app-update-status, .update-state { grid-column: 1; justify-self: end; text-align: right; }
 /* 게이지·퍼센트·문구 한 덩어리: 진행 중·완료·오류 모두 버튼 바로 왼쪽. */
 .update-state { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-left: auto; min-width: 220px; white-space: nowrap; }
-#app-update-check, #update-btn { grid-column: 2; min-width: 132px; }
-#update-all-btn { grid-column: 2; justify-self: end; font-size: 12px; }
+/* 두 버튼 폭 동일: 열 2(auto)가 긴 쪽 글자 폭에 맞고 두 버튼이 그 폭으로 늘어난다. 좌우 여백 10px. */
+#app-update-check, #update-split { grid-column: 2; justify-self: stretch; }
+#app-update-check, #update-btn { height: 28px; padding: 0 10px; }
+.split-btn { display: flex; }
+.split-btn[hidden] { display: none; }
+.split-btn #update-btn { flex: 1 1 auto; border-radius: 4px 0 0 4px; }
+.split-btn #update-more { flex: none; width: 28px; padding: 0; display: flex; align-items: center; justify-content: center; border-left: none; border-radius: 0 4px 4px 0; }
+#update-more svg { color: var(--muted); transition: transform var(--fast); }
+#update-more[aria-expanded="true"] svg { transform: rotate(180deg); }
 header h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .title-row { flex: 1 1 auto; }
 .title-row .meta-line { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }

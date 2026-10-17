@@ -48,13 +48,19 @@ test('입력 컨트롤: 네이티브 select·datalist 팝업 대신 앱 드롭�
 });
 
 test('머리글: 좌(제목/메타)·우(앱 행/데이터 행) 두 블록, 28px 두 행, 같은 폭 버튼 세로 정렬, 상태 문구 말줄임 없음', () => {
-  assert.match(css, /\.title-row \{ display: grid; grid-template-rows: 28px 28px 20px/);
-  assert.match(css, /\.update-box \{ display: grid; grid-template-columns: auto auto; grid-template-rows: 28px 28px 20px; justify-content: end/);
+  const app0 = () => fs.readFileSync(path.join(root, 'src', 'app.js'), 'utf8');
+  assert.match(css, /\.title-row \{ display: grid; grid-template-rows: 28px 28px; row-gap: 4px/);
+  assert.match(css, /\.update-box \{ display: grid; grid-template-columns: auto auto; grid-template-rows: 28px 28px; row-gap: 4px; justify-content: end/);
   assert.match(css, /#app-update-status, #app-update-check \{ grid-row: 1; \}/);
-  assert.match(css, /\.update-state, #update-btn \{ grid-row: 2; \}/);
-  assert.match(css, /#update-all-btn \{ grid-row: 3; \}/);
-  assert.match(css, /#app-update-check, #update-btn \{ grid-column: 2; min-width: 132px; \}/);
-  assert.match(css, /#update-all-btn \{ grid-column: 2; justify-self: end;/);
+  assert.match(css, /\.update-state, #update-split \{ grid-row: 2; \}/);
+  assert.match(css, /#app-update-check, #update-split \{ grid-column: 2; justify-self: stretch; \}/);
+  assert.match(css, /#app-update-check, #update-btn \{ height: 28px; padding: 0 10px; \}/);
+  assert.match(css, /\.split-btn #update-more \{ flex: none; width: 28px;/);
+  assert.doesNotMatch(css + app0(), /update-all-btn/);
+  assert.match(html, /<span id="update-split" class="split-btn" hidden><button id="update-btn" type="button">아이템 업데이트<\/button><button id="update-more"/);
+  assert.match(app0(), /ERDropdown\.menu\(more, \$\('#update-split'\), '업데이트 방식', \['전체 재확인 · 약 2분'\], \(\) => run\('all'\)\)/);
+  assert.match(app0(), /btn\.onclick = \(\) => run\('patched'\)/);
+  assert.match(app0(), /btn\.disabled = true;\s*more\.disabled = true;/);
   assert.match(css, /\.update-state \{ display: flex;[^}]*gap: 8px; margin-left: auto; min-width: 220px/);
   assert.match(html, /<span class="update-state"><span id="update-status"/);
   assert.match(html, />아이템 업데이트<\/button>/);

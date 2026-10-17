@@ -266,6 +266,47 @@
     return { button: btn, list, refresh };
   }
 
+  // 스플릿 버튼의 ▾ 메뉴: trigger 클릭·Enter·↓로 열고(재클릭·Esc·바깥 클릭으로 닫힘), ↑↓Enter로 고른다.
+  // 목록은 anchor(스플릿 버튼 전체) 아래에 같은 폭 이상으로 붙는다. onPick(i)는 고른 항목 번호.
+  function menu(trigger, anchor, label, labels, onPick) {
+    const list = makeList(anchor, label);
+    trigger.setAttribute('aria-haspopup', 'listbox');
+    trigger.setAttribute('aria-expanded', 'false');
+    trigger.setAttribute('aria-controls', list.id);
+    const pc = popupController(anchor, list, trigger);
+    const dis = labels.map(() => false);
+    function open(at) {
+      if (trigger.disabled) return;
+      list.replaceChildren(...labels.map((t, i) => option(list.id, i, t, false, false)));
+      pc.open();
+      pc.setActive(at, true);
+    }
+    function choose(i) {
+      pc.close();
+      if (i >= 0 && i < labels.length) onPick(i);
+    }
+    trigger.addEventListener('click', () => (pc.isOpen() ? pc.close() : open(0)));
+    list.addEventListener('click', (ev) => {
+      const i = pc.items().indexOf(ev.target.closest('li[role="option"]'));
+      if (i >= 0) choose(i);
+    });
+    trigger.addEventListener('keydown', (ev) => {
+      const k = ev.key;
+      const isOpen = pc.isOpen();
+      if (k === 'Escape' || k === 'Tab') {
+        if (isOpen) { pc.close(); if (k === 'Escape') { ev.preventDefault(); ev.stopPropagation(); } }
+      } else if (k === 'ArrowDown' || k === 'ArrowUp') {
+        ev.preventDefault();
+        if (!isOpen) open(k === 'ArrowDown' ? 0 : labels.length - 1);
+        else pc.setActive(nextIndex(dis, pc.active(), k === 'ArrowDown' ? 1 : -1), true);
+      } else if (k === 'Enter' || k === ' ') {
+        ev.preventDefault();
+        if (isOpen) choose(pc.active()); else open(0);
+      }
+    });
+    return { list, close: pc.close, isOpen: pc.isOpen };
+  }
+
   // 검색 입력란 + 후보 목록(네이티브 datalist 대신).
   function combo(input, getItems) {
     const label = input.getAttribute('aria-label') || '';
@@ -352,5 +393,5 @@
     return btn;
   }
 
-  return { nextIndex, typeaheadIndex, searchPrefix, filterItems, placement, enhance, combo, clearable, MAX_HEIGHT };
+  return { nextIndex, typeaheadIndex, searchPrefix, filterItems, placement, enhance, combo, menu, clearable, MAX_HEIGHT };
 });
