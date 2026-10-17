@@ -21,6 +21,15 @@ test('레이아웃: 왼쪽 필요 폭·히스토리 남는 폭, 페이지 스크
   assert.match(css, /@media \(max-width: 1099px\) \{[\s\S]*body \{ display: block; overflow: auto/);
 });
 
+test('hover/포커스: 비활성 탭 밝게, 링크형 버튼 강조색, 120ms 전환', () => {
+  assert.match(css, /--fast: 120ms/);
+  assert.match(css, /\.tabs button\[aria-pressed="false"\]:hover[^{]*\{ background: var\(--hover\); color: var\(--text\)/);
+  assert.match(css, /\.text-btn:hover:not\(:disabled\)[^{]*\{[^}]*color: var\(--accent\)/);
+  assert.match(css, /\.link-btn:hover:not\(:disabled\)[^{]*\{ color: var\(--accent\)/);
+  assert.match(css, /\.meta-line:hover[^{]*\{ color: var\(--accent\)/);
+  assert.match(css, /button:hover:not\(:disabled\) \{[^}]*background: var\(--hover\)/);
+});
+
 test('전체 비우기: 장비 슬롯·기준 세트 헤더 모두 "전체 비우기" text-btn, 장비 쪽은 equipped만 비움', () => {
   const js = fs.readFileSync(path.join(root, 'src', 'app.js'), 'utf8');
   assert.match(html, /<h2>장비 슬롯<\/h2>[\s\S]*<button id="slots-clear" class="text-btn" type="button" aria-label="장비 슬롯 전체 비우기" disabled>전체 비우기<\/button>[\s\S]*id="slots"/);

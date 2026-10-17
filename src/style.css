@@ -13,7 +13,7 @@
   --warn: #d9a15a;
   --neg: #d77a6e;
   --g-common: #9aa0a6; --g-uncommon: #63b866; --g-rare: #4f93de; --g-epic: #a46fd8; --g-legend: #e0b444; --g-mythic: #dd5c55;
-  --fast: 100ms;
+  --fast: 120ms;
 }
 * { box-sizing: border-box; }
 html, body { height: 100%; }
@@ -42,7 +42,11 @@ header { flex: none; display: flex; justify-content: space-between; align-items:
 .title-row { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; min-width: 0; }
 h1 { font-size: 16px; font-weight: 600; margin: 0; }
 .meta-line { padding: 0; background: none; border: none; color: var(--muted); font-size: 12px; cursor: pointer; }
-.meta-line:hover { color: var(--text); text-decoration: underline; }
+.meta-line { transition: color var(--fast); }
+.meta-line:hover, .meta-line:focus-visible { color: var(--accent); text-decoration: underline; }
+/* 반영 내역 패널의 링크: 평소 밑줄 없음, hover/포커스 시 밑줄. */
+.meta-list a, #meta-patch a { text-decoration: none; }
+.meta-list a:hover, #meta-patch a:hover, .meta-list a:focus-visible, #meta-patch a:focus-visible { text-decoration: underline; }
 .meta-line[hidden] { display: none; }
 .update-box { display: flex; align-items: center; gap: 8px; font-size: 13px; }
 #update-status { color: var(--muted); }
@@ -58,7 +62,7 @@ h1 { font-size: 16px; font-weight: 600; margin: 0; }
 .gauge-text { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
 #app-update-banner .gauge { margin-right: 8px; vertical-align: middle; }
 .link-btn { background: none; border: none; padding: 0; font-size: 12px; color: var(--muted); text-decoration: underline; cursor: pointer; }
-.link-btn:hover:not(:disabled) { color: var(--text); }
+.link-btn:hover:not(:disabled), .link-btn:focus-visible { color: var(--accent); }
 .link-btn:disabled { cursor: default; opacity: .5; }
 .banner { flex: none; margin: 8px 24px 0; color: var(--warn); font-size: 13px; white-space: pre-line; }
 
@@ -89,12 +93,12 @@ h3 { font-size: 13px; font-weight: 600; margin: 16px 0 8px; }
 
 /* 버튼 */
 button { font: inherit; font-size: 13px; color: var(--text); background: transparent; border: 1px solid var(--line-strong); border-radius: 4px; padding: 4px 12px; cursor: pointer; transition: border-color var(--fast), background-color var(--fast), color var(--fast); }
-button:hover:not(:disabled) { border-color: var(--muted); }
+button:hover:not(:disabled) { border-color: var(--muted); background: var(--hover); }
 button:disabled { opacity: .4; cursor: not-allowed; }
 button.primary { background: var(--accent-bg); border-color: var(--accent-bg); color: #fff; font-weight: 600; padding: 4px 32px; height: 32px; }
 button.primary:hover:not(:disabled) { background: #256b64; border-color: #256b64; }
 .text-btn { border-color: transparent; color: var(--muted); padding: 4px 8px; }
-.text-btn:hover:not(:disabled) { border-color: transparent; color: var(--text); background: var(--hover); }
+.text-btn:hover:not(:disabled), .text-btn:focus-visible { border-color: transparent; color: var(--accent); background: var(--hover); }
 .icon-btn { border-color: transparent; color: var(--muted); width: 24px; height: 24px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
 .icon-btn:hover:not(:disabled) { border-color: transparent; color: var(--text); background: var(--hover); }
 .icon-btn svg { width: 12px; height: 12px; }
@@ -156,8 +160,8 @@ select:disabled { opacity: .5; }
 .compare .pos { color: var(--accent); } .compare .neg { color: var(--neg); }
 .all-steps, .base-steps { margin-top: 8px; font-size: 13px; }
 .base-steps { margin-top: 8px; }
-.all-steps summary, .base-steps summary { cursor: pointer; color: var(--muted); width: fit-content; }
-.all-steps summary:hover, .base-steps summary:hover { color: var(--text); }
+.all-steps summary, .base-steps summary { cursor: pointer; color: var(--muted); width: fit-content; transition: color var(--fast); }
+.all-steps summary:hover, .base-steps summary:hover { color: var(--accent); }
 .result .steps { margin: 8px 0 0; padding: 8px 12px; border-left: 1px solid var(--line-strong); font-family: inherit; font-size: 12px; line-height: 1.7; white-space: pre-wrap; color: var(--text); }
 
 /* 히스토리 */
@@ -166,6 +170,7 @@ select:disabled { opacity: .5; }
 .tabs button:focus-visible { outline-offset: -2px; }
 .tabs button + button { border-left: 1px solid var(--line-strong); }
 .tabs button[aria-pressed="true"] { background: var(--hover); color: var(--text); }
+.tabs button[aria-pressed="false"]:hover, .tabs button[aria-pressed="false"]:focus-visible { background: var(--hover); color: var(--text); }
 .history { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
 /* 기록 행(72px 이하): 윗줄 아이콘 5개 + 기준 아이콘(작게, 줄 끝), 아랫줄 시각 · 데미지 · 가격 · 효율. */
 .history li { position: relative; padding: 6px 32px 6px 8px; border-bottom: 1px solid var(--line); cursor: pointer; font-size: 13px; transition: background-color var(--fast); }
