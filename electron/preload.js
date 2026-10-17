@@ -13,9 +13,10 @@ contextBridge.exposeInMainWorld('erDesktop', {
     return () => ipcRenderer.removeListener('update:progress', listener);
   },
   // 아이템 수치 업데이트: 성공 시 { count, savedPath, skills, meta }, 실패 시 오류 메시지(어느 단계에서 왜)로 reject.
-  updateItems: async () => {
+  // options.skillsMode: 'patched'(기본) | 'all'.
+  updateItems: async (options) => {
     try {
-      return await ipcRenderer.invoke('er:update-items');
+      return await ipcRenderer.invoke('er:update-items', { skillsMode: options && options.skillsMode });
     } catch (err) {
       // "Error invoking remote method '...': Error: " 접두어를 떼고 원래 메시지만 전달.
       const msg = String((err && err.message) || err).replace(/^Error invoking remote method '[^']*': (?:\w*Error: )?/, '');

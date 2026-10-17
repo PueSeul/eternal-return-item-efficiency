@@ -60,6 +60,26 @@ test('updateAll moves the four files into dataDir and returns count/savedPath/sk
   fs.rmSync(root, { recursive: true, force: true });
 });
 
+test('updateAll passes skillsMode and the existing data/skills.json as merge base', async () => {
+  const root = tmpDir();
+  const dataDir = path.join(root, 'data');
+  fs.mkdirSync(dataDir, { recursive: true });
+  fs.writeFileSync(path.join(dataDir, 'skills.json'), '[{"name":"old"}]');
+  const result = { items: [{ id: '1' }], characters: [{ id: 'c' }], skills: [{ name: 'new' }], meta: {} };
+  const seen = [];
+  const inner = fakeFetchAll(result);
+  const spy = async (opts) => {
+    seen.push({ mode: opts.skillsMode, base: fs.readFileSync(path.join(opts.outDir, 'skills.json'), 'utf8') });
+    return inner(opts);
+  };
+  await updateAll(spy, dataDir);
+  await updateAll(spy, dataDir, { skillsMode: 'all' });
+  assert.deepStrictEqual(seen.map((s) => s.mode), ['patched', 'all']);
+  assert.strictEqual(seen[0].base, '[{"name":"old"}]');
+  await assert.rejects(updateAll(spy, dataDir, { skillsMode: 'x' }), /알 수 없는 skillsMode/);
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
 test('updateAll keeps existing files on fetch failure or empty/bad result', async () => {
   const root = tmpDir();
   fs.writeFileSync(path.join(root, 'items.json'), '[{"id":"old"}]\n');

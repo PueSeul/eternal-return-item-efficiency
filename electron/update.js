@@ -64,12 +64,19 @@ async function runWithTimeout(fetchAll, options, onProgress, timeoutMs) {
 // fetchAll: ({outDir, onProgress, signal}) => Promise<{items, characters, skills, meta}> — 네 파일은 fetchAll 이 outDir 에 쓴다(CLI 와 같은 직렬화).
 // 받은 데이터를 확인하기 전에 기존 파일을 덮어쓰지 않도록 dataDir 안 임시 폴더에 받게 한 뒤, 확인되면 옮긴다.
 // dataDir: 저장할 data 폴더. onProgress: 진행 이벤트 {stage, done, total, message}. timeoutMs: 전체 상한(기본 8분).
+// skillsMode: 'patched'(기본, 패치노트 실험체만 재수집) | 'all'. 'patched' 의 병합 기준은 dataDir 의 기존 skills.json 이라
+// staging 에 복사해 둔다(fetchAll 은 outDir/skills.json 을 먼저 읽는다).
 // 반환 { count, savedPath, skills, meta } (savedPath 는 items.json).
-async function updateAll(fetchAll, dataDir, { onProgress, timeoutMs = UPDATE_TIMEOUT_MS } = {}) {
+async function updateAll(fetchAll, dataDir, { onProgress, timeoutMs = UPDATE_TIMEOUT_MS, skillsMode = 'patched' } = {}) {
+  if (skillsMode !== 'patched' && skillsMode !== 'all') throw new Error(`알 수 없는 skillsMode: ${skillsMode}`);
   await fs.promises.mkdir(dataDir, { recursive: true });
   const staging = await fs.promises.mkdtemp(path.join(dataDir, '.update-'));
   try {
-    const { items, characters, skills, meta } = (await runWithTimeout(fetchAll, { outDir: staging }, onProgress, timeoutMs)) || {};
+    await fs.promises.copyFile(path.join(dataDir, 'skills.json'), path.join(staging, 'skills.json')).catch((err) => {
+      if (err.code !== 'ENOENT') throw err;
+    });
+    const { items, characters, skills, meta } =
+      (await runWithTimeout(fetchAll, { outDir: staging, skillsMode }, onProgress, timeoutMs)) || {};
     if (!Array.isArray(items)) throw new Error('받은 아이템 데이터가 배열이 아닙니다.');
     if (items.length === 0) throw new Error('받은 아이템이 0개라 기존 데이터를 유지합니다.');
     if (!Array.isArray(characters) || characters.length === 0) throw new Error('받은 캐릭터가 0개라 기존 데이터를 유지합니다.');

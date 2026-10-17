@@ -20,8 +20,9 @@ const UPDATE_DATA_DIR = path.join(EXTERNAL_ROOT || APP_ROOT, 'data');
 // window.erDesktop.updateItems() (preload.js) → fetchAll() → data/items.json·characters.json·skills.json·items.meta.json 저장. 동시 요청은 하나로 합친다.
 let updating = null;
 let lastUpdate = null; // 검증(smokeClickUpdate)용: 마지막으로 시작한 업데이트 작업
-async function handleUpdateItems(event) {
+async function handleUpdateItems(event, options) {
   if (!event.senderFrame || !event.senderFrame.url.startsWith(ORIGIN + '/')) throw new Error('허용되지 않은 요청입니다.');
+  const skillsMode = (options && options.skillsMode) || 'patched';
   if (!updating) {
     // 진행 이벤트는 요청한 창에 'update:progress' 로 보낸다(preload.js onUpdateProgress).
     const sender = event.sender;
@@ -29,7 +30,7 @@ async function handleUpdateItems(event) {
       if (!sender.isDestroyed()) sender.send('update:progress', p);
     };
     updating = loadFetchAll(APP_ROOT)
-      .then((fetchAll) => updateAll(fetchAll, UPDATE_DATA_DIR, { onProgress }))
+      .then((fetchAll) => updateAll(fetchAll, UPDATE_DATA_DIR, { onProgress, skillsMode }))
       .finally(() => { updating = null; });
     lastUpdate = updating;
   }
