@@ -765,7 +765,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-11T13:39:52.000Z",
+    "wikiRevisedAt": "2026-10-18T02:49:15.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -8738,7 +8738,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-14T12:40:27.000Z",
+    "wikiRevisedAt": "2026-10-18T01:57:31.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -13218,7 +13218,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-17T02:48:24.000Z",
+    "wikiRevisedAt": "2026-10-18T01:41:46.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -17471,7 +17471,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-16T11:03:15.000Z",
+    "wikiRevisedAt": "2026-10-18T02:50:24.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -34333,7 +34333,7 @@
         ]
       },
       {
-        "key": "Q",
+        "key": "RQ",
         "name": "샤마쉬의 두루마리",
         "levels": [
           {
@@ -34405,35 +34405,7 @@
               }
             ],
             "raw": "피해량 [70 / 110 / 150 / 190 / 230] (+스킬 증폭의 80%)"
-          }
-        ]
-      },
-      {
-        "key": "RQ",
-        "name": "샤마쉬의 법전",
-        "levels": [
-          {
-            "level": 1,
-            "baseDamage": 160,
-            "attackPowerRatio": 0,
-            "skillAmpRatio": 0.8
           },
-          {
-            "level": 2,
-            "baseDamage": 240,
-            "attackPowerRatio": 0,
-            "skillAmpRatio": 0.8
-          },
-          {
-            "level": 3,
-            "baseDamage": 320,
-            "attackPowerRatio": 0,
-            "skillAmpRatio": 0.8
-          }
-        ],
-        "raw": "[샤마쉬의 법전] 주문 피해량 [160 / 240 / 320] (+스킬 증폭의 80%)",
-        "sourceLabel": "[샤마쉬의 법전] 주문 피해량",
-        "entries": [
           {
             "label": "[샤마쉬의 법전] 주문 피해량",
             "levels": [
@@ -34461,7 +34433,7 @@
         ]
       },
       {
-        "key": "W",
+        "key": "RW",
         "name": "바빌론의 입방체",
         "levels": [
           {
@@ -34532,10 +34504,7 @@
                 "skillAmpRatio": 0.55
               }
             ],
-            "raw": "피해량 [70 / 90 / 110 / 130 / 150] (+스킬 증폭의 55%)",
-            "historyMismatch": {
-              "text": "baseDamage 설명란 [[70,90,110,130,150],[50,80,110,140,170]], 역사 마지막 [60,80,100,120,140]: 8.4 패치에서 바빌론의 입방체(W)의 피해량이 60/80/100/120/140(+스킬 증폭의 45%)로, 바빌론의 주사위(R-W)의 장벽 속박 지속 시간이 1/1.1/1.2초로 증가했다.\nskillAmpRatio 설명란 [0.55,0.65], 역사 마지막 0.5: 12.2 패치로 바빌론의 입방체(W)의 1타 피해량 스킬 증폭 계수가 50%로 증가했다."
-            }
+            "raw": "피해량 [70 / 90 / 110 / 130 / 150] (+스킬 증폭의 55%)"
           },
           {
             "label": "추가 피해량",
@@ -34571,39 +34540,8 @@
                 "skillAmpRatio": 0.65
               }
             ],
-            "raw": "추가 피해량 [50 / 80 / 110 / 140 / 170] (+스킬 증폭의 65%)",
-            "historyMismatch": {
-              "text": "baseDamage 설명란 [[70,90,110,130,150],[50,80,110,140,170]], 역사 마지막 [60,80,100,120,140]: 8.4 패치에서 바빌론의 입방체(W)의 피해량이 60/80/100/120/140(+스킬 증폭의 45%)로, 바빌론의 주사위(R-W)의 장벽 속박 지속 시간이 1/1.1/1.2초로 증가했다.\nskillAmpRatio 설명란 [0.55,0.65], 역사 마지막 0.5: 12.2 패치로 바빌론의 입방체(W)의 1타 피해량 스킬 증폭 계수가 50%로 증가했다."
-            }
-          }
-        ]
-      },
-      {
-        "key": "RW",
-        "name": "바빌론의 주사위",
-        "levels": [
-          {
-            "level": 1,
-            "baseDamage": 100,
-            "attackPowerRatio": 0,
-            "skillAmpRatio": 0.4
+            "raw": "추가 피해량 [50 / 80 / 110 / 140 / 170] (+스킬 증폭의 65%)"
           },
-          {
-            "level": 2,
-            "baseDamage": 140,
-            "attackPowerRatio": 0,
-            "skillAmpRatio": 0.4
-          },
-          {
-            "level": 3,
-            "baseDamage": 180,
-            "attackPowerRatio": 0,
-            "skillAmpRatio": 0.4
-          }
-        ],
-        "raw": "[바빌론의 주사위] 장벽 피해량 [100 / 140 / 180] (+스킬 증폭의 40%)",
-        "sourceLabel": "[바빌론의 주사위] 장벽 피해량",
-        "entries": [
           {
             "label": "[바빌론의 주사위] 장벽 피해량",
             "levels": [
@@ -34631,7 +34569,7 @@
         ]
       },
       {
-        "key": "E",
+        "key": "RE",
         "name": "님루드의 비석",
         "levels": [
           {
@@ -34707,14 +34645,6 @@
         ]
       },
       {
-        "key": "RE",
-        "name": "님루드의 문",
-        "levels": [],
-        "raw": null,
-        "sourceLabel": null,
-        "entries": []
-      },
-      {
         "key": "R",
         "name": "잠들어있는 힘",
         "levels": [],
@@ -34723,7 +34653,7 @@
         "entries": []
       }
     ],
-    "wikiRevisedAt": "2026-10-16T14:01:59.000Z",
+    "wikiRevisedAt": "2026-10-18T01:51:46.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -48848,7 +48778,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-17T05:14:05.000Z",
+    "wikiRevisedAt": "2026-10-18T02:03:10.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -49699,7 +49629,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-17T11:20:26.000Z",
+    "wikiRevisedAt": "2026-10-18T02:04:24.000Z",
     "needsReview": [],
     "parser": 2
   }
