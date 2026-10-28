@@ -2297,7 +2297,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-21T23:40:52.000Z",
+    "wikiRevisedAt": "2026-10-27T11:44:13.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -6980,7 +6980,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-22T19:24:37.000Z",
+    "wikiRevisedAt": "2026-10-27T11:53:14.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -19621,7 +19621,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-22T03:43:03.000Z",
+    "wikiRevisedAt": "2026-10-27T03:55:15.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -25248,7 +25248,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-20T06:09:14.000Z",
+    "wikiRevisedAt": "2026-10-27T08:15:57.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -31874,7 +31874,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-23T16:51:10.000Z",
+    "wikiRevisedAt": "2026-10-27T11:23:18.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -38343,7 +38343,7 @@
         "entries": []
       }
     ],
-    "wikiRevisedAt": "2026-10-15T14:23:46.000Z",
+    "wikiRevisedAt": "2026-10-27T12:41:10.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -40439,7 +40439,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-26T16:44:18.000Z",
+    "wikiRevisedAt": "2026-10-27T12:57:15.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -41933,35 +41933,35 @@
           {
             "level": 1,
             "baseDamage": 40,
-            "attackPowerRatio": 0.9,
+            "attackPowerRatio": 1,
             "skillAmpRatio": 0
           },
           {
             "level": 2,
             "baseDamage": 80,
-            "attackPowerRatio": 0.9,
+            "attackPowerRatio": 1,
             "skillAmpRatio": 0
           },
           {
             "level": 3,
             "baseDamage": 120,
-            "attackPowerRatio": 0.9,
+            "attackPowerRatio": 1,
             "skillAmpRatio": 0
           },
           {
             "level": 4,
             "baseDamage": 160,
-            "attackPowerRatio": 0.9,
+            "attackPowerRatio": 1,
             "skillAmpRatio": 0
           },
           {
             "level": 5,
             "baseDamage": 200,
-            "attackPowerRatio": 0.9,
+            "attackPowerRatio": 1,
             "skillAmpRatio": 0
           }
         ],
-        "raw": "피해량 [40 / 80 / 120 / 160 / 200] (+공격력의 90%)",
+        "raw": "피해량 [40 / 80 / 120 / 160 / 200] (+공격력의 100%)",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -41970,80 +41970,74 @@
               {
                 "level": 1,
                 "baseDamage": 40,
-                "attackPowerRatio": 0.9,
+                "attackPowerRatio": 1,
                 "skillAmpRatio": 0
               },
               {
                 "level": 2,
                 "baseDamage": 80,
-                "attackPowerRatio": 0.9,
+                "attackPowerRatio": 1,
                 "skillAmpRatio": 0
               },
               {
                 "level": 3,
                 "baseDamage": 120,
-                "attackPowerRatio": 0.9,
+                "attackPowerRatio": 1,
                 "skillAmpRatio": 0
               },
               {
                 "level": 4,
                 "baseDamage": 160,
-                "attackPowerRatio": 0.9,
+                "attackPowerRatio": 1,
                 "skillAmpRatio": 0
               },
               {
                 "level": 5,
                 "baseDamage": 200,
-                "attackPowerRatio": 0.9,
+                "attackPowerRatio": 1,
                 "skillAmpRatio": 0
               }
             ],
-            "raw": "피해량 [40 / 80 / 120 / 160 / 200] (+공격력의 90%)",
-            "historyMismatch": {
-              "text": "attackPowerRatio 설명란 [0.9,0.9,2], 역사 마지막 1: 10.6 패치에서 전 구간에서 좋은 통계로 인해 관측(Q)의 공격력 계수가 100%로 감소했다. 이슈트반의 시작이 되는 스킬인 만큼 성적 하락을 피하지 못할 정도의 너프."
-            }
+            "raw": "피해량 [40 / 80 / 120 / 160 / 200] (+공격력의 100%)"
           },
           {
-            "label": "다른 가능성 피해량",
+            "label": "[다른 가능성] 피해량",
             "levels": [
               {
                 "level": 1,
                 "baseDamage": 40,
-                "attackPowerRatio": 0.9,
+                "attackPowerRatio": 1,
                 "skillAmpRatio": 0
               },
               {
                 "level": 2,
                 "baseDamage": 80,
-                "attackPowerRatio": 0.9,
+                "attackPowerRatio": 1,
                 "skillAmpRatio": 0
               },
               {
                 "level": 3,
                 "baseDamage": 120,
-                "attackPowerRatio": 0.9,
+                "attackPowerRatio": 1,
                 "skillAmpRatio": 0
               },
               {
                 "level": 4,
                 "baseDamage": 160,
-                "attackPowerRatio": 0.9,
+                "attackPowerRatio": 1,
                 "skillAmpRatio": 0
               },
               {
                 "level": 5,
                 "baseDamage": 200,
-                "attackPowerRatio": 0.9,
+                "attackPowerRatio": 1,
                 "skillAmpRatio": 0
               }
             ],
-            "raw": "다른 가능성 피해량 [40 / 80 / 120 / 160 / 200] (+공격력의 90%)",
-            "historyMismatch": {
-              "text": "attackPowerRatio 설명란 [0.9,0.9,2], 역사 마지막 1: 10.6 패치에서 전 구간에서 좋은 통계로 인해 관측(Q)의 공격력 계수가 100%로 감소했다. 이슈트반의 시작이 되는 스킬인 만큼 성적 하락을 피하지 못할 정도의 너프."
-            }
+            "raw": "[다른 가능성] 피해량 [40 / 80 / 120 / 160 / 200] (+공격력의 100%)"
           },
           {
-            "label": "강화 다른 가능성 피해량",
+            "label": "[다른 가능성] 강화 피해량",
             "levels": [
               {
                 "level": 1,
@@ -42076,10 +42070,7 @@
                 "skillAmpRatio": 0
               }
             ],
-            "raw": "강화 다른 가능성 피해량 [100 / 150 / 200 / 250 / 300] (+공격력의 200%)",
-            "historyMismatch": {
-              "text": "attackPowerRatio 설명란 [0.9,0.9,2], 역사 마지막 1: 10.6 패치에서 전 구간에서 좋은 통계로 인해 관측(Q)의 공격력 계수가 100%로 감소했다. 이슈트반의 시작이 되는 스킬인 만큼 성적 하락을 피하지 못할 정도의 너프."
-            }
+            "raw": "[다른 가능성] 강화 피해량 [100 / 150 / 200 / 250 / 300] (+공격력의 200%)"
           }
         ]
       },
@@ -42194,7 +42185,7 @@
             "raw": "보호막 흡수량 [50 / 70 / 90 / 110 / 130] (+공격력의 100%)"
           },
           {
-            "label": "다른 가능성 피해량",
+            "label": "[다른 가능성] 피해량",
             "levels": [
               {
                 "level": 1,
@@ -42227,10 +42218,10 @@
                 "skillAmpRatio": 0
               }
             ],
-            "raw": "다른 가능성 피해량 [60 / 90 / 120 / 150 / 180] (+공격력의 90%)"
+            "raw": "[다른 가능성] 피해량 [60 / 90 / 120 / 150 / 180] (+공격력의 90%)"
           },
           {
-            "label": "최소 회복량",
+            "label": "[다른 가능성] 최소 회복량",
             "levels": [
               {
                 "level": 1,
@@ -42263,10 +42254,10 @@
                 "skillAmpRatio": 0
               }
             ],
-            "raw": "최소 회복량 [40 / 50 / 60 / 70 / 80] (+공격력의 60%)"
+            "raw": "[다른 가능성] 최소 회복량 [40 / 50 / 60 / 70 / 80] (+공격력의 60%)"
           },
           {
-            "label": "최대 회복량",
+            "label": "[다른 가능성] 최대 회복량",
             "levels": [
               {
                 "level": 1,
@@ -42299,7 +42290,7 @@
                 "skillAmpRatio": 0
               }
             ],
-            "raw": "최대 회복량 [60 / 75 / 90 / 105 / 120] (+공격력의 90%)"
+            "raw": "[다른 가능성] 최대 회복량 [60 / 75 / 90 / 105 / 120] (+공격력의 90%)"
           }
         ]
       },
@@ -42378,7 +42369,7 @@
             "raw": "피해량 [60 / 80 / 100 / 120 / 140] (+공격력의 80%)"
           },
           {
-            "label": "다른 가능성 피해량",
+            "label": "[다른 가능성] 피해량",
             "levels": [
               {
                 "level": 1,
@@ -42411,7 +42402,7 @@
                 "skillAmpRatio": 0
               }
             ],
-            "raw": "다른 가능성 피해량 [60 / 100 / 140 / 180 / 220] (+공격력의 100%)"
+            "raw": "[다른 가능성] 피해량 [60 / 100 / 140 / 180 / 220] (+공격력의 100%)"
           }
         ]
       },
@@ -42422,23 +42413,23 @@
           {
             "level": 1,
             "baseDamage": 80,
-            "attackPowerRatio": 0.9,
+            "attackPowerRatio": 0.85,
             "skillAmpRatio": 0
           },
           {
             "level": 2,
             "baseDamage": 160,
-            "attackPowerRatio": 0.9,
+            "attackPowerRatio": 0.85,
             "skillAmpRatio": 0
           },
           {
             "level": 3,
             "baseDamage": 240,
-            "attackPowerRatio": 0.9,
+            "attackPowerRatio": 0.85,
             "skillAmpRatio": 0
           }
         ],
-        "raw": "피해량 [80 / 160 / 240] (+공격력의 90%)",
+        "raw": "피해량 [80 / 160 / 240] (+공격력의 85%)",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -42447,26 +42438,26 @@
               {
                 "level": 1,
                 "baseDamage": 80,
-                "attackPowerRatio": 0.9,
+                "attackPowerRatio": 0.85,
                 "skillAmpRatio": 0
               },
               {
                 "level": 2,
                 "baseDamage": 160,
-                "attackPowerRatio": 0.9,
+                "attackPowerRatio": 0.85,
                 "skillAmpRatio": 0
               },
               {
                 "level": 3,
                 "baseDamage": 240,
-                "attackPowerRatio": 0.9,
+                "attackPowerRatio": 0.85,
                 "skillAmpRatio": 0
               }
             ],
-            "raw": "피해량 [80 / 160 / 240] (+공격력의 90%)"
+            "raw": "피해량 [80 / 160 / 240] (+공격력의 85%)"
           },
           {
-            "label": "3가지 가능성 피해량",
+            "label": "[3가지 가능성] 피해량",
             "levels": [
               {
                 "level": 1,
@@ -42487,12 +42478,12 @@
                 "skillAmpRatio": 0
               }
             ],
-            "raw": "3가지 가능성 피해량 [50 / 100 / 150] (+공격력의 50%)"
+            "raw": "[3가지 가능성] 피해량 [50 / 100 / 150] (+공격력의 50%)"
           }
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-14T02:07:36.000Z",
+    "wikiRevisedAt": "2026-10-27T07:52:58.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -46171,7 +46162,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-06T20:39:39.000Z",
+    "wikiRevisedAt": "2026-10-27T09:23:01.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -46782,7 +46773,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-18T05:36:04.000Z",
+    "wikiRevisedAt": "2026-10-28T02:07:50.000Z",
     "needsReview": [],
     "parser": 2
   },
