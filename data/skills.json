@@ -3026,49 +3026,49 @@
         "levels": [
           {
             "level": 1,
-            "baseDamage": 50,
+            "baseDamage": 90,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.85,
             "extraRatios": [
               {
                 "stat": "추가 공격력",
-                "ratio": 0.6
+                "ratio": 0.9
               }
             ]
           },
           {
             "level": 2,
-            "baseDamage": 100,
+            "baseDamage": 130,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.85,
             "extraRatios": [
               {
                 "stat": "추가 공격력",
-                "ratio": 0.6
+                "ratio": 0.9
               }
             ]
           },
           {
             "level": 3,
-            "baseDamage": 150,
+            "baseDamage": 170,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.85,
             "extraRatios": [
               {
                 "stat": "추가 공격력",
-                "ratio": 0.6
+                "ratio": 0.9
               }
             ]
           },
           {
             "level": 4,
-            "baseDamage": 200,
+            "baseDamage": 210,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.85,
             "extraRatios": [
               {
                 "stat": "추가 공격력",
-                "ratio": 0.6
+                "ratio": 0.9
               }
             ]
           },
@@ -3080,12 +3080,12 @@
             "extraRatios": [
               {
                 "stat": "추가 공격력",
-                "ratio": 0.6
+                "ratio": 0.9
               }
             ]
           }
         ],
-        "raw": "피해량 [50 / 100 / 150 / 200 / 250] (+추가 공격력의 60%) (+스킬 증폭의 85%)",
+        "raw": "발 밟기(Q) > 피해량 90/130/170/210/250(+추가 공격력의 60%)(+스킬 증폭의 85%) → 90/130/170/210/250(+추가 공격력의 90%)(+스킬 증폭의 85%)",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -3093,49 +3093,49 @@
             "levels": [
               {
                 "level": 1,
-                "baseDamage": 50,
+                "baseDamage": 90,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.85,
                 "extraRatios": [
                   {
                     "stat": "추가 공격력",
-                    "ratio": 0.6
+                    "ratio": 0.9
                   }
                 ]
               },
               {
                 "level": 2,
-                "baseDamage": 100,
+                "baseDamage": 130,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.85,
                 "extraRatios": [
                   {
                     "stat": "추가 공격력",
-                    "ratio": 0.6
+                    "ratio": 0.9
                   }
                 ]
               },
               {
                 "level": 3,
-                "baseDamage": 150,
+                "baseDamage": 170,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.85,
                 "extraRatios": [
                   {
                     "stat": "추가 공격력",
-                    "ratio": 0.6
+                    "ratio": 0.9
                   }
                 ]
               },
               {
                 "level": 4,
-                "baseDamage": 200,
+                "baseDamage": 210,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.85,
                 "extraRatios": [
                   {
                     "stat": "추가 공격력",
-                    "ratio": 0.6
+                    "ratio": 0.9
                   }
                 ]
               },
@@ -3147,12 +3147,12 @@
                 "extraRatios": [
                   {
                     "stat": "추가 공격력",
-                    "ratio": 0.6
+                    "ratio": 0.9
                   }
                 ]
               }
             ],
-            "raw": "피해량 [50 / 100 / 150 / 200 / 250] (+추가 공격력의 60%) (+스킬 증폭의 85%)"
+            "raw": "발 밟기(Q) > 피해량 90/130/170/210/250(+추가 공격력의 60%)(+스킬 증폭의 85%) → 90/130/170/210/250(+추가 공격력의 90%)(+스킬 증폭의 85%)"
           }
         ]
       },
@@ -3546,7 +3546,7 @@
             "extraRatios": [
               {
                 "stat": "추가 공격력",
-                "ratio": 0.35
+                "ratio": 0.5
               }
             ]
           },
@@ -3558,7 +3558,7 @@
             "extraRatios": [
               {
                 "stat": "추가 공격력",
-                "ratio": 0.35
+                "ratio": 0.5
               }
             ]
           },
@@ -3570,12 +3570,12 @@
             "extraRatios": [
               {
                 "stat": "추가 공격력",
-                "ratio": 0.35
+                "ratio": 0.5
               }
             ]
           }
         ],
-        "raw": "최소 피해량 [100 / 140 / 180] (+추가 공격력의 35%) (+스킬 증폭의 75%)",
+        "raw": "핵펀치(R) > 최소 피해량 100/140/180(+추가 공격력의 35%)(+스킬 증폭의 75%) → 100/140/180(+추가 공격력의 50%)(+스킬 증폭의 75%)",
         "sourceLabel": "최소 피해량",
         "entries": [
           {
@@ -3589,7 +3589,7 @@
                 "extraRatios": [
                   {
                     "stat": "추가 공격력",
-                    "ratio": 0.35
+                    "ratio": 0.5
                   }
                 ]
               },
@@ -3601,7 +3601,7 @@
                 "extraRatios": [
                   {
                     "stat": "추가 공격력",
-                    "ratio": 0.35
+                    "ratio": 0.5
                   }
                 ]
               },
@@ -3613,12 +3613,12 @@
                 "extraRatios": [
                   {
                     "stat": "추가 공격력",
-                    "ratio": 0.35
+                    "ratio": 0.5
                   }
                 ]
               }
             ],
-            "raw": "최소 피해량 [100 / 140 / 180] (+추가 공격력의 35%) (+스킬 증폭의 75%)"
+            "raw": "핵펀치(R) > 최소 피해량 100/140/180(+추가 공격력의 35%)(+스킬 증폭의 75%) → 100/140/180(+추가 공격력의 50%)(+스킬 증폭의 75%)"
           },
           {
             "label": "최대 피해량",
@@ -3631,7 +3631,7 @@
                 "extraRatios": [
                   {
                     "stat": "추가 공격력",
-                    "ratio": 1.05
+                    "ratio": 1.5
                   }
                 ]
               },
@@ -3643,7 +3643,7 @@
                 "extraRatios": [
                   {
                     "stat": "추가 공격력",
-                    "ratio": 1.05
+                    "ratio": 1.5
                   }
                 ]
               },
@@ -3655,12 +3655,12 @@
                 "extraRatios": [
                   {
                     "stat": "추가 공격력",
-                    "ratio": 1.05
+                    "ratio": 1.5
                   }
                 ]
               }
             ],
-            "raw": "최대 피해량 [300 / 420 / 540] (+추가 공격력의 105%) (+스킬 증폭의 225%)"
+            "raw": "핵펀치(R) > 최대 피해량 300/420/540(+추가 공격력의 105%)(+스킬 증폭의 225%) → 300/420/540(+추가 공격력의 150%)(+스킬 증폭의 225%)"
           }
         ]
       }
@@ -15904,34 +15904,34 @@
             "level": 1,
             "baseDamage": 60,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.75
+            "skillAmpRatio": 0.85
           },
           {
             "level": 2,
             "baseDamage": 100,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.75
+            "skillAmpRatio": 0.85
           },
           {
             "level": 3,
             "baseDamage": 140,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.75
+            "skillAmpRatio": 0.85
           },
           {
             "level": 4,
             "baseDamage": 180,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.75
+            "skillAmpRatio": 0.85
           },
           {
             "level": 5,
             "baseDamage": 220,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.75
+            "skillAmpRatio": 0.85
           }
         ],
-        "raw": "피해량 [60 / 100 / 140 / 180 / 220] (+스킬 증폭의 75%)",
+        "raw": "스냅샷(Q) > 피해량 60/100/140/180/220(+스킬 증폭의 80%) → 60/100/140/180/220(+스킬 증폭의 85%)",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -15941,34 +15941,34 @@
                 "level": 1,
                 "baseDamage": 60,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.75
+                "skillAmpRatio": 0.85
               },
               {
                 "level": 2,
                 "baseDamage": 100,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.75
+                "skillAmpRatio": 0.85
               },
               {
                 "level": 3,
                 "baseDamage": 140,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.75
+                "skillAmpRatio": 0.85
               },
               {
                 "level": 4,
                 "baseDamage": 180,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.75
+                "skillAmpRatio": 0.85
               },
               {
                 "level": 5,
                 "baseDamage": 220,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.75
+                "skillAmpRatio": 0.85
               }
             ],
-            "raw": "피해량 [60 / 100 / 140 / 180 / 220] (+스킬 증폭의 75%)"
+            "raw": "스냅샷(Q) > 피해량 60/100/140/180/220(+스킬 증폭의 80%) → 60/100/140/180/220(+스킬 증폭의 85%)"
           }
         ]
       },
@@ -26310,7 +26310,7 @@
             "extraRatios": [
               {
                 "stat": "추가 체력",
-                "ratio": 0.18
+                "ratio": 0.16
               }
             ]
           },
@@ -26322,7 +26322,7 @@
             "extraRatios": [
               {
                 "stat": "추가 체력",
-                "ratio": 0.18
+                "ratio": 0.16
               }
             ]
           },
@@ -26334,7 +26334,7 @@
             "extraRatios": [
               {
                 "stat": "추가 체력",
-                "ratio": 0.18
+                "ratio": 0.16
               }
             ]
           },
@@ -26346,7 +26346,7 @@
             "extraRatios": [
               {
                 "stat": "추가 체력",
-                "ratio": 0.18
+                "ratio": 0.16
               }
             ]
           },
@@ -26358,12 +26358,12 @@
             "extraRatios": [
               {
                 "stat": "추가 체력",
-                "ratio": 0.18
+                "ratio": 0.16
               }
             ]
           }
         ],
-        "raw": "피해량 [10 / 20 / 30 / 40 / 50] (+추가 체력의 18%)",
+        "raw": "전투 교범(Q) > 피해량 10/20/30/40/50(+추가 체력의 18%) → 10/20/30/40/50(+추가 체력의 16%)",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -26377,7 +26377,7 @@
                 "extraRatios": [
                   {
                     "stat": "추가 체력",
-                    "ratio": 0.18
+                    "ratio": 0.16
                   }
                 ]
               },
@@ -26389,7 +26389,7 @@
                 "extraRatios": [
                   {
                     "stat": "추가 체력",
-                    "ratio": 0.18
+                    "ratio": 0.16
                   }
                 ]
               },
@@ -26401,7 +26401,7 @@
                 "extraRatios": [
                   {
                     "stat": "추가 체력",
-                    "ratio": 0.18
+                    "ratio": 0.16
                   }
                 ]
               },
@@ -26413,7 +26413,7 @@
                 "extraRatios": [
                   {
                     "stat": "추가 체력",
-                    "ratio": 0.18
+                    "ratio": 0.16
                   }
                 ]
               },
@@ -26425,12 +26425,12 @@
                 "extraRatios": [
                   {
                     "stat": "추가 체력",
-                    "ratio": 0.18
+                    "ratio": 0.16
                   }
                 ]
               }
             ],
-            "raw": "피해량 [10 / 20 / 30 / 40 / 50] (+추가 체력의 18%)"
+            "raw": "전투 교범(Q) > 피해량 10/20/30/40/50(+추가 체력의 18%) → 10/20/30/40/50(+추가 체력의 16%)"
           }
         ]
       },
@@ -27979,7 +27979,7 @@
                 "extraRatios": [
                   {
                     "stat": "잃은 체력",
-                    "ratio": 0.2
+                    "ratio": 0.25
                   }
                 ]
               },
@@ -27991,7 +27991,7 @@
                 "extraRatios": [
                   {
                     "stat": "잃은 체력",
-                    "ratio": 0.2
+                    "ratio": 0.25
                   }
                 ]
               },
@@ -28003,12 +28003,12 @@
                 "extraRatios": [
                   {
                     "stat": "잃은 체력",
-                    "ratio": 0.2
+                    "ratio": 0.25
                   }
                 ]
               }
             ],
-            "raw": "[솔로] 보호막 [100 / 150 / 200] (+스킬 증폭의 55%) (+잃은 체력의 20%)"
+            "raw": "헬기호출(R) > 자신에게 사용 시 보호막량 100/150/200(+스킬 증폭의 55%)(+잃은 체력의 20%) → 100/150/200(+스킬 증폭의 55%)(+잃은 체력의 25%)"
           },
           {
             "label": "[글로벌] 피해량",
@@ -28057,7 +28057,7 @@
             "levels": [
               {
                 "level": 1,
-                "baseDamage": 100,
+                "baseDamage": 150,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.55,
                 "extraRatios": [
@@ -28069,7 +28069,7 @@
               },
               {
                 "level": 2,
-                "baseDamage": 200,
+                "baseDamage": 250,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.55,
                 "extraRatios": [
@@ -28081,7 +28081,7 @@
               },
               {
                 "level": 3,
-                "baseDamage": 300,
+                "baseDamage": 350,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.55,
                 "extraRatios": [
@@ -28092,7 +28092,7 @@
                 ]
               }
             ],
-            "raw": "[글로벌] 보호막 [100 / 200 / 300] (+스킬 증폭의 55%) (+대상 잃은 체력의 15%)"
+            "raw": "헬기호출(R) > 아군에게 사용 시 보호막량 100/200/300(+스킬 증폭의 55%)(+대상 잃은 체력의 15%) → 150/250/350(+스킬 증폭의 55%)(+대상 잃은 체력의 15%)"
           }
         ]
       }
@@ -34288,22 +34288,22 @@
             "level": 1,
             "baseDamage": 50,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.1
+            "skillAmpRatio": 0.12
           },
           {
             "level": 2,
             "baseDamage": 85,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.1
+            "skillAmpRatio": 0.12
           },
           {
             "level": 3,
             "baseDamage": 120,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.1
+            "skillAmpRatio": 0.12
           }
         ],
-        "raw": "체력 회복량 [50 / 85 / 120] (+스킬 증폭의 10%)",
+        "raw": "유물 탐구(P) > 체력 회복량 50/85/120(+스킬 증폭의 10%) → 50/85/120(+스킬 증폭의 12%)",
         "sourceLabel": "체력 회복량",
         "entries": [
           {
@@ -34313,22 +34313,22 @@
                 "level": 1,
                 "baseDamage": 50,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.1
+                "skillAmpRatio": 0.12
               },
               {
                 "level": 2,
                 "baseDamage": 85,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.1
+                "skillAmpRatio": 0.12
               },
               {
                 "level": 3,
                 "baseDamage": 120,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.1
+                "skillAmpRatio": 0.12
               }
             ],
-            "raw": "체력 회복량 [50 / 85 / 120] (+스킬 증폭의 10%)"
+            "raw": "유물 탐구(P) > 체력 회복량 50/85/120(+스킬 증폭의 10%) → 50/85/120(+스킬 증폭의 12%)"
           }
         ]
       },
@@ -35069,30 +35069,30 @@
           },
           {
             "level": 2,
-            "baseDamage": 85,
+            "baseDamage": 95,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.4
           },
           {
             "level": 3,
-            "baseDamage": 100,
+            "baseDamage": 120,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.4
           },
           {
             "level": 4,
-            "baseDamage": 115,
+            "baseDamage": 145,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.4
           },
           {
             "level": 5,
-            "baseDamage": 130,
+            "baseDamage": 170,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.4
           }
         ],
-        "raw": "피해량 [70 / 85 / 100 / 115 / 130] (+스킬 증폭의 40%)",
+        "raw": "워프 슬래시(E) > 피해량 70/85/100/115/130(+스킬 증폭의 40%) → 70/95/120/145/170(+스킬 증폭의 40%)",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -35106,30 +35106,30 @@
               },
               {
                 "level": 2,
-                "baseDamage": 85,
+                "baseDamage": 95,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.4
               },
               {
                 "level": 3,
-                "baseDamage": 100,
+                "baseDamage": 120,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.4
               },
               {
                 "level": 4,
-                "baseDamage": 115,
+                "baseDamage": 145,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.4
               },
               {
                 "level": 5,
-                "baseDamage": 130,
+                "baseDamage": 170,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.4
               }
             ],
-            "raw": "피해량 [70 / 85 / 100 / 115 / 130] (+스킬 증폭의 40%)",
+            "raw": "워프 슬래시(E) > 피해량 70/85/100/115/130(+스킬 증폭의 40%) → 70/95/120/145/170(+스킬 증폭의 40%)",
             "historyMismatch": {
               "text": "baseDamage 설명란 [[70,85,100,115,130]], 역사 마지막 [120,140,160,180,200]: 8/7/6/5/4으로 감소되고, 워프 슬래시(E)의 피해량이 100/125/150/175/200에서 120/140/160/180/200으로 증가되고, 쿨다운이 전 구간 1초 감소되었다."
             }
@@ -36656,11 +36656,11 @@
                 "level": 1,
                 "baseDamage": 50,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.25,
+                "skillAmpRatio": 0.3,
                 "extraRatios": [
                   {
                     "stat": "레니 레벨",
-                    "ratio": 3
+                    "ratio": 2
                   }
                 ]
               },
@@ -36668,11 +36668,11 @@
                 "level": 2,
                 "baseDamage": 65,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.25,
+                "skillAmpRatio": 0.3,
                 "extraRatios": [
                   {
                     "stat": "레니 레벨",
-                    "ratio": 3
+                    "ratio": 2
                   }
                 ]
               },
@@ -36680,11 +36680,11 @@
                 "level": 3,
                 "baseDamage": 80,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.25,
+                "skillAmpRatio": 0.3,
                 "extraRatios": [
                   {
                     "stat": "레니 레벨",
-                    "ratio": 3
+                    "ratio": 2
                   }
                 ]
               },
@@ -36692,11 +36692,11 @@
                 "level": 4,
                 "baseDamage": 95,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.25,
+                "skillAmpRatio": 0.3,
                 "extraRatios": [
                   {
                     "stat": "레니 레벨",
-                    "ratio": 3
+                    "ratio": 2
                   }
                 ]
               },
@@ -36704,16 +36704,16 @@
                 "level": 5,
                 "baseDamage": 110,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.25,
+                "skillAmpRatio": 0.3,
                 "extraRatios": [
                   {
                     "stat": "레니 레벨",
-                    "ratio": 3
+                    "ratio": 2
                   }
                 ]
               }
             ],
-            "raw": "보호막 흡수량 [50 / 65 / 80 / 95 / 110] (+레니 레벨 * 3) (+스킬 증폭의 25%)"
+            "raw": "에어 호른! 건(E) > 보호막량 50/65/80/95/110(+레니 레벨*3)(+스킬 증폭의 25%) → 50/65/80/95/110(+레니 레벨*2)(+스킬 증폭의 30%)"
           }
         ]
       },
@@ -44503,7 +44503,19 @@
             "levels": [
               {
                 "level": 1,
-                "baseDamage": 20,
+                "baseDamage": 10,
+                "attackPowerRatio": 0,
+                "skillAmpRatio": 0,
+                "extraRatios": [
+                  {
+                    "stat": "추가 공격력",
+                    "ratio": 0.8
+                  }
+                ]
+              },
+              {
+                "level": 2,
+                "baseDamage": 40,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0,
                 "extraRatios": [
@@ -44514,8 +44526,8 @@
                 ]
               },
               {
-                "level": 2,
-                "baseDamage": 50,
+                "level": 3,
+                "baseDamage": 70,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0,
                 "extraRatios": [
@@ -44526,8 +44538,8 @@
                 ]
               },
               {
-                "level": 3,
-                "baseDamage": 80,
+                "level": 4,
+                "baseDamage": 100,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0,
                 "extraRatios": [
@@ -44538,8 +44550,8 @@
                 ]
               },
               {
-                "level": 4,
-                "baseDamage": 110,
+                "level": 5,
+                "baseDamage": 130,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0,
                 "extraRatios": [
@@ -44548,21 +44560,9 @@
                     "ratio": 1.2
                   }
                 ]
-              },
-              {
-                "level": 5,
-                "baseDamage": 140,
-                "attackPowerRatio": 0,
-                "skillAmpRatio": 0,
-                "extraRatios": [
-                  {
-                    "stat": "추가 공격력",
-                    "ratio": 1.3
-                  }
-                ]
               }
             ],
-            "raw": "2타 피해량 [20 / 50 / 80 / 110 / 140] (+추가 공격력의 90% / 100% / 110% / 120% / 130%)"
+            "raw": "이중 참격 / 이중 휩쓸기(Q) > 이중 참격(쌍검 Q) 2타 피해량 20/50/80/110/140(+추가 공격력의 90/100/110/120/130%) → 10/40/70/100/130(+추가 공격력의 80/90/100/110/120%)"
           }
         ]
       },
@@ -48261,34 +48261,34 @@
                 "level": 1,
                 "baseDamage": 130,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.85
+                "skillAmpRatio": 0.9
               },
               {
                 "level": 2,
                 "baseDamage": 160,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.85
+                "skillAmpRatio": 0.9
               },
               {
                 "level": 3,
                 "baseDamage": 190,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.85
+                "skillAmpRatio": 0.9
               },
               {
                 "level": 4,
                 "baseDamage": 220,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.85
+                "skillAmpRatio": 0.9
               },
               {
                 "level": 5,
                 "baseDamage": 250,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.85
+                "skillAmpRatio": 0.9
               }
             ],
-            "raw": "백플립 피해량 [130 / 160 / 190 / 220 / 250] (+스킬 증폭의 85%)"
+            "raw": "스윕 킥 / 백플립(W) > 백플립(마탄W) 피해량 130/160/190/220/250(+스킬 증폭의 85%) → 130/160/190/220/250(+스킬 증폭의 90%)"
           }
         ]
       },
@@ -48601,34 +48601,34 @@
                 "level": 1,
                 "baseDamage": 80,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.8
+                "skillAmpRatio": 0.75
               },
               {
                 "level": 2,
                 "baseDamage": 115,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.8
+                "skillAmpRatio": 0.75
               },
               {
                 "level": 3,
                 "baseDamage": 150,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.8
+                "skillAmpRatio": 0.75
               },
               {
                 "level": 4,
                 "baseDamage": 185,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.8
+                "skillAmpRatio": 0.75
               },
               {
                 "level": 5,
                 "baseDamage": 220,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.8
+                "skillAmpRatio": 0.75
               }
             ],
-            "raw": "찬란한 낭만 피해량 [80 / 115 / 150 / 185 / 220] (+스킬 증폭의 80%)"
+            "raw": "화려한 낭만 / 찬란한 낭만(Q) > 찬란한 낭만(EQ) 피해량 80/115/150/185/220(+스킬 증폭의 80%) → 80/115/150/185/220(+스킬 증폭의 75%)"
           }
         ]
       },

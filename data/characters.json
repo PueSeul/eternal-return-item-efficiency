@@ -54,7 +54,7 @@
         "skillAmpRatio": 0,
         "attackPowerRatio": 0,
         "attackSpeedRatio": 0.035,
-        "increaseBasicAttackDamageRatio": 0.014,
+        "increaseBasicAttackDamageRatio": 0.015,
         "attackPower": 0
       },
       "저격총": {
@@ -88,7 +88,7 @@
         "attackPower": 0
       },
       "창": {
-        "skillAmpRatio": 0.05,
+        "skillAmpRatio": 0.048,
         "attackPowerRatio": 0,
         "attackSpeedRatio": 0.034,
         "increaseBasicAttackDamageRatio": 0,
@@ -515,7 +515,7 @@
         "attackPower": 0
       },
       "방망이": {
-        "skillAmpRatio": 0.046,
+        "skillAmpRatio": 0.045,
         "attackPowerRatio": 0,
         "attackSpeedRatio": 0.04,
         "increaseBasicAttackDamageRatio": 0,
@@ -527,7 +527,7 @@
     "id": "25",
     "name": "버니스",
     "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Bernice_S000.png",
-    "attackPower": 37,
+    "attackPower": 40,
     "attackPowerPerLevel": 4.6,
     "masteries": {
       "저격총": {
@@ -1147,7 +1147,7 @@
     "attackPowerPerLevel": 4.4,
     "masteries": {
       "암기": {
-        "skillAmpRatio": 0.045,
+        "skillAmpRatio": 0.044,
         "attackPowerRatio": 0,
         "attackSpeedRatio": 0.04,
         "increaseBasicAttackDamageRatio": 0,
@@ -1342,7 +1342,7 @@
         "skillAmpRatio": 0,
         "attackPowerRatio": 0,
         "attackSpeedRatio": 0.036,
-        "increaseBasicAttackDamageRatio": 0.02,
+        "increaseBasicAttackDamageRatio": 0.019,
         "attackPower": 0
       }
     }
