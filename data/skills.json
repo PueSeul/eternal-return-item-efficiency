@@ -1190,7 +1190,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-17T11:29:08.000Z",
+    "wikiRevisedAt": "2026-10-28T11:20:30.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -5010,7 +5010,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-24T04:15:42.000Z",
+    "wikiRevisedAt": "2026-10-28T11:54:29.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -8325,7 +8325,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-19T15:11:13.000Z",
+    "wikiRevisedAt": "2026-10-29T02:27:07.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -10659,7 +10659,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-14T09:55:48.000Z",
+    "wikiRevisedAt": "2026-10-28T03:19:05.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -13625,7 +13625,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-16T13:52:53.000Z",
+    "wikiRevisedAt": "2026-10-29T02:29:58.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -14458,7 +14458,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-09T11:08:59.000Z",
+    "wikiRevisedAt": "2026-10-29T02:58:06.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -27979,7 +27979,7 @@
                 "extraRatios": [
                   {
                     "stat": "잃은 체력",
-                    "ratio": 0.25
+                    "ratio": 0.2
                   }
                 ]
               },
@@ -27991,7 +27991,7 @@
                 "extraRatios": [
                   {
                     "stat": "잃은 체력",
-                    "ratio": 0.25
+                    "ratio": 0.2
                   }
                 ]
               },
@@ -28003,12 +28003,12 @@
                 "extraRatios": [
                   {
                     "stat": "잃은 체력",
-                    "ratio": 0.25
+                    "ratio": 0.2
                   }
                 ]
               }
             ],
-            "raw": "헬기호출(R) > 자신에게 사용 시 보호막량 100/150/200(+스킬 증폭의 55%)(+잃은 체력의 20%) → 100/150/200(+스킬 증폭의 55%)(+잃은 체력의 25%)"
+            "raw": "[솔로] 보호막 [100 / 150 / 200] (+스킬 증폭의 55%) (+잃은 체력의 20%)"
           },
           {
             "label": "[글로벌] 피해량",
@@ -28057,7 +28057,7 @@
             "levels": [
               {
                 "level": 1,
-                "baseDamage": 150,
+                "baseDamage": 100,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.55,
                 "extraRatios": [
@@ -28069,7 +28069,7 @@
               },
               {
                 "level": 2,
-                "baseDamage": 250,
+                "baseDamage": 200,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.55,
                 "extraRatios": [
@@ -28081,7 +28081,7 @@
               },
               {
                 "level": 3,
-                "baseDamage": 350,
+                "baseDamage": 300,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.55,
                 "extraRatios": [
@@ -28092,12 +28092,12 @@
                 ]
               }
             ],
-            "raw": "헬기호출(R) > 아군에게 사용 시 보호막량 100/200/300(+스킬 증폭의 55%)(+대상 잃은 체력의 15%) → 150/250/350(+스킬 증폭의 55%)(+대상 잃은 체력의 15%)"
+            "raw": "[글로벌] 보호막 [100 / 200 / 300] (+스킬 증폭의 55%) (+대상 잃은 체력의 15%)"
           }
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-18T12:30:11.000Z",
+    "wikiRevisedAt": "2026-10-29T02:50:56.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -31874,7 +31874,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-27T11:23:18.000Z",
+    "wikiRevisedAt": "2026-10-28T03:46:19.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -34272,7 +34272,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-22T13:04:27.000Z",
+    "wikiRevisedAt": "2026-10-28T17:16:19.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -37733,7 +37733,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-26T04:39:05.000Z",
+    "wikiRevisedAt": "2026-10-28T13:53:42.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -42483,7 +42483,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-27T07:52:58.000Z",
+    "wikiRevisedAt": "2026-10-29T02:10:12.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -46162,7 +46162,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-27T09:23:01.000Z",
+    "wikiRevisedAt": "2026-10-28T16:43:42.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -47310,7 +47310,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-22T19:27:00.000Z",
+    "wikiRevisedAt": "2026-10-28T03:30:09.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -48261,34 +48261,34 @@
                 "level": 1,
                 "baseDamage": 130,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.9
+                "skillAmpRatio": 0.85
               },
               {
                 "level": 2,
                 "baseDamage": 160,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.9
+                "skillAmpRatio": 0.85
               },
               {
                 "level": 3,
                 "baseDamage": 190,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.9
+                "skillAmpRatio": 0.85
               },
               {
                 "level": 4,
                 "baseDamage": 220,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.9
+                "skillAmpRatio": 0.85
               },
               {
                 "level": 5,
                 "baseDamage": 250,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.9
+                "skillAmpRatio": 0.85
               }
             ],
-            "raw": "스윕 킥 / 백플립(W) > 백플립(마탄W) 피해량 130/160/190/220/250(+스킬 증폭의 85%) → 130/160/190/220/250(+스킬 증폭의 90%)"
+            "raw": "백플립 피해량 [130 / 160 / 190 / 220 / 250] (+스킬 증폭의 85%)"
           }
         ]
       },
@@ -48460,7 +48460,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-26T16:08:17.000Z",
+    "wikiRevisedAt": "2026-10-28T08:51:08.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -48601,34 +48601,34 @@
                 "level": 1,
                 "baseDamage": 80,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.75
+                "skillAmpRatio": 0.8
               },
               {
                 "level": 2,
                 "baseDamage": 115,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.75
+                "skillAmpRatio": 0.8
               },
               {
                 "level": 3,
                 "baseDamage": 150,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.75
+                "skillAmpRatio": 0.8
               },
               {
                 "level": 4,
                 "baseDamage": 185,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.75
+                "skillAmpRatio": 0.8
               },
               {
                 "level": 5,
                 "baseDamage": 220,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.75
+                "skillAmpRatio": 0.8
               }
             ],
-            "raw": "화려한 낭만 / 찬란한 낭만(Q) > 찬란한 낭만(EQ) 피해량 80/115/150/185/220(+스킬 증폭의 80%) → 80/115/150/185/220(+스킬 증폭의 75%)"
+            "raw": "찬란한 낭만 피해량 [80 / 115 / 150 / 185 / 220] (+스킬 증폭의 80%)"
           }
         ]
       },
@@ -48769,7 +48769,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-26T13:07:22.000Z",
+    "wikiRevisedAt": "2026-10-29T02:12:08.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -49620,7 +49620,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-26T06:17:50.000Z",
+    "wikiRevisedAt": "2026-10-28T13:15:30.000Z",
     "needsReview": [],
     "parser": 2
   }
