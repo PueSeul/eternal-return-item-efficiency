@@ -4,7 +4,7 @@
     "name": "카른웬난",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101401.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_101401.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -20,7 +20,7 @@
     "name": "파산검",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101402.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_101402.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -36,7 +36,7 @@
     "name": "초진동나이프",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_101404.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -50,7 +50,7 @@
     "name": "프라가라흐",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_101405.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -65,7 +65,7 @@
     "name": "다마스커스 가시",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_101406.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -80,7 +80,7 @@
     "name": "마하라자",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101407.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_101407.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -94,7 +94,7 @@
     "name": "하이랜더 더크",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101408.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_101408.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -109,7 +109,7 @@
     "name": "월식",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_101501.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -125,7 +125,7 @@
     "name": "소울 리퍼",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_101502.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -140,7 +140,7 @@
     "name": "비색 단검",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_101503.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -159,7 +159,7 @@
     "name": "악의",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_101504.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -174,7 +174,7 @@
     "name": "비색 단검-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_101701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -190,7 +190,7 @@
     "name": "비색 단검-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_101702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_101702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -206,7 +206,7 @@
     "name": "뚜언 띠엔",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_102405.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -221,7 +221,7 @@
     "name": "아론다이트",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_102406.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -235,7 +235,7 @@
     "name": "엑스칼리버",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102407.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_102407.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -251,7 +251,7 @@
     "name": "플라즈마 소드",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102408.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_102408.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -265,7 +265,7 @@
     "name": "레바테인",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102409.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_102409.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -279,7 +279,7 @@
     "name": "모노호시자오",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102410.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_102410.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -294,7 +294,7 @@
     "name": "호푸어드",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102411.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_102411.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -309,7 +309,7 @@
     "name": "빛의 검",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102412.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_102412.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -324,7 +324,7 @@
     "name": "아케인 엣지",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102413.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_102413.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -339,7 +339,7 @@
     "name": "다인슬라이프",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_102501.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -357,7 +357,7 @@
     "name": "알마스",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_102502.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -372,7 +372,7 @@
     "name": "하데스 엣지",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_102503.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -386,7 +386,7 @@
     "name": "이퀄리브리엄",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_102504.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -401,7 +401,7 @@
     "name": "다인슬라이프-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_102701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -416,7 +416,7 @@
     "name": "다인슬라이프-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_102702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_102702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -431,7 +431,7 @@
     "name": "이천일류",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_103401.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_103401.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -446,7 +446,7 @@
     "name": "자웅일대검",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_103402.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_103402.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -461,7 +461,7 @@
     "name": "아수라",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_103403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_103403.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -477,7 +477,7 @@
     "name": "검은 나비",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_103404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_103404.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -491,7 +491,7 @@
     "name": "디오스쿠로이",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_103501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_103501.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -505,7 +505,7 @@
     "name": "로이거 차르",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_103502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_103502.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -520,7 +520,7 @@
     "name": "간장과 막야",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_103503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_103503.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -534,7 +534,7 @@
     "name": "환영도",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_103504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_103504.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -552,7 +552,7 @@
     "name": "타나토스",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_103505.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_103505.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -567,7 +567,7 @@
     "name": "훅소드",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_103506.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_103506.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -582,7 +582,7 @@
     "name": "죽음의 발걸음",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_103507.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_103507.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -597,7 +597,7 @@
     "name": "환영도-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_103701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_103701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -612,7 +612,7 @@
     "name": "환영도-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_103702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_103702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -627,7 +627,7 @@
     "name": "낭아봉",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104401.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_104401.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -642,7 +642,7 @@
     "name": "다그다의 망치",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104402.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_104402.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -657,7 +657,7 @@
     "name": "토르의 망치",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_104403.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -671,7 +671,7 @@
     "name": "개밥바라기",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_104404.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -686,7 +686,7 @@
     "name": "마법봉",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_104405.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -702,7 +702,7 @@
     "name": "천근추",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_104406.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -716,7 +716,7 @@
     "name": "금강저",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104407.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_104407.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -732,7 +732,7 @@
     "name": "팔괘장",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104408.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_104408.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -746,7 +746,7 @@
     "name": "아는 것이 힘",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104409.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_104409.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -761,7 +761,7 @@
     "name": "피스브링어",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_104501.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -779,7 +779,7 @@
     "name": "뿅망치",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_104502.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -794,7 +794,7 @@
     "name": "둠스데이",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_104503.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -809,7 +809,7 @@
     "name": "레비아탄",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_104504.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -823,7 +823,7 @@
     "name": "피스브링어-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_104701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -838,7 +838,7 @@
     "name": "피스브링어-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_104702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_104702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -853,7 +853,7 @@
     "name": "빔 엑스",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_105402.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_105402.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -868,7 +868,7 @@
     "name": "산타 무에르테",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_105403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_105403.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -883,7 +883,7 @@
     "name": "스퀴테",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_105404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_105404.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -897,7 +897,7 @@
     "name": "파라슈",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_105405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_105405.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -912,7 +912,7 @@
     "name": "하르페",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_105406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_105406.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -926,7 +926,7 @@
     "name": "저거너트",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_105407.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_105407.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -941,7 +941,7 @@
     "name": "반고부",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_105408.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_105408.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -956,7 +956,7 @@
     "name": "낙원의 낫",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_105501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_105501.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -971,7 +971,7 @@
     "name": "진홍빛 낫",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_105502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_105502.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -989,7 +989,7 @@
     "name": "네플리온",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_105503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_105503.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1003,7 +1003,7 @@
     "name": "진홍빛 낫-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_105701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_105701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -1018,7 +1018,7 @@
     "name": "진홍빛 낫-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_105702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_105702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -1033,7 +1033,7 @@
     "name": "애각창",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_107402.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_107402.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1048,7 +1048,7 @@
     "name": "장팔사모",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_107403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_107403.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1063,7 +1063,7 @@
     "name": "코스믹 바이던트",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_107404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_107404.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1079,7 +1079,7 @@
     "name": "트리아이나",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_107405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_107405.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1095,7 +1095,7 @@
     "name": "화첨창",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_107406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_107406.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1109,7 +1109,7 @@
     "name": "방천화극",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_107407.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_107407.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1124,7 +1124,7 @@
     "name": "청룡언월도",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_107408.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_107408.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1138,7 +1138,7 @@
     "name": "롱기누스의 창",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_107501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_107501.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -1157,7 +1157,7 @@
     "name": "별 사냥꾼",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_107502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_107502.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1172,7 +1172,7 @@
     "name": "롱기누스의 창-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_107701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_107701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -1188,7 +1188,7 @@
     "name": "롱기누스의 창-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_107702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_107702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -1204,7 +1204,7 @@
     "name": "구원의 여신상",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_108403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_108403.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1219,7 +1219,7 @@
     "name": "타구봉",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_108404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_108404.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1233,7 +1233,7 @@
     "name": "스파이의 우산",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_108501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_108501.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1248,7 +1248,7 @@
     "name": "여의봉",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_108502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_108502.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1263,7 +1263,7 @@
     "name": "터럭손 방망이",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_108503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_108503.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1277,7 +1277,7 @@
     "name": "로드 오브 하트",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_108504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_108504.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -1295,7 +1295,7 @@
     "name": "시체매",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_108505.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_108505.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1310,7 +1310,7 @@
     "name": "롤리팝",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_108506.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_108506.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1325,7 +1325,7 @@
     "name": "로드 오브 하트-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_108701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_108701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -1340,7 +1340,7 @@
     "name": "로드 오브 하트-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_108702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_108702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -1355,7 +1355,7 @@
     "name": "뇌룡편",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_109401.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_109401.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1370,7 +1370,7 @@
     "name": "글레이프니르",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_109403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_109403.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1385,7 +1385,7 @@
     "name": "플라즈마 윕",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_109404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_109404.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1400,7 +1400,7 @@
     "name": "캐소드라쉬",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_109405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_109405.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1415,7 +1415,7 @@
     "name": "우라누스",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_109406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_109406.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1430,7 +1430,7 @@
     "name": "혈화구절편",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_109501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_109501.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -1448,7 +1448,7 @@
     "name": "사복검",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_109502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_109502.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1464,7 +1464,7 @@
     "name": "운명의 고리",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_109503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_109503.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1479,7 +1479,7 @@
     "name": "혈화구절편-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_109701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_109701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -1495,7 +1495,7 @@
     "name": "혈화구절편-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_109702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_109702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -1511,7 +1511,7 @@
     "name": "단영촌천투",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_110405.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1526,7 +1526,7 @@
     "name": "디바인 피스트",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_110406.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1541,7 +1541,7 @@
     "name": "블러드윙 너클",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110407.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_110407.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1556,7 +1556,7 @@
     "name": "빙화현옥수",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110408.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_110408.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1571,7 +1571,7 @@
     "name": "여래수투",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110409.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_110409.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1586,7 +1586,7 @@
     "name": "브레이질 건틀릿",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110410.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_110410.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1601,7 +1601,7 @@
     "name": "소수",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110411.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_110411.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1616,7 +1616,7 @@
     "name": "천잠장갑",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110412.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_110412.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1631,7 +1631,7 @@
     "name": "주작자문",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_110501.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1645,7 +1645,7 @@
     "name": "프로스트팽",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_110502.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1660,7 +1660,7 @@
     "name": "블러디 핸즈",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_110503.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -1678,7 +1678,7 @@
     "name": "아이언 피스트",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_110504.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1693,7 +1693,7 @@
     "name": "블러디 핸즈-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_110701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -1708,7 +1708,7 @@
     "name": "블러디 핸즈-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_110702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_110702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -1723,7 +1723,7 @@
     "name": "택티컬 톤파",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_111402.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_111402.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1738,7 +1738,7 @@
     "name": "마이쏙",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_111403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_111403.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1753,7 +1753,7 @@
     "name": "플라즈마 톤파",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_111404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_111404.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1769,7 +1769,7 @@
     "name": "윈드러너",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_111405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_111405.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1784,7 +1784,7 @@
     "name": "홀스터 톤파",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_111406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_111406.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1799,7 +1799,7 @@
     "name": "흑요석 짓테",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_111501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_111501.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1815,7 +1815,7 @@
     "name": "만년한파",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_111502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_111502.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1831,7 +1831,7 @@
     "name": "칼날 톤파",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_111503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_111503.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -1850,7 +1850,7 @@
     "name": "맨티스 톤파",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_111504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_111504.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1865,7 +1865,7 @@
     "name": "칼날 톤파-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_111701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_111701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -1881,7 +1881,7 @@
     "name": "칼날 톤파-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_111702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_111702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -1897,7 +1897,7 @@
     "name": "소이탄",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_112302.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_112302.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1913,7 +1913,7 @@
     "name": "다비드슬링",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_112401.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_112401.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1927,7 +1927,7 @@
     "name": "연막탄",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_112402.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_112402.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -1941,7 +1941,7 @@
     "name": "안티오크의 수류탄",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_112404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_112404.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1955,7 +1955,7 @@
     "name": "파이어 볼",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_112405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_112405.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1971,7 +1971,7 @@
     "name": "프리즘 볼",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_112406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_112406.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1985,7 +1985,7 @@
     "name": "아스트라페",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_112407.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_112407.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -1999,7 +1999,7 @@
     "name": "점착폭탄",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_112408.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_112408.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2014,7 +2014,7 @@
     "name": "루테늄 구슬",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_112501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_112501.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2029,7 +2029,7 @@
     "name": "여의주",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_112502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_112502.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2045,7 +2045,7 @@
     "name": "체이서",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_112503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_112503.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -2063,7 +2063,7 @@
     "name": "체이서-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_112701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_112701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -2078,7 +2078,7 @@
     "name": "체이서-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_112702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_112702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -2093,7 +2093,7 @@
     "name": "미치광이왕의 카드",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_113401.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_113401.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2107,7 +2107,7 @@
     "name": "옥전결",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_113405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_113405.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2121,7 +2121,7 @@
     "name": "풍마 수리검",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_113406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_113406.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2136,7 +2136,7 @@
     "name": "빙백은침",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_113408.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_113408.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2151,7 +2151,7 @@
     "name": "푸른색 단도",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_113409.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_113409.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2166,7 +2166,7 @@
     "name": "플레솃",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_113410.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_113410.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2181,7 +2181,7 @@
     "name": "건곤권",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_113411.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_113411.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2196,7 +2196,7 @@
     "name": "생사부",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_113412.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_113412.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2210,7 +2210,7 @@
     "name": "수다르사나",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_113501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_113501.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2224,7 +2224,7 @@
     "name": "만천화우",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_113502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_113502.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2238,7 +2238,7 @@
     "name": "흑련비표",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_113503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_113503.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -2256,7 +2256,7 @@
     "name": "흑련비표-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_113701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_113701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -2271,7 +2271,7 @@
     "name": "흑련비표-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_113702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_113702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -2286,7 +2286,7 @@
     "name": "편전",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_114401.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_114401.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2300,7 +2300,7 @@
     "name": "골든래쇼 보우",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_114403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_114403.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2316,7 +2316,7 @@
     "name": "트윈보우",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_114405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_114405.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2331,7 +2331,7 @@
     "name": "제베의 활",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_114406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_114406.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2346,7 +2346,7 @@
     "name": "아르테미스",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_114407.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_114407.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2361,7 +2361,7 @@
     "name": "엘리멘탈 보우",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_114501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_114501.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2376,7 +2376,7 @@
     "name": "페일노트",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_114502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_114502.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -2394,7 +2394,7 @@
     "name": "아르기로톡소스",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_114503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_114503.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2410,7 +2410,7 @@
     "name": "적궁백시",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_114504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_114504.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2424,7 +2424,7 @@
     "name": "이글 아이",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_114505.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_114505.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2440,7 +2440,7 @@
     "name": "페일노트-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_114701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_114701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -2455,7 +2455,7 @@
     "name": "페일노트-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_114702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_114702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -2470,7 +2470,7 @@
     "name": "대황",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_115402.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_115402.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2484,7 +2484,7 @@
     "name": "발리스타",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_115403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_115403.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2499,7 +2499,7 @@
     "name": "저격 크로스보우",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_115404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_115404.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2513,7 +2513,7 @@
     "name": "영광금귀신기노",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_115405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_115405.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2528,7 +2528,7 @@
     "name": "포이즌드 크로스보우",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_115406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_115406.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2542,7 +2542,7 @@
     "name": "샤릉가",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_115501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_115501.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2556,7 +2556,7 @@
     "name": "혈색반월",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_115502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_115502.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -2574,7 +2574,7 @@
     "name": "템페스트",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_115503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_115503.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2588,7 +2588,7 @@
     "name": "팬텀 볼트",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_115504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_115504.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2602,7 +2602,7 @@
     "name": "혈색반월-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_115701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_115701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -2617,7 +2617,7 @@
     "name": "혈색반월-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_115702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_115702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -2632,7 +2632,7 @@
     "name": "마탄의 사수",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_116403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_116403.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2646,7 +2646,7 @@
     "name": "엘레강스",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_116404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_116404.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2661,7 +2661,7 @@
     "name": "일렉트론 블라스터",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_116405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_116405.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2676,7 +2676,7 @@
     "name": "매그넘-보아",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_116406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_116406.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2692,7 +2692,7 @@
     "name": "글록 48",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_116407.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_116407.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2706,7 +2706,7 @@
     "name": "스탬피드",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_116409.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_116409.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2720,7 +2720,7 @@
     "name": "플라즈마 건",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_116410.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_116410.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2734,7 +2734,7 @@
     "name": "악켈테",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_116501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_116501.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2750,7 +2750,7 @@
     "name": "알타이르",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_116502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_116502.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2766,7 +2766,7 @@
     "name": "하이 눈",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_116503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_116503.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -2784,7 +2784,7 @@
     "name": "하이 눈-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_116701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_116701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -2799,7 +2799,7 @@
     "name": "하이 눈-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_116702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_116702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -2814,7 +2814,7 @@
     "name": "95식 자동 소총",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_117403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_117403.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2829,7 +2829,7 @@
     "name": "AK-12",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_117404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_117404.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2843,7 +2843,7 @@
     "name": "XCR",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_117405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_117405.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2858,7 +2858,7 @@
     "name": "저지먼트",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_117406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_117406.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2872,7 +2872,7 @@
     "name": "골드 러시",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_117407.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_117407.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2887,7 +2887,7 @@
     "name": "아그니",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_117501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_117501.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -2901,7 +2901,7 @@
     "name": "피안화",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_117502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_117502.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2916,7 +2916,7 @@
     "name": "헬파이어",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_117503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_117503.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -2934,7 +2934,7 @@
     "name": "엔데버 AX",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_117504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_117504.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2948,7 +2948,7 @@
     "name": "발키리",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_117505.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_117505.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -2963,7 +2963,7 @@
     "name": "헬파이어-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_117701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_117701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -2978,7 +2978,7 @@
     "name": "헬파이어-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_117702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_117702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -2994,7 +2994,7 @@
     "name": "Tac-50",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_118403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_118403.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3009,7 +3009,7 @@
     "name": "인터벤션",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_118404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_118404.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3025,7 +3025,7 @@
     "name": "NTW-20",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_118405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_118405.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3042,7 +3042,7 @@
     "name": "폴라리스",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_118406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_118406.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3057,7 +3057,7 @@
     "name": "가우스 라이플",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_118407.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_118407.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3073,7 +3073,7 @@
     "name": "사사성광",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_118501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_118501.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3090,7 +3090,7 @@
     "name": "현자총통",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_118502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_118502.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3103,7 +3103,7 @@
     "name": "안드로메다",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_118503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_118503.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3119,7 +3119,7 @@
     "name": "위도우 메이커",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_118504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_118504.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -3138,7 +3138,7 @@
     "name": "데드 아이",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_118505.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_118505.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3154,7 +3154,7 @@
     "name": "위도우 메이커-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_118701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_118701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -3170,7 +3170,7 @@
     "name": "위도우 메이커-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_118702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_118702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -3187,7 +3187,7 @@
     "name": "샤퍼",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_119301.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_119301.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3201,7 +3201,7 @@
     "name": "대소반룡곤",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_119401.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_119401.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3216,7 +3216,7 @@
     "name": "초진동눈차크",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_119402.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_119402.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3230,7 +3230,7 @@
     "name": "케르베로스",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_119403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_119403.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3245,7 +3245,7 @@
     "name": "블루3",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_119404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_119404.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3260,7 +3260,7 @@
     "name": "히드라",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_119501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_119501.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -3278,7 +3278,7 @@
     "name": "비익련리",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_119502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_119502.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3293,7 +3293,7 @@
     "name": "게리온",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_119503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_119503.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3307,7 +3307,7 @@
     "name": "네온 체인",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_119504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_119504.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3321,7 +3321,7 @@
     "name": "히드라-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_119701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_119701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -3336,7 +3336,7 @@
     "name": "히드라-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_119702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_119702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -3351,7 +3351,7 @@
     "name": "활빈검",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120302.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_120302.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3366,7 +3366,7 @@
     "name": "듀랜달 Mk2",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120401.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_120401.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3382,7 +3382,7 @@
     "name": "미스틸테인",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120402.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_120402.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3398,7 +3398,7 @@
     "name": "볼틱레토",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_120403.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3413,7 +3413,7 @@
     "name": "유성검",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_120404.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3428,7 +3428,7 @@
     "name": "주와이외즈",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_120405.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3445,7 +3445,7 @@
     "name": "레드 팬서",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_120406.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3460,7 +3460,7 @@
     "name": "에스프리",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120407.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_120407.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3474,7 +3474,7 @@
     "name": "플랑베르주",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120408.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_120408.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3489,7 +3489,7 @@
     "name": "아르고스의 눈",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_120501.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3504,7 +3504,7 @@
     "name": "노스페라투",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_120502.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -3523,7 +3523,7 @@
     "name": "기어헬릭스",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_120503.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3538,7 +3538,7 @@
     "name": "필드 쏜",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_120504.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3553,7 +3553,7 @@
     "name": "노스페라투-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_120701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -3570,7 +3570,7 @@
     "name": "노스페라투-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_120702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_120702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -3585,7 +3585,7 @@
     "name": "보헤미안",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121401.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_121401.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3600,7 +3600,7 @@
     "name": "천국의 계단",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121402.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_121402.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3615,7 +3615,7 @@
     "name": "퍼플 헤이즈",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_121403.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3629,7 +3629,7 @@
     "name": "새티스팩션",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_121404.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3644,7 +3644,7 @@
     "name": "원더풀 투나잇",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_121405.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3658,7 +3658,7 @@
     "name": "더 월",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_121406.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3672,7 +3672,7 @@
     "name": "틴 스피릿",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121407.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_121407.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3686,7 +3686,7 @@
     "name": "캡틴 페퍼",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_121501.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3701,7 +3701,7 @@
     "name": "하트 브레이커",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_121502.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -3719,7 +3719,7 @@
     "name": "헤븐즈 도어",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_121503.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3733,7 +3733,7 @@
     "name": "프리 버드",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_121504.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3748,7 +3748,7 @@
     "name": "하트 브레이커-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_121701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -3763,7 +3763,7 @@
     "name": "하트 브레이커-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_121702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_121702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -3778,7 +3778,7 @@
     "name": "미러리스",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_122401.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_122401.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3793,7 +3793,7 @@
     "name": "컴파운드 사이트",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_122402.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_122402.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3809,7 +3809,7 @@
     "name": "카메라 캐논",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_122403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_122403.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3825,7 +3825,7 @@
     "name": "V.I.C.G",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_122404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_122404.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3841,7 +3841,7 @@
     "name": "폴라로이드 카메라",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_122405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_122405.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3857,7 +3857,7 @@
     "name": "울트라비전",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_122501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_122501.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3872,7 +3872,7 @@
     "name": "비전 플렉스",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_122502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_122502.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -3891,7 +3891,7 @@
     "name": "온 에어",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_122503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_122503.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3907,7 +3907,7 @@
     "name": "트리플 포커스",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_122504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_122504.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -3923,7 +3923,7 @@
     "name": "비전 플렉스-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_122701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_122701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -3940,7 +3940,7 @@
     "name": "비전 플렉스-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_122702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_122702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -3956,7 +3956,7 @@
     "name": "은둔자",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_130401.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_130401.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3970,7 +3970,7 @@
     "name": "운명의 수레바퀴",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_130402.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_130402.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -3986,7 +3986,7 @@
     "name": "절제",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_130403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_130403.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4002,7 +4002,7 @@
     "name": "더 스타",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_130404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_130404.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4017,7 +4017,7 @@
     "name": "더 문",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_130405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_130405.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -4031,7 +4031,7 @@
     "name": "여제",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_130501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_130501.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -4046,7 +4046,7 @@
     "name": "더 데스",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_130502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_130502.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -4063,7 +4063,7 @@
     "name": "더 썬",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_130503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_130503.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -4079,7 +4079,7 @@
     "name": "더 행맨",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_130504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_130504.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -4094,7 +4094,7 @@
     "name": "더 데스-진홍",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_130701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_130701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -4109,7 +4109,7 @@
     "name": "더 데스-새벽",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_130702.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_130702.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -4125,7 +4125,7 @@
     "name": "데스애더퀸",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_131401.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_131401.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4141,7 +4141,7 @@
     "name": "블랙맘바킹",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_131402.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_131402.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4156,7 +4156,7 @@
     "name": "슈퍼사이드와인더",
     "grade": "영웅",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_131403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_131403.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4171,7 +4171,7 @@
     "name": "데스애더퀸-MT",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_131501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_131501.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -4187,7 +4187,7 @@
     "name": "데스애더퀸-FC",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_131502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_131502.png",
     "price": 550,
     "priceSource": "사용자 지정",
     "stats": {
@@ -4204,7 +4204,7 @@
     "name": "데스애더퀸-VBS",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_131503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_131503.png",
     "price": 700,
     "priceSource": "사용자 지정",
     "stats": {
@@ -4221,7 +4221,7 @@
     "name": "블랙맘바킹-TL",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_131504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_131504.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -4236,7 +4236,7 @@
     "name": "블랙맘바킹-FC",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_131505.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_131505.png",
     "price": 550,
     "priceSource": "사용자 지정",
     "stats": {
@@ -4252,7 +4252,7 @@
     "name": "블랙맘바킹-VBS",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_131506.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_131506.png",
     "price": 700,
     "priceSource": "사용자 지정",
     "stats": {
@@ -4267,7 +4267,7 @@
     "name": "슈퍼사이드와인더-ML",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_131507.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_131507.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -4282,7 +4282,7 @@
     "name": "슈퍼사이드와인더-FC",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_131508.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_131508.png",
     "price": 600,
     "priceSource": "사용자 지정",
     "stats": {
@@ -4298,7 +4298,7 @@
     "name": "슈퍼사이드와인더-VBS",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_131509.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_131509.png",
     "price": 750,
     "priceSource": "사용자 지정",
     "stats": {
@@ -4313,7 +4313,7 @@
     "name": "로빈",
     "grade": "영웅",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201304.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201304.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4327,7 +4327,7 @@
     "name": "미스릴 투구",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201403.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4341,7 +4341,7 @@
     "name": "수정 티아라",
     "grade": "영웅",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201404.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4355,7 +4355,7 @@
     "name": "오토바이 헬멧",
     "grade": "영웅",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201405.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4369,7 +4369,7 @@
     "name": "전술-OPS 헬멧",
     "grade": "영웅",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201406.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4383,7 +4383,7 @@
     "name": "기사단장의 투구",
     "grade": "영웅",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201407.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201407.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4397,7 +4397,7 @@
     "name": "월계관",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201408.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201408.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4411,7 +4411,7 @@
     "name": "제국 왕관",
     "grade": "영웅",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201409.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201409.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4424,7 +4424,7 @@
     "name": "황실 부르고넷",
     "grade": "영웅",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201410.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201410.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4437,7 +4437,7 @@
     "name": "변검",
     "grade": "신화",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201411.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201411.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -4454,7 +4454,7 @@
     "name": "모호크 헬멧",
     "grade": "영웅",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201412.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201412.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4468,7 +4468,7 @@
     "name": "비질란테",
     "grade": "영웅",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201413.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201413.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4482,7 +4482,7 @@
     "name": "다이아뎀",
     "grade": "영웅",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201414.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201414.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4496,7 +4496,7 @@
     "name": "성기사의 투구",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201415.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201415.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4510,7 +4510,7 @@
     "name": "카우보이 모자",
     "grade": "영웅",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201417.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201417.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4523,7 +4523,7 @@
     "name": "플라즈마 투구",
     "grade": "영웅",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201418.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201418.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4537,7 +4537,7 @@
     "name": "용접 마스크",
     "grade": "영웅",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201419.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201419.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4551,7 +4551,7 @@
     "name": "마녀 모자",
     "grade": "영웅",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201420.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201420.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4564,7 +4564,7 @@
     "name": "여우 가면",
     "grade": "영웅",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201421.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201421.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4578,7 +4578,7 @@
     "name": "스포츠 선글라스",
     "grade": "영웅",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201422.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201422.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4593,7 +4593,7 @@
     "name": "전술 고글",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201423.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201423.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4608,7 +4608,7 @@
     "name": "천사의 고리",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201501.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4621,7 +4621,7 @@
     "name": "빛의 증표",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201502.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4636,7 +4636,7 @@
     "name": "페르소나",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201503.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4650,7 +4650,7 @@
     "name": "예언자의 터번",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201504.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4663,7 +4663,7 @@
     "name": "레이싱 헬멧",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201505.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201505.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4677,7 +4677,7 @@
     "name": "황야의 별",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201506.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201506.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4690,7 +4690,7 @@
     "name": "우주 비행사의 헬멧",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201507.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201507.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4704,7 +4704,7 @@
     "name": "드워프의 투구",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201508.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201508.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4718,7 +4718,7 @@
     "name": "트와일라잇",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201509.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201509.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4732,7 +4732,7 @@
     "name": "쿼드 아이",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201518.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201518.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4746,7 +4746,7 @@
     "name": "검은 죽음",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201519.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201519.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4760,7 +4760,7 @@
     "name": "사이버 스토커",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201520.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201520.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4774,7 +4774,7 @@
     "name": "블래스터 헬멧",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201521.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201521.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4787,7 +4787,7 @@
     "name": "커맨더 헤드셋",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201522.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201522.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4801,7 +4801,7 @@
     "name": "스파크 실드",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201523.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201523.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4816,7 +4816,7 @@
     "name": "바니햇",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201524.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201524.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4830,7 +4830,7 @@
     "name": "레가투스",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201525.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201525.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4844,7 +4844,7 @@
     "name": "앙 가르드",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201526.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201526.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4858,7 +4858,7 @@
     "name": "인사이트",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201527.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201527.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4873,7 +4873,7 @@
     "name": "발할라의 투구",
     "grade": "신화",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201528.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201528.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -4887,7 +4887,7 @@
     "name": "아이실드",
     "grade": "신화",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201529.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201529.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -4903,7 +4903,7 @@
     "name": "다비드 헤드폰",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201530.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201530.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4918,7 +4918,7 @@
     "name": "마린 햇",
     "grade": "영웅",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201531.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201531.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -4932,7 +4932,7 @@
     "name": "캡틴 햇",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201532.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201532.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4946,7 +4946,7 @@
     "name": "검은 베일",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201533.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201533.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4960,7 +4960,7 @@
     "name": "붉은 별빛",
     "grade": "신화",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201534.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201534.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -4976,7 +4976,7 @@
     "name": "오니 가면",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201535.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201535.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -4990,7 +4990,7 @@
     "name": "백야의 관",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201536.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201536.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5004,7 +5004,7 @@
     "name": "야생의 허기",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201537.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201537.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5017,7 +5017,7 @@
     "name": "핏빛 왕관",
     "grade": "신화",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_201701.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_201701.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -5032,7 +5032,7 @@
     "name": "백색 가운",
     "grade": "영웅",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202104.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202104.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5047,7 +5047,7 @@
     "name": "비키니",
     "grade": "신화",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202209.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202209.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -5062,7 +5062,7 @@
     "name": "고위 사제복",
     "grade": "영웅",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202307.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202307.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5076,7 +5076,7 @@
     "name": "석양의 갑옷",
     "grade": "영웅",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202402.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202402.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5089,7 +5089,7 @@
     "name": "어사의",
     "grade": "영웅",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202404.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5104,7 +5104,7 @@
     "name": "광학미채 슈트",
     "grade": "영웅",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202405.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5119,7 +5119,7 @@
     "name": "락커의 자켓",
     "grade": "영웅",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202406.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5133,7 +5133,7 @@
     "name": "미스릴 갑옷",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202407.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202407.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5147,7 +5147,7 @@
     "name": "성기사의 갑옷",
     "grade": "영웅",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202408.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202408.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5161,7 +5161,7 @@
     "name": "아마조네스 아머",
     "grade": "영웅",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202410.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202410.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5175,7 +5175,7 @@
     "name": "용의 도복",
     "grade": "영웅",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202411.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202411.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5190,7 +5190,7 @@
     "name": "지휘관의 갑옷",
     "grade": "영웅",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202412.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202412.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5204,7 +5204,7 @@
     "name": "집사복",
     "grade": "영웅",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202413.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202413.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5220,7 +5220,7 @@
     "name": "배틀 슈트",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202415.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202415.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5234,7 +5234,7 @@
     "name": "불꽃 드레스",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202416.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202416.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5248,7 +5248,7 @@
     "name": "EOD 슈트",
     "grade": "영웅",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202417.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202417.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5263,7 +5263,7 @@
     "name": "턱시도",
     "grade": "영웅",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202418.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202418.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5278,7 +5278,7 @@
     "name": "제사장의 예복",
     "grade": "영웅",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202419.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202419.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5292,7 +5292,7 @@
     "name": "창파오",
     "grade": "영웅",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202420.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202420.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5307,7 +5307,7 @@
     "name": "미스릴 크롭",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202421.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202421.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5321,7 +5321,7 @@
     "name": "방화복",
     "grade": "영웅",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202422.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202422.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5336,7 +5336,7 @@
     "name": "교복",
     "grade": "영웅",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202423.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202423.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5351,7 +5351,7 @@
     "name": "카바나",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202501.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5366,7 +5366,7 @@
     "name": "퀸 오브 하트",
     "grade": "신화",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202502.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -5382,7 +5382,7 @@
     "name": "성법의",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202503.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5397,7 +5397,7 @@
     "name": "버건디 47",
     "grade": "신화",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202504.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -5413,7 +5413,7 @@
     "name": "아오자이",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202505.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202505.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5428,7 +5428,7 @@
     "name": "팬텀 자켓",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202506.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202506.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5442,7 +5442,7 @@
     "name": "가디언 슈트",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202507.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202507.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5455,7 +5455,7 @@
     "name": "진은 드레스",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202508.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202508.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5470,7 +5470,7 @@
     "name": "선녀강림",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202509.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202509.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5485,7 +5485,7 @@
     "name": "고스트",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202510.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202510.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5500,7 +5500,7 @@
     "name": "핏빛 망토",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202511.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202511.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5514,7 +5514,7 @@
     "name": "오메르타",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202512.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202512.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5529,7 +5529,7 @@
     "name": "슈팅스타 자켓",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202513.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202513.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5545,7 +5545,7 @@
     "name": "쿠튀리에",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202514.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202514.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5560,7 +5560,7 @@
     "name": "택티컬 아머",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202515.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202515.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5575,7 +5575,7 @@
     "name": "엘프 드레스",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202516.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202516.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5589,7 +5589,7 @@
     "name": "타이탄 아머",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202517.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202517.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5604,7 +5604,7 @@
     "name": "레버넌트",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202518.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202518.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5618,7 +5618,7 @@
     "name": "레이싱 슈트",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202521.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202521.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5633,7 +5633,7 @@
     "name": "유령 신부의 드레스",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202522.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202522.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5646,7 +5646,7 @@
     "name": "길리 슈트",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202523.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202523.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5661,7 +5661,7 @@
     "name": "스펙터",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202524.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202524.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5675,7 +5675,7 @@
     "name": "현자의 로브",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202525.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202525.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5691,7 +5691,7 @@
     "name": "이단심판관",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202526.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202526.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5706,7 +5706,7 @@
     "name": "흑염룡의 갑주",
     "grade": "신화",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202527.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202527.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -5720,7 +5720,7 @@
     "name": "페더폴",
     "grade": "신화",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202528.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202528.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -5734,7 +5734,7 @@
     "name": "화령장",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202529.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202529.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5749,7 +5749,7 @@
     "name": "반역의 의지",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202530.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202530.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5764,7 +5764,7 @@
     "name": "서리바람 흉갑",
     "grade": "전설",
     "slot": "옷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_202531.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_202531.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5778,7 +5778,7 @@
     "name": "포이즌드",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203306.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203306.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5791,7 +5791,7 @@
     "name": "소드 스토퍼",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203402.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203402.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5805,7 +5805,7 @@
     "name": "드라우프니르",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203403.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5817,7 +5817,7 @@
     "name": "미스릴 방패",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203404.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5832,7 +5832,7 @@
     "name": "바이탈 센서",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203405.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5845,7 +5845,7 @@
     "name": "기사의 신조",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203406.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5859,7 +5859,7 @@
     "name": "샤자한의 검집",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203407.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203407.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5872,7 +5872,7 @@
     "name": "큐브 워치",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203408.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203408.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5887,7 +5887,7 @@
     "name": "아이기스",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203409.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203409.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5900,7 +5900,7 @@
     "name": "틴달로스의 팔찌",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203410.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203410.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5913,7 +5913,7 @@
     "name": "나이팅게일",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203411.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203411.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5928,7 +5928,7 @@
     "name": "플라즈마 아크",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203412.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203412.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5942,7 +5942,7 @@
     "name": "텔루리안 타임피스",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203413.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203413.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5955,7 +5955,7 @@
     "name": "스마트 밴드",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203414.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203414.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5969,7 +5969,7 @@
     "name": "미닛맨의 표식",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203415.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203415.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -5983,7 +5983,7 @@
     "name": "스카디의 팔찌",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203501.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -5996,7 +5996,7 @@
     "name": "레이더",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203502.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6010,7 +6010,7 @@
     "name": "오토-암즈",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203503.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6024,7 +6024,7 @@
     "name": "프로미넌스",
     "grade": "신화",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203504.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -6038,7 +6038,7 @@
     "name": "가시지네 견갑",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203505.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203505.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6052,7 +6052,7 @@
     "name": "스포츠 시계",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203506.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203506.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6065,7 +6065,7 @@
     "name": "틴달로스의 군주",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203507.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203507.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6078,7 +6078,7 @@
     "name": "샤를마뉴의 방패",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203508.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203508.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6092,7 +6092,7 @@
     "name": "혈사조",
     "grade": "신화",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203509.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203509.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -6106,7 +6106,7 @@
     "name": "용의 비늘",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203510.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203510.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6119,7 +6119,7 @@
     "name": "서슬가시 체인",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203511.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203511.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6133,7 +6133,7 @@
     "name": "아흐라만의 손길",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203512.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203512.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6146,7 +6146,7 @@
     "name": "헬릭스",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203513.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203513.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6160,7 +6160,7 @@
     "name": "미스릴 완장",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203514.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203514.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6174,7 +6174,7 @@
     "name": "노바 실드",
     "grade": "신화",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203515.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203515.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -6189,7 +6189,7 @@
     "name": "파프니르",
     "grade": "신화",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_203516.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_203516.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -6201,7 +6201,7 @@
     "name": "등산화",
     "grade": "영웅",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204303.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204303.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6216,7 +6216,7 @@
     "name": "아이젠",
     "grade": "영웅",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204304.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204304.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6229,7 +6229,7 @@
     "name": "강철 무릎 보호대",
     "grade": "영웅",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204401.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204401.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6243,7 +6243,7 @@
     "name": "경량화 부츠",
     "grade": "영웅",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204402.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204402.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6257,7 +6257,7 @@
     "name": "매버릭 러너",
     "grade": "영웅",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204403.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204403.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6271,7 +6271,7 @@
     "name": "킬힐",
     "grade": "전설",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204405.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6285,7 +6285,7 @@
     "name": "풍화륜",
     "grade": "영웅",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204406.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6299,7 +6299,7 @@
     "name": "미스릴 부츠",
     "grade": "전설",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204407.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204407.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6313,7 +6313,7 @@
     "name": "부케팔로스",
     "grade": "영웅",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204408.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204408.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6327,7 +6327,7 @@
     "name": "EOD 부츠",
     "grade": "전설",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204409.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204409.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6342,7 +6342,7 @@
     "name": "글레이셜 슈즈",
     "grade": "전설",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204410.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204410.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6356,7 +6356,7 @@
     "name": "클링온 부츠",
     "grade": "영웅",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204411.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204411.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6370,7 +6370,7 @@
     "name": "타키온 브레이스",
     "grade": "영웅",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204412.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204412.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6384,7 +6384,7 @@
     "name": "탭루트",
     "grade": "신화",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204413.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204413.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -6400,7 +6400,7 @@
     "name": "아이언 메이든",
     "grade": "전설",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204414.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204414.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6413,7 +6413,7 @@
     "name": "SCV",
     "grade": "영웅",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204415.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204415.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6426,7 +6426,7 @@
     "name": "스텔라 스텝",
     "grade": "영웅",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204416.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204416.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6441,7 +6441,7 @@
     "name": "카우보이 부츠",
     "grade": "영웅",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204417.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204417.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6455,7 +6455,7 @@
     "name": "글레디에이터",
     "grade": "영웅",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204418.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204418.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6469,7 +6469,7 @@
     "name": "델타 레드",
     "grade": "영웅",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204419.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204419.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6483,7 +6483,7 @@
     "name": "헤르메스의 부츠",
     "grade": "전설",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204501.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6498,7 +6498,7 @@
     "name": "분홍신",
     "grade": "신화",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204502.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -6513,7 +6513,7 @@
     "name": "블레이드 부츠",
     "grade": "전설",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204503.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6529,7 +6529,7 @@
     "name": "알렉산드로스",
     "grade": "전설",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204504.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6543,7 +6543,7 @@
     "name": "칼날 다리",
     "grade": "전설",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204505.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204505.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6557,7 +6557,7 @@
     "name": "와일드 워커",
     "grade": "전설",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204506.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204506.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6571,7 +6571,7 @@
     "name": "갤럭시 스텝",
     "grade": "전설",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204507.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204507.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6586,7 +6586,7 @@
     "name": "미라지 워커",
     "grade": "전설",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204508.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204508.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6601,7 +6601,7 @@
     "name": "레이싱 부츠",
     "grade": "전설",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204509.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204509.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6615,7 +6615,7 @@
     "name": "엘디안 부츠",
     "grade": "신화",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204510.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204510.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -6630,7 +6630,7 @@
     "name": "로즈 스텝",
     "grade": "신화",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204511.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204511.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -6644,7 +6644,7 @@
     "name": "스페이스 부츠",
     "grade": "전설",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204512.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204512.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6659,7 +6659,7 @@
     "name": "픽시 부츠",
     "grade": "신화",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204513.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204513.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -6673,7 +6673,7 @@
     "name": "택티컬 슈즈",
     "grade": "전설",
     "slot": "다리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_204514.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_204514.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6688,7 +6688,7 @@
     "name": "백우선",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205201.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205201.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6701,7 +6701,7 @@
     "name": "궁기병의 화살통",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205304.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205304.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6715,7 +6715,7 @@
     "name": "월왕구천",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205305.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205305.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6729,7 +6729,7 @@
     "name": "해적의 증표",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205306.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205306.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6743,7 +6743,7 @@
     "name": "해적 깃발",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205308.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205308.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6757,7 +6757,7 @@
     "name": "오르골",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205309.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205309.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6771,7 +6771,7 @@
     "name": "달빛 펜던트",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205401.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205401.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6785,7 +6785,7 @@
     "name": "슈뢰딩거의 상자",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205404.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205404.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6799,7 +6799,7 @@
     "name": "진리는 나의 빛",
     "grade": "영웅",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205405.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205405.png",
     "price": 0,
     "priceSource": "등급 기반 대체값",
     "stats": {
@@ -6814,7 +6814,7 @@
     "name": "요명월",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205406.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205406.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6829,7 +6829,7 @@
     "name": "미스릴 퀴버",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205407.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205407.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6843,7 +6843,7 @@
     "name": "살라딘의 화살통",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205408.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205408.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6857,7 +6857,7 @@
     "name": "운명의 주사위",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205501.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6872,7 +6872,7 @@
     "name": "파초선",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205502.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6885,7 +6885,7 @@
     "name": "쿤달라",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205503.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6899,7 +6899,7 @@
     "name": "오르비스",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205504.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6911,7 +6911,7 @@
     "name": "호루스의 눈",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205505.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205505.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6924,7 +6924,7 @@
     "name": "네크로노미콘",
     "grade": "신화",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205507.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205507.png",
     "price": 500,
     "priceSource": "초월 일괄 500",
     "stats": {
@@ -6937,7 +6937,7 @@
     "name": "에메랄드 타블렛",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205508.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205508.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6950,7 +6950,7 @@
     "name": "요술램프",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_205601.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_205601.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -6964,7 +6964,7 @@
     "name": "데스애더퀸-MT",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_601501.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_601501.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -6980,7 +6980,7 @@
     "name": "데스애더퀸-FC",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_601502.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_601502.png",
     "price": 550,
     "priceSource": "사용자 지정",
     "stats": {
@@ -6997,7 +6997,7 @@
     "name": "데스애더퀸-VBS",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_601503.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_601503.png",
     "price": 700,
     "priceSource": "사용자 지정",
     "stats": {
@@ -7014,7 +7014,7 @@
     "name": "블랙맘바킹-TL",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_601504.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_601504.png",
     "price": 200,
     "priceSource": "사용자 지정",
     "stats": {
@@ -7029,7 +7029,7 @@
     "name": "블랙맘바킹-FC",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_601505.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_601505.png",
     "price": 550,
     "priceSource": "사용자 지정",
     "stats": {
@@ -7045,7 +7045,7 @@
     "name": "블랙맘바킹-VBS",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_601506.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_601506.png",
     "price": 700,
     "priceSource": "사용자 지정",
     "stats": {
@@ -7060,7 +7060,7 @@
     "name": "슈퍼사이드와인더-ML",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_601507.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_601507.png",
     "price": 250,
     "priceSource": "사용자 지정",
     "stats": {
@@ -7075,7 +7075,7 @@
     "name": "슈퍼사이드와인더-FC",
     "grade": "전설",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_601508.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_601508.png",
     "price": 600,
     "priceSource": "사용자 지정",
     "stats": {
@@ -7091,7 +7091,7 @@
     "name": "슈퍼사이드와인더-VBS",
     "grade": "신화",
     "slot": "무기",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_601509.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_601509.png",
     "price": 750,
     "priceSource": "사용자 지정",
     "stats": {
@@ -7106,7 +7106,7 @@
     "name": "택티컬 바이저",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_701451.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_701451.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -7120,7 +7120,7 @@
     "name": "미니어쳐 솔라 시스템",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_705601.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_705601.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -7133,7 +7133,7 @@
     "name": "하트 온 파이어",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_705603.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_705603.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -7147,7 +7147,7 @@
     "name": "클라다 반지",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_705604.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_705604.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -7162,7 +7162,7 @@
     "name": "토템",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_705607.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_705607.png",
     "price": 200,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -7176,7 +7176,7 @@
     "name": "임세티",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_705608.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_705608.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -7189,7 +7189,7 @@
     "name": "프시케의 칼날",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_705614.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_705614.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -7203,7 +7203,7 @@
     "name": "별 조각",
     "grade": "전설",
     "slot": "팔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_705619.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_705619.png",
     "price": 350,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {
@@ -7218,7 +7218,7 @@
     "name": "천룡잠",
     "grade": "전설",
     "slot": "머리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/ItemIcon_705620.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/ItemIcon_705620.png",
     "price": 250,
     "priceSource": "호스트 지정 가격(재료 기준)",
     "stats": {

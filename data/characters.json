@@ -2,7 +2,7 @@
   {
     "id": "1",
     "name": "재키",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Jackie_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Jackie_S000.png",
     "attackPower": 36,
     "attackPowerPerLevel": 4.7,
     "masteries": {
@@ -39,7 +39,7 @@
   {
     "id": "2",
     "name": "아야",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Aya_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Aya_S000.png",
     "attackPower": 40,
     "attackPowerPerLevel": 4.1,
     "masteries": {
@@ -69,7 +69,7 @@
   {
     "id": "3",
     "name": "피오라",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Fiora_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Fiora_S000.png",
     "attackPower": 40,
     "attackPowerPerLevel": 4.4,
     "masteries": {
@@ -99,7 +99,7 @@
   {
     "id": "4",
     "name": "매그너스",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Magnus_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Magnus_S000.png",
     "attackPower": 44,
     "attackPowerPerLevel": 4.4,
     "masteries": {
@@ -122,7 +122,7 @@
   {
     "id": "5",
     "name": "자히르",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Zahir_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Zahir_S000.png",
     "attackPower": 28,
     "attackPowerPerLevel": 3.9,
     "masteries": {
@@ -145,7 +145,7 @@
   {
     "id": "6",
     "name": "나딘",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Nadine_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Nadine_S000.png",
     "attackPower": 33,
     "attackPowerPerLevel": 4.3,
     "masteries": {
@@ -168,7 +168,7 @@
   {
     "id": "7",
     "name": "현우",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Hyunwoo_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Hyunwoo_S000.png",
     "attackPower": 40,
     "attackPowerPerLevel": 5.1,
     "masteries": {
@@ -191,7 +191,7 @@
   {
     "id": "8",
     "name": "하트",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Hart_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Hart_S000.png",
     "attackPower": 31,
     "attackPowerPerLevel": 4.4,
     "masteries": {
@@ -207,7 +207,7 @@
   {
     "id": "9",
     "name": "아이솔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Isol_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Isol_S000.png",
     "attackPower": 37,
     "attackPowerPerLevel": 4.2,
     "masteries": {
@@ -230,7 +230,7 @@
   {
     "id": "10",
     "name": "리 다이린",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_LiDailin_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_LiDailin_S000.png",
     "attackPower": 27,
     "attackPowerPerLevel": 5,
     "masteries": {
@@ -253,7 +253,7 @@
   {
     "id": "11",
     "name": "유키",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Yuki_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Yuki_S000.png",
     "attackPower": 36,
     "attackPowerPerLevel": 4.9,
     "masteries": {
@@ -276,7 +276,7 @@
   {
     "id": "12",
     "name": "혜진",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Hyejin_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Hyejin_S000.png",
     "attackPower": 30,
     "attackPowerPerLevel": 4.5,
     "masteries": {
@@ -299,7 +299,7 @@
   {
     "id": "13",
     "name": "쇼우",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Xiukai_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Xiukai_S000.png",
     "attackPower": 40,
     "attackPowerPerLevel": 4.5,
     "masteries": {
@@ -322,7 +322,7 @@
   {
     "id": "14",
     "name": "키아라",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Chiara_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Chiara_S000.png",
     "attackPower": 44,
     "attackPowerPerLevel": 4.3,
     "masteries": {
@@ -338,7 +338,7 @@
   {
     "id": "15",
     "name": "시셀라",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Sissela_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Sissela_S000.png",
     "attackPower": 33,
     "attackPowerPerLevel": 4.3,
     "masteries": {
@@ -361,7 +361,7 @@
   {
     "id": "16",
     "name": "실비아",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Silvia_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Silvia_S000.png",
     "attackPower": 30,
     "attackPowerPerLevel": 3.4,
     "masteries": {
@@ -377,7 +377,7 @@
   {
     "id": "17",
     "name": "아드리아나",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Adriana_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Adriana_S000.png",
     "attackPower": 38,
     "attackPowerPerLevel": 4.9,
     "masteries": {
@@ -393,7 +393,7 @@
   {
     "id": "18",
     "name": "쇼이치",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Shoichi_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Shoichi_S000.png",
     "attackPower": 29,
     "attackPowerPerLevel": 5,
     "masteries": {
@@ -409,7 +409,7 @@
   {
     "id": "19",
     "name": "엠마",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Emma_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Emma_S000.png",
     "attackPower": 39,
     "attackPowerPerLevel": 3.8,
     "masteries": {
@@ -432,7 +432,7 @@
   {
     "id": "20",
     "name": "레녹스",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Lenox_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Lenox_S000.png",
     "attackPower": 32,
     "attackPowerPerLevel": 4.4,
     "masteries": {
@@ -448,7 +448,7 @@
   {
     "id": "21",
     "name": "로지",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Rozzi_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Rozzi_S000.png",
     "attackPower": 32,
     "attackPowerPerLevel": 4.8,
     "masteries": {
@@ -464,7 +464,7 @@
   {
     "id": "22",
     "name": "루크",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Luke_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Luke_S000.png",
     "attackPower": 30,
     "attackPowerPerLevel": 5,
     "masteries": {
@@ -480,7 +480,7 @@
   {
     "id": "23",
     "name": "캐시",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Cathy_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Cathy_S000.png",
     "attackPower": 29,
     "attackPowerPerLevel": 4.3,
     "masteries": {
@@ -503,7 +503,7 @@
   {
     "id": "24",
     "name": "아델라",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Adela_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Adela_S000.png",
     "attackPower": 43,
     "attackPowerPerLevel": 4.3,
     "masteries": {
@@ -526,7 +526,7 @@
   {
     "id": "25",
     "name": "버니스",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Bernice_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Bernice_S000.png",
     "attackPower": 40,
     "attackPowerPerLevel": 4.6,
     "masteries": {
@@ -542,7 +542,7 @@
   {
     "id": "26",
     "name": "바바라",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Barbara_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Barbara_S000.png",
     "attackPower": 38,
     "attackPowerPerLevel": 3.2,
     "masteries": {
@@ -558,7 +558,7 @@
   {
     "id": "27",
     "name": "알렉스",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Alex_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Alex_S000.png",
     "attackPower": 28,
     "attackPowerPerLevel": 4.4,
     "masteries": {
@@ -595,7 +595,7 @@
   {
     "id": "28",
     "name": "수아",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Sua_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Sua_S000.png",
     "attackPower": 39,
     "attackPowerPerLevel": 3.8,
     "masteries": {
@@ -618,7 +618,7 @@
   {
     "id": "29",
     "name": "레온",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Leon_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Leon_S000.png",
     "attackPower": 31,
     "attackPowerPerLevel": 4.3,
     "masteries": {
@@ -641,7 +641,7 @@
   {
     "id": "30",
     "name": "일레븐",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Eleven_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Eleven_S000.png",
     "attackPower": 35,
     "attackPowerPerLevel": 4.5,
     "masteries": {
@@ -657,7 +657,7 @@
   {
     "id": "31",
     "name": "리오",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Rio_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Rio_S000.png",
     "attackPower": 33,
     "attackPowerPerLevel": 4,
     "masteries": {
@@ -673,7 +673,7 @@
   {
     "id": "32",
     "name": "윌리엄",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_William_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_William_S000.png",
     "attackPower": 40,
     "attackPowerPerLevel": 4.3,
     "masteries": {
@@ -689,7 +689,7 @@
   {
     "id": "33",
     "name": "니키",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Nicky_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Nicky_S000.png",
     "attackPower": 32,
     "attackPowerPerLevel": 4.2,
     "masteries": {
@@ -705,7 +705,7 @@
   {
     "id": "34",
     "name": "나타폰",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Nathapon_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Nathapon_S000.png",
     "attackPower": 35,
     "attackPowerPerLevel": 4.1,
     "masteries": {
@@ -721,7 +721,7 @@
   {
     "id": "35",
     "name": "얀",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Jan_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Jan_S000.png",
     "attackPower": 37,
     "attackPowerPerLevel": 4.4,
     "masteries": {
@@ -744,7 +744,7 @@
   {
     "id": "36",
     "name": "이바",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Eva_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Eva_S000.png",
     "attackPower": 32,
     "attackPowerPerLevel": 3.7,
     "masteries": {
@@ -760,7 +760,7 @@
   {
     "id": "37",
     "name": "다니엘",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Daniel_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Daniel_S000.png",
     "attackPower": 32,
     "attackPowerPerLevel": 4.7,
     "masteries": {
@@ -776,7 +776,7 @@
   {
     "id": "38",
     "name": "제니",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Jenny_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Jenny_S000.png",
     "attackPower": 35,
     "attackPowerPerLevel": 4.5,
     "masteries": {
@@ -792,7 +792,7 @@
   {
     "id": "39",
     "name": "카밀로",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Camilo_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Camilo_S000.png",
     "attackPower": 31,
     "attackPowerPerLevel": 5,
     "masteries": {
@@ -815,7 +815,7 @@
   {
     "id": "40",
     "name": "클로에",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Chloe_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Chloe_S000.png",
     "attackPower": 32,
     "attackPowerPerLevel": 4.3,
     "masteries": {
@@ -831,7 +831,7 @@
   {
     "id": "41",
     "name": "요한",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Johann_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Johann_S000.png",
     "attackPower": 39,
     "attackPowerPerLevel": 4.6,
     "masteries": {
@@ -847,7 +847,7 @@
   {
     "id": "42",
     "name": "비앙카",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Bianca_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Bianca_S000.png",
     "attackPower": 31,
     "attackPowerPerLevel": 4.4,
     "masteries": {
@@ -863,7 +863,7 @@
   {
     "id": "43",
     "name": "셀린",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Celine_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Celine_S000.png",
     "attackPower": 35,
     "attackPowerPerLevel": 4.5,
     "masteries": {
@@ -879,7 +879,7 @@
   {
     "id": "44",
     "name": "에키온",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Echion_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Echion_S000.png",
     "attackPower": 35,
     "attackPowerPerLevel": 5.1,
     "masteries": {
@@ -895,7 +895,7 @@
   {
     "id": "45",
     "name": "마이",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Mai_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Mai_S000.png",
     "attackPower": 30,
     "attackPowerPerLevel": 4.2,
     "masteries": {
@@ -911,7 +911,7 @@
   {
     "id": "46",
     "name": "에이든",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Aiden_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Aiden_S000.png",
     "attackPower": 39,
     "attackPowerPerLevel": 5.3,
     "masteries": {
@@ -927,7 +927,7 @@
   {
     "id": "47",
     "name": "라우라",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Laura_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Laura_S000.png",
     "attackPower": 28,
     "attackPowerPerLevel": 4.9,
     "masteries": {
@@ -943,7 +943,7 @@
   {
     "id": "48",
     "name": "띠아",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Tia_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Tia_S000.png",
     "attackPower": 39,
     "attackPowerPerLevel": 3.9,
     "masteries": {
@@ -959,7 +959,7 @@
   {
     "id": "49",
     "name": "펠릭스",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Felix_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Felix_S000.png",
     "attackPower": 35,
     "attackPowerPerLevel": 4.3,
     "masteries": {
@@ -975,7 +975,7 @@
   {
     "id": "50",
     "name": "엘레나",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Elena_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Elena_S000.png",
     "attackPower": 37,
     "attackPowerPerLevel": 4.4,
     "masteries": {
@@ -991,7 +991,7 @@
   {
     "id": "51",
     "name": "프리야",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Priya_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Priya_S000.png",
     "attackPower": 40,
     "attackPowerPerLevel": 4.5,
     "masteries": {
@@ -1007,7 +1007,7 @@
   {
     "id": "52",
     "name": "아디나",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Adina_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Adina_S000.png",
     "attackPower": 34,
     "attackPowerPerLevel": 4.5,
     "masteries": {
@@ -1023,7 +1023,7 @@
   {
     "id": "53",
     "name": "마커스",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Markus_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Markus_S000.png",
     "attackPower": 34,
     "attackPowerPerLevel": 4.9,
     "masteries": {
@@ -1046,7 +1046,7 @@
   {
     "id": "54",
     "name": "칼라",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Karla_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Karla_S000.png",
     "attackPower": 34,
     "attackPowerPerLevel": 4.3,
     "masteries": {
@@ -1062,7 +1062,7 @@
   {
     "id": "55",
     "name": "에스텔",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Estelle_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Estelle_S000.png",
     "attackPower": 42,
     "attackPowerPerLevel": 4.2,
     "masteries": {
@@ -1078,7 +1078,7 @@
   {
     "id": "56",
     "name": "피올로",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Piolo_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Piolo_S000.png",
     "attackPower": 31,
     "attackPowerPerLevel": 3.9,
     "masteries": {
@@ -1094,7 +1094,7 @@
   {
     "id": "57",
     "name": "마르티나",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Martina_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Martina_S000.png",
     "attackPower": 4,
     "attackPowerPerLevel": 4,
     "masteries": {
@@ -1110,7 +1110,7 @@
   {
     "id": "58",
     "name": "헤이즈",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Haze_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Haze_S000.png",
     "attackPower": 42,
     "attackPowerPerLevel": 4.6,
     "masteries": {
@@ -1126,7 +1126,7 @@
   {
     "id": "59",
     "name": "아이작",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Isaac_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Isaac_S000.png",
     "attackPower": 31,
     "attackPowerPerLevel": 4.9,
     "masteries": {
@@ -1142,7 +1142,7 @@
   {
     "id": "60",
     "name": "타지아",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Tazia_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Tazia_S000.png",
     "attackPower": 30,
     "attackPowerPerLevel": 4.4,
     "masteries": {
@@ -1158,7 +1158,7 @@
   {
     "id": "61",
     "name": "이렘",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Irem_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Irem_S000.png",
     "attackPower": 30,
     "attackPowerPerLevel": 4.7,
     "masteries": {
@@ -1174,7 +1174,7 @@
   {
     "id": "62",
     "name": "테오도르",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Theodore_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Theodore_S000.png",
     "attackPower": 45,
     "attackPowerPerLevel": 3.7,
     "masteries": {
@@ -1190,7 +1190,7 @@
   {
     "id": "63",
     "name": "이안",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Lyanh_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Lyanh_S000.png",
     "attackPower": 38,
     "attackPowerPerLevel": 4.6,
     "masteries": {
@@ -1206,7 +1206,7 @@
   {
     "id": "64",
     "name": "바냐",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Vanya_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Vanya_S000.png",
     "attackPower": 30,
     "attackPowerPerLevel": 4.5,
     "masteries": {
@@ -1222,7 +1222,7 @@
   {
     "id": "65",
     "name": "데비&마를렌",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_DebiMarlene_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_DebiMarlene_S000.png",
     "attackPower": 33,
     "attackPowerPerLevel": 4.1,
     "masteries": {
@@ -1238,7 +1238,7 @@
   {
     "id": "66",
     "name": "아르다",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Arda_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Arda_S000.png",
     "attackPower": 37,
     "attackPowerPerLevel": 4.6,
     "masteries": {
@@ -1254,7 +1254,7 @@
   {
     "id": "67",
     "name": "아비게일",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Abigail_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Abigail_S000.png",
     "attackPower": 40,
     "attackPowerPerLevel": 4.4,
     "masteries": {
@@ -1270,7 +1270,7 @@
   {
     "id": "68",
     "name": "알론소",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Alonso_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Alonso_S000.png",
     "attackPower": 36,
     "attackPowerPerLevel": 4.2,
     "masteries": {
@@ -1286,7 +1286,7 @@
   {
     "id": "69",
     "name": "레니",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Leni_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Leni_S000.png",
     "attackPower": 35,
     "attackPowerPerLevel": 4.1,
     "masteries": {
@@ -1302,7 +1302,7 @@
   {
     "id": "70",
     "name": "츠바메",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Tsubame_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Tsubame_S000.png",
     "attackPower": 32,
     "attackPowerPerLevel": 4.4,
     "masteries": {
@@ -1318,7 +1318,7 @@
   {
     "id": "71",
     "name": "케네스",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Kenneth_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Kenneth_S000.png",
     "attackPower": 37,
     "attackPowerPerLevel": 4.2,
     "masteries": {
@@ -1334,7 +1334,7 @@
   {
     "id": "72",
     "name": "카티야",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Katja_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Katja_S000.png",
     "attackPower": 36,
     "attackPowerPerLevel": 4.7,
     "masteries": {
@@ -1350,7 +1350,7 @@
   {
     "id": "73",
     "name": "샬럿",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Charlotte_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Charlotte_S000.png",
     "attackPower": 40,
     "attackPowerPerLevel": 4.9,
     "masteries": {
@@ -1366,7 +1366,7 @@
   {
     "id": "74",
     "name": "다르코",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Darko_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Darko_S000.png",
     "attackPower": 40,
     "attackPowerPerLevel": 4.6,
     "masteries": {
@@ -1382,7 +1382,7 @@
   {
     "id": "75",
     "name": "르노어",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Lenore_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Lenore_S000.png",
     "attackPower": 35,
     "attackPowerPerLevel": 4.1,
     "masteries": {
@@ -1398,7 +1398,7 @@
   {
     "id": "76",
     "name": "가넷",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Garnet_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Garnet_S000.png",
     "attackPower": 35,
     "attackPowerPerLevel": 4.1,
     "masteries": {
@@ -1414,7 +1414,7 @@
   {
     "id": "77",
     "name": "유민",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_YuMin_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_YuMin_S000.png",
     "attackPower": 38,
     "attackPowerPerLevel": 4.1,
     "masteries": {
@@ -1430,7 +1430,7 @@
   {
     "id": "78",
     "name": "히스이",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Hisui_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Hisui_S000.png",
     "attackPower": 25,
     "attackPowerPerLevel": 4.5,
     "masteries": {
@@ -1446,7 +1446,7 @@
   {
     "id": "79",
     "name": "유스티나",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Justyna_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Justyna_S000.png",
     "attackPower": 42,
     "attackPowerPerLevel": 4.3,
     "masteries": {
@@ -1462,7 +1462,7 @@
   {
     "id": "80",
     "name": "이슈트반",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Istvan_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Istvan_S000.png",
     "attackPower": 37,
     "attackPowerPerLevel": 4.2,
     "masteries": {
@@ -1478,7 +1478,7 @@
   {
     "id": "81",
     "name": "니아",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Niah_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Niah_S000.png",
     "attackPower": 43,
     "attackPowerPerLevel": 4.1,
     "masteries": {
@@ -1494,7 +1494,7 @@
   {
     "id": "82",
     "name": "슈린",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Xuelin_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Xuelin_S000.png",
     "attackPower": 35,
     "attackPowerPerLevel": 4.6,
     "masteries": {
@@ -1510,7 +1510,7 @@
   {
     "id": "83",
     "name": "헨리",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Henry_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Henry_S000.png",
     "attackPower": 40,
     "attackPowerPerLevel": 4.4,
     "masteries": {
@@ -1526,7 +1526,7 @@
   {
     "id": "84",
     "name": "블레어",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Blair_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Blair_S000.png",
     "attackPower": 34,
     "attackPowerPerLevel": 4.3,
     "masteries": {
@@ -1542,7 +1542,7 @@
   {
     "id": "85",
     "name": "미르카",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Mirka_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Mirka_S000.png",
     "attackPower": 39,
     "attackPowerPerLevel": 3.8,
     "masteries": {
@@ -1558,7 +1558,7 @@
   {
     "id": "86",
     "name": "펜리르",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Fenrir_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Fenrir_S000.png",
     "attackPower": 33,
     "attackPowerPerLevel": 4.8,
     "masteries": {
@@ -1574,7 +1574,7 @@
   {
     "id": "87",
     "name": "코렐라인",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Coraline_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Coraline_S000.png",
     "attackPower": 40,
     "attackPowerPerLevel": 5.1,
     "masteries": {
@@ -1590,7 +1590,7 @@
   {
     "id": "88",
     "name": "비형",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Bihyung_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Bihyung_S000.png",
     "attackPower": 30,
     "attackPowerPerLevel": 4.6,
     "masteries": {
@@ -1606,7 +1606,7 @@
   {
     "id": "89",
     "name": "크레이버",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Craver_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Craver_S000.png",
     "attackPower": 35,
     "attackPowerPerLevel": 4.4,
     "masteries": {
@@ -1622,7 +1622,7 @@
   {
     "id": "90",
     "name": "루치아",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Lucia_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Lucia_S000.png",
     "attackPower": 33,
     "attackPowerPerLevel": 4.3,
     "masteries": {
@@ -1638,7 +1638,7 @@
   {
     "id": "91",
     "name": "세레스",
-    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.6.0/CharProfile_Seres_S000.png",
+    "imageUrl": "https://cdn.dak.gg/assets/er/game-assets/12.7.0/CharProfile_Seres_S000.png",
     "attackPower": 36,
     "attackPowerPerLevel": 4.8,
     "masteries": {

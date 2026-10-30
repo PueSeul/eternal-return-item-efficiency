@@ -1,6 +1,6 @@
 {
-  "fetchedAt": "2026-10-29T03:02:17.692Z",
-  "dakggVersion": "12.6.0",
+  "fetchedAt": "2026-10-30T00:32:10.323Z",
+  "dakggVersion": "12.7.0",
   "patch": {
     "id": 3924,
     "version": "12.7",
@@ -17,62 +17,6 @@
     ]
   },
   "overrides": [
-    {
-      "type": "item",
-      "id": "203511",
-      "name": "서슬가시 체인",
-      "stat": "방어 관통",
-      "dakgg": 12,
-      "patchnote": 13
-    },
-    {
-      "type": "character",
-      "id": "25",
-      "name": "버니스",
-      "stat": "attackPower",
-      "dakgg": 37,
-      "patchnote": 40
-    },
-    {
-      "type": "character",
-      "id": "24",
-      "name": "아델라",
-      "stat": "masteries.방망이.skillAmpRatio",
-      "dakgg": 0.046,
-      "patchnote": 0.045
-    },
-    {
-      "type": "character",
-      "id": "2",
-      "name": "아야",
-      "stat": "masteries.돌격 소총.increaseBasicAttackDamageRatio",
-      "dakgg": 0.014,
-      "patchnote": 0.015
-    },
-    {
-      "type": "character",
-      "id": "72",
-      "name": "카티야",
-      "stat": "masteries.저격총.increaseBasicAttackDamageRatio",
-      "dakgg": 0.02,
-      "patchnote": 0.019
-    },
-    {
-      "type": "character",
-      "id": "60",
-      "name": "타지아",
-      "stat": "masteries.암기.skillAmpRatio",
-      "dakgg": 0.045,
-      "patchnote": 0.044
-    },
-    {
-      "type": "character",
-      "id": "3",
-      "name": "피오라",
-      "stat": "masteries.창.skillAmpRatio",
-      "dakgg": 0.05,
-      "patchnote": 0.048
-    },
     {
       "type": "skill",
       "characterId": "34",
