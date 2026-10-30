@@ -765,7 +765,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-18T02:49:15.000Z",
+    "wikiRevisedAt": "2026-10-29T13:02:50.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -1190,7 +1190,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-28T11:20:30.000Z",
+    "wikiRevisedAt": "2026-10-29T13:08:23.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -1893,7 +1893,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-26T10:19:27.000Z",
+    "wikiRevisedAt": "2026-10-29T14:09:15.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -2297,7 +2297,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-27T11:44:13.000Z",
+    "wikiRevisedAt": "2026-10-29T22:46:20.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -3026,7 +3026,7 @@
         "levels": [
           {
             "level": 1,
-            "baseDamage": 90,
+            "baseDamage": 50,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.85,
             "extraRatios": [
@@ -3038,7 +3038,7 @@
           },
           {
             "level": 2,
-            "baseDamage": 130,
+            "baseDamage": 100,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.85,
             "extraRatios": [
@@ -3050,7 +3050,7 @@
           },
           {
             "level": 3,
-            "baseDamage": 170,
+            "baseDamage": 150,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.85,
             "extraRatios": [
@@ -3062,7 +3062,7 @@
           },
           {
             "level": 4,
-            "baseDamage": 210,
+            "baseDamage": 200,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.85,
             "extraRatios": [
@@ -3085,7 +3085,7 @@
             ]
           }
         ],
-        "raw": "발 밟기(Q) > 피해량 90/130/170/210/250(+추가 공격력의 60%)(+스킬 증폭의 85%) → 90/130/170/210/250(+추가 공격력의 90%)(+스킬 증폭의 85%)",
+        "raw": "피해량 [50 / 100 / 150 / 200 / 250] (+추가 공격력의 90%) (+스킬 증폭의 85%)",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -3093,7 +3093,7 @@
             "levels": [
               {
                 "level": 1,
-                "baseDamage": 90,
+                "baseDamage": 50,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.85,
                 "extraRatios": [
@@ -3105,7 +3105,7 @@
               },
               {
                 "level": 2,
-                "baseDamage": 130,
+                "baseDamage": 100,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.85,
                 "extraRatios": [
@@ -3117,7 +3117,7 @@
               },
               {
                 "level": 3,
-                "baseDamage": 170,
+                "baseDamage": 150,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.85,
                 "extraRatios": [
@@ -3129,7 +3129,7 @@
               },
               {
                 "level": 4,
-                "baseDamage": 210,
+                "baseDamage": 200,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.85,
                 "extraRatios": [
@@ -3152,7 +3152,7 @@
                 ]
               }
             ],
-            "raw": "발 밟기(Q) > 피해량 90/130/170/210/250(+추가 공격력의 60%)(+스킬 증폭의 85%) → 90/130/170/210/250(+추가 공격력의 90%)(+스킬 증폭의 85%)"
+            "raw": "피해량 [50 / 100 / 150 / 200 / 250] (+추가 공격력의 90%) (+스킬 증폭의 85%)"
           }
         ]
       },
@@ -3575,7 +3575,7 @@
             ]
           }
         ],
-        "raw": "핵펀치(R) > 최소 피해량 100/140/180(+추가 공격력의 35%)(+스킬 증폭의 75%) → 100/140/180(+추가 공격력의 50%)(+스킬 증폭의 75%)",
+        "raw": "최소 피해량 [100 / 140 / 180] (+추가 공격력의 50%) (+스킬 증폭의 75%)",
         "sourceLabel": "최소 피해량",
         "entries": [
           {
@@ -3618,7 +3618,7 @@
                 ]
               }
             ],
-            "raw": "핵펀치(R) > 최소 피해량 100/140/180(+추가 공격력의 35%)(+스킬 증폭의 75%) → 100/140/180(+추가 공격력의 50%)(+스킬 증폭의 75%)"
+            "raw": "최소 피해량 [100 / 140 / 180] (+추가 공격력의 50%) (+스킬 증폭의 75%)"
           },
           {
             "label": "최대 피해량",
@@ -3660,12 +3660,12 @@
                 ]
               }
             ],
-            "raw": "핵펀치(R) > 최대 피해량 300/420/540(+추가 공격력의 105%)(+스킬 증폭의 225%) → 300/420/540(+추가 공격력의 150%)(+스킬 증폭의 225%)"
+            "raw": "최대 피해량 [300 / 420 / 540] (+추가 공격력의 150%) (+스킬 증폭의 225%)"
           }
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-26T10:32:49.000Z",
+    "wikiRevisedAt": "2026-10-30T02:20:55.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -5010,7 +5010,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-28T11:54:29.000Z",
+    "wikiRevisedAt": "2026-10-29T13:04:19.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -7621,7 +7621,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-09-26T21:31:22.000Z",
+    "wikiRevisedAt": "2026-10-30T02:08:56.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -8738,7 +8738,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-23T17:44:53.000Z",
+    "wikiRevisedAt": "2026-10-29T19:22:04.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -10219,7 +10219,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-25T13:46:07.000Z",
+    "wikiRevisedAt": "2026-10-29T22:23:59.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -10992,7 +10992,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-17T05:57:03.000Z",
+    "wikiRevisedAt": "2026-10-29T13:01:47.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -11315,7 +11315,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-26T21:46:11.000Z",
+    "wikiRevisedAt": "2026-10-29T12:59:42.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -12441,7 +12441,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-17T07:40:38.000Z",
+    "wikiRevisedAt": "2026-10-29T21:21:36.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -14458,7 +14458,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-29T02:58:06.000Z",
+    "wikiRevisedAt": "2026-10-29T13:05:52.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -15054,7 +15054,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-13T12:28:48.000Z",
+    "wikiRevisedAt": "2026-10-29T12:58:33.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -15931,7 +15931,7 @@
             "skillAmpRatio": 0.85
           }
         ],
-        "raw": "스냅샷(Q) > 피해량 60/100/140/180/220(+스킬 증폭의 80%) → 60/100/140/180/220(+스킬 증폭의 85%)",
+        "raw": "피해량 [60 / 100 / 140 / 180 / 220] (+스킬 증폭의 85%)",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -15968,7 +15968,7 @@
                 "skillAmpRatio": 0.85
               }
             ],
-            "raw": "스냅샷(Q) > 피해량 60/100/140/180/220(+스킬 증폭의 80%) → 60/100/140/180/220(+스킬 증폭의 85%)"
+            "raw": "피해량 [60 / 100 / 140 / 180 / 220] (+스킬 증폭의 85%)"
           }
         ]
       },
@@ -16211,7 +16211,7 @@
         "entries": []
       }
     ],
-    "wikiRevisedAt": "2026-10-20T08:37:57.000Z",
+    "wikiRevisedAt": "2026-10-29T12:56:49.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -17471,7 +17471,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-20T04:11:57.000Z",
+    "wikiRevisedAt": "2026-10-29T15:59:59.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -23087,7 +23087,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-24T12:43:36.000Z",
+    "wikiRevisedAt": "2026-10-29T03:57:37.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -24547,7 +24547,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-23T07:51:13.000Z",
+    "wikiRevisedAt": "2026-10-29T13:08:02.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -25248,7 +25248,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-27T08:15:57.000Z",
+    "wikiRevisedAt": "2026-10-29T13:03:57.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -26363,7 +26363,7 @@
             ]
           }
         ],
-        "raw": "전투 교범(Q) > 피해량 10/20/30/40/50(+추가 체력의 18%) → 10/20/30/40/50(+추가 체력의 16%)",
+        "raw": "피해량 [10 / 20 / 30 / 40 / 50] (+추가 체력의 16%)",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -26430,7 +26430,7 @@
                 ]
               }
             ],
-            "raw": "전투 교범(Q) > 피해량 10/20/30/40/50(+추가 체력의 18%) → 10/20/30/40/50(+추가 체력의 16%)"
+            "raw": "피해량 [10 / 20 / 30 / 40 / 50] (+추가 체력의 16%)"
           }
         ]
       },
@@ -26699,7 +26699,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-23T07:42:32.000Z",
+    "wikiRevisedAt": "2026-10-29T12:58:52.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -27979,7 +27979,7 @@
                 "extraRatios": [
                   {
                     "stat": "잃은 체력",
-                    "ratio": 0.2
+                    "ratio": 0.25
                   }
                 ]
               },
@@ -27991,7 +27991,7 @@
                 "extraRatios": [
                   {
                     "stat": "잃은 체력",
-                    "ratio": 0.2
+                    "ratio": 0.25
                   }
                 ]
               },
@@ -28003,12 +28003,12 @@
                 "extraRatios": [
                   {
                     "stat": "잃은 체력",
-                    "ratio": 0.2
+                    "ratio": 0.25
                   }
                 ]
               }
             ],
-            "raw": "[솔로] 보호막 [100 / 150 / 200] (+스킬 증폭의 55%) (+잃은 체력의 20%)"
+            "raw": "[솔로] 보호막 [100 / 150 / 200] (+스킬 증폭의 55%) (+잃은 체력의 25%)"
           },
           {
             "label": "[글로벌] 피해량",
@@ -28057,7 +28057,7 @@
             "levels": [
               {
                 "level": 1,
-                "baseDamage": 100,
+                "baseDamage": 150,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.55,
                 "extraRatios": [
@@ -28069,7 +28069,7 @@
               },
               {
                 "level": 2,
-                "baseDamage": 200,
+                "baseDamage": 250,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.55,
                 "extraRatios": [
@@ -28081,7 +28081,7 @@
               },
               {
                 "level": 3,
-                "baseDamage": 300,
+                "baseDamage": 350,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.55,
                 "extraRatios": [
@@ -28092,12 +28092,12 @@
                 ]
               }
             ],
-            "raw": "[글로벌] 보호막 [100 / 200 / 300] (+스킬 증폭의 55%) (+대상 잃은 체력의 15%)"
+            "raw": "[글로벌] 보호막 [150 / 250 / 350] (+스킬 증폭의 55%) (+대상 잃은 체력의 15%)"
           }
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-29T02:50:56.000Z",
+    "wikiRevisedAt": "2026-10-29T13:03:30.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -29518,36 +29518,36 @@
         "levels": [
           {
             "level": 1,
-            "baseDamage": 80,
+            "baseDamage": 100,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.4
           },
           {
             "level": 2,
-            "baseDamage": 110,
+            "baseDamage": 130,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.4
           },
           {
             "level": 3,
-            "baseDamage": 140,
+            "baseDamage": 160,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.4
           },
           {
             "level": 4,
-            "baseDamage": 170,
+            "baseDamage": 190,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.4
           },
           {
             "level": 5,
-            "baseDamage": 200,
+            "baseDamage": 220,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.4
           }
         ],
-        "raw": "피해량 [80 / 110 / 140 / 170 / 200] (+스킬 증폭의 40%)",
+        "raw": "피해량 [100 / 130 / 160 / 190 / 220] (+스킬 증폭의 40%)",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -29555,36 +29555,36 @@
             "levels": [
               {
                 "level": 1,
-                "baseDamage": 80,
+                "baseDamage": 100,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.4
               },
               {
                 "level": 2,
-                "baseDamage": 110,
+                "baseDamage": 130,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.4
               },
               {
                 "level": 3,
-                "baseDamage": 140,
+                "baseDamage": 160,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.4
               },
               {
                 "level": 4,
-                "baseDamage": 170,
+                "baseDamage": 190,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.4
               },
               {
                 "level": 5,
-                "baseDamage": 200,
+                "baseDamage": 220,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.4
               }
             ],
-            "raw": "피해량 [80 / 110 / 140 / 170 / 200] (+스킬 증폭의 40%)"
+            "raw": "피해량 [100 / 130 / 160 / 190 / 220] (+스킬 증폭의 40%)"
           }
         ]
       },
@@ -29880,7 +29880,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-24T12:30:02.000Z",
+    "wikiRevisedAt": "2026-10-29T13:08:52.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -30778,7 +30778,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-16T14:04:34.000Z",
+    "wikiRevisedAt": "2026-10-29T13:07:50.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -32521,7 +32521,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-26T11:44:14.000Z",
+    "wikiRevisedAt": "2026-10-30T01:49:10.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -32608,24 +32608,24 @@
             "levels": [
               {
                 "level": 1,
-                "baseDamage": 30,
+                "baseDamage": 40,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.35
+                "skillAmpRatio": 0.3
               },
               {
                 "level": 2,
-                "baseDamage": 65,
+                "baseDamage": 75,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.35
+                "skillAmpRatio": 0.3
               },
               {
                 "level": 3,
-                "baseDamage": 100,
+                "baseDamage": 110,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.35
+                "skillAmpRatio": 0.3
               }
             ],
-            "raw": "몽환 나비 보호막 흡수량 [30 / 65 / 100] (+스킬 증폭의 35%)"
+            "raw": "몽환 나비 보호막 흡수량 [40 / 75 / 110] (+스킬 증폭의 30%)"
           },
           {
             "label": "몽환 나비 보호막 최대치",
@@ -33030,7 +33030,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-21T07:13:46.000Z",
+    "wikiRevisedAt": "2026-10-29T12:59:21.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -34303,7 +34303,7 @@
             "skillAmpRatio": 0.12
           }
         ],
-        "raw": "유물 탐구(P) > 체력 회복량 50/85/120(+스킬 증폭의 10%) → 50/85/120(+스킬 증폭의 12%)",
+        "raw": "체력 회복량 [50 / 85 / 120] (+스킬 증폭의 12%)",
         "sourceLabel": "체력 회복량",
         "entries": [
           {
@@ -34328,7 +34328,7 @@
                 "skillAmpRatio": 0.12
               }
             ],
-            "raw": "유물 탐구(P) > 체력 회복량 50/85/120(+스킬 증폭의 10%) → 50/85/120(+스킬 증폭의 12%)"
+            "raw": "체력 회복량 [50 / 85 / 120] (+스킬 증폭의 12%)"
           }
         ]
       },
@@ -34653,7 +34653,7 @@
         "entries": []
       }
     ],
-    "wikiRevisedAt": "2026-10-20T08:39:21.000Z",
+    "wikiRevisedAt": "2026-10-29T13:02:14.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -35092,7 +35092,7 @@
             "skillAmpRatio": 0.4
           }
         ],
-        "raw": "워프 슬래시(E) > 피해량 70/85/100/115/130(+스킬 증폭의 40%) → 70/95/120/145/170(+스킬 증폭의 40%)",
+        "raw": "피해량 [70 / 95 / 120 / 145 / 170] (+스킬 증폭의 40%)",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -35129,9 +35129,9 @@
                 "skillAmpRatio": 0.4
               }
             ],
-            "raw": "워프 슬래시(E) > 피해량 70/85/100/115/130(+스킬 증폭의 40%) → 70/95/120/145/170(+스킬 증폭의 40%)",
+            "raw": "피해량 [70 / 95 / 120 / 145 / 170] (+스킬 증폭의 40%)",
             "historyMismatch": {
-              "text": "baseDamage 설명란 [[70,85,100,115,130]], 역사 마지막 [120,140,160,180,200]: 8/7/6/5/4으로 감소되고, 워프 슬래시(E)의 피해량이 100/125/150/175/200에서 120/140/160/180/200으로 증가되고, 쿨다운이 전 구간 1초 감소되었다."
+              "text": "baseDamage 설명란 [[70,95,120,145,170]], 역사 마지막 [120,140,160,180,200]: 8/7/6/5/4으로 감소되고, 워프 슬래시(E)의 피해량이 100/125/150/175/200에서 120/140/160/180/200으로 증가되고, 쿨다운이 전 구간 1초 감소되었다."
             }
           }
         ]
@@ -35189,7 +35189,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-19T14:57:10.000Z",
+    "wikiRevisedAt": "2026-10-29T13:02:32.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -36441,7 +36441,7 @@
             ],
             "raw": "피해량 [20 / 45 / 70 / 95 / 120] (+레니 레벨 * 10) (+스킬 증폭의 35%)",
             "historyMismatch": {
-              "text": "skillAmpRatio 설명란 [0.35,0.02], 역사 마지막 0.025: 12.2 패치에서 레벨 당 방어력이 3, 권총 무기 숙련도 레벨 당 스킬 증폭이 4.4%, 뿅! 망치(W)의 아군 이동 속도 증가 스킬 증폭 계수가 2.5%로 증가했다."
+              "text": "skillAmpRatio 설명란 [0.35,0.035], 역사 마지막 0.025: 12.2 패치에서 레벨 당 방어력이 3, 권총 무기 숙련도 레벨 당 스킬 증폭이 4.4%, 뿅! 망치(W)의 아군 이동 속도 증가 스킬 증폭 계수가 2.5%로 증가했다."
             }
           },
           {
@@ -36451,11 +36451,11 @@
                 "level": 1,
                 "baseDamage": 0,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.02,
+                "skillAmpRatio": 0.035,
                 "extraRatios": [
                   {
                     "stat": "이동 속도 증가량(%)",
-                    "ratio": 0.12
+                    "ratio": 0.07
                   }
                 ]
               },
@@ -36463,11 +36463,11 @@
                 "level": 2,
                 "baseDamage": 0,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.02,
+                "skillAmpRatio": 0.035,
                 "extraRatios": [
                   {
                     "stat": "이동 속도 증가량(%)",
-                    "ratio": 0.14
+                    "ratio": 0.09
                   }
                 ]
               },
@@ -36475,11 +36475,11 @@
                 "level": 3,
                 "baseDamage": 0,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.02,
+                "skillAmpRatio": 0.035,
                 "extraRatios": [
                   {
                     "stat": "이동 속도 증가량(%)",
-                    "ratio": 0.16
+                    "ratio": 0.11
                   }
                 ]
               },
@@ -36487,11 +36487,11 @@
                 "level": 4,
                 "baseDamage": 0,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.02,
+                "skillAmpRatio": 0.035,
                 "extraRatios": [
                   {
                     "stat": "이동 속도 증가량(%)",
-                    "ratio": 0.18
+                    "ratio": 0.13
                   }
                 ]
               },
@@ -36499,18 +36499,18 @@
                 "level": 5,
                 "baseDamage": 0,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.02,
+                "skillAmpRatio": 0.035,
                 "extraRatios": [
                   {
                     "stat": "이동 속도 증가량(%)",
-                    "ratio": 0.2
+                    "ratio": 0.15
                   }
                 ]
               }
             ],
-            "raw": "이동 속도 증가량(%) [12% / 14% / 16% / 18% / 20%] (+스킬 증폭의 2%)",
+            "raw": "이동 속도 증가량(%) [7% / 9% / 11% / 13% / 15%] (+스킬 증폭의 3.5%)",
             "historyMismatch": {
-              "text": "skillAmpRatio 설명란 [0.35,0.02], 역사 마지막 0.025: 12.2 패치에서 레벨 당 방어력이 3, 권총 무기 숙련도 레벨 당 스킬 증폭이 4.4%, 뿅! 망치(W)의 아군 이동 속도 증가 스킬 증폭 계수가 2.5%로 증가했다."
+              "text": "skillAmpRatio 설명란 [0.35,0.035], 역사 마지막 0.025: 12.2 패치에서 레벨 당 방어력이 3, 권총 무기 숙련도 레벨 당 스킬 증폭이 4.4%, 뿅! 망치(W)의 아군 이동 속도 증가 스킬 증폭 계수가 2.5%로 증가했다."
             }
           }
         ]
@@ -36647,7 +36647,10 @@
                 ]
               }
             ],
-            "raw": "피해량 [20 / 40 / 60 / 80 / 100] (+레니 레벨 * 5) (+스킬 증폭의 55%)"
+            "raw": "피해량 [20 / 40 / 60 / 80 / 100] (+레니 레벨 * 5) (+스킬 증폭의 55%)",
+            "historyMismatch": {
+              "text": "skillAmpRatio 설명란 [0.55,0.3], 역사 마지막 0.25: 12.3 패치로 에어 호른! 건(E)의 피해량 스킬 증폭 계수가 55%로, 보호막 스킬 증폭 계수가 25%로 증가했다."
+            }
           },
           {
             "label": "보호막 흡수량",
@@ -36713,7 +36716,10 @@
                 ]
               }
             ],
-            "raw": "에어 호른! 건(E) > 보호막량 50/65/80/95/110(+레니 레벨*3)(+스킬 증폭의 25%) → 50/65/80/95/110(+레니 레벨*2)(+스킬 증폭의 30%)"
+            "raw": "보호막 흡수량 [50 / 65 / 80 / 95 / 110] (+레니 레벨 * 2) (+스킬 증폭의 30%)",
+            "historyMismatch": {
+              "text": "skillAmpRatio 설명란 [0.55,0.3], 역사 마지막 0.25: 12.3 패치로 에어 호른! 건(E)의 피해량 스킬 증폭 계수가 55%로, 보호막 스킬 증폭 계수가 25%로 증가했다."
+            }
           }
         ]
       },
@@ -36848,7 +36854,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-20T13:19:16.000Z",
+    "wikiRevisedAt": "2026-10-29T12:57:36.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -37185,7 +37191,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-23T03:53:57.000Z",
+    "wikiRevisedAt": "2026-10-29T13:06:35.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -37733,7 +37739,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-28T13:53:42.000Z",
+    "wikiRevisedAt": "2026-10-29T19:24:30.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -38090,7 +38096,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-19T15:20:17.000Z",
+    "wikiRevisedAt": "2026-10-29T13:06:56.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -41530,7 +41536,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-15T15:00:05.000Z",
+    "wikiRevisedAt": "2026-10-29T13:10:59.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -43493,7 +43499,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-16T14:01:20.000Z",
+    "wikiRevisedAt": "2026-10-29T13:01:17.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -44062,7 +44068,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-16T14:06:35.000Z",
+    "wikiRevisedAt": "2026-10-29T13:09:16.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -44562,7 +44568,7 @@
                 ]
               }
             ],
-            "raw": "이중 참격 / 이중 휩쓸기(Q) > 이중 참격(쌍검 Q) 2타 피해량 20/50/80/110/140(+추가 공격력의 90/100/110/120/130%) → 10/40/70/100/130(+추가 공격력의 80/90/100/110/120%)"
+            "raw": "2타 피해량 [10 / 40 / 70 / 100 / 130] (+추가 공격력의 80% / 90% / 100% / 110% / 120%)"
           }
         ]
       },
@@ -45437,7 +45443,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-20T13:15:17.000Z",
+    "wikiRevisedAt": "2026-10-29T13:00:39.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -48261,34 +48267,34 @@
                 "level": 1,
                 "baseDamage": 130,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.85
+                "skillAmpRatio": 0.9
               },
               {
                 "level": 2,
                 "baseDamage": 160,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.85
+                "skillAmpRatio": 0.9
               },
               {
                 "level": 3,
                 "baseDamage": 190,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.85
+                "skillAmpRatio": 0.9
               },
               {
                 "level": 4,
                 "baseDamage": 220,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.85
+                "skillAmpRatio": 0.9
               },
               {
                 "level": 5,
                 "baseDamage": 250,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.85
+                "skillAmpRatio": 0.9
               }
             ],
-            "raw": "백플립 피해량 [130 / 160 / 190 / 220 / 250] (+스킬 증폭의 85%)"
+            "raw": "백플립 피해량 [130 / 160 / 190 / 220 / 250] (+스킬 증폭의 90%)"
           }
         ]
       },
@@ -48460,7 +48466,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-28T08:51:08.000Z",
+    "wikiRevisedAt": "2026-10-29T23:04:54.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -48601,34 +48607,34 @@
                 "level": 1,
                 "baseDamage": 80,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.8
+                "skillAmpRatio": 0.75
               },
               {
                 "level": 2,
                 "baseDamage": 115,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.8
+                "skillAmpRatio": 0.75
               },
               {
                 "level": 3,
                 "baseDamage": 150,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.8
+                "skillAmpRatio": 0.75
               },
               {
                 "level": 4,
                 "baseDamage": 185,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.8
+                "skillAmpRatio": 0.75
               },
               {
                 "level": 5,
                 "baseDamage": 220,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.8
+                "skillAmpRatio": 0.75
               }
             ],
-            "raw": "찬란한 낭만 피해량 [80 / 115 / 150 / 185 / 220] (+스킬 증폭의 80%)"
+            "raw": "찬란한 낭만 피해량 [80 / 115 / 150 / 185 / 220] (+스킬 증폭의 75%)"
           }
         ]
       },
@@ -48769,7 +48775,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-29T02:12:08.000Z",
+    "wikiRevisedAt": "2026-10-29T12:58:11.000Z",
     "needsReview": [],
     "parser": 2
   },
@@ -49620,7 +49626,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-28T13:15:30.000Z",
+    "wikiRevisedAt": "2026-10-29T14:21:32.000Z",
     "needsReview": [],
     "parser": 2
   }
