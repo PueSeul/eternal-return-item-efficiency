@@ -46,115 +46,114 @@ contextBridge.exposeInMainWorld('erDesktop', {
   appUpdate,
 });
 
-// --er-app-update(기본 exe): 머리글에 "업데이트 확인" 버튼, 그 아래에 새 버전 배너를 넣는다(index.html 은 그대로).
+// --er-app-update(기본 exe): 머리글 1행(.update-box 의 #app-update-group)에 상태 칸과 버튼 하나를 넣는다(index.html 은 그대로).
+// 버튼 하나가 상태에 따라 바뀐다: "업데이트 확인"(확인) → 새 버전이 있으면 "지금 업데이트"(primary, 설치)
+// → 설치 실패 시 "다시 시도"(primary, 설치). 상태 칸(버튼 왼쪽)은 "새 버전 v1.9.0 · [나중에] [릴리스 노트]".
+// 내려받기 진행률은 src/app.js 가 상태 칸 맨 앞에 넣는 원형 게이지가 보여 준다(문구 칸 #app-update-text 를 보고 시작·완료·실패를 안다).
 // 원격 문자열(릴리스 노트 등)은 textContent·title 로만 넣는다.
 function mountAppUpdateUi() {
   const el = (tag, props = {}) => Object.assign(document.createElement(tag), props);
   const status = el('span', { id: 'app-update-status', className: 'muted' });
   status.setAttribute('role', 'status');
-  const check = el('button', { id: 'app-update-check', type: 'button', textContent: '업데이트 확인' });
-  // 머리글 2행의 .update-box 안에 데이터 그룹과 같은 .update-group 으로 넣는다(구분점·줄바꿈은 src/style.css).
+  const text = el('span', { id: 'app-update-text' });
+  const later = el('button', { id: 'app-update-later', type: 'button', className: 'text-btn', textContent: '나중에', hidden: true });
+  // 링크는 앱의 링크형 버튼 모양(.meta-line: 보조색, hover·포커스 때 밑줄). 브라우저로 열린다(main.js setWindowOpenHandler).
+  const notes = el('a', { id: 'app-update-notes', className: 'meta-line', textContent: '릴리스 노트', target: '_blank', rel: 'noopener', hidden: true });
+  const sep = el('span', { id: 'app-update-sep', textContent: '·', hidden: true });
+  sep.setAttribute('aria-hidden', 'true');
+  status.append(text, sep, later, notes);
+  const btn = el('button', { id: 'app-update-check', type: 'button', textContent: '업데이트 확인' });
+  // 머리글 .update-box 안에 데이터 그룹과 같은 .update-group 으로 넣는다(격자 칸·폭은 src/style.css).
   const group = el('div', { id: 'app-update-group', className: 'update-group' });
-  group.append(status, check);
+  group.append(status, btn);
   const box = document.querySelector('header .update-box') || document.querySelector('header') || document.body;
   box.append(group);
-  // 상태 문구: 짧은 문구 + 툴팁에 전체 문장. fade(완료 문구)는 5초 뒤 지운다.
+
+  let mode = 'check'; // 버튼 동작: 'check' | 'install' | 'retry'
+  const setMode = (m) => {
+    mode = m;
+    btn.textContent = m === 'check' ? '업데이트 확인' : m === 'install' ? '지금 업데이트' : '다시 시도';
+    btn.classList.toggle('primary', m !== 'check');
+  };
+  // 상태 문구: 짧은 문구 + 툴팁에 전체 문장. fade(완료 문구)는 5초 뒤 지운다. links: "나중에"·"릴리스 노트" 표시.
   let clearTimer = null;
-  const setStatus = (text, full, color, fade) => {
+  const setStatus = (msg, { full, warn, fade, links } = {}) => {
     clearTimeout(clearTimer);
-    status.style.color = color || '';
-    status.textContent = text;
-    status.title = full || text;
-    if (fade) clearTimer = setTimeout(() => { status.textContent = ''; status.title = ''; }, 5000);
+    status.style.color = warn ? 'var(--warn)' : '';
+    text.textContent = msg;
+    status.title = full || msg;
+    later.hidden = !links;
+    sep.hidden = !links;
+    notes.hidden = !links || !notes.getAttribute('href');
+    if (fade) clearTimer = setTimeout(() => { text.textContent = ''; status.title = ''; }, 5000);
   };
 
-  const banner = el('div', { id: 'app-update-banner', className: 'banner', hidden: true });
-  // display 를 인라인으로 주면 hidden 이 무시되므로 간격은 margin 으로 준다.
-  Object.assign(banner.style, { borderColor: 'var(--accent)', color: 'var(--text)' });
-  const text = el('span');
-  const now = el('button', { id: 'app-update-now', type: 'button', textContent: '지금 업데이트' });
-  const later = el('button', { id: 'app-update-later', type: 'button', className: 'text-btn', textContent: '나중에' });
-  // 링크는 앱의 링크형 버튼 모양(.meta-line: 보조색, hover·포커스 때 강조색+밑줄). <a> 기본 밑줄만 지운다.
-  const notes = el('a', { className: 'meta-line', textContent: '릴리스 노트', target: '_blank', rel: 'noopener' });
-  document.head.append(el('style', { textContent:
-    '#app-update-banner a { text-decoration: none; }'
-    + ' #app-update-banner a:hover, #app-update-banner a:focus-visible { color: var(--accent); text-decoration: underline; }' }));
-  for (const node of [now, later, notes]) node.style.marginLeft = '10px';
-  banner.append(text, now, later, notes);
-  const header = document.querySelector('header');
-  if (header) header.after(banner);
-  else document.body.prepend(banner);
-
-  let shown = null;
-  let installing = false; // 설치 중에는 확인 결과가 배너(설치 대상 버전)를 바꾸지 않는다
+  let shown = null; // 알린 새 버전 { version, notes, url }
+  let installing = false; // 설치 중에는 확인 결과·알림이 표시(설치 대상 버전)를 바꾸지 않는다
   const show = (info) => {
     if (installing) return;
     shown = info;
-    text.textContent = `새 버전 v${info.version}`;
-    banner.title = info.notes ? info.notes.slice(0, 1000) : '';
-    notes.href = info.url || '';
-    notes.hidden = !/^https:\/\//.test(info.url || '');
-    now.hidden = false;
-    now.disabled = false;
-    later.disabled = false;
-    banner.hidden = false;
+    if (/^https:\/\//.test(info.url || '')) notes.href = info.url;
+    else notes.removeAttribute('href');
+    setStatus(`새 버전 v${info.version}`, { full: info.notes ? info.notes.slice(0, 1000) : `새 버전 v${info.version}이 있습니다`, links: true });
+    setMode('install');
+    btn.disabled = false;
   };
   appUpdate.onAvailable(show);
-  appUpdate.onError((msg) => {
+  appUpdate.onError((msg) => { // 지난 교체 실패: 문구만(설치할 대상이 없으므로 버튼은 "업데이트 확인")
+    if (installing) return;
     shown = null;
-    text.textContent = `업데이트 실패: ${msg}`;
-    now.hidden = true;
-    notes.hidden = true;
-    banner.hidden = false;
+    setStatus(`업데이트 실패: ${msg}`, { warn: true });
+    setMode('check');
   });
-  // 진행률·크기는 src/app.js 가 배너 앞에 넣는 원형 게이지(src/gauge.js)가 보여 준다("37% 내려받는 중 · 12.3 / 100.0 MB").
-  // 문구 칸에는 버전만 남겨 퍼센트를 두 번 보이지 않게 한다.
+  // 퍼센트는 게이지가 보여 주므로 문구 칸에는 버전만 남겨 두 번 보이지 않게 한다.
   appUpdate.onProgress(() => {
-    if (shown) text.textContent = `새 버전 v${shown.version}`;
+    if (shown && installing) text.textContent = `새 버전 v${shown.version}`;
   });
-  now.addEventListener('click', async () => {
+  const install = async () => {
     if (!shown || installing) return;
     installing = true;
-    now.disabled = true;
-    later.disabled = true;
-    check.disabled = true;
-    text.textContent = `새 버전 v${shown.version} 내려받는 중…`;
+    btn.disabled = true;
+    setStatus(`새 버전 v${shown.version} 내려받는 중…`);
     try {
       await appUpdate.install();
-      text.textContent = `v${shown.version} 내려받기 완료 — 프로그램을 교체하고 다시 시작합니다…`;
+      setStatus(`v${shown.version} 내려받기 완료 — 프로그램을 교체하고 다시 시작합니다…`);
     } catch (err) {
       installing = false;
-      text.textContent = `업데이트 실패: ${err.message} (현재 버전을 그대로 씁니다)`;
-      now.disabled = false;
-      later.disabled = false;
-      check.disabled = false;
+      // 문구는 오류만(머리글 한 줄), 툴팁에 현재 버전 유지 안내까지.
+      setStatus(`업데이트 실패: ${err.message}`, { full: `업데이트 실패: ${err.message} (현재 버전을 그대로 씁니다)`, warn: true });
+      setMode('retry');
+      btn.disabled = false;
     }
-  });
-  later.addEventListener('click', () => {
-    banner.hidden = true;
-    if (shown) appUpdate.dismiss(shown.version).catch(() => {});
-  });
-  check.addEventListener('click', async () => {
-    if (installing) return;
-    check.disabled = true;
+  };
+  const check = async () => {
+    btn.disabled = true;
     setStatus('업데이트 확인 중…');
     try {
       const res = await appUpdate.check();
-      if (res.status === 'available') {
-        setStatus(`새 버전 v${res.version}`, `새 버전 v${res.version}이 있습니다`);
-        show(res);
-      } else {
-        setStatus(`최신 버전 v${res.current}`, `최신 버전입니다(v${res.current})`, '', true);
-        if (!installing && shown) { // 이전에 알린 버전이 철회된 경우 배너도 내린다
-          shown = null;
-          banner.hidden = true;
-        }
+      if (res.status === 'available') show(res);
+      else if (!installing) {
+        shown = null; // 이전에 알린 버전이 철회된 경우(확인 중 도착한 알림 포함)도 내린다
+        setMode('check');
+        setStatus(`최신 버전 v${res.current}`, { full: `최신 버전입니다(v${res.current})`, fade: true });
       }
     } catch (err) {
-      setStatus(err.message, err.message, 'var(--warn)');
+      if (!installing) setStatus(err.message, { warn: true });
     } finally {
-      check.disabled = installing;
+      btn.disabled = installing;
     }
+  };
+  btn.addEventListener('click', () => {
+    if (installing) return;
+    if (mode === 'check') check();
+    else install();
+  });
+  // 나중에: 이번 실행에서는 다시 알리지 않는다. 버튼은 "업데이트 확인"으로, 문구는 버전만 남긴다.
+  later.addEventListener('click', () => {
+    if (!shown || installing) return;
+    appUpdate.dismiss(shown.version).catch(() => {});
+    setStatus(`새 버전 v${shown.version}`, { full: status.title });
+    setMode('check');
   });
 }
 

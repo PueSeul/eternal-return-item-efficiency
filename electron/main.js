@@ -217,7 +217,7 @@ function createWindow() {
       sandbox: true,
       preload: path.join(__dirname, 'preload.js'),
       // preload.js 가 이 인자를 보고 window.ER_FORMULA 를 주입한다.
-      // --er-app-update: preload.js 가 "업데이트 확인" 버튼과 새 버전 배너를 넣는다.
+      // --er-app-update: preload.js 가 머리글 1행에 "업데이트 확인"(새 버전이면 "지금 업데이트") 버튼과 상태 칸을 넣는다.
       // --er-titlebar / --er-version: preload.js 가 자체 타이틀바를 보이게 하고 버전을 적는다.
       additionalArguments: [`--er-formula=${FORMULA}`, '--er-titlebar', `--er-version=${app.getVersion()}`,
         ...(APP_UPDATE ? ['--er-app-update'] : [])],
@@ -381,14 +381,15 @@ async function smokeClickUpdate(win, selector) {
   }
 }
 
-// 검증용: check → "업데이트 확인" 클릭 후 상태 문구. install → 시작 알림 배너의 "지금 업데이트" 클릭,
-// 교체 배치를 띄우고 종료하기 직전(smokeUpdateQuit)까지 기다린다. 실패 문구가 배너에 뜨면 실패.
+// 검증용: check → "업데이트 확인" 클릭 후 상태 문구. install → 시작 알림으로 머리글 1행 버튼이 "지금 업데이트"가 되면 클릭,
+// 교체 배치를 띄우고 종료하기 직전(smokeUpdateQuit)까지 기다린다. 실패 문구가 상태 칸에 뜨면 실패.
+// (결과 이름 bannerShown·banner 는 기존 검증 결과와 맞춘 것: 지금은 "지금 업데이트" 버튼 표시·상태 칸 문구)
 async function smokeAppUpdate(win, mode) {
   const js = (code) => win.webContents.executeJavaScript(code);
   const state = () => js(`(() => {
-    const b = document.getElementById('app-update-banner');
+    const b = document.getElementById('app-update-check');
     const s = document.getElementById('app-update-status');
-    return { bannerShown: !!b && !b.hidden, banner: b ? b.textContent : null, status: s ? s.textContent : null };
+    return { bannerShown: !!b && b.textContent === '지금 업데이트', banner: s ? s.textContent : null, status: s ? s.textContent : null };
   })()`);
   let stopped = false;
   const until = async (cond, ms) => {
@@ -400,7 +401,13 @@ async function smokeAppUpdate(win, mode) {
     return stopped ? null : state();
   };
   if (mode === 'check') {
-    await js(`document.getElementById('app-update-check').click()`);
+    // 시작 알림으로 버튼이 이미 "지금 업데이트"면 누르면 설치가 시작되므로, "나중에"로 확인 모드로 되돌린 뒤 누른다.
+    await js(`(() => {
+      const b = document.getElementById('app-update-check');
+      if (b.textContent !== '업데이트 확인') document.getElementById('app-update-later').click();
+      if (b.textContent !== '업데이트 확인') throw new Error('업데이트 확인 버튼으로 되돌리지 못했습니다: ' + b.textContent);
+      b.click();
+    })()`);
     const s = await until((x) => x.status && !x.status.includes('확인 중'), 30000);
     return { ok: !!s.status && !s.status.includes('확인 중') && !s.status.includes('실패'), ...s };
   }
@@ -409,7 +416,7 @@ async function smokeAppUpdate(win, mode) {
   await js(`window.__appUpdateProgress = []; window.erDesktop.appUpdate.onProgress((p) => window.__appUpdateProgress.push(p)); 0`);
   const startedAt = Date.now();
   const quitting = new Promise((resolve) => { smokeUpdateQuit = resolve; });
-  await js(`document.getElementById('app-update-now').click()`);
+  await js(`document.getElementById('app-update-check').click()`);
   // 다운로드 중간(30% 이상) 배너 문구(게이지 + 문구 칸): 퍼센트가 한 번만 보이는지 확인용.
   const mid = (async () => {
     while (!stopped) {

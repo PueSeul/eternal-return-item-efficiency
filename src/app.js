@@ -493,11 +493,11 @@
     btn.onclick = () => run('patched');
   }
 
-  // ---------- 프로그램 업데이트 배너(데스크톱 preload가 넣는 #app-update-banner) ----------
-  // 다운로드 진행({received, total, percent})을 같은 원형 게이지로 배너 맨 앞에 표시한다.
+  // ---------- 프로그램 업데이트(데스크톱 preload가 머리글 1행에 넣는 #app-update-status) ----------
+  // 다운로드 진행({received, total, percent})을 같은 원형 게이지로 상태 칸 맨 앞(버전 문구 왼쪽)에 표시한다.
   // 문구: "내려받는 중 · 5.0 / 20.0 MB · 약 12초 남음"(괄호 없음). 남은 시간은 첫 진행 이후 받은 속도로 추정.
-  // 시작·완료·실패는 preload가 배너 문구 칸(#app-update-banner의 첫 span)에 쓰는 문구로 안다:
-  // "내려받는 중…" → 0%부터, "내려받기 완료" → 100% 후 1초 뒤 숨김(percent가 null인 경로 포함), "업데이트 실패" → 경고색.
+  // 시작·완료·실패는 preload가 문구 칸(#app-update-text)에 쓰는 문구로 안다:
+  // "내려받는 중…" → 0%부터, "내려받기 완료" → 100% 후 1초 뒤 숨김(percent가 null인 경로 포함), "업데이트 실패" → 게이지 숨김.
   function setupAppUpdateGauge() {
     const au = window.erDesktop && window.erDesktop.appUpdate;
     if (!au || typeof au.onProgress !== 'function') return;
@@ -509,24 +509,24 @@
     const onBannerText = (text) => {
       if (text === lastText) return;
       lastText = text;
-      if (/업데이트 실패/.test(text)) gauge.fail();
+      if (/업데이트 실패/.test(text)) gauge.hide(); // 오류는 문구 칸(경고색)과 "다시 시도" 버튼이 알린다
       else if (/내려받기 완료/.test(text)) gauge.done('');
       else if (/내려받는 중…$/.test(text)) { started = null; gauge.set(0, '내려받는 중'); }
     };
     const attach = () => {
       if (attached) return true;
-      const banner = document.getElementById('app-update-banner');
-      const textEl = banner && [...banner.children].find((c) => c.tagName === 'SPAN');
-      if (!textEl) return false;
+      const status = document.getElementById('app-update-status');
+      const textEl = document.getElementById('app-update-text');
+      if (!status || !textEl) return false;
       attached = true;
-      banner.prepend(gauge.el);
+      status.prepend(gauge.el);
       // 문구 칸만 감시한다(게이지 자신의 변경은 감시 대상이 아님).
       new MutationObserver(() => onBannerText(textEl.textContent))
         .observe(textEl, { childList: true, subtree: true, characterData: true });
       lastText = textEl.textContent;
       return true;
     };
-    // preload는 DOMContentLoaded에 배너를 만든다. app.js는 그보다 먼저 실행되므로 그때 연결한다.
+    // preload는 DOMContentLoaded에 상태 칸을 만든다. app.js는 그보다 먼저 실행되므로 그때 연결한다.
     if (!attach()) document.addEventListener('DOMContentLoaded', attach, { once: true });
     au.onProgress((p) => {
       if (!p || !attach()) return;
@@ -545,7 +545,7 @@
       if (pct === 100) gauge.done(Gauge.detailText(['내려받기 완료', size]));
       else gauge.set(pct, Gauge.detailText(['내려받는 중', size, left]));
     });
-    if (typeof au.onError === 'function') au.onError(() => { if (attach()) gauge.fail(); });
+    if (typeof au.onError === 'function') au.onError(() => { if (attach()) gauge.hide(); });
   }
 
   // ---------- 슬롯 ----------

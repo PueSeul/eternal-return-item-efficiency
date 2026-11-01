@@ -97,7 +97,11 @@ header h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-
 .gauge.error .gauge-bar { stroke: var(--warn); }
 .gauge-pct { font-variant-numeric: tabular-nums; min-width: 4ch; text-align: right; }
 .gauge-text { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
-#app-update-banner .gauge { margin-right: 8px; vertical-align: middle; }
+/* 1행 프로그램 업데이트 상태 칸: [게이지] 새 버전 v1.9.0 [나중에] [릴리스 노트] — 버튼 바로 왼쪽, 자르지 않음. */
+#app-update-status { display: flex; align-items: center; gap: 8px; }
+#app-update-status .text-btn { height: 24px; padding: 0 6px; font-size: 12px; }
+#app-update-notes { text-decoration: none; }
+#app-update-sep[hidden], #app-update-later[hidden], #app-update-notes[hidden] { display: none; }
 .link-btn { background: none; border: none; padding: 0; font-size: 12px; color: var(--muted); text-decoration: underline; cursor: pointer; }
 .link-btn:hover:not(:disabled), .link-btn:focus-visible { color: var(--text); }
 .link-btn:disabled { cursor: default; opacity: .5; }

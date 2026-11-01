@@ -95,6 +95,9 @@ test('머리글: 좌(제목/메타)·우(앱 행/데이터 행) 두 블록, 28px
   const preload = fs.readFileSync(path.join(root, 'electron', 'preload.js'), 'utf8');
   assert.match(preload, /id: 'app-update-group', className: 'update-group'/);
   assert.match(preload, /`최신 버전 v\$\{res\.current\}`/);
+  // 새 버전 알림은 머리글 1행(상태 칸 + 버튼)에만: 헤더 아래 배너 없음, 상태 칸은 자르지 않는 한 줄.
+  assert.doesNotMatch(preload + css + app0(), /app-update-banner/);
+  assert.match(css, /#app-update-status \{ display: flex; align-items: center; gap: 8px; \}/);
 });
 
 test('슬롯 두 열 헤더: 32px 한 줄 고정, 제목·버튼 nowrap, 상태 말줄임', () => {
