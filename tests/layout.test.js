@@ -21,9 +21,12 @@ test('레이아웃: 왼쪽 필요 폭·히스토리 남는 폭, 페이지 스크
   assert.match(css, /@media \(max-width: 1099px\) \{[\s\S]*body \{ display: block; overflow: auto/);
 });
 
-test('결과·히스토리 효율 표시: 큰 숫자 3개(데미지·효율·기준 대비) + 가격·1,000당 작은 줄, 히스토리 3단', () => {
+test('결과·히스토리 효율 표시: 데미지 효율 % 큰 숫자 하나 + 가격당 데미지 막대 + 가격·1,000당 작은 줄, 데미지·기준 대비, 히스토리 3단', () => {
   const app = fs.readFileSync(path.join(root, 'src', 'app.js'), 'utf8');
-  assert.match(app, /stat\('데미지 총량'[\s\S]{0,80}stat\(Baseline\.LABELS\.pct[\s\S]{0,400}stat\(Baseline\.LABELS\.gain/);
+  assert.match(app, /Baseline\.LABELS\.pct \}\),\s*el\('span', \{ className: 'hero-value', textContent: Baseline\.pctText\(eff\.pct\) \}\)\),\s*rows \? ratioBars\(rows\) : null/);
+  assert.match(app, /stat\('데미지 총량'[\s\S]{0,80}stat\(Baseline\.LABELS\.gain/);
+  assert.match(css, /\.hero-value \{ font-size: 40px;[^}]*color: var\(--accent\)/);
+  assert.match(css, /\.bar-row\.cur \.bar-fill \{ background: var\(--accent\)/);
   assert.match(app, /className: 'stat-sub'[\s\S]{0,200}`가격 \$\{fmt\(r\.price\)\} · \$\{baseResult \? Baseline\.per1000Text\(eff\.per1000\) : '기준 없음'\}`/);
   assert.match(app, /'hist-eff-value'[\s\S]{0,200}'hist-eff-gain'[\s\S]{0,200}'hist-eff-sub'/);
   assert.match(css, /\.result-stats \{ display: flex; gap: 32px; \}/);
@@ -101,20 +104,26 @@ test('슬롯 두 열 헤더: 32px 한 줄 고정, 제목·버튼 nowrap, 상태 
   assert.match(css, /\.slot-col > \.block-head \.text-btn \{ white-space: nowrap; flex-shrink: 0/);
 });
 
-test('히스토리 효율 열: 오른쪽 세로 중앙, 숫자 20~22px 굵게', () => {
+test('히스토리 효율 열: 오른쪽 세로 중앙, 숫자 20px 500 강조색', () => {
   assert.match(css, /\.history li:not\(\.empty\) \{[^}]*grid-template-columns: minmax\(0, 1fr\) auto;[^}]*align-items: center/);
-  const m = css.match(/\.hist-eff-value \{[^}]*font-size: (\d+)px;[^}]*font-weight: 700/);
-  assert.ok(m && +m[1] >= 20 && +m[1] <= 22);
+  assert.match(css, /\.hist-eff-value \{ font-size: 20px; font-weight: 500;[^}]*color: var\(--accent\)/);
   const app = fs.readFileSync(path.join(root, 'src', 'app.js'), 'utf8');
   assert.match(app, /className: 'hist-eff-value'/);
 });
 
-test('hover/포커스: 비활성 탭 밝게, 링크형 버튼 강조색, 120ms 전환', () => {
+test('히스토리 기준 줄: 기준 세트가 있으면 아이콘 줄 아래 작은 아이콘 5개(32px, 등급 띠 칸)', () => {
+  const app = fs.readFileSync(path.join(root, 'src', 'app.js'), 'utf8');
+  assert.match(app, /className: 'hist-base' \}, el\('span', \{ className: 'hist-base-label', textContent: '기준' \}\),\s*historyIcons\(\{ itemIds: e\.baselineIds, itemNames: e\.baselineNames \}, ' small'\)\)/);
+  assert.match(app, /className: 'hist-row' \}, historyIcons\(e\), baseRow\)/);
+  assert.match(css, /\.hist-icons\.small \.item-icon \{ width: 32px; height: 32px; \}/);
+});
+
+test('hover/포커스: 비활성 탭 밝게, 링크형 버튼 글자색(강조색은 결과 효율 %·계산 버튼만), 120ms 전환', () => {
   assert.match(css, /--fast: 120ms/);
   assert.match(css, /\.tabs button\[aria-pressed="false"\]:hover[^{]*\{ background: var\(--hover\); color: var\(--text\)/);
-  assert.match(css, /\.text-btn:hover:not\(:disabled\)[^{]*\{[^}]*color: var\(--accent\)/);
-  assert.match(css, /\.link-btn:hover:not\(:disabled\)[^{]*\{ color: var\(--accent\)/);
-  assert.match(css, /\.meta-line:hover[^{]*\{ color: var\(--accent\)/);
+  assert.match(css, /\.text-btn:hover:not\(:disabled\)[^{]*\{[^}]*color: var\(--text\)/);
+  assert.match(css, /\.link-btn:hover:not\(:disabled\)[^{]*\{ color: var\(--text\)/);
+  assert.match(css, /\.meta-line:hover[^{]*\{ color: var\(--text\)/);
   assert.match(css, /button:hover:not\(:disabled\) \{[^}]*background: var\(--hover\)/);
 });
 
@@ -128,7 +137,7 @@ test('전체 비우기: 장비 슬롯·기준 세트 헤더 모두 "전체 비�
   assert.doesNotMatch(handler, /baseline|history/);
 });
 
-test('슬롯 행: 행 전체가 role=button(클릭·Enter·Space), 선택/변경 버튼 없음, 비우기는 전파 차단, 행 50px·아이콘 40px', () => {
+test('슬롯 행: 행 전체가 role=button(클릭·Enter·Space), 선택/변경 버튼 없음, 비우기는 전파 차단, 행 48px·아이콘 40px', () => {
   const js = fs.readFileSync(path.join(root, 'src', 'app.js'), 'utf8');
   const body = js.slice(js.indexOf('function slotCard('), js.indexOf('function renderSlots('));
   assert.match(body, /setAttribute\('role', 'button'\)/);
@@ -137,7 +146,7 @@ test('슬롯 행: 행 전체가 role=button(클릭·Enter·Space), 선택/변경
   assert.match(body, /ev\.key !== 'Enter' && ev\.key !== ' '/);
   assert.match(body, /ev\.stopPropagation\(\); onClear\(\)/);
   assert.doesNotMatch(body, /textContent: item \? '변경' : '선택'/);
-  assert.match(css, /\.slot \{[^}]*height: 50px[^}]*transition: background-color 120ms, border-color 120ms/);
-  assert.match(css, /\.slot:hover, \.slot:focus-visible \{[^}]*border-color: var\(--accent\)/);
+  assert.match(css, /\.slot \{[^}]*height: 48px[^}]*transition: background-color var\(--fast\) var\(--ease\)/);
+  assert.match(css, /\.slot:focus-visible \{ outline: 2px solid var\(--text\); outline-offset: -2px; \}/);
   assert.match(css, /\.slot img \{ width: 40px; height: 40px/);
 });

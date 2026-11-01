@@ -63,16 +63,19 @@
     // 장식용: 이름은 항상 옆에 글자로 있으므로 대체 텍스트를 비워 중복 낭독을 막는다.
     const img = el('img', { src: item.imageUrl || '', alt: '', loading: 'lazy' });
     img.onerror = () => { img.style.visibility = 'hidden'; };
-    return img;
+    return iconBox(img, item.grade);
   }
 
-  // 등급 색 점(이름 옆). 등급은 보조기기용 이름으로도 붙인다.
-  function gradeDot(grade) {
-    const dot = el('span', { className: 'dot', title: grade || '' });
-    dot.dataset.grade = grade || '';
-    dot.setAttribute('role', 'img');
-    dot.setAttribute('aria-label', (grade || '등급 없음') + ' 등급');
-    return dot;
+  // 아이템 아이콘 칸(슬롯·선택 창·히스토리 공용): 칸 아래 2px 띠가 등급색. 등급은 보조기기용 이름으로도 붙인다.
+  function iconBox(img, grade) {
+    const box = el('span', { className: 'item-icon' }, img);
+    if (grade) {
+      box.dataset.grade = grade;
+      box.title = grade;
+      box.setAttribute('role', 'img');
+      box.setAttribute('aria-label', grade + ' 등급');
+    }
+    return box;
   }
 
   // 단색 × 아이콘 버튼(비우기·삭제).
@@ -578,7 +581,7 @@
       card.append(
         itemImage(item),
         el('span', { className: 'slot-name', title: `${item.name} (${item.grade})\n${statsText(item)}` },
-          gradeDot(item.grade), el('span', { className: 'name-text', textContent: item.name }), patchBadge(item)),
+          el('span', { className: 'name-text', textContent: item.name }), patchBadge(item)),
         el('span', { className: 'price', textContent: fmt(item.price), title: `가격 ${fmt(item.price)}` }),
       );
       const clear = closeButton(`${slot} 비우기`);
@@ -586,7 +589,7 @@
       clear.onkeydown = (ev) => ev.stopPropagation();
       card.append(clear);
     } else {
-      card.append(el('span', { className: 'slot-icon-empty' }), el('span', { className: 'slot-empty', textContent: '비어 있음' }));
+      card.append(el('span', { className: 'item-icon empty' }), el('span', { className: 'slot-empty', textContent: '비어 있음' }));
     }
     card.onclick = () => { if (enabled) onPick(); };
     card.onkeydown = (ev) => {
@@ -741,7 +744,7 @@
       const li = el('li', { id: 'pick-' + i },
         itemImage(it),
         el('div', null,
-          el('div', { className: 'pick-name' }, gradeDot(it.grade), el('span', { textContent: it.name }), patchBadge(it)),
+          el('div', { className: 'pick-name' }, el('span', { textContent: it.name }), patchBadge(it)),
           el('div', { className: 'stats', textContent: statsText(it) })),
         el('span', { className: 'price', textContent: fmt(it.price), title: it.priceSource ? `가격 출처: ${it.priceSource}` : '' }));
       li.setAttribute('role', 'option');
@@ -749,7 +752,7 @@
       li.onmouseenter = () => setPickerActive(i);
       list.append(li);
     });
-    if (!rows.length) list.append(el('li', { className: 'empty', textContent: '조건에 맞는 아이템이 없습니다.' }));
+    if (!rows.length) list.append(el('li', { className: 'empty', textContent: '조건에 맞는 아이템이 없습니다' }));
     setPickerActive(0);
   }
 
@@ -928,9 +931,9 @@
     for (const f of INPUT_FIELDS) {
       const raw = $('#in-' + f.key).value.trim();
       const n = Number(raw);
-      if (raw === '') throw new Error(`"${f.label}" 값을 입력하세요.`);
-      if (!Number.isFinite(n)) throw new Error(`"${f.label}" 값이 숫자가 아닙니다.`);
-      if (f.min != null && n < f.min) throw new Error(`"${f.label}" 값은 ${f.min} 이상이어야 합니다.`);
+      if (raw === '') throw new Error(`"${f.label}" 값을 입력하세요`);
+      if (!Number.isFinite(n)) throw new Error(`"${f.label}" 값이 숫자가 아닙니다`);
+      if (f.min != null && n < f.min) throw new Error(`"${f.label}" 값은 ${f.min} 이상이어야 합니다`);
       out[f.key] = n;
     }
     // 방어 관통 입력란이 최종값인 기록 표시(이전 기록의 extraPen·extraPenPct는 아이템 합에 더하던 추가값).
@@ -1008,33 +1011,40 @@
 
   function renderResult(r, items, inputs, eff, baseItems, baseResult, baseInputs) {
     const box = $('#result');
-    // 큰 숫자 3개(데미지 총량 · 데미지 효율 · 기준 대비) + 작은 줄(가격 · 1,000당) + 비교 표. 산출 기준은 툴팁.
+    // 왼쪽: 데미지 효율 %가 화면의 큰 숫자 하나(강조색), 그 아래 현재·기준 가격당 데미지 막대(비교 표 값)와 작은 줄(가격 · 1,000당).
+    // 오른쪽: 데미지 총량 · 기준 대비 + 비교 표. 산출 기준은 툴팁.
     const stat = (label, value, extra) => el('div', { className: 'stat', title: extra.title || '' },
       el('span', { className: 'stat-label', textContent: label }),
-      el('span', { className: 'stat-value' + (extra.accent ? ' accent' : ''), textContent: value }));
+      el('span', { className: 'stat-value', textContent: value }));
     const noBase = '기준 없음 — 기준 세트 5칸을 모두 채우면 계산합니다';
-    const nodes = [el('div', { className: 'result-stats' },
+    const rows = baseResult ? Baseline.compareRows(r, baseResult) : null;
+    const hero = el('div', { className: 'result-hero' },
+      el('div', { className: 'stat', title: !baseResult ? noBase
+        : eff.pct == null ? '가격 합이 0이라 계산하지 않습니다' : '현재 세트 가격당 데미지 ÷ 기준 세트 가격당 데미지 × 100' },
+      el('span', { className: 'stat-label', textContent: Baseline.LABELS.pct }),
+      el('span', { className: 'hero-value', textContent: Baseline.pctText(eff.pct) })),
+      rows ? ratioBars(rows) : null,
+      el('p', { className: 'stat-sub', title: baseResult ? '1,000당 = 기준 대비 증가율 ÷ 현재 가격 합 × 1000' : noBase,
+        textContent: `가격 ${fmt(r.price)} · ${baseResult ? Baseline.per1000Text(eff.per1000) : '기준 없음'}` }));
+    const side = el('div', { className: 'result-side' }, el('div', { className: 'result-stats' },
       stat('데미지 총량', fmt(r.D), {}),
-      stat(Baseline.LABELS.pct, Baseline.pctText(eff.pct), { accent: true, title: !baseResult ? noBase
-        : eff.pct == null ? '가격 합이 0이라 계산하지 않습니다' : '현재 세트 가격당 데미지 ÷ 기준 세트 가격당 데미지 × 100' }),
-      stat(Baseline.LABELS.gain, Baseline.signedPct(eff.gainPct), { accent: true, title: baseResult ? '(현재 D ÷ 기준 D − 1) × 100' : noBase })),
-    el('p', { className: 'stat-sub', title: baseResult ? '1,000당 = 기준 대비 증가율 ÷ 현재 가격 합 × 1000' : noBase,
-      textContent: `가격 ${fmt(r.price)} · ${baseResult ? Baseline.per1000Text(eff.per1000) : '기준 없음'}` })];
-    if (baseResult) {
+      stat(Baseline.LABELS.gain, Baseline.signedPct(eff.gainPct), { title: baseResult ? '(현재 D ÷ 기준 D − 1) × 100' : noBase })));
+    if (rows) {
       // 비교 표: 행 = 기준 / 현재 / 차이, 열 = 가격 합 · 데미지 총량 · 가격당 데미지.
       const signed = (v, d) => (v == null ? '—' : (v > 0 ? '+' : '') + fmt(v, d));
       const sign = (v) => (v > 0 ? 'pos' : v < 0 ? 'neg' : '');
-      const rows = Baseline.compareRows(r, baseResult).map((row) => {
+      const trs = rows.map((row) => {
         const diff = row.label === '차이';
         const f = diff ? signed : (v, d) => (v == null ? '—' : fmt(v, d));
         const td = (v, d) => el('td', { textContent: f(v, d), className: diff ? sign(v) : '' });
         return el('tr', { className: diff ? 'diff' : '' }, el('th', { scope: 'row', textContent: row.label }),
           td(row.price), td(row.D), td(row.ratio, 4));
       });
-      nodes.push(el('table', { className: 'compare' },
+      side.append(el('table', { className: 'compare' },
         el('thead', null, el('tr', null, ...['', '가격 합', '데미지 총량', '가격당 데미지'].map((t) => el('th', { scope: 'col', textContent: t })))),
-        el('tbody', null, ...rows)));
+        el('tbody', null, ...trs)));
     }
+    const nodes = [el('div', { className: 'result-top' }, hero, side)];
     // 실제 숫자를 대입한 계산 과정(식 한 줄씩)은 접기/펼치기(기본 접힘, 상태는 localStorage에 기억).
     const steps = el('details', { className: 'all-steps', open: window.ERExplain.loadStepsOpen(localStorage) },
       el('summary', { textContent: '계산 과정 보기' }),
@@ -1050,18 +1060,36 @@
     box.hidden = false;
   }
 
+  // 가격당 데미지 막대 두 줄(비교 표의 현재·기준 값). 현재 = 강조색, 기준 = 회색, 길이는 둘 중 큰 값 기준.
+  // 가격 합이 0이라 값이 없으면 막대 없이 —.
+  function ratioBars(rows) {
+    const ratio = (label) => rows.find((row) => row.label === label).ratio;
+    const values = [['현재', ratio('현재'), 'cur'], ['기준', ratio('기준'), 'base']];
+    const max = Math.max(...values.map(([, v]) => (Number.isFinite(v) ? v : 0)));
+    return el('div', { className: 'ratio-bars', title: '가격당 데미지 = 데미지 총량 ÷ 가격 합' },
+      ...values.map(([label, v, cls]) => {
+        const fill = el('span', { className: 'bar-fill' });
+        fill.style.width = max > 0 && Number.isFinite(v) ? `${(v / max) * 100}%` : '0';
+        return el('div', { className: 'bar-row ' + cls },
+          el('span', { className: 'bar-label', textContent: label }),
+          el('span', { className: 'bar-track' }, fill),
+          el('span', { className: 'bar-value', textContent: Number.isFinite(v) ? fmt(v, 4) : '—' }));
+      }));
+  }
+
   // ---------- 히스토리 ----------
   // 슬롯 순서대로 아이콘 5개. 아이콘은 기록의 id로 현재 데이터에서 찾고,
   // 데이터에 없거나 이미지 로드가 실패하면 빈 자리 + 이름을 보인다.
   function historyIcons(entry, extraClass = '') {
     const row = el('div', { className: 'hist-icons' + extraClass });
     for (const s of History.slotItems(entry, Formula.SLOTS, state.byId)) {
-      const box = el('div', { className: 'hist-icon' });
+      let img = null;
       if (s.imageUrl) {
-        const img = el('img', { src: s.imageUrl, alt: '', loading: 'lazy' });
+        img = el('img', { src: s.imageUrl, alt: '', loading: 'lazy' });
         img.onerror = () => { img.style.visibility = 'hidden'; };
-        box.append(img);
       }
+      const item = s.found ? state.byId.get(s.id) : null;
+      const box = iconBox(img, item && item.grade);
       // 이름은 툴팁으로만(조밀한 기록 행). 데이터에 없는 아이템은 점선 칸.
       const cell = el('div', { className: 'hist-item' + (s.found ? '' : ' missing'), title: `${s.slot}: ${s.name}${s.found ? '' : ' (현재 데이터에 없음)'}` }, box);
       row.append(cell);
@@ -1081,7 +1109,7 @@
       const hasBase = e.baselineIds && Object.keys(e.baselineIds).length;
       // 기준 세트 아이콘(작게): 이 기록이 어떤 기준 세트 대비였는지.
       const baseRow = hasBase
-        ? el('div', { className: 'hist-base' }, el('span', { className: 'muted small', textContent: '기준' }),
+        ? el('div', { className: 'hist-base' }, el('span', { className: 'hist-base-label', textContent: '기준' }),
           historyIcons({ itemIds: e.baselineIds, itemNames: e.baselineNames }, ' small'))
         : null;
       const del = closeButton('이 기록 삭제');
@@ -1129,7 +1157,7 @@
       };
       list.append(li);
     }
-    if (!state.history.length) list.append(el('li', { className: 'empty', textContent: '아직 기록이 없습니다.' }));
+    if (!state.history.length) list.append(el('li', { className: 'empty', textContent: '아직 기록이 없습니다' }));
   }
 
   function restore(entry) {
