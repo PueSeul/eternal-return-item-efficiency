@@ -266,7 +266,7 @@ input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; d
 .history { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
 /* 기록이 없으면 안내 문구를 목록 가운데에(빈 띠 대신). */
 .history:has(> li.empty) { display: flex; align-items: center; justify-content: center; }
-/* 기록 행: 윗줄 아이콘 5개, 아랫줄 시각 · 데미지 · 가격(· 다른 기준), 오른쪽 효율 열. */
+/* 기록 행: 윗줄 아이콘 5개, 기준 줄(작은 아이콘 5개), 아랫줄 시각 · 데미지 · 가격, 오른쪽 효율 열. */
 .history li:not(.empty) { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 16px; align-items: center; }
 .history li { position: relative; padding: 8px 32px 8px 8px; border-bottom: 1px solid var(--line); cursor: pointer; font-size: 13px; transition: background-color var(--fast) var(--ease); }
 .history li:hover { background: var(--hover); }
@@ -277,14 +277,15 @@ input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; d
 .hist-meta { display: flex; align-items: baseline; gap: 8px; margin-top: 4px; font-size: 12px; line-height: 16px; white-space: nowrap; min-width: 0; }
 .hist-time, .hist-sub { color: var(--muted); }
 .hist-sub { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-.hist-base-diff { flex: none; color: var(--muted); cursor: help; }
-.hist-base-diff::before { content: "· "; }
+.hist-base { display: flex; align-items: center; gap: 8px; }
+.hist-base-label { width: 28px; font-size: 12px; color: var(--muted); }
+.hist-icons.small .item-icon { width: 32px; height: 32px; }
 /* 효율 열: 행 오른쪽, 세로 중앙. 라벨 작게 위, 숫자 20px. */
 .hist-main { min-width: 0; }
 .hist-eff { display: flex; flex-direction: column; align-items: flex-end; gap: 0; font-variant-numeric: tabular-nums; }
 .hist-eff-top { display: flex; align-items: baseline; gap: 4px; }
 .hist-eff-label { font-size: 12px; color: var(--muted); white-space: nowrap; }
-.hist-eff-value { font-size: 20px; font-weight: 500; line-height: 24px; color: var(--text); white-space: nowrap; }
+.hist-eff-value { font-size: 20px; font-weight: 500; line-height: 24px; color: var(--accent); white-space: nowrap; }
 .hist-eff-gain { font-size: 13px; color: var(--text); white-space: nowrap; }
 .hist-eff-sub { font-size: 12px; line-height: 16px; color: var(--muted); white-space: nowrap; }
 .hist-eff.old .hist-eff-value { color: var(--muted); font-weight: 400; }

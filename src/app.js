@@ -665,7 +665,6 @@
     status.textContent = [incomplete ? `${filled}/${Formula.SLOTS.length}` : '', missing.length ? `없는 기준 ${missing.length}개` : ''].filter(Boolean).join(' · ');
     status.title = [incomplete ? `${filled}/${Formula.SLOTS.length} — 미완성 시 히스토리 최고 대비` : '', missing.length ? `데이터에 없는 저장 기준: ${missing.join(', ')}` : ''].filter(Boolean).join(' · ');
     status.className = missing.length ? 'muted error' : 'muted';
-    syncHistoryBase();
   }
 
   // ---------- 아이템 선택 창 ----------
@@ -1081,8 +1080,8 @@
   // ---------- 히스토리 ----------
   // 슬롯 순서대로 아이콘 5개. 아이콘은 기록의 id로 현재 데이터에서 찾고,
   // 데이터에 없거나 이미지 로드가 실패하면 빈 자리 + 이름을 보인다.
-  function historyIcons(entry) {
-    const row = el('div', { className: 'hist-icons' });
+  function historyIcons(entry, extraClass = '') {
+    const row = el('div', { className: 'hist-icons' + extraClass });
     for (const s of History.slotItems(entry, Formula.SLOTS, state.byId)) {
       let img = null;
       if (s.imageUrl) {
@@ -1108,13 +1107,11 @@
       const current = History.isCurrent(e);
       const eff = History.entryEfficiency(e);
       const hasBase = e.baselineIds && Object.keys(e.baselineIds).length;
-      // 기준 세트는 아이콘 줄 대신, 지금 기준 세트와 다를 때만 "다른 기준"(툴팁에 그 기준 세트). 표시 여부는 syncHistoryBase.
-      const baseMark = hasBase
-        ? el('span', { className: 'hist-base-diff', textContent: '다른 기준', hidden: true,
-          title: '이 기록의 기준 세트(지금 기준 세트와 다름)\n' + History.slotItems({ itemIds: e.baselineIds, itemNames: e.baselineNames }, Formula.SLOTS, state.byId)
-            .map((s) => `${s.slot}: ${s.name}`).join('\n') })
+      // 기준 세트 아이콘(작게): 이 기록이 어떤 기준 세트 대비였는지.
+      const baseRow = hasBase
+        ? el('div', { className: 'hist-base' }, el('span', { className: 'hist-base-label', textContent: '기준' }),
+          historyIcons({ itemIds: e.baselineIds, itemNames: e.baselineNames }, ' small'))
         : null;
-      if (baseMark) baseMark.dataset.id = String(e.id);
       const del = closeButton('이 기록 삭제');
       del.classList.add('del');
       del.onclick = (ev) => {
@@ -1130,7 +1127,7 @@
         if (next) next.focus();
         else $('#clear-history').focus();
       };
-      // 왼쪽: 현재 세트 아이콘 줄, 메타 줄(시각 · 데미지 · 가격 · 다른 기준).
+      // 왼쪽: 현재 세트 아이콘 줄, 기준 줄, 메타 줄(시각 · 데미지 · 가격).
       // 오른쪽 열(세로 중앙): 위 "효율 58.6%"(크게), 아래 "기준 대비 +47.4%", 더 작게 "1,000당 +41.0%".
       // 산출 기준·기준 없음·이전 계산식 사유는 툴팁.
       const effTitle = !current ? '이전 계산식 기록 — 효율 비교 제외'
@@ -1145,11 +1142,10 @@
       const time = date.toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit' });
       const li = el('li', { title: '클릭하면 이 구성을 불러옵니다', tabIndex: 0 },
         el('div', { className: 'hist-main' },
-          el('div', { className: 'hist-row' }, historyIcons(e)),
+          el('div', { className: 'hist-row' }, historyIcons(e), baseRow),
           el('div', { className: 'hist-meta' },
             el('span', { className: 'hist-time', textContent: time, title: date.toLocaleString('ko-KR') }),
-            el('span', { className: 'hist-sub', textContent: `데미지 ${fmt(e.result.D)} · 가격 ${fmt(e.result.price)}` }),
-            baseMark)),
+            el('span', { className: 'hist-sub', textContent: `데미지 ${fmt(e.result.D)} · 가격 ${fmt(e.result.price)}` }))),
         effNode,
         del);
       li.onclick = () => restore(e);
@@ -1162,16 +1158,6 @@
       list.append(li);
     }
     if (!state.history.length) list.append(el('li', { className: 'empty', textContent: '아직 기록이 없습니다' }));
-    syncHistoryBase();
-  }
-
-  // 기록의 기준 세트가 지금 기준 세트와 다를 때만 "다른 기준"을 보인다. 행을 다시 그리지 않아 포커스가 유지된다.
-  function syncHistoryBase() {
-    for (const mark of document.querySelectorAll('#history .hist-base-diff')) {
-      const e = state.history.find((x) => String(x.id) === mark.dataset.id);
-      mark.hidden = !e || Formula.SLOTS.every((s) =>
-        String(e.baselineIds[s] ?? '') === String(state.baseline[s] ? state.baseline[s].id : ''));
-    }
   }
 
   function restore(entry) {

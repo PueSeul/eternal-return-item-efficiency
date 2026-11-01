@@ -104,11 +104,18 @@ test('슬롯 두 열 헤더: 32px 한 줄 고정, 제목·버튼 nowrap, 상태 
   assert.match(css, /\.slot-col > \.block-head \.text-btn \{ white-space: nowrap; flex-shrink: 0/);
 });
 
-test('히스토리 효율 열: 오른쪽 세로 중앙, 숫자 20px 500', () => {
+test('히스토리 효율 열: 오른쪽 세로 중앙, 숫자 20px 500 강조색', () => {
   assert.match(css, /\.history li:not\(\.empty\) \{[^}]*grid-template-columns: minmax\(0, 1fr\) auto;[^}]*align-items: center/);
-  assert.match(css, /\.hist-eff-value \{ font-size: 20px; font-weight: 500;/);
+  assert.match(css, /\.hist-eff-value \{ font-size: 20px; font-weight: 500;[^}]*color: var\(--accent\)/);
   const app = fs.readFileSync(path.join(root, 'src', 'app.js'), 'utf8');
   assert.match(app, /className: 'hist-eff-value'/);
+});
+
+test('히스토리 기준 줄: 기준 세트가 있으면 아이콘 줄 아래 작은 아이콘 5개(32px, 등급 띠 칸)', () => {
+  const app = fs.readFileSync(path.join(root, 'src', 'app.js'), 'utf8');
+  assert.match(app, /className: 'hist-base' \}, el\('span', \{ className: 'hist-base-label', textContent: '기준' \}\),\s*historyIcons\(\{ itemIds: e\.baselineIds, itemNames: e\.baselineNames \}, ' small'\)\)/);
+  assert.match(app, /className: 'hist-row' \}, historyIcons\(e\), baseRow\)/);
+  assert.match(css, /\.hist-icons\.small \.item-icon \{ width: 32px; height: 32px; \}/);
 });
 
 test('hover/포커스: 비활성 탭 밝게, 링크형 버튼 글자색(강조색은 결과 효율 %·계산 버튼만), 120ms 전환', () => {
