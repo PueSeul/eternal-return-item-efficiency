@@ -41,12 +41,12 @@ test('업데이트 진행률(fraction): 경과 ÷ (경과 + 남은 시간), 병�
   assert.equal(eta.fraction(60000), 0.99); // 100%는 완료 처리(gauge.done)에서
 });
 
-test('게이지 마크업·스타일: 스크립트 포함, 강조색 링 120ms 전환, 실패 시 경고색, 퍼센트 tabular-nums', () => {
+test('게이지 마크업·스타일: 스크립트 포함, 글자색 링 120ms 전환, 실패 시 경고색, 퍼센트 tabular-nums', () => {
   const root = path.join(__dirname, '..');
   const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   const css = fs.readFileSync(path.join(root, 'src', 'style.css'), 'utf8');
   assert.match(html, /<script src="src\/gauge\.js"><\/script>[\s\S]*<script src="src\/app\.js">/);
-  assert.match(css, /\.gauge-bar \{[^}]*stroke: var\(--accent\)[^}]*transition: stroke-dashoffset 120ms/);
+  assert.match(css, /\.gauge-bar \{[^}]*stroke: var\(--text\)[^}]*transition: stroke-dashoffset 120ms/);
   assert.match(css, /\.gauge\.error \.gauge-bar \{ stroke: var\(--warn\)/);
   assert.match(css, /\.gauge-pct \{[^}]*tabular-nums/);
 });
