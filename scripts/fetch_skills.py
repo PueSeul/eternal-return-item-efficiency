@@ -61,7 +61,7 @@ PROSE_DAMAGE_RE = re.compile("(?:(" + NUM + r")((?:\(\+[^()]*\))+)|(공격력|�
                              r"( ?\* ?\(([^()]*)\))?)의 (?:[가-힣]+ ){0,3}피해를 입")
 PROSE_TAG_RE = re.compile(r"^([^:]{1,10}): ")  # "단궁: …"
 # Stamped on every entry; "patched" mode re-reads characters whose kept entry has another value.
-PARSER_VERSION = 2
+PARSER_VERSION = 3
 NUM_BODY_RE = re.compile("^" + NUM + "%?(?: / " + NUM + "%?)*$")
 STAT_BODY_RE = re.compile("^(.+?)의 (" + NUM + "%(?: / " + NUM + "%)*)$")
 MULT_RE = re.compile(r"^ ?\* ?\(([^()]*)\)$")
@@ -404,7 +404,9 @@ def _sub_skills(group_lines, letter):
     keys, used = [], set()
     for s in subs:
         ult = "R" + letter
-        base = ult if letter in "QWE" and any(a.split(" ")[-1].upper() == ult for a in s["alts"]) else letter
+        # A box showing both icons (e.g. "Arda Q" + "Arda RQ") is the base skill.
+        icons = {a.split(" ")[-1].upper() for a in s["alts"]}
+        base = ult if letter in "QWE" and ult in icons and letter not in icons else letter
         key, n = base, 1
         while key in used:
             n += 1

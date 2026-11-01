@@ -45,7 +45,7 @@ const COEF_LABEL_RE = /^(?:.+? )?((?:추가 )?공격력|스킬 증폭) 계수$/;
 const PROSE_DAMAGE_RE = new RegExp(`(?:(${NUM})((?:\\(\\+[^()]*\\))+)|(공격력|스킬 증폭)의 (${NUM}%)`
   + "( ?\\* ?\\(([^()]*)\\))?)의 (?:[가-힣]+ ){0,3}피해를 입", "g");
 const PROSE_TAG_RE = /^([^:]{1,10}): /;
-export const PARSER_VERSION = 2; // see fetch_skills.py
+export const PARSER_VERSION = 3; // see fetch_skills.py
 const NUM_BODY_RE = new RegExp(`^${NUM}%?(?: / ${NUM}%?)*$`);
 const STAT_BODY_RE = new RegExp(`^(.+?)의 (${NUM}%(?: / ${NUM}%)*)$`);
 const MULT_RE = /^ ?\* ?\(([^()]*)\)$/;
@@ -356,8 +356,9 @@ function subSkills(groupLines, letter) {
   const used = new Set();
   for (const s of subs) {
     const ult = "R" + letter;
-    const base = "QWE".includes(letter) && s.alts.some((a) => a.split(" ").at(-1).toUpperCase() === ult)
-      ? ult : letter;
+    // A box showing both icons (e.g. "Arda Q" + "Arda RQ") is the base skill.
+    const icon = (k) => s.alts.some((a) => a.split(" ").at(-1).toUpperCase() === k);
+    const base = "QWE".includes(letter) && icon(ult) && !icon(letter) ? ult : letter;
     let key = base;
     let n = 1;
     while (used.has(key)) {

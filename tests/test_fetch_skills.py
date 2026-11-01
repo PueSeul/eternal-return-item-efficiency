@@ -64,6 +64,20 @@ class ArdaPageTests(unittest.TestCase):
     def test_node_identical(self):
         self.assertEqual(run_node({}, NODE_PARSE, ID="66", NAME="아르다", HTML=ARDA_HTML), self.entry)
 
+    def test_merged_boxes_keep_base_key(self):
+        # Since the 2026-10-18 revision Q/RQ (W/RW, E/RE) share one box with both icons;
+        # keying that box RQ dropped 아르다 Q from data/skills.json.
+        html = (FIXTURES / "namu_arda_merged.html").read_text(encoding="utf-8")
+        entry = fs.parse_page("66", "아르다", html)
+        skills = by_key(entry)
+        self.assertEqual(list(skills), ["P", "Q", "W", "E", "R"])
+        q = skills["Q"]
+        self.assertEqual(q["name"], "샤마쉬의 두루마리")
+        self.assertEqual(q["levels"][4], {"level": 5, "baseDamage": 230, "attackPowerRatio": 0, "skillAmpRatio": 0.8})
+        self.assertEqual([e["label"] for e in q["entries"]], ["피해량", "[샤마쉬의 법전] 주문 피해량"])
+        self.assertEqual(skills["E"]["levels"][4]["skillAmpRatio"], 0.65)
+        self.assertEqual(run_node({}, NODE_PARSE, ID="66", NAME="아르다", HTML=html), entry)
+
 
 class RowTests(unittest.TestCase):
     def test_levels_from(self):
@@ -513,7 +527,8 @@ class DataFileTests(unittest.TestCase):
         self.assertEqual(arda["Q"]["levels"][4], {"level": 5, "baseDamage": 230, "attackPowerRatio": 0,
                                                  "skillAmpRatio": 0.8})
         self.assertEqual({l["skillAmpRatio"] for l in arda["E"]["levels"]}, {0.65})
-        self.assertEqual(arda["RQ"]["entries"][0]["label"], "[샤마쉬의 법전] 주문 피해량")
+        # Since the 2026-10-18 revision 샤마쉬의 법전 sits in the Q box (no separate RQ box).
+        self.assertEqual(arda["Q"]["entries"][1]["label"], "[샤마쉬의 법전] 주문 피해량")
 
     def test_jackie_q(self):
         q = by_key(next(c for c in self.skills if c["name"] == "재키"))["Q"]
