@@ -768,7 +768,7 @@
         "skillAmpRatio": 0,
         "attackPowerRatio": 0,
         "attackSpeedRatio": 0.027,
-        "increaseBasicAttackDamageRatio": 0.021,
+        "increaseBasicAttackDamageRatio": 0.02,
         "attackPower": 0
       }
     }
@@ -1419,7 +1419,7 @@
     "attackPowerPerLevel": 4.1,
     "masteries": {
       "아르카나": {
-        "skillAmpRatio": 0.041,
+        "skillAmpRatio": 0.04,
         "attackPowerRatio": 0,
         "attackSpeedRatio": 0.025,
         "increaseBasicAttackDamageRatio": 0,
@@ -1485,7 +1485,7 @@
       "권총": {
         "skillAmpRatio": 0.046,
         "attackPowerRatio": 0,
-        "attackSpeedRatio": 0.035,
+        "attackSpeedRatio": 0.04,
         "increaseBasicAttackDamageRatio": 0,
         "attackPower": 0
       }

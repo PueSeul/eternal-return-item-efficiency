@@ -1,123 +1,581 @@
 {
-  "fetchedAt": "2026-11-11T03:02:17.970Z",
+  "fetchedAt": "2026-11-12T02:05:13.127Z",
   "dakggVersion": "12.7.0",
   "patch": {
-    "id": 3924,
-    "version": "12.7",
-    "title": "2026.10.29 - 12.7 패치노트",
-    "url": "https://playeternalreturn.com/posts/news/3924",
-    "date": "2026-10-29",
+    "id": 3950,
+    "version": "13.0",
+    "title": "13.0 패치노트 Part.3 - 럼블 아웃 (2026.11.12)",
+    "url": "https://playeternalreturn.com/posts/news/3950",
+    "date": "2026-11-12",
     "articles": [
       {
-        "id": 3924,
-        "title": "2026.10.29 - 12.7 패치노트",
-        "url": "https://playeternalreturn.com/posts/news/3924",
-        "createdAt": "2026-10-28T08:00:00.000000Z"
+        "id": 3948,
+        "title": "13.0 패치노트 Part.1 - 메인 (2026.11.12)",
+        "url": "https://playeternalreturn.com/posts/news/3948",
+        "createdAt": "2026-11-11T08:00:00.000000Z"
+      },
+      {
+        "id": 3949,
+        "title": "13.0 패치노트 Part.2 - 실험체 및 아이템 (2026.11.12)",
+        "url": "https://playeternalreturn.com/posts/news/3949",
+        "createdAt": "2026-11-11T08:01:00.000000Z"
+      },
+      {
+        "id": 3950,
+        "title": "13.0 패치노트 Part.3 - 럼블 아웃 (2026.11.12)",
+        "url": "https://playeternalreturn.com/posts/news/3950",
+        "createdAt": "2026-11-11T08:02:00.000000Z"
       }
     ]
   },
-  "overrides": [],
-  "skipped": [
+  "overrides": [
     {
-      "type": "skill",
-      "characterId": "7",
-      "name": "현우",
-      "skill": "Q",
-      "level": 1,
-      "field": "baseDamage",
-      "stat": "피해량 1레벨 baseDamage",
-      "dakgg": 50,
-      "patchnote": 90,
-      "text": "발 밟기(Q) > 피해량 90/130/170/210/250(+추가 공격력의 60%)(+스킬 증폭의 85%) → 90/130/170/210/250(+추가 공격력의 90%)(+스킬 증폭의 85%)",
-      "label": "피해량",
-      "wikiRevisedAt": "2026-11-09T06:17:23.000Z",
-      "patchPostedAt": "2026-10-28T08:00:00.000000Z",
-      "reason": "나무위키 최근 수정이 패치노트 게시 이후(또는 시각 미확인)"
-    },
-    {
-      "type": "skill",
-      "characterId": "7",
-      "name": "현우",
-      "skill": "Q",
-      "level": 2,
-      "field": "baseDamage",
-      "stat": "피해량 2레벨 baseDamage",
-      "dakgg": 100,
-      "patchnote": 130,
-      "text": "발 밟기(Q) > 피해량 90/130/170/210/250(+추가 공격력의 60%)(+스킬 증폭의 85%) → 90/130/170/210/250(+추가 공격력의 90%)(+스킬 증폭의 85%)",
-      "label": "피해량",
-      "wikiRevisedAt": "2026-11-09T06:17:23.000Z",
-      "patchPostedAt": "2026-10-28T08:00:00.000000Z",
-      "reason": "나무위키 최근 수정이 패치노트 게시 이후(또는 시각 미확인)"
-    },
-    {
-      "type": "skill",
-      "characterId": "7",
-      "name": "현우",
-      "skill": "Q",
-      "level": 3,
-      "field": "baseDamage",
-      "stat": "피해량 3레벨 baseDamage",
-      "dakgg": 150,
-      "patchnote": 170,
-      "text": "발 밟기(Q) > 피해량 90/130/170/210/250(+추가 공격력의 60%)(+스킬 증폭의 85%) → 90/130/170/210/250(+추가 공격력의 90%)(+스킬 증폭의 85%)",
-      "label": "피해량",
-      "wikiRevisedAt": "2026-11-09T06:17:23.000Z",
-      "patchPostedAt": "2026-10-28T08:00:00.000000Z",
-      "reason": "나무위키 최근 수정이 패치노트 게시 이후(또는 시각 미확인)"
-    },
-    {
-      "type": "skill",
-      "characterId": "7",
-      "name": "현우",
-      "skill": "Q",
-      "level": 4,
-      "field": "baseDamage",
-      "stat": "피해량 4레벨 baseDamage",
-      "dakgg": 200,
-      "patchnote": 210,
-      "text": "발 밟기(Q) > 피해량 90/130/170/210/250(+추가 공격력의 60%)(+스킬 증폭의 85%) → 90/130/170/210/250(+추가 공격력의 90%)(+스킬 증폭의 85%)",
-      "label": "피해량",
-      "wikiRevisedAt": "2026-11-09T06:17:23.000Z",
-      "patchPostedAt": "2026-10-28T08:00:00.000000Z",
-      "reason": "나무위키 최근 수정이 패치노트 게시 이후(또는 시각 미확인)"
-    }
-  ],
-  "unparsed": [
-    {
-      "type": "skill",
-      "name": "레니",
-      "text": "뿅! 망치(W) > 이동 속도 증가 12/14/16/18/20%(+스킬 증폭의 2.5%) → 7/9/11/13/15%(+스킬 증폭의 3.5%)"
-    },
-    {
-      "type": "character",
-      "name": "리오",
-      "text": "기본 체력 930 → 900"
-    },
-    {
-      "type": "character",
-      "name": "엘레나",
-      "text": "레벨 당 방어력 3.3 → 3.2"
-    },
-    {
-      "type": "character",
-      "name": "이안",
-      "text": "레벨 당 체력 91 → 88"
-    },
-    {
-      "type": "character",
-      "name": "헨리",
-      "text": "레벨 당 체력 78 → 75"
+      "type": "item",
+      "id": "114405",
+      "name": "트윈보우",
+      "stat": "쿨다운 감소",
+      "dakgg": null,
+      "patchnote": 10
     },
     {
       "type": "item",
-      "name": "이단심판관",
-      "text": "차원 균열 - [고유 지속 효과] > 피해량 12(+스킬 증폭의 4%) → 12(+스킬 증폭의 5%)"
+      "id": "114405",
+      "name": "트윈보우",
+      "stat": "공격 속도",
+      "dakgg": 0.4,
+      "patchnote": 0.2
+    },
+    {
+      "type": "item",
+      "id": "114405",
+      "name": "트윈보우",
+      "stat": "생명력 흡수",
+      "dakgg": 0.1,
+      "patchnote": 0.08
+    },
+    {
+      "type": "item",
+      "id": "114505",
+      "name": "이글 아이",
+      "stat": "쿨다운 감소",
+      "dakgg": null,
+      "patchnote": 15
+    },
+    {
+      "type": "item",
+      "id": "114505",
+      "name": "이글 아이",
+      "stat": "공격 속도",
+      "dakgg": 0.4,
+      "patchnote": 0.25
+    },
+    {
+      "type": "item",
+      "id": "202405",
+      "name": "광학미채 슈트",
+      "stat": "공격력",
+      "dakgg": 9,
+      "patchnote": 7
+    },
+    {
+      "type": "item",
+      "id": "202406",
+      "name": "락커의 자켓",
+      "stat": "공격력",
+      "dakgg": null,
+      "patchnote": 10
+    },
+    {
+      "type": "item",
+      "id": "202406",
+      "name": "락커의 자켓",
+      "stat": "방어 관통",
+      "dakgg": 12,
+      "patchnote": 10
+    },
+    {
+      "type": "item",
+      "id": "202510",
+      "name": "고스트",
+      "stat": "공격력",
+      "dakgg": 14,
+      "patchnote": 10
+    },
+    {
+      "type": "item",
+      "id": "202513",
+      "name": "슈팅스타 자켓",
+      "stat": "공격력",
+      "dakgg": 12,
+      "patchnote": 10
+    },
+    {
+      "type": "item",
+      "id": "202513",
+      "name": "슈팅스타 자켓",
+      "stat": "쿨다운 감소",
+      "dakgg": 15,
+      "patchnote": 10
+    },
+    {
+      "type": "item",
+      "id": "201526",
+      "name": "앙 가르드",
+      "stat": "최대 체력",
+      "dakgg": null,
+      "patchnote": 120
+    },
+    {
+      "type": "item",
+      "id": "201415",
+      "name": "성기사의 투구",
+      "stat": "레벨 당 최대 체력",
+      "dakgg": 22,
+      "patchnote": 20
+    },
+    {
+      "type": "item",
+      "id": "201415",
+      "name": "성기사의 투구",
+      "stat": "쿨다운 감소",
+      "dakgg": 25,
+      "patchnote": 20
+    },
+    {
+      "type": "item",
+      "id": "203403",
+      "name": "드라우프니르",
+      "stat": "스킬 증폭",
+      "dakgg": 75,
+      "patchnote": 76
+    },
+    {
+      "type": "item",
+      "id": "203306",
+      "name": "포이즌드",
+      "stat": "스킬 증폭",
+      "dakgg": 62,
+      "patchnote": 63
+    },
+    {
+      "type": "item",
+      "id": "205201",
+      "name": "백우선",
+      "stat": "스킬 증폭",
+      "dakgg": 52,
+      "patchnote": 55
+    },
+    {
+      "type": "item",
+      "id": "203512",
+      "name": "아흐라만의 손길",
+      "stat": "스킬 증폭",
+      "dakgg": 75,
+      "patchnote": 73
+    },
+    {
+      "type": "item",
+      "id": "203512",
+      "name": "아흐라만의 손길",
+      "stat": "쿨다운 감소",
+      "dakgg": 20,
+      "patchnote": 15
+    },
+    {
+      "type": "item",
+      "id": "205305",
+      "name": "월왕구천",
+      "stat": "공격력",
+      "dakgg": 27,
+      "patchnote": 15
+    },
+    {
+      "type": "item",
+      "id": "705604",
+      "name": "클라다 반지",
+      "stat": "주는 회복 증가",
+      "dakgg": 0.1,
+      "patchnote": 0.06
+    },
+    {
+      "type": "item",
+      "id": "205502",
+      "name": "파초선",
+      "stat": "스킬 증폭",
+      "dakgg": 82,
+      "patchnote": 88
+    },
+    {
+      "type": "item",
+      "id": "205502",
+      "name": "파초선",
+      "stat": "쿨다운 감소",
+      "dakgg": 10,
+      "patchnote": 20
+    },
+    {
+      "type": "item",
+      "id": "205508",
+      "name": "에메랄드 타블렛",
+      "stat": "스킬 증폭",
+      "dakgg": 88,
+      "patchnote": 80
+    },
+    {
+      "type": "item",
+      "id": "205508",
+      "name": "에메랄드 타블렛",
+      "stat": "쿨다운 감소",
+      "dakgg": 20,
+      "patchnote": 10
+    },
+    {
+      "type": "item",
+      "id": "204508",
+      "name": "미라지 워커",
+      "stat": "공격력",
+      "dakgg": 23,
+      "patchnote": 25
+    },
+    {
+      "type": "item",
+      "id": "204508",
+      "name": "미라지 워커",
+      "stat": "쿨다운 감소",
+      "dakgg": 15,
+      "patchnote": 10
+    },
+    {
+      "type": "character",
+      "id": "81",
+      "name": "니아",
+      "stat": "masteries.권총.attackSpeedRatio",
+      "dakgg": 0.035,
+      "patchnote": 0.04
+    },
+    {
+      "type": "character",
+      "id": "37",
+      "name": "다니엘",
+      "stat": "masteries.단검.increaseBasicAttackDamageRatio",
+      "dakgg": 0.021,
+      "patchnote": 0.02
+    },
+    {
+      "type": "character",
+      "id": "77",
+      "name": "유민",
+      "stat": "masteries.아르카나.skillAmpRatio",
+      "dakgg": 0.041,
+      "patchnote": 0.04
     },
     {
       "type": "skill",
-      "name": "헤이즈",
-      "text": "40mm 유탄(Q) > 엑셀러레이션 로켓(RQ) 피해량 80/110/140/170/200(+스킬 증폭의 40%) → 100/130/160/190/220(+스킬 증폭의 40%)"
+      "characterId": "81",
+      "name": "니아",
+      "skill": "P",
+      "level": 1,
+      "field": "baseDamage",
+      "stat": "중첩 당 피해량 1레벨 baseDamage",
+      "dakgg": 4,
+      "patchnote": 5,
+      "text": "K.O.(P) > 중첩 당 4/8/12(+스킬 증폭의 3%) → 5/10/15(+스킬 증폭의 3%)",
+      "label": "중첩 당 피해량"
+    },
+    {
+      "type": "skill",
+      "characterId": "81",
+      "name": "니아",
+      "skill": "P",
+      "level": 2,
+      "field": "baseDamage",
+      "stat": "중첩 당 피해량 2레벨 baseDamage",
+      "dakgg": 8,
+      "patchnote": 10,
+      "text": "K.O.(P) > 중첩 당 4/8/12(+스킬 증폭의 3%) → 5/10/15(+스킬 증폭의 3%)",
+      "label": "중첩 당 피해량"
+    },
+    {
+      "type": "skill",
+      "characterId": "81",
+      "name": "니아",
+      "skill": "P",
+      "level": 3,
+      "field": "baseDamage",
+      "stat": "중첩 당 피해량 3레벨 baseDamage",
+      "dakgg": 12,
+      "patchnote": 15,
+      "text": "K.O.(P) > 중첩 당 4/8/12(+스킬 증폭의 3%) → 5/10/15(+스킬 증폭의 3%)",
+      "label": "중첩 당 피해량"
+    },
+    {
+      "type": "skill",
+      "characterId": "53",
+      "name": "마커스",
+      "skill": "R",
+      "level": 1,
+      "field": "attackPowerRatio",
+      "stat": "피해량 1레벨 attackPowerRatio",
+      "dakgg": 0.7,
+      "patchnote": 0.85,
+      "text": "지각변동(R) > 피해량 150/300/450(+공격력의 70%) → 150/300/450(+공격력의 85%)",
+      "label": "피해량"
+    },
+    {
+      "type": "skill",
+      "characterId": "53",
+      "name": "마커스",
+      "skill": "R",
+      "level": 2,
+      "field": "attackPowerRatio",
+      "stat": "피해량 2레벨 attackPowerRatio",
+      "dakgg": 0.7,
+      "patchnote": 0.85,
+      "text": "지각변동(R) > 피해량 150/300/450(+공격력의 70%) → 150/300/450(+공격력의 85%)",
+      "label": "피해량"
+    },
+    {
+      "type": "skill",
+      "characterId": "53",
+      "name": "마커스",
+      "skill": "R",
+      "level": 3,
+      "field": "attackPowerRatio",
+      "stat": "피해량 3레벨 attackPowerRatio",
+      "dakgg": 0.7,
+      "patchnote": 0.85,
+      "text": "지각변동(R) > 피해량 150/300/450(+공격력의 70%) → 150/300/450(+공격력의 85%)",
+      "label": "피해량"
+    },
+    {
+      "type": "skill",
+      "characterId": "77",
+      "name": "유민",
+      "skill": "E",
+      "level": 2,
+      "field": "baseDamage",
+      "stat": "피해량 2레벨 baseDamage",
+      "dakgg": 90,
+      "patchnote": 85,
+      "text": "경운(E) > 피해량 60/90/120/150/180(+스킬 증폭의 55%) → 60/85/110/135/160(+스킬 증폭의 55%)",
+      "label": "피해량"
+    },
+    {
+      "type": "skill",
+      "characterId": "77",
+      "name": "유민",
+      "skill": "E",
+      "level": 3,
+      "field": "baseDamage",
+      "stat": "피해량 3레벨 baseDamage",
+      "dakgg": 120,
+      "patchnote": 110,
+      "text": "경운(E) > 피해량 60/90/120/150/180(+스킬 증폭의 55%) → 60/85/110/135/160(+스킬 증폭의 55%)",
+      "label": "피해량"
+    },
+    {
+      "type": "skill",
+      "characterId": "77",
+      "name": "유민",
+      "skill": "E",
+      "level": 4,
+      "field": "baseDamage",
+      "stat": "피해량 4레벨 baseDamage",
+      "dakgg": 150,
+      "patchnote": 135,
+      "text": "경운(E) > 피해량 60/90/120/150/180(+스킬 증폭의 55%) → 60/85/110/135/160(+스킬 증폭의 55%)",
+      "label": "피해량"
+    },
+    {
+      "type": "skill",
+      "characterId": "77",
+      "name": "유민",
+      "skill": "E",
+      "level": 5,
+      "field": "baseDamage",
+      "stat": "피해량 5레벨 baseDamage",
+      "dakgg": 180,
+      "patchnote": 160,
+      "text": "경운(E) > 피해량 60/90/120/150/180(+스킬 증폭의 55%) → 60/85/110/135/160(+스킬 증폭의 55%)",
+      "label": "피해량"
+    }
+  ],
+  "skipped": [],
+  "unparsed": [
+    {
+      "type": "character",
+      "name": "루치아",
+      "text": "레벨 당 체력 81 → 78"
+    },
+    {
+      "type": "item",
+      "name": "이글 아이",
+      "text": "이동 속도 2% (삭제)"
+    },
+    {
+      "type": "item",
+      "name": "광학미채 슈트",
+      "text": "치유 감소 - [고유 장착 효과] (신규)"
+    },
+    {
+      "type": "item",
+      "name": "락커의 자켓",
+      "text": "치유 감소 - [고유 장착 효과] (삭제)"
+    },
+    {
+      "type": "item",
+      "name": "고스트",
+      "text": "포착 - [고유 장착 효과] (신규)"
+    },
+    {
+      "type": "item",
+      "name": "슈팅스타 자켓",
+      "text": "치유 감소 - [고유 장착 효과] (삭제)"
+    },
+    {
+      "type": "item",
+      "name": "슈팅스타 자켓",
+      "text": "자상 - [고유 장착 효과] (신규)"
+    },
+    {
+      "type": "item",
+      "name": "앙 가르드",
+      "text": "방어력 8 (삭제)"
+    },
+    {
+      "type": "item",
+      "name": "성기사의 투구",
+      "text": "수호자 프로토콜 - [고유 장착 효과] (신규)"
+    },
+    {
+      "type": "item",
+      "name": "백우선",
+      "text": "저주 - [고유 장착 효과] (삭제)"
+    },
+    {
+      "type": "item",
+      "name": "백우선",
+      "text": "신속 - [고유 장착 효과] (신규)"
+    },
+    {
+      "type": "item",
+      "name": "아흐라만의 손길",
+      "text": "깎아내기 - [고유 장착 효과] (신규)"
+    },
+    {
+      "type": "item",
+      "name": "월왕구천",
+      "text": "치유 감소 - [고유 장착 효과] (삭제)"
+    },
+    {
+      "type": "item",
+      "name": "월왕구천",
+      "text": "간극 - [고유 장착 효과] (신규)"
+    },
+    {
+      "type": "item",
+      "name": "클라다 반지",
+      "text": "유대 - [고유 장착 효과] (신규)"
+    },
+    {
+      "type": "item",
+      "name": "파초선",
+      "text": "저주 - [고유 장착 효과] (삭제)"
+    },
+    {
+      "type": "item",
+      "name": "파초선",
+      "text": "신속 - [고유 장착 효과] (신규)"
+    },
+    {
+      "type": "item",
+      "name": "에메랄드 타블렛",
+      "text": "신속 - [고유 장착 효과] (삭제)"
+    },
+    {
+      "type": "item",
+      "name": "에메랄드 타블렛",
+      "text": "과부하 - [고유 장착 효과] (신규)"
+    },
+    {
+      "type": "item",
+      "name": "노바 실드",
+      "text": "깎아내기 - [고유 장착 효과] (신규)"
+    },
+    {
+      "type": "item",
+      "name": "미라지 워커",
+      "text": "공격 속도 10% (삭제)"
+    },
+    {
+      "type": "item",
+      "name": "펄스 자켓",
+      "text": "레벨 당 스킬 증폭 5"
+    },
+    {
+      "type": "item",
+      "name": "펄스 자켓",
+      "text": "방어력 25"
+    },
+    {
+      "type": "item",
+      "name": "펄스 자켓",
+      "text": "스킬 증폭 10"
+    },
+    {
+      "type": "item",
+      "name": "펄스 자켓",
+      "text": "공격 속도 20%"
+    },
+    {
+      "type": "item",
+      "name": "제너레이터",
+      "text": "레벨 당 스킬 증폭 5"
+    },
+    {
+      "type": "item",
+      "name": "제너레이터",
+      "text": "방어력 25"
+    },
+    {
+      "type": "item",
+      "name": "제너레이터",
+      "text": "스킬 증폭 10"
+    },
+    {
+      "type": "item",
+      "name": "제너레이터",
+      "text": "공격 속도 20%"
+    },
+    {
+      "type": "item",
+      "name": "제왕의 투구",
+      "text": "공격력 30"
+    },
+    {
+      "type": "item",
+      "name": "제왕의 투구",
+      "text": "최대 체력 250"
+    },
+    {
+      "type": "item",
+      "name": "제왕의 투구",
+      "text": "쿨다운 감소 15"
+    },
+    {
+      "type": "item",
+      "name": "아이보리 스텝",
+      "text": "공격 속도 25%"
+    },
+    {
+      "type": "item",
+      "name": "아이보리 스텝",
+      "text": "치명타 확률 33%"
+    },
+    {
+      "type": "item",
+      "name": "아이보리 스텝",
+      "text": "이동 속도 0.25"
     }
   ],
   "skillsFetched": {
