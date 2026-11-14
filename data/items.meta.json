@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-14T01:10:06.855Z",
+  "fetchedAt": "2026-11-14T03:02:18.033Z",
   "dakggVersion": "13.0.0",
   "patch": {
     "id": 3950,
@@ -40,7 +40,99 @@
       }
     ]
   },
-  "overrides": [],
+  "overrides": [
+    {
+      "type": "skill",
+      "characterId": "81",
+      "name": "니아",
+      "skill": "P",
+      "level": 1,
+      "field": "baseDamage",
+      "stat": "중첩 당 피해량 1레벨 baseDamage",
+      "dakgg": 4,
+      "patchnote": 5,
+      "text": "K.O.(P) > 중첩 당 4/8/12(+스킬 증폭의 3%) → 5/10/15(+스킬 증폭의 3%)",
+      "label": "중첩 당 피해량"
+    },
+    {
+      "type": "skill",
+      "characterId": "81",
+      "name": "니아",
+      "skill": "P",
+      "level": 2,
+      "field": "baseDamage",
+      "stat": "중첩 당 피해량 2레벨 baseDamage",
+      "dakgg": 8,
+      "patchnote": 10,
+      "text": "K.O.(P) > 중첩 당 4/8/12(+스킬 증폭의 3%) → 5/10/15(+스킬 증폭의 3%)",
+      "label": "중첩 당 피해량"
+    },
+    {
+      "type": "skill",
+      "characterId": "81",
+      "name": "니아",
+      "skill": "P",
+      "level": 3,
+      "field": "baseDamage",
+      "stat": "중첩 당 피해량 3레벨 baseDamage",
+      "dakgg": 12,
+      "patchnote": 15,
+      "text": "K.O.(P) > 중첩 당 4/8/12(+스킬 증폭의 3%) → 5/10/15(+스킬 증폭의 3%)",
+      "label": "중첩 당 피해량"
+    },
+    {
+      "type": "skill",
+      "characterId": "77",
+      "name": "유민",
+      "skill": "E",
+      "level": 2,
+      "field": "baseDamage",
+      "stat": "피해량 2레벨 baseDamage",
+      "dakgg": 90,
+      "patchnote": 85,
+      "text": "경운(E) > 피해량 60/90/120/150/180(+스킬 증폭의 55%) → 60/85/110/135/160(+스킬 증폭의 55%)",
+      "label": "피해량"
+    },
+    {
+      "type": "skill",
+      "characterId": "77",
+      "name": "유민",
+      "skill": "E",
+      "level": 3,
+      "field": "baseDamage",
+      "stat": "피해량 3레벨 baseDamage",
+      "dakgg": 120,
+      "patchnote": 110,
+      "text": "경운(E) > 피해량 60/90/120/150/180(+스킬 증폭의 55%) → 60/85/110/135/160(+스킬 증폭의 55%)",
+      "label": "피해량"
+    },
+    {
+      "type": "skill",
+      "characterId": "77",
+      "name": "유민",
+      "skill": "E",
+      "level": 4,
+      "field": "baseDamage",
+      "stat": "피해량 4레벨 baseDamage",
+      "dakgg": 150,
+      "patchnote": 135,
+      "text": "경운(E) > 피해량 60/90/120/150/180(+스킬 증폭의 55%) → 60/85/110/135/160(+스킬 증폭의 55%)",
+      "label": "피해량"
+    },
+    {
+      "type": "skill",
+      "characterId": "77",
+      "name": "유민",
+      "skill": "E",
+      "level": 5,
+      "field": "baseDamage",
+      "stat": "피해량 5레벨 baseDamage",
+      "dakgg": 180,
+      "patchnote": 160,
+      "text": "경운(E) > 피해량 60/90/120/150/180(+스킬 증폭의 55%) → 60/85/110/135/160(+스킬 증폭의 55%)",
+      "label": "피해량"
+    }
+  ],
   "skipped": [],
   "unparsed": [
     {
