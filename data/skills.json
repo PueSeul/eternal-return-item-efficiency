@@ -1893,7 +1893,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-13T16:14:33.000Z",
+    "wikiRevisedAt": "2026-11-15T18:20:01.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -4688,7 +4688,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-12T00:45:48.000Z",
+    "wikiRevisedAt": "2026-11-15T23:26:30.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -10228,7 +10228,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-29T22:23:59.000Z",
+    "wikiRevisedAt": "2026-11-15T10:52:29.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -11324,7 +11324,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-08T05:48:45.000Z",
+    "wikiRevisedAt": "2026-11-15T10:59:13.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -13227,7 +13227,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-14T16:52:42.000Z",
+    "wikiRevisedAt": "2026-11-15T05:56:22.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -18035,7 +18035,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-12T00:21:02.000Z",
+    "wikiRevisedAt": "2026-11-15T05:36:37.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -26189,7 +26189,7 @@
         "entries": []
       }
     ],
-    "wikiRevisedAt": "2026-11-08T13:31:46.000Z",
+    "wikiRevisedAt": "2026-11-15T13:59:07.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -26710,7 +26710,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-13T10:15:25.000Z",
+    "wikiRevisedAt": "2026-11-15T10:41:04.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -28108,7 +28108,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-08T14:37:37.000Z",
+    "wikiRevisedAt": "2026-11-15T12:26:32.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -35200,7 +35200,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-12T13:56:23.000Z",
+    "wikiRevisedAt": "2026-11-15T07:44:43.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -37202,7 +37202,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-09T16:21:41.000Z",
+    "wikiRevisedAt": "2026-11-16T01:37:42.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -39190,7 +39190,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-08T14:28:40.000Z",
+    "wikiRevisedAt": "2026-11-15T09:14:59.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -41547,7 +41547,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-09T05:52:15.000Z",
+    "wikiRevisedAt": "2026-11-15T09:56:48.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -42509,7 +42509,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-13T11:51:07.000Z",
+    "wikiRevisedAt": "2026-11-15T21:57:52.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -42589,7 +42589,7 @@
                 "skillAmpRatio": 0.03
               }
             ],
-            "raw": "K.O.(P) > 중첩 당 4/8/12(+스킬 증폭의 3%) → 5/10/15(+스킬 증폭의 3%)"
+            "raw": "중첩 당 피해량 [5 / 10 / 15] (+스킬 증폭의 3%)"
           }
         ]
       },
@@ -42938,7 +42938,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-11T03:49:52.000Z",
+    "wikiRevisedAt": "2026-11-15T10:53:11.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -47336,7 +47336,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-14T08:11:09.000Z",
+    "wikiRevisedAt": "2026-11-15T23:00:25.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -49646,7 +49646,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-13T10:29:17.000Z",
+    "wikiRevisedAt": "2026-11-15T11:03:48.000Z",
     "needsReview": [],
     "parser": 3
   }
