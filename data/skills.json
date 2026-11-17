@@ -4688,7 +4688,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-15T23:26:30.000Z",
+    "wikiRevisedAt": "2026-11-16T16:42:46.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -5411,7 +5411,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-20T05:48:00.000Z",
+    "wikiRevisedAt": "2026-11-16T16:09:05.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -6030,7 +6030,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-13T10:05:49.000Z",
+    "wikiRevisedAt": "2026-11-16T11:29:54.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -6118,10 +6118,7 @@
                 "skillAmpRatio": 0.6
               }
             ],
-            "raw": "피해량 [60 / 90 / 120 / 150 / 180] (+스킬 증폭의 60%)",
-            "historyMismatch": {
-              "text": "skillAmpRatio 설명란 [0.6,0.08,0.04], 역사 마지막 0.06: 12.5 패치에서 부정의 손길(Q)의 회복량 스킬 증폭 계수가 6%로 증가했다. 이후로는 지표가 소폭 개선되었다."
-            }
+            "raw": "피해량 [60 / 90 / 120 / 150 / 180] (+스킬 증폭의 60%)"
           },
           {
             "label": "추가 피해량",
@@ -6157,49 +6154,43 @@
                 "skillAmpRatio": 0.08
               }
             ],
-            "raw": "추가 피해량 [10 / 20 / 30 / 40 / 50] (+스킬 증폭의 8%)",
-            "historyMismatch": {
-              "text": "skillAmpRatio 설명란 [0.6,0.08,0.04], 역사 마지막 0.06: 12.5 패치에서 부정의 손길(Q)의 회복량 스킬 증폭 계수가 6%로 증가했다. 이후로는 지표가 소폭 개선되었다."
-            }
+            "raw": "추가 피해량 [10 / 20 / 30 / 40 / 50] (+스킬 증폭의 8%)"
           },
           {
-            "label": "회복량",
+            "label": "체력 회복량",
             "levels": [
               {
                 "level": 1,
                 "baseDamage": 13,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.04
+                "skillAmpRatio": 0.06
               },
               {
                 "level": 2,
                 "baseDamage": 16,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.04
+                "skillAmpRatio": 0.06
               },
               {
                 "level": 3,
                 "baseDamage": 19,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.04
+                "skillAmpRatio": 0.06
               },
               {
                 "level": 4,
                 "baseDamage": 22,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.04
+                "skillAmpRatio": 0.06
               },
               {
                 "level": 5,
                 "baseDamage": 25,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.04
+                "skillAmpRatio": 0.06
               }
             ],
-            "raw": "회복량 [13 / 16 / 19 / 22 / 25] (+스킬 증폭의 4%)",
-            "historyMismatch": {
-              "text": "skillAmpRatio 설명란 [0.6,0.08,0.04], 역사 마지막 0.06: 12.5 패치에서 부정의 손길(Q)의 회복량 스킬 증폭 계수가 6%로 증가했다. 이후로는 지표가 소폭 개선되었다."
-            }
+            "raw": "체력 회복량 [13 / 16 / 19 / 22 / 25] (+스킬 증폭의 6%)"
           }
         ]
       },
@@ -6238,11 +6229,11 @@
             "skillAmpRatio": 0.5
           }
         ],
-        "raw": "보호막 흡수량 [110 / 130 / 150 / 170 / 190] (+스킬 증폭의 50%)[5]",
-        "sourceLabel": "보호막 흡수량",
+        "raw": "최소 보호막 흡수량 [110 / 130 / 150 / 170 / 190] (+스킬 증폭의 50%)",
+        "sourceLabel": "최소 보호막 흡수량",
         "entries": [
           {
-            "label": "보호막 흡수량",
+            "label": "최소 보호막 흡수량",
             "levels": [
               {
                 "level": 1,
@@ -6275,7 +6266,43 @@
                 "skillAmpRatio": 0.5
               }
             ],
-            "raw": "보호막 흡수량 [110 / 130 / 150 / 170 / 190] (+스킬 증폭의 50%)[5]"
+            "raw": "최소 보호막 흡수량 [110 / 130 / 150 / 170 / 190] (+스킬 증폭의 50%)"
+          },
+          {
+            "label": "최대 보호막 흡수량",
+            "levels": [
+              {
+                "level": 1,
+                "baseDamage": 165,
+                "attackPowerRatio": 0,
+                "skillAmpRatio": 0.75
+              },
+              {
+                "level": 2,
+                "baseDamage": 195,
+                "attackPowerRatio": 0,
+                "skillAmpRatio": 0.75
+              },
+              {
+                "level": 3,
+                "baseDamage": 225,
+                "attackPowerRatio": 0,
+                "skillAmpRatio": 0.75
+              },
+              {
+                "level": 4,
+                "baseDamage": 255,
+                "attackPowerRatio": 0,
+                "skillAmpRatio": 0.75
+              },
+              {
+                "level": 5,
+                "baseDamage": 285,
+                "attackPowerRatio": 0,
+                "skillAmpRatio": 0.75
+              }
+            ],
+            "raw": "최대 보호막 흡수량 [165 / 195 / 225 / 255 / 285] (+스킬 증폭의 75%)"
           },
           {
             "label": "피해량",
@@ -6463,76 +6490,28 @@
         "levels": [
           {
             "level": 1,
-            "baseDamage": 60,
+            "baseDamage": 20,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.25
+            "skillAmpRatio": 0.05
           },
           {
             "level": 2,
-            "baseDamage": 70,
+            "baseDamage": 25,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.25
+            "skillAmpRatio": 0.05
           },
           {
             "level": 3,
-            "baseDamage": 80,
+            "baseDamage": 30,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.25
+            "skillAmpRatio": 0.05
           }
         ],
-        "raw": "지속 피해량 [60 / 70 / 80] (+스킬 증폭의 25%)",
-        "sourceLabel": "지속 피해량",
+        "raw": "[폭주] 체력 회복량 [20 / 25 / 30] (+스킬 증폭의 5%)",
+        "sourceLabel": "[폭주] 체력 회복량",
         "entries": [
           {
-            "label": "지속 피해량",
-            "levels": [
-              {
-                "level": 1,
-                "baseDamage": 60,
-                "attackPowerRatio": 0,
-                "skillAmpRatio": 0.25
-              },
-              {
-                "level": 2,
-                "baseDamage": 70,
-                "attackPowerRatio": 0,
-                "skillAmpRatio": 0.25
-              },
-              {
-                "level": 3,
-                "baseDamage": 80,
-                "attackPowerRatio": 0,
-                "skillAmpRatio": 0.25
-              }
-            ],
-            "raw": "지속 피해량 [60 / 70 / 80] (+스킬 증폭의 25%)"
-          },
-          {
-            "label": "심판 피해량",
-            "levels": [
-              {
-                "level": 1,
-                "baseDamage": 70,
-                "attackPowerRatio": 0,
-                "skillAmpRatio": 0.25
-              },
-              {
-                "level": 2,
-                "baseDamage": 110,
-                "attackPowerRatio": 0,
-                "skillAmpRatio": 0.25
-              },
-              {
-                "level": 3,
-                "baseDamage": 150,
-                "attackPowerRatio": 0,
-                "skillAmpRatio": 0.25
-              }
-            ],
-            "raw": "심판 피해량 [70 / 110 / 150] (+스킬 증폭의 25%)[6]"
-          },
-          {
-            "label": "체력 회복량",
+            "label": "[폭주] 체력 회복량",
             "levels": [
               {
                 "level": 1,
@@ -6553,12 +6532,60 @@
                 "skillAmpRatio": 0.05
               }
             ],
-            "raw": "체력 회복량 [20 / 25 / 30] (+스킬 증폭의 5%)"
+            "raw": "[폭주] 체력 회복량 [20 / 25 / 30] (+스킬 증폭의 5%)"
+          },
+          {
+            "label": "[폭주] 피해량",
+            "levels": [
+              {
+                "level": 1,
+                "baseDamage": 60,
+                "attackPowerRatio": 0,
+                "skillAmpRatio": 0.25
+              },
+              {
+                "level": 2,
+                "baseDamage": 70,
+                "attackPowerRatio": 0,
+                "skillAmpRatio": 0.25
+              },
+              {
+                "level": 3,
+                "baseDamage": 80,
+                "attackPowerRatio": 0,
+                "skillAmpRatio": 0.25
+              }
+            ],
+            "raw": "[폭주] 피해량 [60 / 70 / 80] (+스킬 증폭의 25%)"
+          },
+          {
+            "label": "[심판] 피해량",
+            "levels": [
+              {
+                "level": 1,
+                "baseDamage": 70,
+                "attackPowerRatio": 0,
+                "skillAmpRatio": 0.25
+              },
+              {
+                "level": 2,
+                "baseDamage": 110,
+                "attackPowerRatio": 0,
+                "skillAmpRatio": 0.25
+              },
+              {
+                "level": 3,
+                "baseDamage": 150,
+                "attackPowerRatio": 0,
+                "skillAmpRatio": 0.25
+              }
+            ],
+            "raw": "[심판] 피해량 [70 / 110 / 150] (+스킬 증폭의 25%)"
           }
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-11T20:33:51.000Z",
+    "wikiRevisedAt": "2026-11-16T11:54:57.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -9727,7 +9754,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-30T17:06:00.000Z",
+    "wikiRevisedAt": "2026-11-16T09:22:32.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -18035,7 +18062,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-15T05:36:37.000Z",
+    "wikiRevisedAt": "2026-11-16T08:15:22.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -22527,7 +22554,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-31T19:06:10.000Z",
+    "wikiRevisedAt": "2026-11-16T04:40:28.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -35200,7 +35227,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-15T07:44:43.000Z",
+    "wikiRevisedAt": "2026-11-16T15:53:24.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -48795,7 +48822,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-13T10:27:44.000Z",
+    "wikiRevisedAt": "2026-11-16T18:39:04.000Z",
     "needsReview": [],
     "parser": 3
   },
