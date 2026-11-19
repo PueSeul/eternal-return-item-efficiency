@@ -134,7 +134,7 @@
         "attackPower": 0
       },
       "암기": {
-        "skillAmpRatio": 0.04,
+        "skillAmpRatio": 0.042,
         "attackPowerRatio": 0,
         "attackSpeedRatio": 0.02,
         "increaseBasicAttackDamageRatio": 0,
@@ -1309,7 +1309,7 @@
       "암기": {
         "skillAmpRatio": 0,
         "attackPowerRatio": 0,
-        "attackSpeedRatio": 0.037,
+        "attackSpeedRatio": 0.034,
         "increaseBasicAttackDamageRatio": 0.01,
         "attackPower": 0
       }

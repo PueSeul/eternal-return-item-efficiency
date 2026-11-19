@@ -1121,22 +1121,22 @@
             "level": 1,
             "baseDamage": 100,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.45
+            "skillAmpRatio": 0.5
           },
           {
             "level": 2,
             "baseDamage": 160,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.45
+            "skillAmpRatio": 0.5
           },
           {
             "level": 3,
             "baseDamage": 220,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.45
+            "skillAmpRatio": 0.5
           }
         ],
-        "raw": "피해량 [100 / 160 / 220] (+스킬 증폭의 45%)",
+        "raw": "플레슈(R) > 1타, 2타 피해량 100/160/220(+스킬 증폭의 45%) → 100/160/220(+스킬 증폭의 50%)",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -1146,22 +1146,22 @@
                 "level": 1,
                 "baseDamage": 100,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.45
+                "skillAmpRatio": 0.5
               },
               {
                 "level": 2,
                 "baseDamage": 160,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.45
+                "skillAmpRatio": 0.5
               },
               {
                 "level": 3,
                 "baseDamage": 220,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.45
+                "skillAmpRatio": 0.5
               }
             ],
-            "raw": "피해량 [100 / 160 / 220] (+스킬 증폭의 45%)"
+            "raw": "플레슈(R) > 1타, 2타 피해량 100/160/220(+스킬 증폭의 45%) → 100/160/220(+스킬 증폭의 50%)"
           },
           {
             "label": "3타 피해량",
@@ -6641,34 +6641,34 @@
             "level": 1,
             "baseDamage": 40,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.35
+            "skillAmpRatio": 0.4
           },
           {
             "level": 2,
             "baseDamage": 50,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.35
+            "skillAmpRatio": 0.4
           },
           {
             "level": 3,
             "baseDamage": 60,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.35
+            "skillAmpRatio": 0.4
           },
           {
             "level": 4,
             "baseDamage": 70,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.35
+            "skillAmpRatio": 0.4
           },
           {
             "level": 5,
             "baseDamage": 80,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.35
+            "skillAmpRatio": 0.4
           }
         ],
-        "raw": "경로 피해량 [40 / 50 / 60 / 70 / 80] (+스킬 증폭의 35%)",
+        "raw": "윌슨! 도와줘(Q) > 경로 피해량 40/50/60/70/80(+스킬 증폭의 35%) → 40/50/60/70/80(+스킬 증폭의 40%)",
         "sourceLabel": "경로 피해량",
         "entries": [
           {
@@ -6678,34 +6678,34 @@
                 "level": 1,
                 "baseDamage": 40,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.35
+                "skillAmpRatio": 0.4
               },
               {
                 "level": 2,
                 "baseDamage": 50,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.35
+                "skillAmpRatio": 0.4
               },
               {
                 "level": 3,
                 "baseDamage": 60,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.35
+                "skillAmpRatio": 0.4
               },
               {
                 "level": 4,
                 "baseDamage": 70,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.35
+                "skillAmpRatio": 0.4
               },
               {
                 "level": 5,
                 "baseDamage": 80,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.35
+                "skillAmpRatio": 0.4
               }
             ],
-            "raw": "경로 피해량 [40 / 50 / 60 / 70 / 80] (+스킬 증폭의 35%)"
+            "raw": "윌슨! 도와줘(Q) > 경로 피해량 40/50/60/70/80(+스킬 증폭의 35%) → 40/50/60/70/80(+스킬 증폭의 40%)"
           },
           {
             "label": "도착 피해량",
