@@ -1893,7 +1893,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-17T11:25:17.000Z",
+    "wikiRevisedAt": "2026-11-18T18:26:26.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -4688,7 +4688,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-16T16:42:46.000Z",
+    "wikiRevisedAt": "2026-11-19T02:53:40.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -5411,7 +5411,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-16T16:09:05.000Z",
+    "wikiRevisedAt": "2026-11-18T23:20:50.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -17072,7 +17072,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-08T10:16:33.000Z",
+    "wikiRevisedAt": "2026-11-18T08:05:17.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -20266,7 +20266,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-05T09:55:50.000Z",
+    "wikiRevisedAt": "2026-11-18T20:56:01.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -23985,7 +23985,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-08T15:10:43.000Z",
+    "wikiRevisedAt": "2026-11-18T11:38:49.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -25721,7 +25721,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-08T01:25:50.000Z",
+    "wikiRevisedAt": "2026-11-18T14:46:28.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -26737,7 +26737,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-17T06:06:38.000Z",
+    "wikiRevisedAt": "2026-11-18T19:20:43.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -34691,7 +34691,7 @@
         "entries": []
       }
     ],
-    "wikiRevisedAt": "2026-11-12T03:52:47.000Z",
+    "wikiRevisedAt": "2026-11-18T13:52:58.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -40028,7 +40028,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-23T03:55:20.000Z",
+    "wikiRevisedAt": "2026-11-18T12:03:43.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -40324,30 +40324,30 @@
           },
           {
             "level": 2,
-            "baseDamage": 85,
+            "baseDamage": 90,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.55
           },
           {
             "level": 3,
-            "baseDamage": 110,
+            "baseDamage": 120,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.55
           },
           {
             "level": 4,
-            "baseDamage": 135,
+            "baseDamage": 150,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.55
           },
           {
             "level": 5,
-            "baseDamage": 160,
+            "baseDamage": 180,
             "attackPowerRatio": 0,
             "skillAmpRatio": 0.55
           }
         ],
-        "raw": "경운(E) > 피해량 60/90/120/150/180(+스킬 증폭의 55%) → 60/85/110/135/160(+스킬 증폭의 55%)",
+        "raw": "피해량 [60 / 90 / 120 / 150 / 180] (+스킬 증폭의 55%)",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -40361,30 +40361,30 @@
               },
               {
                 "level": 2,
-                "baseDamage": 85,
+                "baseDamage": 90,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.55
               },
               {
                 "level": 3,
-                "baseDamage": 110,
+                "baseDamage": 120,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.55
               },
               {
                 "level": 4,
-                "baseDamage": 135,
+                "baseDamage": 150,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.55
               },
               {
                 "level": 5,
-                "baseDamage": 160,
+                "baseDamage": 180,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.55
               }
             ],
-            "raw": "경운(E) > 피해량 60/90/120/150/180(+스킬 증폭의 55%) → 60/85/110/135/160(+스킬 증폭의 55%)"
+            "raw": "피해량 [60 / 90 / 120 / 150 / 180] (+스킬 증폭의 55%)"
           }
         ]
       },
@@ -46826,7 +46826,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-08T06:19:05.000Z",
+    "wikiRevisedAt": "2026-11-19T02:28:53.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -47363,7 +47363,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-17T13:01:36.000Z",
+    "wikiRevisedAt": "2026-11-18T09:01:41.000Z",
     "needsReview": [],
     "parser": 3
   },
