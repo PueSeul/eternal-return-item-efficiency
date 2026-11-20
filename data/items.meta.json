@@ -1,6 +1,6 @@
 {
-  "fetchedAt": "2026-11-19T03:02:17.555Z",
-  "dakggVersion": "13.0.0",
+  "fetchedAt": "2026-11-20T01:58:38.342Z",
+  "dakggVersion": "13.1.0",
   "patch": {
     "id": 3969,
     "version": "13.1",
@@ -17,38 +17,6 @@
     ]
   },
   "overrides": [
-    {
-      "type": "item",
-      "id": "203512",
-      "name": "아흐라만의 손길",
-      "stat": "스킬 증폭",
-      "dakgg": 73,
-      "patchnote": 70
-    },
-    {
-      "type": "item",
-      "id": "205305",
-      "name": "월왕구천",
-      "stat": "공격력",
-      "dakgg": 15,
-      "patchnote": 16
-    },
-    {
-      "type": "character",
-      "id": "5",
-      "name": "자히르",
-      "stat": "masteries.암기.skillAmpRatio",
-      "dakgg": 0.04,
-      "patchnote": 0.042
-    },
-    {
-      "type": "character",
-      "id": "70",
-      "name": "츠바메",
-      "stat": "masteries.암기.attackSpeedRatio",
-      "dakgg": 0.037,
-      "patchnote": 0.034
-    },
     {
       "type": "skill",
       "characterId": "15",
