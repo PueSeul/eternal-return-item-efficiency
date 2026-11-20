@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-20T01:58:38.342Z",
+  "fetchedAt": "2026-11-20T03:02:17.718Z",
   "dakggVersion": "13.1.0",
   "patch": {
     "id": 3969,
@@ -16,112 +16,7 @@
       }
     ]
   },
-  "overrides": [
-    {
-      "type": "skill",
-      "characterId": "15",
-      "name": "시셀라",
-      "skill": "Q",
-      "level": 1,
-      "field": "skillAmpRatio",
-      "stat": "경로 피해량 1레벨 skillAmpRatio",
-      "dakgg": 0.35,
-      "patchnote": 0.4,
-      "text": "윌슨! 도와줘(Q) > 경로 피해량 40/50/60/70/80(+스킬 증폭의 35%) → 40/50/60/70/80(+스킬 증폭의 40%)",
-      "label": "경로 피해량"
-    },
-    {
-      "type": "skill",
-      "characterId": "15",
-      "name": "시셀라",
-      "skill": "Q",
-      "level": 2,
-      "field": "skillAmpRatio",
-      "stat": "경로 피해량 2레벨 skillAmpRatio",
-      "dakgg": 0.35,
-      "patchnote": 0.4,
-      "text": "윌슨! 도와줘(Q) > 경로 피해량 40/50/60/70/80(+스킬 증폭의 35%) → 40/50/60/70/80(+스킬 증폭의 40%)",
-      "label": "경로 피해량"
-    },
-    {
-      "type": "skill",
-      "characterId": "15",
-      "name": "시셀라",
-      "skill": "Q",
-      "level": 3,
-      "field": "skillAmpRatio",
-      "stat": "경로 피해량 3레벨 skillAmpRatio",
-      "dakgg": 0.35,
-      "patchnote": 0.4,
-      "text": "윌슨! 도와줘(Q) > 경로 피해량 40/50/60/70/80(+스킬 증폭의 35%) → 40/50/60/70/80(+스킬 증폭의 40%)",
-      "label": "경로 피해량"
-    },
-    {
-      "type": "skill",
-      "characterId": "15",
-      "name": "시셀라",
-      "skill": "Q",
-      "level": 4,
-      "field": "skillAmpRatio",
-      "stat": "경로 피해량 4레벨 skillAmpRatio",
-      "dakgg": 0.35,
-      "patchnote": 0.4,
-      "text": "윌슨! 도와줘(Q) > 경로 피해량 40/50/60/70/80(+스킬 증폭의 35%) → 40/50/60/70/80(+스킬 증폭의 40%)",
-      "label": "경로 피해량"
-    },
-    {
-      "type": "skill",
-      "characterId": "15",
-      "name": "시셀라",
-      "skill": "Q",
-      "level": 5,
-      "field": "skillAmpRatio",
-      "stat": "경로 피해량 5레벨 skillAmpRatio",
-      "dakgg": 0.35,
-      "patchnote": 0.4,
-      "text": "윌슨! 도와줘(Q) > 경로 피해량 40/50/60/70/80(+스킬 증폭의 35%) → 40/50/60/70/80(+스킬 증폭의 40%)",
-      "label": "경로 피해량"
-    },
-    {
-      "type": "skill",
-      "characterId": "3",
-      "name": "피오라",
-      "skill": "R",
-      "level": 1,
-      "field": "skillAmpRatio",
-      "stat": "피해량 1레벨 skillAmpRatio",
-      "dakgg": 0.45,
-      "patchnote": 0.5,
-      "text": "플레슈(R) > 1타, 2타 피해량 100/160/220(+스킬 증폭의 45%) → 100/160/220(+스킬 증폭의 50%)",
-      "label": "피해량"
-    },
-    {
-      "type": "skill",
-      "characterId": "3",
-      "name": "피오라",
-      "skill": "R",
-      "level": 2,
-      "field": "skillAmpRatio",
-      "stat": "피해량 2레벨 skillAmpRatio",
-      "dakgg": 0.45,
-      "patchnote": 0.5,
-      "text": "플레슈(R) > 1타, 2타 피해량 100/160/220(+스킬 증폭의 45%) → 100/160/220(+스킬 증폭의 50%)",
-      "label": "피해량"
-    },
-    {
-      "type": "skill",
-      "characterId": "3",
-      "name": "피오라",
-      "skill": "R",
-      "level": 3,
-      "field": "skillAmpRatio",
-      "stat": "피해량 3레벨 skillAmpRatio",
-      "dakgg": 0.45,
-      "patchnote": 0.5,
-      "text": "플레슈(R) > 1타, 2타 피해량 100/160/220(+스킬 증폭의 45%) → 100/160/220(+스킬 증폭의 50%)",
-      "label": "피해량"
-    }
-  ],
+  "overrides": [],
   "skipped": [],
   "unparsed": [
     {
