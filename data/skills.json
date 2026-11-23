@@ -1893,7 +1893,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-19T07:05:43.000Z",
+    "wikiRevisedAt": "2026-11-22T19:56:31.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -5010,7 +5010,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-19T06:40:48.000Z",
+    "wikiRevisedAt": "2026-11-22T09:34:09.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -13667,7 +13667,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-09T03:43:48.000Z",
+    "wikiRevisedAt": "2026-11-22T03:16:28.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -14500,7 +14500,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-22T02:41:28.000Z",
+    "wikiRevisedAt": "2026-11-23T02:56:08.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -14627,37 +14627,37 @@
           {
             "level": 1,
             "baseDamage": 0,
-            "attackPowerRatio": 0.36,
+            "attackPowerRatio": 0.37,
             "skillAmpRatio": 0
           }
         ],
-        "raw": "단궁: 기본 공격이 공격력의 36% * (기본 공격 증폭)의 피해를 입히고, 2개의 화살을 추가로 발사해 각각 공격력의 35% * (기본 공격 증폭)의 피해를 입힙니다.",
-        "sourceLabel": "단궁: 공격력의 36% * (기본 공격 증폭)의 피해",
+        "raw": "단궁: 기본 공격이 공격력의 37% * (기본 공격 증폭)의 피해를 입히고, 2개의 화살을 추가로 발사해 각각 공격력의 33% * (기본 공격 증폭)의 피해를 입힙니다.",
+        "sourceLabel": "단궁: 공격력의 37% * (기본 공격 증폭)의 피해",
         "entries": [
           {
-            "label": "단궁: 공격력의 36% * (기본 공격 증폭)의 피해",
+            "label": "단궁: 공격력의 37% * (기본 공격 증폭)의 피해",
             "levels": [
               {
                 "level": 1,
                 "baseDamage": 0,
-                "attackPowerRatio": 0.36,
+                "attackPowerRatio": 0.37,
                 "skillAmpRatio": 0
               }
             ],
-            "raw": "단궁: 기본 공격이 공격력의 36% * (기본 공격 증폭)의 피해를 입히고, 2개의 화살을 추가로 발사해 각각 공격력의 35% * (기본 공격 증폭)의 피해를 입힙니다.",
+            "raw": "단궁: 기본 공격이 공격력의 37% * (기본 공격 증폭)의 피해를 입히고, 2개의 화살을 추가로 발사해 각각 공격력의 33% * (기본 공격 증폭)의 피해를 입힙니다.",
             "multiplier": "기본 공격 증폭"
           },
           {
-            "label": "단궁: 공격력의 35% * (기본 공격 증폭)의 피해",
+            "label": "단궁: 공격력의 33% * (기본 공격 증폭)의 피해",
             "levels": [
               {
                 "level": 1,
                 "baseDamage": 0,
-                "attackPowerRatio": 0.35,
+                "attackPowerRatio": 0.33,
                 "skillAmpRatio": 0
               }
             ],
-            "raw": "단궁: 기본 공격이 공격력의 36% * (기본 공격 증폭)의 피해를 입히고, 2개의 화살을 추가로 발사해 각각 공격력의 35% * (기본 공격 증폭)의 피해를 입힙니다.",
+            "raw": "단궁: 기본 공격이 공격력의 37% * (기본 공격 증폭)의 피해를 입히고, 2개의 화살을 추가로 발사해 각각 공격력의 33% * (기본 공격 증폭)의 피해를 입힙니다.",
             "multiplier": "기본 공격 증폭"
           },
           {
@@ -15062,12 +15062,12 @@
               },
               {
                 "level": 3,
-                "baseDamage": 250,
+                "baseDamage": 150,
                 "attackPowerRatio": 0.4,
                 "skillAmpRatio": 0
               }
             ],
-            "raw": "단궁 벽 충돌 시 추가 피해량 [100 / 125 / 250] (+공격력의 40%)"
+            "raw": "단궁 벽 충돌 시 추가 피해량 [100 / 125 / 150] (+공격력의 40%)"
           },
           {
             "label": "화궁 피해량",
@@ -15096,7 +15096,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-29T12:58:33.000Z",
+    "wikiRevisedAt": "2026-11-22T13:14:11.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -15844,7 +15844,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-04T14:33:27.000Z",
+    "wikiRevisedAt": "2026-11-22T10:49:50.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -18068,7 +18068,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-16T08:15:22.000Z",
+    "wikiRevisedAt": "2026-11-22T23:40:45.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -18481,7 +18481,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-10-11T00:54:17.000Z",
+    "wikiRevisedAt": "2026-11-22T03:02:33.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -25316,34 +25316,34 @@
             "level": 1,
             "baseDamage": 60,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.7
+            "skillAmpRatio": 0.75
           },
           {
             "level": 2,
             "baseDamage": 90,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.7
+            "skillAmpRatio": 0.75
           },
           {
             "level": 3,
             "baseDamage": 120,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.7
+            "skillAmpRatio": 0.75
           },
           {
             "level": 4,
             "baseDamage": 150,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.7
+            "skillAmpRatio": 0.75
           },
           {
             "level": 5,
             "baseDamage": 180,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.7
+            "skillAmpRatio": 0.75
           }
         ],
-        "raw": "피해량 [60 / 90 / 120 / 150 / 180] (+스킬 증폭의 70%)",
+        "raw": "피해량 [60 / 90 / 120 / 150 / 180] (+스킬 증폭의 75%)",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -25353,34 +25353,34 @@
                 "level": 1,
                 "baseDamage": 60,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.7
+                "skillAmpRatio": 0.75
               },
               {
                 "level": 2,
                 "baseDamage": 90,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.7
+                "skillAmpRatio": 0.75
               },
               {
                 "level": 3,
                 "baseDamage": 120,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.7
+                "skillAmpRatio": 0.75
               },
               {
                 "level": 4,
                 "baseDamage": 150,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.7
+                "skillAmpRatio": 0.75
               },
               {
                 "level": 5,
                 "baseDamage": 180,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.7
+                "skillAmpRatio": 0.75
               }
             ],
-            "raw": "피해량 [60 / 90 / 120 / 150 / 180] (+스킬 증폭의 70%)"
+            "raw": "피해량 [60 / 90 / 120 / 150 / 180] (+스킬 증폭의 75%)"
           },
           {
             "label": "만개 피해량",
@@ -25393,30 +25393,30 @@
               },
               {
                 "level": 2,
-                "baseDamage": 90,
+                "baseDamage": 80,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.6
               },
               {
                 "level": 3,
-                "baseDamage": 120,
+                "baseDamage": 100,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.6
               },
               {
                 "level": 4,
-                "baseDamage": 150,
+                "baseDamage": 120,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.6
               },
               {
                 "level": 5,
-                "baseDamage": 180,
+                "baseDamage": 140,
                 "attackPowerRatio": 0,
                 "skillAmpRatio": 0.6
               }
             ],
-            "raw": "만개 피해량 [60 / 90 / 120 / 150 / 180] (+스킬 증폭의 60%)"
+            "raw": "만개 피해량 [60 / 80 / 100 / 120 / 140] (+스킬 증폭의 60%)"
           }
         ]
       },
@@ -25428,34 +25428,34 @@
             "level": 1,
             "baseDamage": 60,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.65
+            "skillAmpRatio": 0.7
           },
           {
             "level": 2,
             "baseDamage": 100,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.65
+            "skillAmpRatio": 0.7
           },
           {
             "level": 3,
             "baseDamage": 140,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.65
+            "skillAmpRatio": 0.7
           },
           {
             "level": 4,
             "baseDamage": 180,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.65
+            "skillAmpRatio": 0.7
           },
           {
             "level": 5,
             "baseDamage": 220,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.65
+            "skillAmpRatio": 0.7
           }
         ],
-        "raw": "피해량 [60 / 100 / 140 / 180 / 220] (+스킬 증폭의 65%)",
+        "raw": "피해량 [60 / 100 / 140 / 180 / 220] (+스킬 증폭의 70%)",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -25465,34 +25465,34 @@
                 "level": 1,
                 "baseDamage": 60,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.65
+                "skillAmpRatio": 0.7
               },
               {
                 "level": 2,
                 "baseDamage": 100,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.65
+                "skillAmpRatio": 0.7
               },
               {
                 "level": 3,
                 "baseDamage": 140,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.65
+                "skillAmpRatio": 0.7
               },
               {
                 "level": 4,
                 "baseDamage": 180,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.65
+                "skillAmpRatio": 0.7
               },
               {
                 "level": 5,
                 "baseDamage": 220,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.65
+                "skillAmpRatio": 0.7
               }
             ],
-            "raw": "피해량 [60 / 100 / 140 / 180 / 220] (+스킬 증폭의 65%)"
+            "raw": "피해량 [60 / 100 / 140 / 180 / 220] (+스킬 증폭의 70%)"
           },
           {
             "label": "보호막 흡수량",
@@ -25616,22 +25616,22 @@
             "level": 1,
             "baseDamage": 80,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.6
+            "skillAmpRatio": 0.65
           },
           {
             "level": 2,
             "baseDamage": 150,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.6
+            "skillAmpRatio": 0.65
           },
           {
             "level": 3,
             "baseDamage": 220,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.6
+            "skillAmpRatio": 0.65
           }
         ],
-        "raw": "1타 피해량 [80 / 150 / 220] (+스킬 증폭의 60%)",
+        "raw": "1타 피해량 [80 / 150 / 220] (+스킬 증폭의 65%)",
         "sourceLabel": "1타 피해량",
         "entries": [
           {
@@ -25641,22 +25641,22 @@
                 "level": 1,
                 "baseDamage": 80,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.6
+                "skillAmpRatio": 0.65
               },
               {
                 "level": 2,
                 "baseDamage": 150,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.6
+                "skillAmpRatio": 0.65
               },
               {
                 "level": 3,
                 "baseDamage": 220,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.6
+                "skillAmpRatio": 0.65
               }
             ],
-            "raw": "1타 피해량 [80 / 150 / 220] (+스킬 증폭의 60%)"
+            "raw": "1타 피해량 [80 / 150 / 220] (+스킬 증폭의 65%)"
           },
           {
             "label": "메아리 피해량",
@@ -25681,53 +25681,11 @@
               }
             ],
             "raw": "메아리 피해량 [80 / 150 / 220] (+스킬 증폭의 65%)"
-          },
-          {
-            "label": "체력 회복량",
-            "levels": [
-              {
-                "level": 1,
-                "baseDamage": 0,
-                "attackPowerRatio": 0,
-                "skillAmpRatio": 0,
-                "extraRatios": [
-                  {
-                    "stat": "최대 체력",
-                    "ratio": 0.03
-                  }
-                ]
-              },
-              {
-                "level": 2,
-                "baseDamage": 0,
-                "attackPowerRatio": 0,
-                "skillAmpRatio": 0,
-                "extraRatios": [
-                  {
-                    "stat": "최대 체력",
-                    "ratio": 0.05
-                  }
-                ]
-              },
-              {
-                "level": 3,
-                "baseDamage": 0,
-                "attackPowerRatio": 0,
-                "skillAmpRatio": 0,
-                "extraRatios": [
-                  {
-                    "stat": "최대 체력",
-                    "ratio": 0.07
-                  }
-                ]
-              }
-            ],
-            "raw": "체력 회복량 [최대 체력의 3% / 5% / 7%]"
           }
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-18T14:46:28.000Z",
+    "wikiRevisedAt": "2026-11-22T12:28:26.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -26222,7 +26180,7 @@
         "entries": []
       }
     ],
-    "wikiRevisedAt": "2026-11-21T18:35:12.000Z",
+    "wikiRevisedAt": "2026-11-22T12:37:28.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -26808,7 +26766,7 @@
                 "level": 1,
                 "baseDamage": 10,
                 "attackPowerRatio": 1,
-                "skillAmpRatio": 0.3,
+                "skillAmpRatio": 0.25,
                 "extraRatios": [
                   {
                     "stat": "대상 최대 체력",
@@ -26820,11 +26778,11 @@
                 "level": 2,
                 "baseDamage": 25,
                 "attackPowerRatio": 1,
-                "skillAmpRatio": 0.3,
+                "skillAmpRatio": 0.25,
                 "extraRatios": [
                   {
                     "stat": "대상 최대 체력",
-                    "ratio": 0.08
+                    "ratio": 0.07
                   }
                 ]
               },
@@ -26832,16 +26790,16 @@
                 "level": 3,
                 "baseDamage": 40,
                 "attackPowerRatio": 1,
-                "skillAmpRatio": 0.3,
+                "skillAmpRatio": 0.25,
                 "extraRatios": [
                   {
                     "stat": "대상 최대 체력",
-                    "ratio": 0.12
+                    "ratio": 0.1
                   }
                 ]
               }
             ],
-            "raw": "충전 피해량 [10 / 25 / 40] (+공격력의 100%) (+스킬 증폭의 30%) (+대상 최대 체력의 4% / 8% / 12%)"
+            "raw": "충전 피해량 [10 / 25 / 40] (+공격력의 100%) (+스킬 증폭의 25%) (+대상 최대 체력의 4% / 7% / 10%)"
           }
         ]
       },
@@ -26880,7 +26838,7 @@
             "skillAmpRatio": 0
           }
         ],
-        "raw": "피해량 [공격력의 120% / 130% / 140% / 150% / 160%] * (기본 공격 증폭)",
+        "raw": "피해량 [공격력의 120% / 130% / 140% / 150% / 160%]",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -26917,8 +26875,7 @@
                 "skillAmpRatio": 0
               }
             ],
-            "raw": "피해량 [공격력의 120% / 130% / 140% / 150% / 160%] * (기본 공격 증폭)",
-            "multiplier": "기본 공격 증폭"
+            "raw": "피해량 [공격력의 120% / 130% / 140% / 150% / 160%]"
           },
           {
             "label": "감소된 피해량",
@@ -26954,8 +26911,7 @@
                 "skillAmpRatio": 0
               }
             ],
-            "raw": "감소된 피해량 [공격력의 108% / 116% / 126% / 134% / 144%] * (기본 공격 증폭)",
-            "multiplier": "기본 공격 증폭"
+            "raw": "감소된 피해량 [공격력의 108% / 116% / 126% / 134% / 144%]"
           }
         ]
       },
@@ -26965,7 +26921,7 @@
         "levels": [
           {
             "level": 1,
-            "baseDamage": 70,
+            "baseDamage": 80,
             "attackPowerRatio": 0.3,
             "skillAmpRatio": 0.75,
             "extraRatios": [
@@ -26977,7 +26933,7 @@
           },
           {
             "level": 2,
-            "baseDamage": 95,
+            "baseDamage": 105,
             "attackPowerRatio": 0.3,
             "skillAmpRatio": 0.75,
             "extraRatios": [
@@ -26989,7 +26945,7 @@
           },
           {
             "level": 3,
-            "baseDamage": 120,
+            "baseDamage": 130,
             "attackPowerRatio": 0.3,
             "skillAmpRatio": 0.75,
             "extraRatios": [
@@ -27001,7 +26957,7 @@
           },
           {
             "level": 4,
-            "baseDamage": 145,
+            "baseDamage": 155,
             "attackPowerRatio": 0.3,
             "skillAmpRatio": 0.75,
             "extraRatios": [
@@ -27013,7 +26969,7 @@
           },
           {
             "level": 5,
-            "baseDamage": 170,
+            "baseDamage": 180,
             "attackPowerRatio": 0.3,
             "skillAmpRatio": 0.75,
             "extraRatios": [
@@ -27024,7 +26980,7 @@
             ]
           }
         ],
-        "raw": "피해량 [70 / 95 / 120 / 145 / 170] (+공격력의 30%) (+스킬 증폭의 75%) (+치명타 확률의 65%)",
+        "raw": "피해량 [80 / 105 / 130 / 155 / 180] (+공격력의 30%) (+스킬 증폭의 75%) (+치명타 확률의 65%)",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -27032,7 +26988,7 @@
             "levels": [
               {
                 "level": 1,
-                "baseDamage": 70,
+                "baseDamage": 80,
                 "attackPowerRatio": 0.3,
                 "skillAmpRatio": 0.75,
                 "extraRatios": [
@@ -27044,7 +27000,7 @@
               },
               {
                 "level": 2,
-                "baseDamage": 95,
+                "baseDamage": 105,
                 "attackPowerRatio": 0.3,
                 "skillAmpRatio": 0.75,
                 "extraRatios": [
@@ -27056,7 +27012,7 @@
               },
               {
                 "level": 3,
-                "baseDamage": 120,
+                "baseDamage": 130,
                 "attackPowerRatio": 0.3,
                 "skillAmpRatio": 0.75,
                 "extraRatios": [
@@ -27068,7 +27024,7 @@
               },
               {
                 "level": 4,
-                "baseDamage": 145,
+                "baseDamage": 155,
                 "attackPowerRatio": 0.3,
                 "skillAmpRatio": 0.75,
                 "extraRatios": [
@@ -27080,7 +27036,7 @@
               },
               {
                 "level": 5,
-                "baseDamage": 170,
+                "baseDamage": 180,
                 "attackPowerRatio": 0.3,
                 "skillAmpRatio": 0.75,
                 "extraRatios": [
@@ -27091,7 +27047,7 @@
                 ]
               }
             ],
-            "raw": "피해량 [70 / 95 / 120 / 145 / 170] (+공격력의 30%) (+스킬 증폭의 75%) (+치명타 확률의 65%)"
+            "raw": "피해량 [80 / 105 / 130 / 155 / 180] (+공격력의 30%) (+스킬 증폭의 75%) (+치명타 확률의 65%)"
           }
         ]
       },
@@ -27248,7 +27204,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-06T11:53:51.000Z",
+    "wikiRevisedAt": "2026-11-22T12:59:25.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -31918,7 +31874,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-21T12:04:02.000Z",
+    "wikiRevisedAt": "2026-11-22T03:10:28.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -34316,7 +34272,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-14T07:32:15.000Z",
+    "wikiRevisedAt": "2026-11-22T03:53:20.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -35233,7 +35189,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-21T19:00:55.000Z",
+    "wikiRevisedAt": "2026-11-22T11:07:54.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -38917,7 +38873,7 @@
             "skillAmpRatio": 0.6
           }
         ],
-        "raw": "피해량 [80 / 100 / 120 / 140 / 160] (+스킬 증폭의 60%)[3]",
+        "raw": "피해량 [80 / 100 / 120 / 140 / 160] (+스킬 증폭의 60%)",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -38954,7 +38910,7 @@
                 "skillAmpRatio": 0.6
               }
             ],
-            "raw": "피해량 [80 / 100 / 120 / 140 / 160] (+스킬 증폭의 60%)[3]"
+            "raw": "피해량 [80 / 100 / 120 / 140 / 160] (+스킬 증폭의 60%)"
           }
         ]
       },
@@ -39066,7 +39022,7 @@
                 "skillAmpRatio": 0.3
               }
             ],
-            "raw": "보호막 흡수량 [70 / 85 / 100 / 115 / 130] (+스킬 증폭의 30%)[5]"
+            "raw": "보호막 흡수량 [70 / 85 / 100 / 115 / 130] (+스킬 증폭의 30%)"
           }
         ]
       },
@@ -39223,7 +39179,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-15T09:14:59.000Z",
+    "wikiRevisedAt": "2026-11-22T03:38:11.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -46221,7 +46177,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-21T03:09:00.000Z",
+    "wikiRevisedAt": "2026-11-23T02:53:44.000Z",
     "needsReview": [],
     "parser": 3
   },
@@ -46848,34 +46804,34 @@
             "level": 1,
             "baseDamage": 20,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.12
+            "skillAmpRatio": 0.1
           },
           {
             "level": 2,
             "baseDamage": 40,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.12
+            "skillAmpRatio": 0.1
           },
           {
             "level": 3,
             "baseDamage": 60,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.12
+            "skillAmpRatio": 0.1
           },
           {
             "level": 4,
             "baseDamage": 80,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.12
+            "skillAmpRatio": 0.1
           },
           {
             "level": 5,
             "baseDamage": 100,
             "attackPowerRatio": 0,
-            "skillAmpRatio": 0.12
+            "skillAmpRatio": 0.1
           }
         ],
-        "raw": "피해량 [20 / 40 / 60 / 80 / 100] (+스킬 증폭의 12%)",
+        "raw": "피해량 [20 / 40 / 60 / 80 / 100] (+스킬 증폭의 10%)",
         "sourceLabel": "피해량",
         "entries": [
           {
@@ -46885,34 +46841,34 @@
                 "level": 1,
                 "baseDamage": 20,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.12
+                "skillAmpRatio": 0.1
               },
               {
                 "level": 2,
                 "baseDamage": 40,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.12
+                "skillAmpRatio": 0.1
               },
               {
                 "level": 3,
                 "baseDamage": 60,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.12
+                "skillAmpRatio": 0.1
               },
               {
                 "level": 4,
                 "baseDamage": 80,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.12
+                "skillAmpRatio": 0.1
               },
               {
                 "level": 5,
                 "baseDamage": 100,
                 "attackPowerRatio": 0,
-                "skillAmpRatio": 0.12
+                "skillAmpRatio": 0.1
               }
             ],
-            "raw": "피해량 [20 / 40 / 60 / 80 / 100] (+스킬 증폭의 12%)"
+            "raw": "피해량 [20 / 40 / 60 / 80 / 100] (+스킬 증폭의 10%)"
           }
         ]
       },
@@ -47369,7 +47325,7 @@
         ]
       }
     ],
-    "wikiRevisedAt": "2026-11-20T02:55:04.000Z",
+    "wikiRevisedAt": "2026-11-22T13:19:44.000Z",
     "needsReview": [],
     "parser": 3
   },
