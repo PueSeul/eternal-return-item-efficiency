@@ -485,7 +485,7 @@
     "attackPowerPerLevel": 4.3,
     "masteries": {
       "단검": {
-        "skillAmpRatio": 0.043,
+        "skillAmpRatio": 0.042,
         "attackPowerRatio": 0,
         "attackSpeedRatio": 0.034,
         "increaseBasicAttackDamageRatio": 0,
@@ -533,7 +533,7 @@
       "저격총": {
         "skillAmpRatio": 0,
         "attackPowerRatio": 0,
-        "attackSpeedRatio": 0.024,
+        "attackSpeedRatio": 0.02,
         "increaseBasicAttackDamageRatio": 0.02,
         "attackPower": 0
       }
@@ -600,7 +600,7 @@
     "attackPowerPerLevel": 3.8,
     "masteries": {
       "망치": {
-        "skillAmpRatio": 0.044,
+        "skillAmpRatio": 0.046,
         "attackPowerRatio": 0,
         "attackSpeedRatio": 0.03,
         "increaseBasicAttackDamageRatio": 0,
@@ -623,7 +623,7 @@
     "attackPowerPerLevel": 4.3,
     "masteries": {
       "글러브": {
-        "skillAmpRatio": 0.042,
+        "skillAmpRatio": 0.04,
         "attackPowerRatio": 0,
         "attackSpeedRatio": 0.041,
         "increaseBasicAttackDamageRatio": 0,
@@ -852,7 +852,7 @@
     "attackPowerPerLevel": 4.4,
     "masteries": {
       "아르카나": {
-        "skillAmpRatio": 0.044,
+        "skillAmpRatio": 0.045,
         "attackPowerRatio": 0,
         "attackSpeedRatio": 0.025,
         "increaseBasicAttackDamageRatio": 0,
