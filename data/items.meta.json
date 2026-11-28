@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-27T03:02:18.680Z",
+  "fetchedAt": "2026-11-28T03:01:32.889Z",
   "dakggVersion": "13.2.0",
   "patch": {
     "id": 3982,
@@ -19,6 +19,12 @@
         "title": "13.2a 핫픽스",
         "url": "https://playeternalreturn.com/posts/news/3991",
         "createdAt": "2026-11-26T13:57:00.000000Z"
+      },
+      {
+        "id": 3995,
+        "title": "13.2b 핫픽스",
+        "url": "https://playeternalreturn.com/posts/news/3995",
+        "createdAt": "2026-11-27T08:47:00.000000Z"
       }
     ]
   },
